@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace NetworkUtilities
 {
-    public class NetworkNode
+    class Link
     {
+        int linkNumber;
+        Port inputPort;
+        Port outputPort;
+        int capacity;
     }
 }

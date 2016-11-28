@@ -40,9 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommutationMatrix.cs" />
-    <Compile Include="NetworkNode.cs" />
-    <Compile Include="NetworkNodeAgent.cs" />
+    <Compile Include="Link.cs" />
+    <Compile Include="ATMCell.cs" />
+    <Compile Include="NodeSocketPair.cs" />
+    <Compile Include="Port.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

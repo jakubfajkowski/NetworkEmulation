@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace NetworkUtilities
 {
-    class NetworkNodeAgent
+    class Port
     {
+        int portNumber;
     }
 }
