@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetworkUtilities
 {
-    public class Class1
+    class NetworkNodeAgent
     {
     }
 }
