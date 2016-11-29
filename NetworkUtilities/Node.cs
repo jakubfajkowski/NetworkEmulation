@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace NetworkUtilities
 {
-    class NodeSocketPair
+    class Node
     {
-        Socket inputSocket;
-        Socket outputSocket;
+        Socket socket;
     }
 }

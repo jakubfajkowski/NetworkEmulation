@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="Link.cs" />
     <Compile Include="ATMCell.cs" />
-    <Compile Include="NodeSocketPair.cs" />
+    <Compile Include="Node.cs" />
     <Compile Include="Port.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
