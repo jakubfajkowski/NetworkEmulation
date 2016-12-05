@@ -8,14 +8,14 @@ using System.Xml.Serialization;
 namespace NetworkUtilitiesTests
 {
     [TestClass]
-    public class UnitTest1
+    public class NodeTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void testNodeConstructor()
         {
             
-            Node node = new Node(5431);
-            Console.Write(node.ToXML());
+            Node node = new Node(5431, 3451);
+            Console.Write(node.toXML());
         } 
     }
 }

@@ -15,16 +15,40 @@ namespace NetworkUtilities
     [Serializable]
     public class Node
     {
-        public int port;
+        public int cloudPort;
+        public int agentPort;
+        private Socket cloudSocket;
+        private Socket networkManagerSocket;
 
         private Node() { }
 
-        public Node(int port) {
-            this.port = port;
-            //newSocket(port);   
+        public Node(int portA, int portC) {
+            cloudPort = portC;
+            agentPort = portA;
+            networkManagerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            cloudSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            try
+            {
+               networkManagerSocket.Bind(generateIPEndPoint(agentPort));
+               cloudSocket.Bind(generateIPEndPoint(cloudPort));
+            } catch(Exception e){
+                Debug.Fail(e.ToString(),
+                string.Format("Can't connect to port {0} or port {1]!", cloudPort,agentPort));
+            }
+        }
+        public void connectToCloud(int port)
+        {
+
+        } 
+        public IPEndPoint generateIPEndPoint(int port)
+        {
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPEndPoint ipEndPoint = new IPEndPoint(ipAddress, port);
+            return ipEndPoint;
         }
 
-        public string ToXML() {
+        public string toXML() {
             var stringwriter = new System.IO.StringWriter();
             var serializer = new XmlSerializer(this.GetType());
             serializer.Serialize(stringwriter, this);
