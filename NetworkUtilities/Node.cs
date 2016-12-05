@@ -33,7 +33,7 @@ namespace NetworkUtilities
                 connectToCloud();
             } catch(Exception e){
                 Debug.Fail(e.ToString(),
-                string.Format("Can't connect to port {0} or port {1]!", cloudPort,agentPort));
+                string.Format("Can't connect to port {0} or port {1}!", cloudPort,agentPort));
             }
         }
         //po wczytaniu z XML metody update generują sokety na podstawie poertów
