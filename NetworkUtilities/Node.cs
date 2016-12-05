@@ -15,53 +15,72 @@ namespace NetworkUtilities
     [Serializable]
     public class Node
     {
-        [XmlIgnore]
-        Socket socket;
-        [XmlElement(ElementName = "statusHostName")]
-        string statusHostName;
-        [XmlElement(ElementName = "port")]
-        int port;
+        public int cloudPort;
+        public int agentPort;
+        private Socket cloudSocket;
+        private Socket networkManagerSocket;
 
-        public Node() {
-            newSocket(3402);
-        }
+        private Node() { }
 
-        public Node(int port)
-        {
-            newSocket(port);   
+        public Node(int portA, int portC) {
+            cloudPort = portC;
+            agentPort = portA;
+            networkManagerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            cloudSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            try {
+                networkManagerSocket.Bind(generateIPEndPoint(agentPort));
+                cloudSocket.Bind(generateIPEndPoint(cloudPort));
+                connectToCloud();
+            } catch(Exception e){
+                Debug.Fail(e.ToString(),
+                string.Format("Can't connect to port {0} or port {1]!", cloudPort,agentPort));
+            }
         }
-        private void newSocket(int port)
+        //po wczytaniu z XML metody update generują sokety na podstawie poertów
+        public void updateCloudSocket() {
+            cloudSocket = updateSocket(cloudSocket, cloudPort);
+        }
+        public void updateNetworkManagerSocket()
         {
-            this.port = port;
+            networkManagerSocket = updateSocket(networkManagerSocket, agentPort);
+        }
+        private Socket updateSocket(Socket socket, int port) {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            statusHostName = Dns.GetHostName();       
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint endPoint = new IPEndPoint(ipAddress, port);         
-            socket.Bind(endPoint);
-         }
-        public void serializeToXML()
-        {
-            XmlSerializer XML = new XmlSerializer(typeof(Node));
-
-           (FileStream fs = new FileStream("testXNLserialize.xml", FileMode.OpenOrCreate))
-           {
-            //TextWriter fs = new StreamWriter("testXMLserialize.xml");
-                XML.Serialize(fs, this);
-            fs.Close();
-           }
-            
-
-            /*using (FileStream fs= new FileStream("testXNLserialize.xml", FileMode.OpenOrCreate))
+            try
             {
-                Node n = (Node)XML.Deserialize(fs);
-                Debug.WriteLine("Port: {0} -----", n.getPort());
-
-            }*/
+                socket.Bind(generateIPEndPoint(port));
+                return socket;
+            }
+            catch (Exception e)
+            {
+                Debug.Fail(e.ToString(),
+                string.Format("Can't connect to port {0} or port {1]!", cloudPort, agentPort));
+                return null;
+            }
         }
-        public string getPort()
-        {
-            return socket.LocalEndPoint.ToString();
+        public void connectToCloud() {
+            UdpClient udpClient = new UdpClient();
+            byte[] bytesToSend = Encoding.ASCII.GetBytes("Port: " + cloudPort);
+            var ipEndpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 10000);
+        } 
+        private IPEndPoint generateIPEndPoint(int port) {
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPEndPoint ipEndPoint = new IPEndPoint(ipAddress, port);
+            return ipEndPoint;
+        }
+
+        public string toXML() {
+            var stringwriter = new System.IO.StringWriter();
+            var serializer = new XmlSerializer(this.GetType());
+            serializer.Serialize(stringwriter, this);
+            return stringwriter.ToString();
+        }
+
+        public static Node LoadFromXMLString(string xmlText) {
+            var stringReader = new System.IO.StringReader(xmlText);
+            var serializer = new XmlSerializer(typeof(Node));
+            return serializer.Deserialize(stringReader) as Node;
         }
     }
 }
