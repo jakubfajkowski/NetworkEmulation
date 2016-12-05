@@ -8,9 +8,14 @@ namespace NetworkUtilities
 {
     public class ATMCell
     {
-        byte[] VPI= new byte[12];
-        byte[] VCI = new byte[16];
-        byte[] data = new byte[48];
+        public int VPI { get; private set; }
+        public int VCI { get; private set; }
+        public byte[] data { get; private set; }
 
+        public ATMCell(int vpi, int vci, byte[] data) {
+            VPI = vpi;
+            VCI = vci;
+            this.data = data;
+        }
     }
 }

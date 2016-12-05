@@ -15,14 +15,7 @@ namespace NetworkUtilitiesTests
         {
             
             Node node = new Node(5431);
-            XmlSerializer XML = new XmlSerializer(typeof(Node));
-            TextWriter fs = new StreamWriter("testXMLserialize.xml");
-            XML.Serialize(fs, node);
-            Console.WriteLine(node.getPort());
-            Debug.WriteLine(node.getPort());
-           
-            //node.serializeToXML();
-           // Console.ReadLine();
+            Console.Write(node.ToXML());
         } 
     }
 }
