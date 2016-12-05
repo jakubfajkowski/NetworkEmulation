@@ -58,12 +58,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NetworkUtilities\NetworkUtilities.csproj">
-      <Project>{634e9e92-598f-4aab-9cbe-e4cdc9916132}</Project>
-      <Name>NetworkUtilities</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
   <Choose>
