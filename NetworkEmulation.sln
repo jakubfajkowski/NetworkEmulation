@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkUtilitiesTests", "Ne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkUtilities", "NetworkUtilities\NetworkUtilities.csproj", "{F8933E14-6B9C-4B0D-B9FF-1A5FA8190D2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkEmulationTest", "NetworkEmulationTest\NetworkEmulationTest.csproj", "{BAECB36A-19A7-423B-8666-AC1424193DE5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{F8933E14-6B9C-4B0D-B9FF-1A5FA8190D2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8933E14-6B9C-4B0D-B9FF-1A5FA8190D2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8933E14-6B9C-4B0D-B9FF-1A5FA8190D2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAECB36A-19A7-423B-8666-AC1424193DE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAECB36A-19A7-423B-8666-AC1424193DE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAECB36A-19A7-423B-8666-AC1424193DE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAECB36A-19A7-423B-8666-AC1424193DE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
