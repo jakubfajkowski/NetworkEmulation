@@ -27,10 +27,10 @@ namespace NetworkUtilities
             agentPort = portA;
             networkManagerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             cloudSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            try
-            {
-               networkManagerSocket.Bind(generateIPEndPoint(agentPort));
-               cloudSocket.Bind(generateIPEndPoint(cloudPort));
+            try {
+                networkManagerSocket.Bind(generateIPEndPoint(agentPort));
+                cloudSocket.Bind(generateIPEndPoint(cloudPort));
+                connectToCloud();
             } catch(Exception e){
                 Debug.Fail(e.ToString(),
                 string.Format("Can't connect to port {0} or port {1]!", cloudPort,agentPort));
@@ -58,12 +58,12 @@ namespace NetworkUtilities
                 return null;
             }
         }
-        public void connectToCloud(int port)
-        {
-
+        public void connectToCloud() {
+            UdpClient udpClient = new UdpClient();
+            byte[] bytesToSend = Encoding.ASCII.GetBytes("Port: " + cloudPort);
+            var ipEndpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 10000);
         } 
-        private IPEndPoint generateIPEndPoint(int port)
-        {
+        private IPEndPoint generateIPEndPoint(int port) {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[0];
             IPEndPoint ipEndPoint = new IPEndPoint(ipAddress, port);
