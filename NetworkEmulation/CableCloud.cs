@@ -45,14 +45,7 @@ namespace NetworkEmulation {
         }
 
         private void listenForNodeMessages(TcpClient nodeTcpClient) {
-            Task.Run(async () => {
-                using (var networkStream = nodeTcpClient.GetStream()) {
-                    while (true) {
-                        var receivedData = await networkStream.ReadAsync()
-                        estabilishNodeConnection(BitConverter.ToInt32(receivedData.Buffer, 0));
-                    }
-                }
-            });
+            
         }
     }
 }
