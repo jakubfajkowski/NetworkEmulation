@@ -22,40 +22,56 @@ namespace NetworkUtilities
         /**
          * Konstruktor niewykorzysywany
          */
-        private Node() { }
-        /**
-         * Konstruktor klasy Node wczytujący porty agenta i chmury i tworzący na ich podstawie @cloudSocket i @networkManagerSocket, po czym tworzone jest połączenie z chmurą
-         */
-        public Node(int portA, int portC) {
+
+        private Node()
+        {
+        }
+
+/**
+                 * Konstruktor klasy Node wczytujący porty agenta i chmury i tworzący na ich podstawie @cloudSocket i @networkManagerSocket, po czym tworzone jest połączenie z chmurą
+                 */
+
+        public Node(int portA, int portC)
+        {
             cloudPort = portC;
             agentPort = portA;
-            try {
+            try
+            {
                 cloudTcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), cloudPort);
                 agentTcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), agentPort);
-            } catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 Debug.Fail(e.ToString(),
-                string.Format("Can't connect to port {0} or port {1}!", cloudPort,agentPort));
+                    string.Format("Can't connect to port {0} or port {1}!", cloudPort, agentPort));
             }
             startListening(cloudTcpListener);
-            startListening(agentTcpListener);
+           // startListening(agentTcpListener);
             connectToCloud();
         }
-        /**
-         * Metoda generująca @cloudSocket na podstawie portu @cloudPort 
-         */
-        public void updateCloudListener() {
+
+/**
+                 * Metoda generująca @cloudSocket na podstawie portu @cloudPort 
+                 */
+
+        public void updateCloudListener()
+        {
             cloudTcpListener = updateListener(cloudTcpListener, cloudPort);
         }
-        /**
-        * Metoda generująca @agentTcpListener na podstawie portu @agentPort
-        */
+
+/**
+                * Metoda generująca @agentTcpListener na podstawie portu @agentPort
+                */
+
         public void updateAgentTCPListener()
         {
             agentTcpListener = updateListener(agentTcpListener, agentPort);
         }
-        /**
-         * Metoda na danym etapie nasłuchuje na wchodzącą wiadomość i w razie przyjścia obsługuje go.(wysyła odpowiedź)
-         */
+
+/**
+                 * Metoda na danym etapie nasłuchuje na wchodzącą wiadomość i w razie przyjścia obsługuje go.(wysyła odpowiedź)
+                 */
+
         private void startListening(TcpListener tcpListener)
         {
             string data = null;
@@ -80,10 +96,10 @@ namespace NetworkUtilities
                         // Translate data bytes to a ASCII string.
                         data = Encoding.ASCII.GetString(bytes, 0, i);
                         Console.WriteLine("Received: {0}", data);
-                        Debug.WriteLine("Received: "+ data);
+                        Debug.WriteLine("Received: " + data);
 
                         // Process the data sent by the client.
-                        data = data.ToUpper();
+                        // data = data.ToUpper();
 
                         byte[] msg = Encoding.ASCII.GetBytes(data);
 
@@ -95,16 +111,18 @@ namespace NetworkUtilities
 
                     // Shutdown and end connection
                     client.Close();
-                    
                 }
             });
         }
-        /**
-         * Metoda która przypisuje port do socketa
-         * @param socket socket, do którego przypisujemy port
-         * @param port numer portu, na którym będzie działać socket
-         */ 
-        private TcpListener updateListener(TcpListener tcpListener, int port) {
+
+/**
+                 * Metoda która przypisuje port do socketa
+                 * @param socket socket, do którego przypisujemy port
+                 * @param port numer portu, na którym będzie działać socket
+                 */
+
+        private TcpListener updateListener(TcpListener tcpListener, int port)
+        {
             try
             {
                 tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
@@ -117,36 +135,43 @@ namespace NetworkUtilities
                 return null;
             }
         }
-        /**
-         * Metoda wysyłająca cloudPort do chmury, na którym będzie nasłuchiwać
-         */
-        public void connectToCloud() {
+
+/**
+                 * Metoda wysyłająca cloudPort do chmury, na którym będzie nasłuchiwać
+                 */
+
+        public void connectToCloud()
+        {
             UdpClient udpClient = new UdpClient();
             byte[] bytesToSend = Encoding.ASCII.GetBytes("Port: " + cloudPort);
             var ipEndpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 10000);
             udpClient.Send(bytesToSend, bytesToSend.Length, ipEndpoint);
-        } 
-      /*  /**
-         * Metoda generuje IDEndPoint na postawie podanego portu
-         #1#
-        private IPEndPoint generateIPEndPoint(int port) {
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint ipEndPoint = new IPEndPoint(ipAddress, port);
-            return ipEndPoint;
-        }*/
+        }
+
+/*  /**
+                 * Metoda generuje IDEndPoint na postawie podanego portu
+                 #1#
+                private IPEndPoint generateIPEndPoint(int port) {
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+                    IPAddress ipAddress = ipHostInfo.AddressList[0];
+                    IPEndPoint ipEndPoint = new IPEndPoint(ipAddress, port);
+                    return ipEndPoint;
+                }*/
 
         /**
          * Metoda generuje XML na postawie klasy
          */
-        public string toXML() {
+
+        public string toXML()
+        {
             var stringwriter = new StringWriter();
             var serializer = new XmlSerializer(this.GetType());
             serializer.Serialize(stringwriter, this);
             return stringwriter.ToString();
         }
 
-        public static Node LoadFromXMLString(string xmlText) {
+        public static Node LoadFromXMLString(string xmlText)
+        {
             var stringReader = new StringReader(xmlText);
             var serializer = new XmlSerializer(typeof(Node));
             return serializer.Deserialize(stringReader) as Node;

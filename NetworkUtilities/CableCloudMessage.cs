@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NetworkUtilities {
-    class CableCloudMessage {
+    [SerializableAttribute]
+    public class CableCloudMessage {
         public int port { get; set; }
         public List<ATMCell> atmCells { get; private set; }
 

@@ -5,8 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
 using System.Net.Sockets;
-using System.Net;
-using System.Text;
+
 
 namespace NetworkUtilitiesTests
 {
@@ -45,6 +44,7 @@ namespace NetworkUtilitiesTests
             responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
             Console.WriteLine("Received: {0}", responseData);
             Debug.WriteLine("Received: {0}", responseData);
+             Assert.AreEqual(message,responseData);
             // Close everything.
             stream.Close();
             client.Close();
@@ -62,7 +62,7 @@ namespace NetworkUtilitiesTests
 
             Console.WriteLine("\n Press Enter to continue...");
               Debug.WriteLine("\n Press Enter to continue...");
-              Console.Read();
+              
          }
     }
 }
