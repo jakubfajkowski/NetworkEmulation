@@ -8,22 +8,48 @@ using System.Threading.Tasks;
 
 namespace NetworkEmulation {
     public class CableCloud {
-        private readonly UdpClient udpClient;
+        private readonly UdpClient connectionUdpClient;
+        private Dictionary<int, TcpClient> nodesTcpClients;
 
         public CableCloud() {
             var ipEndPoint = new IPEndPoint(IPAddress.Any, 10000);
-            this.udpClient = new UdpClient(ipEndPoint);
+            this.connectionUdpClient = new UdpClient(ipEndPoint);
 
-            startListening();
+            this.nodesTcpClients = new Dictionary<int, TcpClient>();
+
+            listenForConnectionRequests();
         }
 
-        private void startListening() {
+        private void listenForConnectionRequests() {
             Task.Run(async () =>
             {
-                using (udpClient) {
+                using (connectionUdpClient) {
                     while (true) {
-                        var receivedResults = await udpClient.ReceiveAsync();
-                        Console.Write(Encoding.ASCII.GetString(receivedResults.Buffer));
+                        var receivedData = await connectionUdpClient.ReceiveAsync();
+                        estabilishNodeConnection(BitConverter.ToInt32(receivedData.Buffer, 0));
+                    }
+                }
+            });
+        }
+
+        private void estabilishNodeConnection(int port) {
+            var nodeTcpClient = new TcpClient();
+            try {
+                nodeTcpClient.Connect(IPAddress.Loopback, port);
+                nodesTcpClients.Add(port, nodeTcpClient);
+            }
+            catch (SocketException e) {
+                //TODO: Metoda raportująca o błędach.
+            }
+
+        }
+
+        private void listenForNodeMessages(TcpClient nodeTcpClient) {
+            Task.Run(async () => {
+                using (var networkStream = nodeTcpClient.GetStream()) {
+                    while (true) {
+                        var receivedData = await networkStream.ReadAsync()
+                        estabilishNodeConnection(BitConverter.ToInt32(receivedData.Buffer, 0));
                     }
                 }
             });
