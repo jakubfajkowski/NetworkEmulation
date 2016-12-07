@@ -15,13 +15,13 @@ namespace NetworkUtilitiesTests
             byte[] data = Serializator.Serialize(message);
             object obj = Serializator.Deserialize(data);
             CableCloudMessage msg = new CableCloudMessage(1);
-            Debug.WriteLine(msg.port);
+            Debug.WriteLine(msg.linkNumber);
             if (obj is CableCloudMessage)
             {
                 msg = (CableCloudMessage) obj;
             }
-            Assert.AreEqual(message.port, msg.port);
-            Debug.WriteLine(msg.port);
+            Assert.AreEqual(message.linkNumber, msg.linkNumber);
+            Debug.WriteLine(msg.linkNumber);
         }
     }
 }

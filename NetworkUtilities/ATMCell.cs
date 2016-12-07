@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetworkUtilities
 {
-    [SerializableAttribute]
+    [Serializable]
     public class ATMCell
     {
         public int VPI { get; set; }

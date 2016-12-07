@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NetworkUtilities {
-    [SerializableAttribute]
+    [Serializable]
     public class CableCloudMessage {
-        public int port { get; set; }
-        public List<ATMCell> atmCells { get; private set; }
+        public int linkNumber { get; set; }
+        public List<ATMCell> atmCells { get; }
 
-        public CableCloudMessage(int port) {
-            this.port = port;
+        public CableCloudMessage(int linkNumber) {
+            this.linkNumber = linkNumber;
             this.atmCells = new List<ATMCell>();
         }
 
