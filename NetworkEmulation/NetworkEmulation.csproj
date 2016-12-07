@@ -92,6 +92,12 @@
   <ItemGroup>
     <None Include="rsc\ClientNode.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NetworkUtilities\NetworkUtilities.csproj">
+      <Project>{f8933e14-6b9c-4b0d-b9ff-1a5fa8190d2f}</Project>
+      <Name>NetworkUtilities</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

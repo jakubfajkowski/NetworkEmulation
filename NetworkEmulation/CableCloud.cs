@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NetworkEmulation {
     public class CableCloud {
@@ -21,8 +23,7 @@ namespace NetworkEmulation {
         }
 
         private void listenForConnectionRequests() {
-            Task.Run(async () =>
-            {
+            Task.Run(async () => {
                 using (connectionUdpClient) {
                     while (true) {
                         var receivedData = await connectionUdpClient.ReceiveAsync();
@@ -37,15 +38,32 @@ namespace NetworkEmulation {
             try {
                 nodeTcpClient.Connect(IPAddress.Loopback, port);
                 nodesTcpClients.Add(port, nodeTcpClient);
+                listenForNodeMessages(nodeTcpClient);
+                Console.Write("Connected to Node on port: " + port);
             }
             catch (SocketException e) {
-                //TODO: Metoda raportująca o błędach.
+                MessageBox.Show(e.Message, "Cable Cloud Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
 
         private void listenForNodeMessages(TcpClient nodeTcpClient) {
-            
+            Task.Run(async () => {
+                using (NetworkStream ns = nodeTcpClient.GetStream()) {
+                MemoryStream ms = new MemoryStream();
+                byte[] buffer = new byte[1024];
+
+                while (true) {
+                    int bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead <= 0)
+                        break;
+                    ms.Write(buffer, 0, bytesRead);
+                    Console.Write(ms.ToArray());
+                    ms.Seek(0, SeekOrigin.Begin);
+                }
+            }
+            });
         }
     }
 }

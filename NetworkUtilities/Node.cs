@@ -143,7 +143,7 @@ namespace NetworkUtilities
         public void connectToCloud()
         {
             UdpClient udpClient = new UdpClient();
-            byte[] bytesToSend = Encoding.ASCII.GetBytes("Port: " + cloudPort);
+            byte[] bytesToSend = BitConverter.GetBytes(cloudPort);
             var ipEndpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 10000);
             udpClient.Send(bytesToSend, bytesToSend.Length, ipEndpoint);
         }
