@@ -3,33 +3,94 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NetworkUtilities;
+using System.Threading;
 
 namespace NetworkNode
 {
-    /* Dodać port do łączenia z chmurą
-             listę portów do łączenia z klientami (jaka jest różnica między portem klienckim a sieciowym jeśli klient przesyła przez chmurę kablową)
-
-       Socket (ten od chmury) zawiera metodę receive(), która tworzy pakiet ATM z wczytanych X bitów, a następnie wrzuca ten pakiet do 
-            bufora w CommutationMatrix (czy jeden bufor dla wszystkich czy jeden bufor dla jednego "miniportu" w polu komutacyjnym). 
-            Po wrzuceniu pakietu do bufora wzbudzić wątek pola komutacyjnego (odpowiednik notify() z Javy).
-            Pole komutacyjne zagląda do tablicy patrząc na VPI i VCI, usuwa je i nadaje kolejne wartości VPI, VCI 
-            (kanały są jednokierunkowe, więc nie trzeba wiedzieć, od którego węzła przyszedł pakiet).
-            Pole komutacyjne wrzuca przerobiony pakiet do bufora pakietów, które mają się wysłać. (Czyli chyba w Sockecie musi być bufor)
-            (Socket) wysyła pakiet do chmury.
-
-        Przy podmianie VPI VCI pamiętać że VCI może być niezmienione kiedy cała ścieżka leci dalej.
-    */
-    class NetworkNode
+    
+    class NetworkNode //: Node
     {
         public CommutationMatrix commutationMatrix;
         public NetworkNodeAgent networkNodeAgent;
 
-        public NetworkNode()
+        private bool timeToQuit = false;
+        private Thread networkNodeThread;
+
+        private List<Port> outputCommutationMatrixPorts;
+        private bool sent;
+
+        /* Minimalny czas po jakim komórki ATM zostaną wysłane z portu wyjściowego pola komutacyjnego [ms]*/
+        private const int minLastAddTime = 5000;
+        private const int maxATMCellNumberInCableCloudMessage = 20;
+        private const int sleepTime = 500;
+        
+
+        public NetworkNode(int portA, int portC) //: base(portA,portC)
         {
             networkNodeAgent = new NetworkNodeAgent();
-            commutationMatrix = new CommutationMatrix(networkNodeAgent.getCommutationTable());
-            
+            commutationMatrix = new CommutationMatrix(networkNodeAgent.getCommutationTable(), this);
+            outputCommutationMatrixPorts = commutationMatrix.getOutputPortList();
+
+            networkNodeThread = new Thread(runThread);
+            networkNodeThread.Start();
         }
 
+        private void runThread()
+        {
+            int j = 0;
+            while (!timeToQuit)
+            {
+                sent = false;
+                if (j<20)
+                Console.WriteLine("Wywolanie run outBuffer: " + j++);
+                
+                foreach (Port port in outputCommutationMatrixPorts)
+                {
+                    if ((port.getATMCellNumber() != 0) && ((DateTime.Now - port.getLastAddTime()).TotalMilliseconds > minLastAddTime) || (port.getATMCellNumber() > maxATMCellNumberInCableCloudMessage))
+                    {
+                        Console.WriteLine("Rozpoczęcie tworzenia CableCloudMessage...");
+                        CableCloudMessage message = new CableCloudMessage(port.getLinkNumber());
+
+                        int ATMCellNumberInPort = port.getATMCellNumber();
+                        //Console.WriteLine("Liczba komórek ATM w buforze wyjściowym: " + port.getATMCellNumber());
+                        int ATMCellNumberInMessage;
+                        if (ATMCellNumberInPort > maxATMCellNumberInCableCloudMessage)
+                            ATMCellNumberInMessage = maxATMCellNumberInCableCloudMessage;
+                        else
+                            ATMCellNumberInMessage = ATMCellNumberInPort;
+                        
+                        for (int i=0; i<ATMCellNumberInMessage; i++)
+                        {
+                            message.add(port.getATMCell());                           
+                        }
+
+                        Console.WriteLine("Wysyłanie CableCloudMessage na łącze "+ message.linkNumber + " Liczba ATMCell: "+ message.atmCells.Count
+                            + " Port: "+ port.getLinkNumber());
+                        sendCableCloudMessage(message);
+                        sent = true;
+                    }
+                }
+
+                if (!sent)
+                {
+                    Thread.Sleep(sleepTime);                
+                }
+            }
+        }
+
+        public void receiveCableCloudMessage(CableCloudMessage message)
+        {
+            foreach(ATMCell cell in message.atmCells)
+            {
+                commutationMatrix.addATMCellToInputPort(cell, message.linkNumber);
+            }
+        }
+
+        private void sendCableCloudMessage(CableCloudMessage message)
+        {
+            // WYSLAC!!!!!!!!!!!!!!!   Wysłać cell
+            //Console.WriteLine("VPI/VCI: " + cell.VPI + "/" + cell.VCI);
+        }
     }
 }

@@ -16,7 +16,8 @@ namespace NetworkNode
         }
 
 
-        /* Sprawdza wszystkie wiersze w tablicy i zwraca ten, który zawiera podane wejściowe VPI i VCI
+        /* Metoda używana do znalezienia wyjściowych VPI i VCI
+            Sprawdza wszystkie wiersze w tablicy i zwraca ten, który zawiera podane wejściowe VPI i VCI
             Jeśli wiersz nie zostanie znaleziony zwraca null */
         public CommutationTableRow check(int inVPI, int inVCI)
         {
@@ -31,14 +32,14 @@ namespace NetworkNode
         }
 
         // Dodaje połączenie do tabeli połączeń i wypisuje informację na ekranie.
-        public void addConnection(int inVPI, int inVCI, int outVPI, int outVCI)
+        public void addConnection(int inVPI, int inVCI, int outVPI, int outVCI, int linkNumber)
         {
-            commutationTableRows.Add(new CommutationTableRow(inVPI, inVCI, outVPI, outVCI));
+            commutationTableRows.Add(new CommutationTableRow(inVPI, inVCI, outVPI, outVCI, linkNumber));
             Console.Out.WriteLine("Dodano połączenie: VPI in/out: " + inVPI + "/" + outVPI + "   VCI in/out:" + inVCI + "/" + outVCI);
         }
 
         /* Metoda usuwająca wpis z tabeli połączeń */
-        public Boolean removeConnection(int inVPI, int inVCI, int outVPI, int outVCI)
+        public bool removeConnection(int inVPI, int inVCI, int outVPI, int outVCI)
         {
             for (int i=0; i< commutationTableRows.Count; i++)
             {
