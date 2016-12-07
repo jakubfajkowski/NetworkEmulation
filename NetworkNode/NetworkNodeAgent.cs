@@ -17,9 +17,9 @@ namespace NetworkNode
         }
 
         /* Wywołuje metodę tabeli połączeń, która dodaje połączenie */
-        public void addConnectionToTable(int inVPI, int inVCI, int outVPI, int outVCI)
+        public void addConnectionToTable(int inVPI, int inVCI, int outVPI, int outVCI, int linkNumber)
         {
-            commutationTable.addConnection(inVPI, inVCI, outVPI, outVCI);
+            commutationTable.addConnection(inVPI, inVCI, outVPI, outVCI, linkNumber);
         }
 
         /* Wywołuje metodę tabeli połączeń, która usuwa połączenie */

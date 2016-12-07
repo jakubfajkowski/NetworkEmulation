@@ -13,33 +13,27 @@ namespace NetworkNode
         private int outVPI;
         // Jeśli wpis nie zawiera VCI to VCI = -1
         private int outVCI;
+        private int outLinkNumber;
 
-        public CommutationTableRow(int inVPI, int inVCI, int outVPI, int outVCI)
+        public CommutationTableRow(int inVPI, int inVCI, int outVPI, int outVCI, int outLinkNumber)
         {
             this.inVCI = inVCI;
             this.inVPI = inVPI;
             this.outVCI = outVCI;
             this.outVPI = outVPI;
+            this.outLinkNumber = outLinkNumber;
         }
 
         /* Metoda sprawdzająca czy podane wejściowe VPI i VCI pasują do danego wpisu
             Wywoływana przy wyszukiwaniu wyjściowych VPI i VCI */
-        public Boolean checkInIdentifiers(int inVPI, int inVCI)
+        public bool checkInIdentifiers(int inVPI, int inVCI)
         {
-            // VCI może być null bo możliwy jest wpis "wszystko (wszystkie kanały) co wchodzi ścieżką o VPI X wychodzi ścieżką o VPI Y"
-            if ((inVPI == this.inVPI) && ((inVCI == this.inVCI) || (inVCI == -1)))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return ((inVPI == this.inVPI) && ((inVCI == this.inVCI) || (inVCI == -1)));     
         }
 
         /* Metoda sprawdzająca czy podane VPI i VCI pasują do danego wpisu
             Wywoływana przy usuwaniu połączenia z tabeli połączeń */
-        public Boolean checkAllIdentifiers(int inVPI, int inVCI, int outVPI, int outVCI)
+        public bool checkAllIdentifiers(int inVPI, int inVCI, int outVPI, int outVCI)
         {
             if ((this.inVCI == inVCI) && (this.inVPI == inVPI) && (this.outVCI == outVCI) && (this.outVPI == outVPI))
                 return true;
@@ -55,6 +49,10 @@ namespace NetworkNode
         public int getOutVCI()
         {
             return outVCI;
+        }
+        public int getOutLink()
+        {
+            return outLinkNumber;
         }
 
 

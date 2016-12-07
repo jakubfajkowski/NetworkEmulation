@@ -48,11 +48,18 @@
     <Compile Include="CommutationTableRow.cs" />
     <Compile Include="NetworkNode.cs" />
     <Compile Include="NetworkNodeAgent.cs" />
+    <Compile Include="Port.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NetworkUtilities\NetworkUtilities.csproj">
+      <Project>{f8933e14-6b9c-4b0d-b9ff-1a5fa8190d2f}</Project>
+      <Name>NetworkUtilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
