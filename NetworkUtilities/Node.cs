@@ -15,6 +15,7 @@ namespace NetworkUtilities {
         private TcpListener agentTcpListener;
         public int cloudPort;
         private TcpListener cloudTcpListener;
+        private TcpClient nodeTcpClient;
 
         private Node() {
         }
@@ -24,8 +25,8 @@ namespace NetworkUtilities {
         */
 
         public Node(int agentPort, int cloudPort) {
-            //this.cloudPort = cloudPort;
-            this.cloudPort = FreeTcpPort();
+            this.cloudPort = cloudPort;
+            //this.cloudPort = freeTcpPort();
             this.agentPort = agentPort;
             try {
                 cloudTcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), this.cloudPort);
@@ -40,7 +41,7 @@ namespace NetworkUtilities {
             connectToCloud();
         }
 
-        int FreeTcpPort()
+        int freeTcpPort()
         {
             TcpListener l = new TcpListener(IPAddress.Loopback, 0);
             l.Start();
@@ -51,13 +52,15 @@ namespace NetworkUtilities {
 
         private void listenForConnectRequest(TcpListener tcpListener) {
             tcpListener.Start();
-            Task.Run(async () => {
-                listenForNodeMessages(await tcpListener.AcceptTcpClientAsync());
+            Task.Run(async () =>
+            {
+                nodeTcpClient = await tcpListener.AcceptTcpClientAsync();
+                listenForNodeMessages();
                 online = true;
             });
         }
 
-        private void listenForNodeMessages(TcpClient nodeTcpClient) {
+        private void listenForNodeMessages() {
             Task.Run(async () => {
                 using (NetworkStream ns = nodeTcpClient.GetStream()) {
                     MemoryStream ms = new MemoryStream();
@@ -67,7 +70,10 @@ namespace NetworkUtilities {
                         int bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
                         if (bytesRead <= 0)
                             break;
+                        //Debug.WriteLine("NaszBufor: " + Encoding.ASCII.GetString(buffer));
                         ms.Write(buffer, 0, bytesRead);
+                        //Debug.WriteLine("NaszBufor1: " + Encoding.ASCII.GetString(buffer));
+
                         handleMessage(ms.ToArray());
                         ms.Seek(0, SeekOrigin.Begin);
                     }
@@ -77,6 +83,18 @@ namespace NetworkUtilities {
 
         protected void handleMessage(byte[] data) {
             Console.Write(data);
+        }
+
+        public void send(byte[] data) {
+            Task.Run(() => {
+                try {
+                   // foreach (byte t in data)
+                   //     tcpClient.GetStream().WriteByte(t);
+                        nodeTcpClient.GetStream().Write(data, 0, data.Length);
+                        Debug.WriteLine("SendData: " + Encoding.ASCII.GetString(data) + " dd");
+                }
+                catch { Debug.WriteLine("Sending ERROR!"); }
+            });
         }
 
         /**
