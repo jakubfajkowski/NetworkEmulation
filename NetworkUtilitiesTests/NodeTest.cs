@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Xml.Serialization;
 using System.Net.Sockets;
 
@@ -27,13 +28,14 @@ namespace NetworkUtilitiesTests
             string server = "127.0.0.1";
             string message = "You can do it";
             Int32 port = 3451;
-            TcpClient client = new TcpClient(server, port);
+            TcpClient client = new TcpClient();
+            client.Connect(IPAddress.Loopback, port);
             Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
             NetworkStream stream = client.GetStream();
 
             // Send the message to the connected TcpServer. 
             stream.Write(data, 0, data.Length);
-            Console.WriteLine("Sent: {0}", message);
+            Debug.WriteLine("Sent: {0}", message);
             // Receive the TcpServer.response.
             // Buffer to store the response bytes.
             data = new Byte[512];
@@ -41,8 +43,8 @@ namespace NetworkUtilitiesTests
             String responseData = String.Empty;
             // Read the first batch of the TcpServer response bytes.
             Int32 bytes = stream.Read(data, 0, data.Length);
-            responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
-            Console.WriteLine("Received: {0}", responseData);
+            responseData = System.Text.Encoding.UTF8.GetString(data, 0, bytes);
+            Debug.WriteLine("Received: {0}", responseData);
             Debug.WriteLine("Received: {0}", responseData);
              Assert.AreEqual(message,responseData);
             // Close everything.
