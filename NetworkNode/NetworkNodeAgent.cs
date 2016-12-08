@@ -23,7 +23,7 @@ namespace NetworkNode
         }
 
         /* Wywołuje metodę tabeli połączeń, która usuwa połączenie */
-        public Boolean removeConnectionFromTable(int inVPI, int inVCI, int outVPI, int outVCI)
+        public bool removeConnectionFromTable(int inVPI, int inVCI, int outVPI, int outVCI)
         {
             return commutationTable.removeConnection(inVPI, inVCI, outVPI, outVCI);
         }

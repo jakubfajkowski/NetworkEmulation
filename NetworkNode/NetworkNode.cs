@@ -9,7 +9,7 @@ using System.Threading;
 namespace NetworkNode
 {
     
-    class NetworkNode //: Node
+    class NetworkNode : Node
     {
         public CommutationMatrix commutationMatrix;
         public NetworkNodeAgent networkNodeAgent;
@@ -26,7 +26,7 @@ namespace NetworkNode
         private const int sleepTime = 500;
         
 
-        public NetworkNode(int portA, int portC) //: base(portA,portC)
+        public NetworkNode(int portA, int portC) : base(portA,portC)
         {
             networkNodeAgent = new NetworkNodeAgent();
             commutationMatrix = new CommutationMatrix(networkNodeAgent.getCommutationTable(), this);
@@ -91,6 +91,15 @@ namespace NetworkNode
         {
             // WYSLAC!!!!!!!!!!!!!!!   Wysłać cell
             //Console.WriteLine("VPI/VCI: " + cell.VPI + "/" + cell.VCI);
+        }
+
+        protected override void handleMessage(CableCloudMessage message)
+        {
+            Console.WriteLine("wchodzi do handleMessage");
+            //CableCloudMessage message = CableCloudMessage.deserialize(data);
+            Console.WriteLine("link number:" + message.linkNumber);
+            Console.WriteLine("atm cell: " + message.atmCells.Count);
+            receiveCableCloudMessage(message);
         }
     }
 }

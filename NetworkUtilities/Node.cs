@@ -16,6 +16,7 @@ namespace NetworkUtilities {
         public int cloudPort;
         private TcpListener cloudTcpListener;
         private TcpClient nodeTcpClient;
+        private const int bufferSize = 5000;
 
         private Node() {
         }
@@ -53,8 +54,8 @@ namespace NetworkUtilities {
         private void listenForConnectRequest(TcpListener tcpListener) {
             tcpListener.Start();
             Task.Run(async () =>
-            {
-                nodeTcpClient = await tcpListener.AcceptTcpClientAsync();
+            {               
+                nodeTcpClient = await tcpListener.AcceptTcpClientAsync();              
                 listenForNodeMessages();
                 online = true;
             });
@@ -64,26 +65,30 @@ namespace NetworkUtilities {
             Task.Run(async () => {
                 using (NetworkStream ns = nodeTcpClient.GetStream()) {
                     MemoryStream ms = new MemoryStream();
-                    byte[] buffer = new byte[1024];
+                    byte[] buffer = new byte[bufferSize];
 
-                    while (true) {
+                    while (true) {                       
                         int bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
+                        //Console.WriteLine("jest wiadomosc");
                         if (bytesRead <= 0)
                             break;
+                                               
                         //Debug.WriteLine("NaszBufor: " + Encoding.ASCII.GetString(buffer));
                         ms.Write(buffer, 0, bytesRead);
-                        //Debug.WriteLine("NaszBufor1: " + Encoding.ASCII.GetString(buffer));
-
-                        handleMessage(ms.ToArray());
+                        //Debug.WriteLine("NaszBufor1: " + Encoding.ASCII.GetString(buffer));                      
+                        handleMessage(CableCloudMessage.deserialize(ms.ToArray()));                       
                         ms.Seek(0, SeekOrigin.Begin);
                     }
                 }
             });
         }
 
-        protected void handleMessage(byte[] data) {
-            Console.Write(data);
+        protected virtual void handleMessage(CableCloudMessage message)
+        {
+            //Console.WriteLine("Bazowa");
         }
+           
+        
 
         public void send(byte[] data) {
             Task.Run(() => {

@@ -30,6 +30,7 @@ namespace NetworkNode
             {
                 ATMCell cell = portBuffer[0];
                 //Console.WriteLine("count " + portBuffer.Count);
+                //portBuffer.RemoveAt(0);
                 portBuffer.RemoveAt(0);
                 return cell;
             }
