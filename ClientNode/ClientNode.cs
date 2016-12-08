@@ -8,15 +8,37 @@ using NetworkUtilities;
 
 namespace ClientNode
 {
-    class ClientNode
+    public class ClientNode
     {
         public string message;
         public string receivedMessage;
+        private int numberOfClients;
+        private string clientName;
         //lista przechowująca komórki ATM
-        public List<ATMCell> atmCells = new List<ATMCell>();
+        //public List<ATMCell> atmCells = new List<ATMCell>();
+        List<ClientTableRow> clients;
+        MainForm mainForm;
+
+        public ClientNode(MainForm mainForm) {
+            this.mainForm = mainForm;
+
+            clients = new List<ClientTableRow>();
+        }
+
+        public ClientNode(string clientName) {
+            this.clientName = clientName;
+
+            clients = new List<ClientTableRow>();
+            numberOfClients++;
+        }
+
+        public void addClient(int vpi, int vci, int linkNumber, string clientName) {
+            clients.Add(new ClientTableRow(vpi, vci, linkNumber, clientName));
+            mainForm.addClientToComboBox(clientName);
+        }
 
         //metoda zamieniająca tekst na bity i dzieląca je na komórki ATM
-        public void createATMCell(int vpi, int vci, string message)
+        public void createATMCell(int vpi, int vci, string message, List<ATMCell> atmCells)
         {
             byte[] source = Encoding.UTF8.GetBytes(message);
 
@@ -37,17 +59,15 @@ namespace ClientNode
             }
         }
 
-        //odczytywanie i interpretowanie informacji charakterystycznej z komórek ATM
-        public void readDataFromATMCells()
-        {
+
+        public void receiveCableCloudMessage(CableCloudMessage message) {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < atmCells.Count; i++)
-            {
-                sb.Append(Encoding.UTF8.GetString(atmCells[i].data));
+            foreach (ATMCell cell in message.atmCells) {
+                sb.Append(Encoding.UTF8.GetString(cell.data));
             }
             receivedMessage = sb.ToString();
         }
-        
+
 
     }
 }

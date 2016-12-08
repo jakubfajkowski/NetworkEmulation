@@ -1,5 +1,5 @@
 ﻿namespace ClientNode {
-    partial class Form1 {
+    partial class MainForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -79,7 +79,7 @@
             this.textBoxEventLog.Name = "textBoxEventLog";
             this.textBoxEventLog.Size = new System.Drawing.Size(490, 70);
             this.textBoxEventLog.TabIndex = 4;
-            this.textBoxEventLog.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
+            this.textBoxEventLog.TextChanged += new System.EventHandler(this.textBoxEventLog_TextChanged);
             // 
             // label2
             // 
@@ -117,7 +117,7 @@
             this.label4.TabIndex = 8;
             this.label4.Text = "Avaliable clients";
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -131,7 +131,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBoxMessage);
             this.Controls.Add(this.buttonSend);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "ClientNode";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
