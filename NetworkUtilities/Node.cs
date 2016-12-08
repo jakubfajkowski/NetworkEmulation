@@ -29,8 +29,8 @@ namespace NetworkUtilities {
             //this.cloudPort = freeTcpPort();
             this.agentPort = agentPort;
             try {
-                cloudTcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), this.cloudPort);
-                agentTcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), this.agentPort);
+                cloudTcpListener = new TcpListener(IPAddress.Loopback, this.cloudPort);
+                agentTcpListener = new TcpListener(IPAddress.Loopback, this.agentPort);
             }
             catch (Exception e) {
                 Debug.Fail(e.ToString(),
@@ -104,7 +104,7 @@ namespace NetworkUtilities {
         private void connectToCloud() {
             var udpClient = new UdpClient();
             var bytesToSend = BitConverter.GetBytes(cloudPort);
-            var ipEndpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 10000);
+            var ipEndpoint = new IPEndPoint(IPAddress.Loopback, 10000);
             udpClient.Send(bytesToSend, bytesToSend.Length, ipEndpoint);
         }
 
