@@ -36,7 +36,7 @@ namespace NetworkUtilitiesTests
             Console.WriteLine("Sent: {0}", message);
             // Receive the TcpServer.response.
             // Buffer to store the response bytes.
-            data = new Byte[256];
+            data = new Byte[512];
             // String to store the response ASCII representation.
             String responseData = String.Empty;
             // Read the first batch of the TcpServer response bytes.

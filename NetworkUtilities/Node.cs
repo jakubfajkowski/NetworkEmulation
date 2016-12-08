@@ -24,7 +24,8 @@ namespace NetworkUtilities {
         */
 
         public Node(int agentPort, int cloudPort) {
-            this.cloudPort = cloudPort;
+            //this.cloudPort = cloudPort;
+            this.cloudPort = FreeTcpPort();
             this.agentPort = agentPort;
             try {
                 cloudTcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), this.cloudPort);
@@ -37,6 +38,15 @@ namespace NetworkUtilities {
             listenForConnectRequest(cloudTcpListener);
             // listenForConnectRequest(agentTcpListener);
             connectToCloud();
+        }
+
+        int FreeTcpPort()
+        {
+            TcpListener l = new TcpListener(IPAddress.Loopback, 0);
+            l.Start();
+            int port = ((IPEndPoint)l.LocalEndpoint).Port;
+            l.Stop();
+            return port;
         }
 
         private void listenForConnectRequest(TcpListener tcpListener) {
