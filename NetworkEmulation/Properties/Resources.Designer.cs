@@ -63,9 +63,9 @@ namespace NetworkEmulation.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ClientNode {
+        internal static System.Drawing.Bitmap ClientNodeNotSelected {
             get {
-                object obj = ResourceManager.GetObject("ClientNode", resourceCulture);
+                object obj = ResourceManager.GetObject("ClientNodeNotSelected", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,69 @@ namespace NetworkEmulation.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap NetworkNode {
+        internal static System.Drawing.Bitmap ClientNodeOffline {
             get {
-                object obj = ResourceManager.GetObject("NetworkNode", resourceCulture);
+                object obj = ResourceManager.GetObject("ClientNodeOffline", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ClientNodeOnline {
+            get {
+                object obj = ResourceManager.GetObject("ClientNodeOnline", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ClientNodeSelected {
+            get {
+                object obj = ResourceManager.GetObject("ClientNodeSelected", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NetworkNodeNotSelected {
+            get {
+                object obj = ResourceManager.GetObject("NetworkNodeNotSelected", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NetworkNodeOffline {
+            get {
+                object obj = ResourceManager.GetObject("NetworkNodeOffline", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NetworkNodeOnline {
+            get {
+                object obj = ResourceManager.GetObject("NetworkNodeOnline", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NetworkNodeSelected {
+            get {
+                object obj = ResourceManager.GetObject("NetworkNodeSelected", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

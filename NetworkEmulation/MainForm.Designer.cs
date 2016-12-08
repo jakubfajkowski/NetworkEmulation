@@ -30,17 +30,12 @@
             this.loadProjectMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.elementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clientNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addClientNodeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteClientNodeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addNetworkNodeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteNetworkNodeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.linkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addLinkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteLinkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addConnectionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteConnectionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cursorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editorPanel = new System.Windows.Forms.Panel();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -49,7 +44,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.elementsToolStripMenuItem});
+            this.elementsToolStripMenuItem,
+            this.cursorToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(784, 24);
@@ -69,19 +65,19 @@
             // newProjectMenuItem
             // 
             this.newProjectMenuItem.Name = "newProjectMenuItem";
-            this.newProjectMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newProjectMenuItem.Size = new System.Drawing.Size(149, 22);
             this.newProjectMenuItem.Text = "New Project...";
             // 
             // saveProjectMenuItem
             // 
             this.saveProjectMenuItem.Name = "saveProjectMenuItem";
-            this.saveProjectMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveProjectMenuItem.Size = new System.Drawing.Size(149, 22);
             this.saveProjectMenuItem.Text = "Save Project...";
             // 
             // loadProjectMenuItem
             // 
             this.loadProjectMenuItem.Name = "loadProjectMenuItem";
-            this.loadProjectMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadProjectMenuItem.Size = new System.Drawing.Size(149, 22);
             this.loadProjectMenuItem.Text = "Load Project...";
             // 
             // elementsToolStripMenuItem
@@ -97,96 +93,57 @@
             // 
             // clientNodeToolStripMenuItem
             // 
-            this.clientNodeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addClientNodeMenuItem,
-            this.deleteClientNodeMenuItem});
             this.clientNodeToolStripMenuItem.Name = "clientNodeToolStripMenuItem";
-            this.clientNodeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clientNodeToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.clientNodeToolStripMenuItem.Text = "Client Node";
-            // 
-            // addClientNodeMenuItem
-            // 
-            this.addClientNodeMenuItem.Name = "addClientNodeMenuItem";
-            this.addClientNodeMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.addClientNodeMenuItem.Text = "Add...";
-            this.addClientNodeMenuItem.Click += new System.EventHandler(this.addClientNodeMenuItem_Click);
-            // 
-            // deleteClientNodeMenuItem
-            // 
-            this.deleteClientNodeMenuItem.Name = "deleteClientNodeMenuItem";
-            this.deleteClientNodeMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.deleteClientNodeMenuItem.Text = "Delete...";
+            this.clientNodeToolStripMenuItem.Click += new System.EventHandler(this.clientNodeToolStripMenuItem_Click);
             // 
             // networkNodeToolStripMenuItem
             // 
-            this.networkNodeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addNetworkNodeMenuItem,
-            this.deleteNetworkNodeMenuItem});
             this.networkNodeToolStripMenuItem.Name = "networkNodeToolStripMenuItem";
-            this.networkNodeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.networkNodeToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.networkNodeToolStripMenuItem.Text = "Network Node";
-            // 
-            // addNetworkNodeMenuItem
-            // 
-            this.addNetworkNodeMenuItem.Name = "addNetworkNodeMenuItem";
-            this.addNetworkNodeMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.addNetworkNodeMenuItem.Text = "Add...";
-            this.addNetworkNodeMenuItem.Click += new System.EventHandler(this.addNetworkNodeMenuItem_Click);
-            // 
-            // deleteNetworkNodeMenuItem
-            // 
-            this.deleteNetworkNodeMenuItem.Name = "deleteNetworkNodeMenuItem";
-            this.deleteNetworkNodeMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.deleteNetworkNodeMenuItem.Text = "Delete...";
+            this.networkNodeToolStripMenuItem.Click += new System.EventHandler(this.networkNodeToolStripMenuItem_Click);
             // 
             // linkToolStripMenuItem
             // 
-            this.linkToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addLinkMenuItem,
-            this.deleteLinkMenuItem});
             this.linkToolStripMenuItem.Name = "linkToolStripMenuItem";
-            this.linkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.linkToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.linkToolStripMenuItem.Text = "Link";
-            // 
-            // addLinkMenuItem
-            // 
-            this.addLinkMenuItem.Name = "addLinkMenuItem";
-            this.addLinkMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.addLinkMenuItem.Text = "Add...";
-            this.addLinkMenuItem.Click += new System.EventHandler(this.addLinkMenuItem_Click);
-            // 
-            // deleteLinkMenuItem
-            // 
-            this.deleteLinkMenuItem.Name = "deleteLinkMenuItem";
-            this.deleteLinkMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.deleteLinkMenuItem.Text = "Delete...";
             // 
             // connectionToolStripMenuItem
             // 
-            this.connectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addConnectionMenuItem,
-            this.deleteConnectionMenuItem});
             this.connectionToolStripMenuItem.Name = "connectionToolStripMenuItem";
-            this.connectionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.connectionToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.connectionToolStripMenuItem.Text = "Connection";
             // 
-            // addConnectionMenuItem
+            // cursorToolStripMenuItem
             // 
-            this.addConnectionMenuItem.Name = "addConnectionMenuItem";
-            this.addConnectionMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.addConnectionMenuItem.Text = "Add...";
-            this.addConnectionMenuItem.Click += new System.EventHandler(this.addConnectionMenuItem_Click);
+            this.cursorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.moveToolStripMenuItem,
+            this.deleteToolStripMenuItem});
+            this.cursorToolStripMenuItem.Name = "cursorToolStripMenuItem";
+            this.cursorToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.cursorToolStripMenuItem.Text = "Cursor";
             // 
-            // deleteConnectionMenuItem
+            // moveToolStripMenuItem
             // 
-            this.deleteConnectionMenuItem.Name = "deleteConnectionMenuItem";
-            this.deleteConnectionMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.deleteConnectionMenuItem.Text = "Delete...";
+            this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
+            this.moveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.moveToolStripMenuItem.Text = "Move";
+            this.moveToolStripMenuItem.Click += new System.EventHandler(this.moveToolStripMenuItem_Click);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // editorPanel
             // 
             this.editorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.editorPanel.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.editorPanel.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.editorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.editorPanel.Location = new System.Drawing.Point(0, 24);
             this.editorPanel.Name = "editorPanel";
@@ -220,18 +177,13 @@
         private System.Windows.Forms.ToolStripMenuItem loadProjectMenuItem;
         private System.Windows.Forms.ToolStripMenuItem elementsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clientNodeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addClientNodeMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteClientNodeMenuItem;
         private System.Windows.Forms.ToolStripMenuItem networkNodeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addNetworkNodeMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteNetworkNodeMenuItem;
         private System.Windows.Forms.ToolStripMenuItem linkToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addLinkMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteLinkMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem connectionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addConnectionMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteConnectionMenuItem;
         private System.Windows.Forms.Panel editorPanel;
+        private System.Windows.Forms.ToolStripMenuItem connectionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cursorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     }
 }
 

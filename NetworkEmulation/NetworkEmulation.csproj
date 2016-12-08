@@ -47,6 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CableCloud.cs" />
+    <Compile Include="ClientNodePictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Link.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -55,7 +58,10 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NetworkMangmentSystem.cs" />
-    <Compile Include="MovablePictureBox.cs">
+    <Compile Include="NetworkNodePictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
@@ -65,18 +71,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -87,16 +93,20 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="rsc\NetworkNode.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="rsc\ClientNode.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\NetworkUtilities\NetworkUtilities.csproj">
       <Project>{f8933e14-6b9c-4b0d-b9ff-1a5fa8190d2f}</Project>
       <Name>NetworkUtilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="rsc\ClientNodeNotSelected.png" />
+    <Content Include="rsc\ClientNodeOffline.png" />
+    <Content Include="rsc\ClientNodeOnline.png" />
+    <Content Include="rsc\ClientNodeSelected.png" />
+    <Content Include="rsc\NetworkNodeNotSelected.png" />
+    <Content Include="rsc\NetworkNodeOffline.png" />
+    <Content Include="rsc\NetworkNodeOnline.png" />
+    <Content Include="rsc\NetworkNodeSelected.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

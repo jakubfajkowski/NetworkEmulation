@@ -1,50 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using NetworkEmulation.Properties;
 
 namespace NetworkEmulation {
     public partial class MainForm : Form {
+        private NodePictureBox selectedNodePictureBox;
+
         public MainForm() {
             InitializeComponent();
         }
 
         private void editorPanel_MouseClick(object sender, MouseEventArgs e) {
-            Bitmap bitmap = Resources.ClientNode;
-            bitmap.MakeTransparent();
-
-            MovablePictureBox pictureBox = new MovablePictureBox();
-            pictureBox.Image = bitmap;
-            pictureBox.Location = MousePosition;
-            pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
-            editorPanel.Controls.Add(pictureBox);
+            if (selectedNodePictureBox != null) {
+                selectedNodePictureBox.Location = e.Location;
+                editorPanel.Controls.Add(selectedNodePictureBox);
+                selectedNodePictureBox = null;
+            }
         }
 
-        private void addClientNodeMenuItem_Click(object sender, EventArgs e) {
-            Bitmap b = Resources.ClientNode;
+        private void clientNodeToolStripMenuItem_Click(object sender, EventArgs e) {
+            changeCursorToNodeImage(Resources.ClientNodeNotSelected);
+            selectedNodePictureBox = new ClientNodePictureBox();
+        }
 
-            Graphics g = Graphics.FromImage(b);
+        private void networkNodeToolStripMenuItem_Click(object sender, EventArgs e) {
+            changeCursorToNodeImage(Resources.NetworkNodeNotSelected);
+            selectedNodePictureBox = new NetworkNodePictureBox();
+        }
+
+        private void changeCursorToNodeImage(Bitmap b) {
             IntPtr ptr = b.GetHicon();
             Cursor c = new Cursor(ptr);
             this.editorPanel.Cursor = c;
         }
 
-        private void addNetworkNodeMenuItem_Click(object sender, EventArgs e) {
-            Bitmap b = Resources.NetworkNode;
+        private void moveToolStripMenuItem_Click(object sender, EventArgs e) {
+            this.editorPanel.Cursor = Cursors.Hand;
 
-            Graphics g = Graphics.FromImage(b);
-            IntPtr ptr = b.GetHicon();
-            Cursor c = new Cursor(ptr);
-            this.editorPanel.Cursor = c;
+            selectedNodePictureBox = null;
         }
 
-        private void addLinkMenuItem_Click(object sender, EventArgs e) {
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
+            this.editorPanel.Cursor = Cursors.Cross;
 
-        }
-
-        private void addConnectionMenuItem_Click(object sender, EventArgs e) {
-
+            selectedNodePictureBox = null;
         }
     }
 }
