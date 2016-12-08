@@ -1,7 +1,7 @@
 ﻿using System;
-using ClientNode;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
+using ClientNode;
 using System.Collections.Generic;
 
 namespace ClientNodeTest
@@ -10,11 +10,12 @@ namespace ClientNodeTest
     public class ClientNodeTest
     {
         public List<ATMCell> atmCellList = new List<ATMCell>();
+      
         [TestMethod]
         public void createATMCellTest() {
-            var clientNode = new ClientNode.ClientNode("Jarek");
+            var client = new ClientNode.ClientNode();
             String text = "Test text to check if createATMCellTest method works just right.";
-            clientNode.createATMCell(1, 1, text, atmCellList);
+            atmCellList = client.createATMCell(1, 1, text);
 
             Assert.Equals(2, atmCellList.Count);
         }

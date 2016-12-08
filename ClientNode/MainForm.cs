@@ -13,7 +13,7 @@ namespace ClientNode {
     public partial class MainForm : Form {
 
         ClientNode client;
-        public List<ATMCell> atmCells = new List<ATMCell>();
+        List<ATMCell> atmCells;
 
         public MainForm() {
             InitializeComponent();
@@ -28,11 +28,10 @@ namespace ClientNode {
         private void button1_Click(object sender, EventArgs e)
         {
 
-            //client.message = textBoxMessage.Text;
-            //client.createATMCell(1, 1, client.message, atmCells);
-
+            client.message = textBoxMessage.Text;
+            atmCells = client.createATMCell(1, 1, client.message);
+            
             //client.readDataFromATMCells(atmCells);
-
             //textBoxReceived.Text = client.receivedMessage;
 
             //string selected = comboBoxClients.SelectedItem.ToString();
