@@ -4,19 +4,21 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using NetworkUtilities;
 
 namespace NetworkEmulation {
     public class CableCloud {
-        private bool online = false;
+        private bool online;
         private readonly UdpClient connectionUdpClient;
-        private Dictionary<int, TcpClient> nodesTcpClients;
+        private readonly Dictionary<int, TcpClient> nodesTcpClients;
+        private Dictionary<int, int> linkNumberToPortNumberDictionary;
 
         public CableCloud() {
             var ipEndPoint = new IPEndPoint(IPAddress.Any, 10000);
-            this.connectionUdpClient = new UdpClient(ipEndPoint);
+            connectionUdpClient = new UdpClient(ipEndPoint);
 
-            this.nodesTcpClients = new Dictionary<int, TcpClient>();
+            nodesTcpClients = new Dictionary<int, TcpClient>();
+            linkNumberToPortNumberDictionary = new Dictionary<int, int>();
 
             listenForConnectionRequests();
         }
@@ -43,8 +45,6 @@ namespace NetworkEmulation {
             }
             catch (SocketException e) {
                 Console.WriteLine(e.Message);
-                //MessageBox.Show(e.Message, "Cable Cloud Error",
-                    //MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
@@ -60,11 +60,35 @@ namespace NetworkEmulation {
                     if (bytesRead <= 0)
                         break;
                     ms.Write(buffer, 0, bytesRead);
-                    Console.Write(ms.ToArray());
+                    passCableCloudMessage(CableCloudMessage.deserialize(ms.ToArray()));
                     ms.Seek(0, SeekOrigin.Begin);
                 }
             }
             });
+        }
+
+        private void passCableCloudMessage(CableCloudMessage cableCloudMessage) {
+            try {
+                var portNumber = linkNumberToPortNumberDictionary[cableCloudMessage.linkNumber];
+                var tcpClient = nodesTcpClients[portNumber];
+
+                sendBytes(CableCloudMessage.serialize(cableCloudMessage), tcpClient);
+            }
+            catch (KeyNotFoundException e) {
+                Console.WriteLine("Link number: " + cableCloudMessage.linkNumber + " is offline.");
+            }
+        }
+
+        private void sendBytes(byte[] data, TcpClient tcpClient) {
+            tcpClient.GetStream().Write(data, 0, data.Length);
+        }
+
+        public void addLink(int linkNumber, int portNumber) {
+            linkNumberToPortNumberDictionary.Add(linkNumber, portNumber);
+        }
+
+        public void removeLink(int linkNumber) {
+            linkNumberToPortNumberDictionary.Remove(linkNumber);
         }
 
         public bool isOnline() {
