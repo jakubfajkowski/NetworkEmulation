@@ -8,24 +8,27 @@ using NetworkUtilities;
 
 namespace ClientNode
 {
-    public class ClientNode
+    public class ClientNode :Node
     {
         public string message;
         public string receivedMessage;
         private int numberOfClients;
         private string clientName;
-        //lista przechowująca komórki ATM
-        //public List<ATMCell> atmCells = new List<ATMCell>();
+
         List<ClientTableRow> clients;
         MainForm mainForm;
 
-        public ClientNode(MainForm mainForm) {
+        public ClientNode() :base(1,2) {
+
+        }
+
+        public ClientNode(MainForm mainForm) :base(1,2){
             this.mainForm = mainForm;
 
             clients = new List<ClientTableRow>();
         }
 
-        public ClientNode(string clientName) {
+        public ClientNode(string clientName) :base(1,2){
             this.clientName = clientName;
 
             clients = new List<ClientTableRow>();
@@ -38,11 +41,11 @@ namespace ClientNode
         }
 
         //metoda zamieniająca tekst na bity i dzieląca je na komórki ATM
-        public void createATMCell(int vpi, int vci, string message, List<ATMCell> atmCells)
+        public List<ATMCell> createATMCell(int vpi, int vci, string message)
         {
+            List<ATMCell> atmCells = new List<ATMCell>();
             byte[] source = Encoding.UTF8.GetBytes(message);
-
-
+            
             for (int i = 0; i < source.Length; i += 48)
             {
                 byte[] buffer = new byte[48];
@@ -57,17 +60,15 @@ namespace ClientNode
                     atmCells.Add(new ATMCell(vpi, vci, buffer));
                 }
             }
+            return atmCells;
         }
 
-
-        public void receiveCableCloudMessage(CableCloudMessage message) {
+        protected override void handleMessage(CableCloudMessage message) {
             StringBuilder sb = new StringBuilder();
             foreach (ATMCell cell in message.atmCells) {
                 sb.Append(Encoding.UTF8.GetString(cell.data));
             }
             receivedMessage = sb.ToString();
         }
-
-
     }
 }
