@@ -50,7 +50,6 @@
     <Compile Include="ClientNodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Link.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
