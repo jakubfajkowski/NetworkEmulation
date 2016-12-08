@@ -16,7 +16,6 @@ namespace NetworkUtilities {
         public int cloudPort;
         private TcpListener cloudTcpListener;
         private TcpClient nodeTcpClient;
-        private const int bufferSize = 5000;
 
         private Node() {
         }
@@ -64,8 +63,7 @@ namespace NetworkUtilities {
         private void listenForNodeMessages() {
             Task.Run(async () => {
                 using (NetworkStream ns = nodeTcpClient.GetStream()) {
-                    MemoryStream ms = new MemoryStream();
-                    byte[] buffer = new byte[bufferSize];
+                    byte[] buffer = new byte[CableCloudMessage.MaxByteBufferSize];
 
                     while (true) {                       
                         int bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
@@ -73,11 +71,8 @@ namespace NetworkUtilities {
                         if (bytesRead <= 0)
                             break;
                                                
-                        //Debug.WriteLine("NaszBufor: " + Encoding.ASCII.GetString(buffer));
-                        ms.Write(buffer, 0, bytesRead);
-                        //Debug.WriteLine("NaszBufor1: " + Encoding.ASCII.GetString(buffer));                      
-                        handleMessage(CableCloudMessage.deserialize(ms.ToArray()));                       
-                        ms.Seek(0, SeekOrigin.Begin);
+                        //Debug.WriteLine("NaszBufor: " + Encoding.ASCII.GetString(buffer));                      
+                        handleMessage(CableCloudMessage.deserialize(buffer));
                     }
                 }
             });

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace NetworkUtilities {
     [Serializable]
     public class CableCloudMessage {
+        public const int MaxByteBufferSize = 9206;
         public int linkNumber { get; set; }
         public List<ATMCell> atmCells { get; }
 

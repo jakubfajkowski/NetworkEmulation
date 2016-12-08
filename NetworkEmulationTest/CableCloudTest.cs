@@ -11,7 +11,7 @@ namespace NetworkEmulationTest {
     [TestClass]
     public class CableCloudTest {
         IPEndPoint cableCloudIpEndpoint = new IPEndPoint(IPAddress.Loopback, 10000);
-        private byte[] bytesToSend = CableCloudMessage.serialize(new CableCloudMessage(1));
+        private byte[] bytesToSend;
         private byte[] bytesRecieved;
 
         [TestMethod]
@@ -45,19 +45,32 @@ namespace NetworkEmulationTest {
             CableCloud cableCloud = new CableCloud();
             int port1 = 10001;
             int port2 = 10002;
+            int port3 = 10003;
             cableCloud.addLink(1, 10001);
+            bytesToSend = CableCloudMessage.serialize(createCableCloudMessage(1, 100));
 
             var listenerTask1 = startTcpListener(port1, recieveMessage);
             connectToCableCloud(port1);
             var listenerTask2 = startTcpListener(port2, sendMessage);
             connectToCableCloud(port2);
+            var listenerTask3 = startTcpListener(port3, sendMessage);
+            connectToCableCloud(port3);
 
-            Task.WaitAll(listenerTask1, listenerTask2);
+            Task.WaitAll(listenerTask1, listenerTask2, listenerTask3);
 
             for (int i = 0; i < bytesToSend.Length; i++) {
                 Assert.AreEqual(bytesToSend[i], bytesRecieved[i]);
             }
             
+        }
+
+        private static CableCloudMessage createCableCloudMessage(int linkNumber, int atmCellsNumber) {
+            var cableCloudMessage = new CableCloudMessage(linkNumber);
+            for (int i = 0; i < atmCellsNumber; i++) {
+                cableCloudMessage.add(new ATMCell(1, 1, new byte[48]));
+            }
+
+            return cableCloudMessage;
         }
 
         private void connectToCableCloud(int port) {

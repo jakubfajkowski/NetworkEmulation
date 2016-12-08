@@ -11,7 +11,7 @@ namespace NetworkEmulation {
         private bool online;
         private readonly UdpClient connectionUdpClient;
         private readonly Dictionary<int, TcpClient> nodesTcpClients;
-        private Dictionary<int, int> linkNumberToPortNumberDictionary;
+        private readonly Dictionary<int, int> linkNumberToPortNumberDictionary;
 
         public CableCloud() {
             var ipEndPoint = new IPEndPoint(IPAddress.Any, 10000);
@@ -40,7 +40,7 @@ namespace NetworkEmulation {
             try {
                 nodeTcpClient.Connect(IPAddress.Loopback, port);
                 nodesTcpClients.Add(port, nodeTcpClient);
-                Console.Write("Connected to Node on port: " + port);
+                Console.WriteLine("Connected to Node on port: " + port);
                 listenForNodeMessages(nodeTcpClient);
             }
             catch (SocketException e) {
@@ -52,18 +52,15 @@ namespace NetworkEmulation {
         private void listenForNodeMessages(TcpClient nodeTcpClient) {
             Task.Run(async () => {
                 using (NetworkStream ns = nodeTcpClient.GetStream()) {
-                MemoryStream ms = new MemoryStream();
-                byte[] buffer = new byte[1024];
+                    byte[] buffer = new byte[CableCloudMessage.MaxByteBufferSize];
 
-                while (true) {
-                    int bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
-                    if (bytesRead <= 0)
-                        break;
-                    ms.Write(buffer, 0, bytesRead);
-                    passCableCloudMessage(CableCloudMessage.deserialize(ms.ToArray()));
-                    ms.Seek(0, SeekOrigin.Begin);
+                    while (true) {
+                        int bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
+                        if (bytesRead <= 0)
+                            break;
+                        passCableCloudMessage(CableCloudMessage.deserialize(buffer));
+                    }
                 }
-            }
             });
         }
 
@@ -73,9 +70,10 @@ namespace NetworkEmulation {
                 var tcpClient = nodesTcpClients[portNumber];
 
                 sendBytes(CableCloudMessage.serialize(cableCloudMessage), tcpClient);
+                Console.WriteLine("Link number: " + cableCloudMessage.linkNumber + " - message sent.");
             }
             catch (KeyNotFoundException e) {
-                Console.WriteLine("Link number: " + cableCloudMessage.linkNumber + " is offline.");
+                Console.WriteLine("Link number: " + cableCloudMessage.linkNumber + " - offline.");
             }
         }
 
