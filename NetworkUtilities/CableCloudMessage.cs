@@ -18,5 +18,13 @@ namespace NetworkUtilities {
         public void add(ATMCell atmCell) {
             atmCells.Add(atmCell);
         }
+
+        public static byte[] serialize(CableCloudMessage messageToSerialize) {
+            return Serializator.Serialize(messageToSerialize);
+        }
+
+        public static CableCloudMessage deserialize(byte[] data) {
+            return Serializator.Deserialize(data) as CableCloudMessage;
+        }
     }
 }

@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NetworkEmulation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NetworkUtilities;
 
 namespace NetworkEmulationTest {
     [TestClass]
     public class CableCloudTest {
-        private UdpClient udpClient;
         [TestMethod]
         public void CableCloudBindEndpointTest() {
             CableCloud cableCloud = new CableCloud();
@@ -26,7 +27,8 @@ namespace NetworkEmulationTest {
             var acceptTask = Task.Run(async () => {
                 await tcpListener.AcceptTcpClientAsync();
 
-                var nodesTcpClients = (Dictionary<int,TcpClient>) new PrivateObject(cableCloud).GetField("nodesTcpClients");
+                var nodesTcpClients =
+                    (Dictionary<int, TcpClient>) new PrivateObject(cableCloud).GetField("nodesTcpClients");
                 Assert.AreEqual(1, nodesTcpClients.Count);
             });
 
@@ -34,6 +36,17 @@ namespace NetworkEmulationTest {
             udpClient.Send(bytesToSend, bytesToSend.Length, cableCloudIpEndpoint);
 
             acceptTask.Wait();
+        }
+
+        [TestMethod]
+        public void CableCloudConnectNodeTest() {
+            CableCloud cableCloud = new CableCloud();
+            while (!cableCloud.isOnline()) ;
+            Node node = new Node(1, 10001);
+            while (!node.isOnline()) ;
+
+            var nodesTcpClients = (Dictionary<int, TcpClient>)new PrivateObject(cableCloud).GetField("nodesTcpClients");
+            Assert.AreEqual(1, nodesTcpClients.Count);
         }
     }
 }

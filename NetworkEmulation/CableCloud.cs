@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace NetworkEmulation {
     public class CableCloud {
+        private bool online = false;
         private readonly UdpClient connectionUdpClient;
         private Dictionary<int, TcpClient> nodesTcpClients;
 
@@ -23,6 +24,7 @@ namespace NetworkEmulation {
         private void listenForConnectionRequests() {
             Task.Run(async () => {
                 using (connectionUdpClient) {
+                    online = true;
                     while (true) {
                         var receivedData = await connectionUdpClient.ReceiveAsync();
                         estabilishNodeConnection(BitConverter.ToInt32(receivedData.Buffer, 0));
@@ -36,12 +38,13 @@ namespace NetworkEmulation {
             try {
                 nodeTcpClient.Connect(IPAddress.Loopback, port);
                 nodesTcpClients.Add(port, nodeTcpClient);
-                listenForNodeMessages(nodeTcpClient);
                 Console.Write("Connected to Node on port: " + port);
+                listenForNodeMessages(nodeTcpClient);
             }
             catch (SocketException e) {
-                MessageBox.Show(e.Message, "Cable Cloud Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine(e.Message);
+                //MessageBox.Show(e.Message, "Cable Cloud Error",
+                    //MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
@@ -62,6 +65,10 @@ namespace NetworkEmulation {
                 }
             }
             });
+        }
+
+        public bool isOnline() {
+            return online;
         }
     }
 }
