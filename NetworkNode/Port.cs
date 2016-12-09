@@ -29,8 +29,6 @@ namespace NetworkNode
             if (portBuffer.Count > 0)
             {
                 ATMCell cell = portBuffer[0];
-                //Console.WriteLine("count " + portBuffer.Count);
-                //portBuffer.RemoveAt(0);
                 portBuffer.RemoveAt(0);
                 return cell;
             }
