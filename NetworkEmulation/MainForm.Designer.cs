@@ -37,6 +37,9 @@
             this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editorPanel = new System.Windows.Forms.Panel();
+            this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cableCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.networkManagmentSystemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,7 +48,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.elementsToolStripMenuItem,
-            this.cursorToolStripMenuItem});
+            this.cursorToolStripMenuItem,
+            this.logToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(784, 24);
@@ -129,14 +133,14 @@
             // moveToolStripMenuItem
             // 
             this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
-            this.moveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.moveToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.moveToolStripMenuItem.Text = "Move";
             this.moveToolStripMenuItem.Click += new System.EventHandler(this.moveToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -150,6 +154,29 @@
             this.editorPanel.Size = new System.Drawing.Size(784, 537);
             this.editorPanel.TabIndex = 1;
             this.editorPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.editorPanel_MouseClick);
+            // 
+            // logToolStripMenuItem
+            // 
+            this.logToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cableCloudToolStripMenuItem,
+            this.networkManagmentSystemToolStripMenuItem});
+            this.logToolStripMenuItem.Name = "logToolStripMenuItem";
+            this.logToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.logToolStripMenuItem.Text = "Log";
+            // 
+            // cableCloudToolStripMenuItem
+            // 
+            this.cableCloudToolStripMenuItem.Name = "cableCloudToolStripMenuItem";
+            this.cableCloudToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.cableCloudToolStripMenuItem.Text = "Cable Cloud";
+            this.cableCloudToolStripMenuItem.Click += new System.EventHandler(this.cableCloudToolStripMenuItem_Click);
+            // 
+            // networkManagmentSystemToolStripMenuItem
+            // 
+            this.networkManagmentSystemToolStripMenuItem.Name = "networkManagmentSystemToolStripMenuItem";
+            this.networkManagmentSystemToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.networkManagmentSystemToolStripMenuItem.Text = "Network Managment System";
+            this.networkManagmentSystemToolStripMenuItem.Click += new System.EventHandler(this.networkManagmentSystemToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -184,6 +211,9 @@
         private System.Windows.Forms.ToolStripMenuItem cursorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cableCloudToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem networkManagmentSystemToolStripMenuItem;
     }
 }
 

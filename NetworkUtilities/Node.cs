@@ -11,37 +11,22 @@ namespace NetworkUtilities {
     [Serializable]
     public class Node {
         private bool online = false;
-        public int agentPort;
-        private TcpListener agentTcpListener;
-        public int cloudPort;
+        public int cloudPort { get; }
         private TcpListener cloudTcpListener;
         private TcpClient nodeTcpClient;
-
-        private Node() {
-        }
 
         /**
         * Konstruktor klasy Node wczytujący porty agenta i chmury i tworzący na ich podstawie @cloudSocket i @networkManagerSocket, po czym tworzone jest połączenie z chmurą
         */
 
-        public Node(int agentPort, int cloudPort) {
-            this.cloudPort = cloudPort;
-            //this.cloudPort = freeTcpPort();
-            this.agentPort = agentPort;
-            try {
-                cloudTcpListener = new TcpListener(IPAddress.Loopback, this.cloudPort);
-                agentTcpListener = new TcpListener(IPAddress.Loopback, this.agentPort);
-            }
-            catch (Exception e) {
-                Debug.Fail(e.ToString(),
-                    string.Format("Can't connect to port {0} or port {1}!", this.cloudPort, this.agentPort));
-            }
+        public Node() {
+            this.cloudPort = freeTcpPort();
+            cloudTcpListener = createTcpListener(IPAddress.Loopback, cloudPort);
             listenForConnectRequest(cloudTcpListener);
-            // listenForConnectRequest(agentTcpListener);
             connectToCloud();
         }
 
-        int freeTcpPort() {
+        protected int freeTcpPort() {
             TcpListener l = new TcpListener(IPAddress.Loopback, 0);
             l.Start();
             int port = ((IPEndPoint) l.LocalEndpoint).Port;
@@ -49,7 +34,20 @@ namespace NetworkUtilities {
             return port;
         }
 
-        private void listenForConnectRequest(TcpListener tcpListener) {
+        protected TcpListener createTcpListener(IPAddress ipAddress, int port) {
+            TcpListener tcpListener = null;
+            try {
+                tcpListener = new TcpListener(ipAddress, port);
+            }
+            catch (Exception e) {
+                Debug.Fail(e.ToString(),
+                    string.Format("Can't connect to port {0}!", this.cloudPort));
+            }
+
+            return tcpListener;
+        }
+
+        protected void listenForConnectRequest(TcpListener tcpListener) {
             tcpListener.Start();
             Task.Run(async () => {
                 nodeTcpClient = await tcpListener.AcceptTcpClientAsync();

@@ -66,14 +66,14 @@ namespace NetworkEmulation {
 
         private void passCableCloudMessage(CableCloudMessage cableCloudMessage) {
             try {
-                var portNumber = linkNumberToPortNumberDictionary[cableCloudMessage.linkNumber];
+                var portNumber = linkNumberToPortNumberDictionary[cableCloudMessage.portNumber];
                 var tcpClient = nodesTcpClients[portNumber];
 
                 sendBytes(CableCloudMessage.serialize(cableCloudMessage), tcpClient);
-                Console.WriteLine("Link number: " + cableCloudMessage.linkNumber + " - message sent.");
+                Console.WriteLine("Link number: " + cableCloudMessage.portNumber + " - message sent.");
             }
             catch (KeyNotFoundException e) {
-                Console.WriteLine("Link number: " + cableCloudMessage.linkNumber + " - offline.");
+                Console.WriteLine("Link number: " + cableCloudMessage.portNumber + " - offline.");
             }
         }
 

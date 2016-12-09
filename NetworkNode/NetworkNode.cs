@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using NetworkUtilities;
@@ -11,6 +13,9 @@ namespace NetworkNode
     
     class NetworkNode : Node
     {
+        public int agentPort;
+        private TcpListener agentTcpListener;
+
         public CommutationMatrix commutationMatrix;
         public NetworkNodeAgent networkNodeAgent;
 
@@ -26,8 +31,11 @@ namespace NetworkNode
         private const int sleepTime = 500;
         
 
-        public NetworkNode(int portA, int portC) : base(portA,portC)
-        {
+        public NetworkNode() : base() {
+            this.agentPort = freeTcpPort();
+            agentTcpListener = createTcpListener(IPAddress.Loopback, agentPort);
+            listenForConnectRequest(agentTcpListener);
+
             networkNodeAgent = new NetworkNodeAgent();
             commutationMatrix = new CommutationMatrix(networkNodeAgent.getCommutationTable(), this);
             outputCommutationMatrixPorts = commutationMatrix.getOutputPortList();
@@ -66,7 +74,7 @@ namespace NetworkNode
                             message.add(port.getATMCell());                           
                         }
 
-                        Console.WriteLine("Wysyłanie CableCloudMessage na łącze "+ message.linkNumber + " Liczba ATMCell: "+ message.atmCells.Count
+                        Console.WriteLine("Wysyłanie CableCloudMessage na łącze "+ message.portNumber + " Liczba ATMCell: "+ message.atmCells.Count
                             + " Port: "+ port.getLinkNumber());
                         sendCableCloudMessage(message);
                         sent = true;
@@ -84,7 +92,7 @@ namespace NetworkNode
         {
             foreach(ATMCell cell in message.atmCells)
             {
-                commutationMatrix.addATMCellToInputPort(cell, message.linkNumber);
+                commutationMatrix.addATMCellToInputPort(cell, message.portNumber);
             }
         }
 
@@ -98,7 +106,7 @@ namespace NetworkNode
         {
             Console.WriteLine("wchodzi do handleMessage");
             //CableCloudMessage message = CableCloudMessage.deserialize(data);
-            //Console.WriteLine("link number:" + message.linkNumber);
+            //Console.WriteLine("link number:" + message.portNumber);
             //Console.WriteLine("atm cell: " + message.atmCells.Count);
             receiveCableCloudMessage(message);
         }

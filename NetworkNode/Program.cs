@@ -26,7 +26,7 @@ namespace NetworkNode {
             Console.WriteLine("wielkosc " + dd.Length);
             CableCloudMessage ddd = CableCloudMessage.deserialize(dd);
             Console.WriteLine("wychodzi");
-            Console.WriteLine("link "+ ddd.linkNumber);
+            Console.WriteLine("link "+ ddd.portNumber);
             Console.WriteLine("wychodzi");
             
             */

@@ -5,12 +5,12 @@ namespace NetworkUtilities {
     [Serializable]
     public class CableCloudMessage {
         public const int MaxByteBufferSize = 9206;
-        public int linkNumber { get; set; }
+        public int portNumber { get; set; }
         public List<ATMCell> atmCells { get; }
 
-        public CableCloudMessage(int linkNumber) {
-            this.linkNumber = linkNumber;
-            this.atmCells = new List<ATMCell>();
+        public CableCloudMessage(int portNumber) {
+            this.portNumber = portNumber;
+            this.atmCells = new List<ATMCell>(100);
         }
 
         public void add(ATMCell atmCell) {

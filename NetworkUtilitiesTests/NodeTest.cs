@@ -16,7 +16,7 @@ namespace NetworkUtilitiesTests
         [TestMethod]
         public void testNodeConstructor()
         {
-            Node node = new Node(5431, 3451);
+            Node node = new Node();
             Console.Write(node.toXML());
         }
 
@@ -24,10 +24,10 @@ namespace NetworkUtilitiesTests
         public void testNodeRecieve()
         {
             try {
-            Node node = new Node(5431, 3451);
+            Node node = new Node();
             string server = "127.0.0.1";
             string message = "You can do it";
-            Int32 port = 3451;
+            Int32 port = node.cloudPort;
             TcpClient client = new TcpClient();
             client.Connect(IPAddress.Loopback, port);
             Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);

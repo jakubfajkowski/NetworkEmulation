@@ -16,6 +16,7 @@ namespace NetworkEmulation {
                 selectedNodePictureBox.Location = e.Location;
                 editorPanel.Controls.Add(selectedNodePictureBox);
                 selectedNodePictureBox = null;
+                this.editorPanel.Cursor = Cursors.Hand;
             }
         }
 
@@ -45,6 +46,14 @@ namespace NetworkEmulation {
             this.editorPanel.Cursor = Cursors.Cross;
 
             selectedNodePictureBox = null;
+        }
+
+        private void cableCloudToolStripMenuItem_Click(object sender, EventArgs e) {
+
+        }
+
+        private void networkManagmentSystemToolStripMenuItem_Click(object sender, EventArgs e) {
+
         }
     }
 }
