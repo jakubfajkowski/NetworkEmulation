@@ -41,20 +41,18 @@ namespace NetworkUtilities {
             connectToCloud();
         }
 
-        int freeTcpPort()
-        {
+        int freeTcpPort() {
             TcpListener l = new TcpListener(IPAddress.Loopback, 0);
             l.Start();
-            int port = ((IPEndPoint)l.LocalEndpoint).Port;
+            int port = ((IPEndPoint) l.LocalEndpoint).Port;
             l.Stop();
             return port;
         }
 
         private void listenForConnectRequest(TcpListener tcpListener) {
             tcpListener.Start();
-            Task.Run(async () =>
-            {               
-                nodeTcpClient = await tcpListener.AcceptTcpClientAsync();              
+            Task.Run(async () => {
+                nodeTcpClient = await tcpListener.AcceptTcpClientAsync();
                 listenForNodeMessages();
                 online = true;
             });
@@ -65,12 +63,12 @@ namespace NetworkUtilities {
                 using (NetworkStream ns = nodeTcpClient.GetStream()) {
                     byte[] buffer = new byte[CableCloudMessage.MaxByteBufferSize];
 
-                    while (true) {                       
+                    while (true) {
                         int bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
                         //Console.WriteLine("jest wiadomosc");
                         if (bytesRead <= 0)
                             break;
-                                               
+
                         //Debug.WriteLine("NaszBufor: " + Encoding.ASCII.GetString(buffer));                      
                         handleMessage(CableCloudMessage.deserialize(buffer));
                     }
@@ -78,22 +76,22 @@ namespace NetworkUtilities {
             });
         }
 
-        protected virtual void handleMessage(CableCloudMessage message)
-        {
+        protected virtual void handleMessage(CableCloudMessage message) {
             //Console.WriteLine("Bazowa");
         }
-           
-        
+
 
         public void send(byte[] data) {
             Task.Run(() => {
                 try {
-                   // foreach (byte t in data)
-                   //     tcpClient.GetStream().WriteByte(t);
-                        nodeTcpClient.GetStream().Write(data, 0, data.Length);
-                        Debug.WriteLine("SendData: " + Encoding.ASCII.GetString(data) + " dd");
+                    // foreach (byte t in data)
+                    //     tcpClient.GetStream().WriteByte(t);
+                    nodeTcpClient.GetStream().Write(data, 0, data.Length);
+                    Debug.WriteLine("SendData: " + Encoding.ASCII.GetString(data) + " dd");
                 }
-                catch { Debug.WriteLine("Sending ERROR!"); }
+                catch {
+                    Debug.WriteLine("Sending ERROR!");
+                }
             });
         }
 
