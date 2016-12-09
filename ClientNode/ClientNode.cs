@@ -40,10 +40,10 @@ namespace ClientNode
             mainForm.addClientToComboBox(clientName);
         }
 
-        //metoda zamieniająca tekst na bity i dzieląca je na komórki ATM
-        public List<ATMCell> createATMCell(int vpi, int vci, string message)
+        private CableCloudMessage createCableCloudMessage(int vpi, int vci, string message, int portNumber)
         {
-            List<ATMCell> atmCells = new List<ATMCell>();
+            CableCloudMessage cableCloudMessage = new CableCloudMessage(portNumber);
+
             byte[] source = Encoding.UTF8.GetBytes(message);
             
             for (int i = 0; i < source.Length; i += 48)
@@ -52,23 +52,32 @@ namespace ClientNode
                 if (i <= source.Length - 48)
                 {
                     Buffer.BlockCopy(source, i, buffer, 0, 48);
-                    atmCells.Add(new ATMCell(vpi, vci, buffer));
+                    cableCloudMessage.add(new ATMCell(vpi, vci, buffer));
                 }
                 else // gdy długość wiadomości jest mniejsza od 48 bitów, komórka jest wypełniana '0' na pozostałych miejscach
                 {
                     Buffer.BlockCopy(source, i, buffer, 0, source.Length - i);
-                    atmCells.Add(new ATMCell(vpi, vci, buffer));
+                    cableCloudMessage.add(new ATMCell(vpi, vci, buffer));
                 }
             }
-            return atmCells;
+            return cableCloudMessage;
         }
 
-        protected override void handleMessage(CableCloudMessage message) {
+
+        private void sendCableCloudMessage(CableCloudMessage cableCloudMessage) {
+            send(CableCloudMessage.serialize(cableCloudMessage));
+        }
+
+        private String receiveMessage(CableCloudMessage message) {
             StringBuilder sb = new StringBuilder();
             foreach (ATMCell cell in message.atmCells) {
                 sb.Append(Encoding.UTF8.GetString(cell.data));
             }
-            receivedMessage = sb.ToString();
+            return sb.ToString();
+        }
+
+        protected override void handleMessage(CableCloudMessage message) {
+            receiveMessage(message);
         }
     }
 }
