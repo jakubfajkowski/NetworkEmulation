@@ -18,17 +18,17 @@ namespace ClientNode
         List<ClientTableRow> clients;
         MainForm mainForm;
 
-        public ClientNode() :base(1,2) {
+        public ClientNode() :base() {
 
         }
 
-        public ClientNode(MainForm mainForm) :base(1,2){
+        public ClientNode(MainForm mainForm) :base(){
             this.mainForm = mainForm;
 
             clients = new List<ClientTableRow>();
         }
 
-        public ClientNode(string clientName) :base(1,2){
+        public ClientNode(string clientName) :base(){
             this.clientName = clientName;
 
             clients = new List<ClientTableRow>();
