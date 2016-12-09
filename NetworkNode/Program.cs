@@ -13,7 +13,7 @@ namespace NetworkNode {
 
         static void Main(string[] args) {
 
-            
+           
            CableCloudMessage message = new CableCloudMessage(23);
             for (int i = 0; i < 32; i++)
             {
@@ -32,7 +32,7 @@ namespace NetworkNode {
             */
 
             NetworkNode networkNode = new NetworkNode(10000,10001);
-
+            addConnection(networkNode);
             Test1(networkNode);
 
 
@@ -61,38 +61,23 @@ namespace NetworkNode {
             Console.In.ReadLine();
         }
 
-
-
-        static void Test1(NetworkNode networkNode)
+        static void addConnection(NetworkNode networkNode)
         {
             networkNode.networkNodeAgent.addConnectionToTable(1, 2, 3, 4, 10);
             networkNode.networkNodeAgent.addConnectionToTable(4, 42, 33, 2, 13);
             networkNode.networkNodeAgent.addConnectionToTable(3, 90, 2, 33, 46);
-            Console.WriteLine();
 
-            Console.Write("Wyszukiwanie polaczenia (powinno sie udac):    ");
-            if (networkNode.commutationMatrix.Wypisz())
-                Console.WriteLine("OK");
-            else Console.WriteLine("Błąd");
-            
-         /*   Console.Write("Usuwanie polaczenia (powinno sie udac):    ");
-            if (networkNode.networkNodeAgent.removeConnectionFromTable(1, 2, 3, 4))
-                Console.WriteLine("OK");
-            else Console.WriteLine("Błąd"); */
-
-            Console.Write("Wyszukiwanie usuniętego polaczenia (powinno sie nie udac):    ");
-            if (networkNode.commutationMatrix.Wypisz())
-                Console.WriteLine("Błąd");
-            else Console.WriteLine("OK");
-
-            Console.Write("Dodawanie portów...        ");
             networkNode.commutationMatrix.createInputPort(11);
             networkNode.commutationMatrix.createInputPort(23);
             networkNode.commutationMatrix.createInputPort(31);
+
             networkNode.commutationMatrix.createOutputPort(10);
             networkNode.commutationMatrix.createOutputPort(13);
             networkNode.commutationMatrix.createOutputPort(46);
-            Console.WriteLine("OK");
+        }
+
+        static void Test1(NetworkNode networkNode)
+        {
 
             /*   Console.WriteLine("Dodawanie komorki ATM");
                networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null), 11);

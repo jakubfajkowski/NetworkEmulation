@@ -36,6 +36,7 @@ namespace NetworkNode
             networkNodeThread.Start();
         }
 
+        /* Wątek pobierający komórki ATM z portów wyjściowych pola komutacyjnego i wysyłający je do chmury kablowej */
         private void runThread()
         {
             int j = 0;
@@ -89,16 +90,16 @@ namespace NetworkNode
 
         private void sendCableCloudMessage(CableCloudMessage message)
         {
-            // WYSLAC!!!!!!!!!!!!!!!   Wysłać cell
-            //Console.WriteLine("VPI/VCI: " + cell.VPI + "/" + cell.VCI);
+            send(CableCloudMessage.serialize(message));
         }
 
+        /* Metoda wywoływana po wczytaniu danych z wejścia */
         protected override void handleMessage(CableCloudMessage message)
         {
             Console.WriteLine("wchodzi do handleMessage");
             //CableCloudMessage message = CableCloudMessage.deserialize(data);
-            Console.WriteLine("link number:" + message.linkNumber);
-            Console.WriteLine("atm cell: " + message.atmCells.Count);
+            //Console.WriteLine("link number:" + message.linkNumber);
+            //Console.WriteLine("atm cell: " + message.atmCells.Count);
             receiveCableCloudMessage(message);
         }
     }
