@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -8,72 +8,81 @@ using NetworkUtilities;
 
 namespace NetworkEmulation {
     public class CableCloud {
-        private bool online;
-        private readonly UdpClient connectionUdpClient;
-        private readonly Dictionary<int, TcpClient> nodesTcpClients;
-        private readonly Dictionary<int, int> linkNumberToPortNumberDictionary;
+        private readonly UdpClient _connectionUdpClient;
+        private readonly Dictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
+        private readonly Dictionary<int, TcpClient> _nodesTcpClients;
+        public bool Online { get; private set; }
 
         public CableCloud() {
             var ipEndPoint = new IPEndPoint(IPAddress.Any, 10000);
-            connectionUdpClient = new UdpClient(ipEndPoint);
+            _connectionUdpClient = new UdpClient(ipEndPoint);
 
-            nodesTcpClients = new Dictionary<int, TcpClient>();
-            linkNumberToPortNumberDictionary = new Dictionary<int, int>();
+            _nodesTcpClients = new Dictionary<int, TcpClient>();
+            _linkDictionary = new Dictionary<SocketNodePortPair, SocketNodePortPair>();
 
-            listenForConnectionRequests();
+            ListenForConnectionRequests();
         }
 
-        private void listenForConnectionRequests() {
+        private void ListenForConnectionRequests() {
             Task.Run(async () => {
-                using (connectionUdpClient) {
-                    online = true;
+                using (_connectionUdpClient) {
+                    Online = true;
                     while (true) {
-                        var receivedData = await connectionUdpClient.ReceiveAsync();
-                        estabilishNodeConnection(BitConverter.ToInt32(receivedData.Buffer, 0));
+                        var receivedData = await _connectionUdpClient.ReceiveAsync();
+                        EstabilishNodeConnection(BitConverter.ToInt32(receivedData.Buffer, 0));
                     }
                 }
             });
         }
 
-        private void estabilishNodeConnection(int port) {
+        private void EstabilishNodeConnection(int port) {
             var nodeTcpClient = new TcpClient();
             try {
                 nodeTcpClient.Connect(IPAddress.Loopback, port);
-                nodesTcpClients.Add(port, nodeTcpClient);
+                _nodesTcpClients.Add(port, nodeTcpClient);
                 Console.WriteLine("Connected to Node on port: " + port);
-                listenForNodeMessages(nodeTcpClient);
+                ListenForNodeMessages(nodeTcpClient, port);
             }
             catch (SocketException e) {
                 Console.WriteLine(e.Message);
             }
-
         }
 
-        private void listenForNodeMessages(TcpClient nodeTcpClient) {
+        private void ListenForNodeMessages(TcpClient nodeTcpClient, int inputPort) {
             Task.Run(async () => {
-                using (NetworkStream ns = nodeTcpClient.GetStream()) {
-                    byte[] buffer = new byte[CableCloudMessage.MaxByteBufferSize];
+                using (var ns = nodeTcpClient.GetStream()) {
+                    var buffer = new byte[CableCloudMessage.MaxByteBufferSize];
 
                     while (true) {
-                        int bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
+                        var bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
                         if (bytesRead <= 0)
                             break;
-                        passCableCloudMessage(CableCloudMessage.deserialize(buffer));
+
+                        var cableCloudMessage = CableCloudMessage.deserialize(buffer);
+                        Console.WriteLine("Router " + inputPort + ": " + cableCloudMessage.portNumber + " - message recieved.");
+                        var input = new SocketNodePortPair(cableCloudMessage.portNumber, inputPort);
+                        var output = LookUpLinkDictionary(input);
+                        cableCloudMessage.portNumber = output.nodePortNumber;
+
+                        PassCableCloudMessage(cableCloudMessage, output.socketPortNumber);
                     }
                 }
             });
         }
 
-        private void passCableCloudMessage(CableCloudMessage cableCloudMessage) {
+        private SocketNodePortPair LookUpLinkDictionary(SocketNodePortPair input) {
+            return _linkDictionary[input];
+        }
+
+        private void PassCableCloudMessage(CableCloudMessage cableCloudMessage, int outputPort) {
             try {
-                var portNumber = linkNumberToPortNumberDictionary[cableCloudMessage.portNumber];
-                var tcpClient = nodesTcpClients[portNumber];
+                var tcpClient = _nodesTcpClients[outputPort];
 
                 sendBytes(CableCloudMessage.serialize(cableCloudMessage), tcpClient);
-                Console.WriteLine("Link number: " + cableCloudMessage.portNumber + " - message sent.");
+                Console.WriteLine("Router " + outputPort + ": " + cableCloudMessage.portNumber + " - message sent.");
             }
             catch (KeyNotFoundException e) {
-                Console.WriteLine("Link number: " + cableCloudMessage.portNumber + " - offline.");
+                Console.WriteLine("No avaliable link.");
             }
         }
 
@@ -81,16 +90,12 @@ namespace NetworkEmulation {
             tcpClient.GetStream().Write(data, 0, data.Length);
         }
 
-        public void addLink(int linkNumber, int portNumber) {
-            linkNumberToPortNumberDictionary.Add(linkNumber, portNumber);
+        public void AddLink(SocketNodePortPair key, SocketNodePortPair value) {
+            _linkDictionary.Add(key, value);
         }
 
-        public void removeLink(int linkNumber) {
-            linkNumberToPortNumberDictionary.Remove(linkNumber);
-        }
-
-        public bool isOnline() {
-            return online;
+        public void RemoveLink(SocketNodePortPair key) {
+            _linkDictionary.Remove(key);
         }
     }
 }

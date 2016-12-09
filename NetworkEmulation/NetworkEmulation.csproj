@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CableCloud.cs" />
+    <Compile Include="SocketNodePortPair.cs" />
     <Compile Include="ClientNodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>

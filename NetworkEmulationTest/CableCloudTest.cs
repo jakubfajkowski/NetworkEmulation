@@ -32,8 +32,8 @@ namespace NetworkEmulationTest {
         [TestMethod]
         public void CableCloudConnectNodeTest() {
             CableCloud cableCloud = new CableCloud();
-            while (!cableCloud.isOnline()) ;
-            Node node = new Node(1, 10001);
+            while (!cableCloud.Online) ;
+            Node node = new Node();
             while (!node.isOnline()) ;
 
             var nodesTcpClients = (Dictionary<int, TcpClient>)new PrivateObject(cableCloud).GetField("nodesTcpClients");
@@ -46,7 +46,13 @@ namespace NetworkEmulationTest {
             int port1 = 10001;
             int port2 = 10002;
             int port3 = 10003;
-            cableCloud.addLink(1, 10001);
+
+            var output = new SocketNodePortPair(1, port1);
+            var input1 = new SocketNodePortPair(1, port2);
+            var input2 = new SocketNodePortPair(1, port3);
+
+            cableCloud.AddLink(input1, output);
+            cableCloud.AddLink(input2, output);
             bytesToSend = CableCloudMessage.serialize(createCableCloudMessage(1, 100));
 
             var listenerTask1 = startTcpListener(port1, recieveMessage);
