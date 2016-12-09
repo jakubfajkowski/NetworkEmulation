@@ -103,6 +103,7 @@
     <Content Include="rsc\ClientNodeOffline.png" />
     <Content Include="rsc\ClientNodeOnline.png" />
     <Content Include="rsc\ClientNodeSelected.png" />
+    <Content Include="rsc\Delete.png" />
     <Content Include="rsc\NetworkNodeNotSelected.png" />
     <Content Include="rsc\NetworkNodeOffline.png" />
     <Content Include="rsc\NetworkNodeOnline.png" />

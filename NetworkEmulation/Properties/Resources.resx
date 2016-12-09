@@ -130,6 +130,9 @@
   <data name="ClientNodeSelected" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\rsc\ClientNodeSelected.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\rsc\Delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="NetworkNodeNotSelected" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\rsc\NetworkNodeNotSelected.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

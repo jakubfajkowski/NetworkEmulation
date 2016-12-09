@@ -81,7 +81,7 @@ namespace NetworkEmulation {
                 sendBytes(CableCloudMessage.serialize(cableCloudMessage), tcpClient);
                 Console.WriteLine("Router " + outputPort + ": " + cableCloudMessage.portNumber + " - message sent.");
             }
-            catch (KeyNotFoundException e) {
+            catch (KeyNotFoundException) {
                 Console.WriteLine("No avaliable link.");
             }
         }
