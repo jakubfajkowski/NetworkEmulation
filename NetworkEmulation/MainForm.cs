@@ -25,9 +25,22 @@ namespace NetworkEmulation {
         }
 
         private void nodePictureBox_Click(object sender, EventArgs e) {
-            if (_editorMode != EditorMode.Delete) return;
+            if (_editorMode == EditorMode.Delete) 
+                DeleteNodePictureBox(sender as NodePictureBox);
+            if (_editorMode == EditorMode.AddLink)
+                if (_selectedNodePictureBox == null) {
+                    _selectedNodePictureBox = sender as NodePictureBox;
+                }
+                else {
+                    AddLinkPictureBox(_selectedNodePictureBox, sender as NodePictureBox);
+                    _selectedNodePictureBox = null;
+                }
+        }
 
-            DeleteNodePictureBox(sender as NodePictureBox);
+        private void AddNodePictureBox(NodePictureBox nodePictureBox) {
+            nodePictureBox.Click += nodePictureBox_Click;
+            editorPanel.Controls.Add(nodePictureBox);
+            _insertedNodePictureBoxes.Add(nodePictureBox);
         }
 
         private void DeleteNodePictureBox(NodePictureBox nodePictureBox) {
@@ -35,10 +48,9 @@ namespace NetworkEmulation {
             _insertedNodePictureBoxes.Remove(nodePictureBox);
         }
 
-        private void AddNodePictureBox(NodePictureBox nodePictureBox) {
-            nodePictureBox.Click += nodePictureBox_Click;
-            editorPanel.Controls.Add(nodePictureBox);
-            _insertedNodePictureBoxes.Add(nodePictureBox);
+        private void AddLinkPictureBox(NodePictureBox beginNodePictureBox, NodePictureBox endNodePictureBox) {
+            var linkPictureBox = new LinkPictureBox(beginNodePictureBox, endNodePictureBox);
+            editorPanel.Controls.Add(linkPictureBox);
         }
 
         private static object NewInstance(object obj) {
@@ -64,7 +76,10 @@ namespace NetworkEmulation {
         }
 
         private void linkToolStripMenuItem_Click(object sender, EventArgs e) {
+            editorPanel.Cursor = Cursors.SizeAll;
+            _editorMode = EditorMode.AddLink;
 
+            _selectedNodePictureBox = null;
         }
 
         private void connectionToolStripMenuItem_Click(object sender, EventArgs e) {

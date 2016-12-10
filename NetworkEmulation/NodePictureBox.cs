@@ -14,10 +14,6 @@ namespace NetworkEmulation {
             }
         }
 
-        public NodePictureBox() {
-            SizeMode = PictureBoxSizeMode.AutoSize;
-        }
-
         protected override void OnMouseDown(MouseEventArgs e) {
             if (e.Button == MouseButtons.Left) {
                 xPos = e.X;

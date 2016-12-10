@@ -8,6 +8,10 @@ using System.Windows.Forms;
 
 namespace NetworkEmulation {
     class ClippedPictureBox : PictureBox {
+        public ClippedPictureBox() {
+            SizeMode = PictureBoxSizeMode.AutoSize;
+        }
+
         public new Image Image {
             get { return base.Image; }
             set {
