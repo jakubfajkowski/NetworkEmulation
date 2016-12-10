@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Security;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation;
@@ -25,7 +27,7 @@ namespace NetworkEmulationTest {
             listenerTask.Wait();
 
             var nodesTcpClients =
-                (Dictionary<int, TcpClient>)new PrivateObject(cableCloud).GetField("nodesTcpClients");
+                (Dictionary<int, TcpClient>)new PrivateObject(cableCloud).GetField("_nodesTcpClients");
             Assert.AreEqual(1, nodesTcpClients.Count);
         }
 
@@ -36,13 +38,14 @@ namespace NetworkEmulationTest {
             Node node = new Node();
             while (!node.isOnline()) ;
 
-            var nodesTcpClients = (Dictionary<int, TcpClient>)new PrivateObject(cableCloud).GetField("nodesTcpClients");
+            var nodesTcpClients = (Dictionary<int, TcpClient>)new PrivateObject(cableCloud).GetField("_nodesTcpClients");
             Assert.AreEqual(1, nodesTcpClients.Count);
         }
 
         [TestMethod]
         public void CableCloudPassMessageTest() {
             CableCloud cableCloud = new CableCloud();
+            cableCloud.OnUpdateState += (sender, state) => Console.WriteLine(state);
             int port1 = 10001;
             int port2 = 10002;
             int port3 = 10003;
@@ -67,7 +70,6 @@ namespace NetworkEmulationTest {
             for (int i = 0; i < bytesToSend.Length; i++) {
                 Assert.AreEqual(bytesToSend[i], bytesRecieved[i]);
             }
-            
         }
 
         private static CableCloudMessage createCableCloudMessage(int linkNumber, int atmCellsNumber) {

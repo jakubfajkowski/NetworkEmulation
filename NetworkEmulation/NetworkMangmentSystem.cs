@@ -5,6 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NetworkEmulation {
-    class NetworkMangmentSystem {
+    public class NetworkMangmentSystem : LogObject {
     }
 }
