@@ -54,6 +54,7 @@
       <DependentUpon>LogForm.cs</DependentUpon>
     </Compile>
     <Compile Include="LogObject.cs" />
+    <Compile Include="SerializableDictionary.cs" />
     <Compile Include="SocketNodePortPair.cs" />
     <Compile Include="ClientNodePictureBox.cs">
       <SubType>Component</SubType>
