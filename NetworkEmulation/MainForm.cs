@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using NetworkEmulation.Properties;
 
 namespace NetworkEmulation {
-    public enum EditorMode { AddNode, Move, Delete }
+    public enum EditorMode { AddNode, AddLink, Move, Delete }
 
     public partial class MainForm : Form {
         private EditorMode _editorMode = EditorMode.Move;

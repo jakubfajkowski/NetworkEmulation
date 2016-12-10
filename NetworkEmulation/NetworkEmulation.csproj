@@ -47,6 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CableCloud.cs" />
+    <Compile Include="ClippedPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LinkPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="LogForm.cs">
       <SubType>Form</SubType>
     </Compile>
