@@ -199,14 +199,12 @@
             // editorPanel
             // 
             this.editorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.editorPanel.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.editorPanel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.editorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.editorPanel.Location = new System.Drawing.Point(0, 24);
             this.editorPanel.Name = "editorPanel";
             this.editorPanel.Size = new System.Drawing.Size(784, 537);
             this.editorPanel.TabIndex = 1;
-            this.editorPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.editorPanel_Paint);
-            this.editorPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.editorPanel_MouseClick);
             // 
             // MainForm
             // 

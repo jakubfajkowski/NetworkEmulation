@@ -5,76 +5,11 @@ using System.Windows.Forms;
 using NetworkEmulation.Properties;
 
 namespace NetworkEmulation {
-    public enum EditorMode {
-        AddNode,
-        AddLink,
-        Move,
-        Delete
-    }
-
+    
     public partial class MainForm : Form {
-        private EditorMode _editorMode = EditorMode.Move;
-        private readonly List<Link> _insertedLinks = new List<Link>();
-        private readonly List<NodePictureBox> _insertedNodePictureBoxes = new List<NodePictureBox>();
-        private NodePictureBox _selectedNodePictureBox;
 
         public MainForm() {
             InitializeComponent();
-        }
-
-        private void editorPanel_MouseClick(object sender, MouseEventArgs e) {
-            if (_editorMode != EditorMode.AddNode) return;
-
-            _selectedNodePictureBox.Location = e.Location;
-            AddNodePictureBox(_selectedNodePictureBox);
-            _selectedNodePictureBox = NewInstance(_selectedNodePictureBox) as NodePictureBox;
-        }
-
-        private void nodePictureBox_Click(object sender, EventArgs e) {
-            if (_editorMode == EditorMode.Delete)
-                DeleteNodePictureBox(sender as NodePictureBox);
-            if (_editorMode == EditorMode.AddLink)
-                if (_selectedNodePictureBox == null) {
-                    _selectedNodePictureBox = sender as NodePictureBox;
-                }
-                else {
-                    AddLinkPictureBox(_selectedNodePictureBox, sender as NodePictureBox);
-                    _selectedNodePictureBox = null;
-                }
-        }
-
-        private void AddNodePictureBox(NodePictureBox nodePictureBox) {
-            nodePictureBox.Click += nodePictureBox_Click;
-            editorPanel.Controls.Add(nodePictureBox);
-            _insertedNodePictureBoxes.Add(nodePictureBox);
-        }
-
-        private void DeleteNodePictureBox(NodePictureBox nodePictureBox) {
-            editorPanel.Controls.Remove(nodePictureBox);
-            _insertedNodePictureBoxes.Remove(nodePictureBox);
-        }
-
-        private void AddLinkPictureBox(NodePictureBox beginNodePictureBox, NodePictureBox endNodePictureBox) {
-            var link = new Link(ref beginNodePictureBox, ref endNodePictureBox);
-            editorPanel.Controls.Add(link);
-            _insertedLinks.Add(link);
-            editorPanel.Refresh();
-        }
-
-        private static object NewInstance(object obj) {
-            return Activator.CreateInstance(obj.GetType());
-        }
-
-        private void clientNodeToolStripMenuItem_Click(object sender, EventArgs e) {
-            editorPanel.Cursor = CursorImage(Resources.ClientNodeNotSelected);
-            _selectedNodePictureBox = new ClientNodePictureBox();
-            _editorMode = EditorMode.AddNode;
-        }
-
-        private void networkNodeToolStripMenuItem_Click(object sender, EventArgs e) {
-            editorPanel.Cursor = CursorImage(Resources.NetworkNodeNotSelected);
-            _selectedNodePictureBox = new NetworkNodePictureBox();
-            _editorMode = EditorMode.AddNode;
         }
 
         private static Cursor CursorImage(Bitmap b) {
@@ -83,11 +18,20 @@ namespace NetworkEmulation {
             return new Cursor(ptr);
         }
 
+
+        private void clientNodeToolStripMenuItem_Click(object sender, EventArgs e) {
+            editorPanel.Cursor = CursorImage(Resources.ClientNodeNotSelected);
+            editorPanel.Mode = Mode.AddClientNode;
+        }
+
+        private void networkNodeToolStripMenuItem_Click(object sender, EventArgs e) {
+            editorPanel.Cursor = CursorImage(Resources.NetworkNodeNotSelected);
+            editorPanel.Mode = Mode.AddNetworkNode;
+        }
+
         private void linkToolStripMenuItem_Click(object sender, EventArgs e) {
             editorPanel.Cursor = Cursors.SizeAll;
-            _editorMode = EditorMode.AddLink;
-
-            _selectedNodePictureBox = null;
+            editorPanel.Mode = Mode.AddLink;
         }
 
         private void connectionToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -95,16 +39,12 @@ namespace NetworkEmulation {
 
         private void moveToolStripMenuItem_Click(object sender, EventArgs e) {
             editorPanel.Cursor = Cursors.Hand;
-            _editorMode = EditorMode.Move;
-
-            _selectedNodePictureBox = null;
+            editorPanel.Mode = Mode.Move;
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
             editorPanel.Cursor = CursorImage(Resources.Delete);
-            _editorMode = EditorMode.Delete;
-
-            _selectedNodePictureBox = null;
+            editorPanel.Mode = Mode.Delete;
         }
 
         private void cableCloudToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -117,11 +57,6 @@ namespace NetworkEmulation {
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e) {
-        }
-
-        private void editorPanel_Paint(object sender, PaintEventArgs e) {
-            var graphics = e.Graphics;
-            foreach (var insertedLink in _insertedLinks) insertedLink.DrawLink(graphics);
         }
     }
 }
