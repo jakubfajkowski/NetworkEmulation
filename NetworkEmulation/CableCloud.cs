@@ -1,96 +1,134 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 using NetworkUtilities;
 
 namespace NetworkEmulation {
-    public class CableCloud {
-        private bool online;
-        private readonly UdpClient connectionUdpClient;
-        private readonly Dictionary<int, TcpClient> nodesTcpClients;
-        private readonly Dictionary<int, int> linkNumberToPortNumberDictionary;
+    [XmlRoot("CableCloud")]
+    public class CableCloud : LogObject, IXmlSerializable {
+        private readonly SerializableDictionary<int, TcpClient> _nodesTcpClients;
+        private UdpClient _connectionUdpClient;
+
+        [XmlElement("Links")] private SerializableDictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
 
         public CableCloud() {
-            var ipEndPoint = new IPEndPoint(IPAddress.Any, 10000);
-            connectionUdpClient = new UdpClient(ipEndPoint);
+            _nodesTcpClients = new SerializableDictionary<int, TcpClient>();
+            _linkDictionary = new SerializableDictionary<SocketNodePortPair, SocketNodePortPair>();
 
-            nodesTcpClients = new Dictionary<int, TcpClient>();
-            linkNumberToPortNumberDictionary = new Dictionary<int, int>();
-
-            listenForConnectionRequests();
+            Start();
         }
 
-        private void listenForConnectionRequests() {
+        public bool Online { get; private set; }
+
+        public XmlSchema GetSchema() {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader) {
+            var linkSerializer = new XmlSerializer(_linkDictionary.GetType());
+
+            reader.ReadStartElement("CableCloud");
+            reader.ReadStartElement("Links");
+            _linkDictionary =
+                (SerializableDictionary<SocketNodePortPair, SocketNodePortPair>) linkSerializer.Deserialize(reader);
+            reader.ReadEndElement();
+            reader.ReadEndElement();
+        }
+
+        public void WriteXml(XmlWriter writer) {
+            var linkSerializer = new XmlSerializer(_linkDictionary.GetType());
+
+            writer.WriteStartElement("Links");
+            linkSerializer.Serialize(writer, _linkDictionary);
+            writer.WriteEndElement();
+        }
+
+        private void Start() {
+            var ipEndPoint = new IPEndPoint(IPAddress.Any, 10000);
+            _connectionUdpClient = new UdpClient(ipEndPoint);
+
+            ListenForConnectionRequests();
+        }
+
+        private void ListenForConnectionRequests() {
             Task.Run(async () => {
-                using (connectionUdpClient) {
-                    online = true;
+                using (_connectionUdpClient) {
+                    Online = true;
                     while (true) {
-                        var receivedData = await connectionUdpClient.ReceiveAsync();
-                        estabilishNodeConnection(BitConverter.ToInt32(receivedData.Buffer, 0));
+                        var receivedData = await _connectionUdpClient.ReceiveAsync();
+                        EstabilishNodeConnection(BitConverter.ToInt32(receivedData.Buffer, 0));
                     }
                 }
             });
         }
 
-        private void estabilishNodeConnection(int port) {
+        private void EstabilishNodeConnection(int port) {
             var nodeTcpClient = new TcpClient();
             try {
                 nodeTcpClient.Connect(IPAddress.Loopback, port);
-                nodesTcpClients.Add(port, nodeTcpClient);
-                Console.WriteLine("Connected to Node on port: " + port);
-                listenForNodeMessages(nodeTcpClient);
+                _nodesTcpClients.Add(port, nodeTcpClient);
+                UpdateStatus("Connected to Node on port: " + port);
+                ListenForNodeMessages(nodeTcpClient, port);
             }
             catch (SocketException e) {
-                Console.WriteLine(e.Message);
+                UpdateStatus(e.Message);
             }
-
         }
 
-        private void listenForNodeMessages(TcpClient nodeTcpClient) {
+        private void ListenForNodeMessages(TcpClient nodeTcpClient, int inputPort) {
             Task.Run(async () => {
-                using (NetworkStream ns = nodeTcpClient.GetStream()) {
-                    byte[] buffer = new byte[CableCloudMessage.MaxByteBufferSize];
+                using (var ns = nodeTcpClient.GetStream()) {
+                    var buffer = new byte[CableCloudMessage.MaxByteBufferSize];
 
                     while (true) {
-                        int bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
+                        var bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
                         if (bytesRead <= 0)
                             break;
-                        passCableCloudMessage(CableCloudMessage.deserialize(buffer));
+
+                        var cableCloudMessage = CableCloudMessage.deserialize(buffer);
+                        UpdateStatus("Router " + inputPort + ": " + cableCloudMessage.portNumber +
+                                     " - message recieved.");
+                        var input = new SocketNodePortPair(cableCloudMessage.portNumber, inputPort);
+                        var output = LookUpLinkDictionary(input);
+                        cableCloudMessage.portNumber = output.NodePortNumber;
+
+                        PassCableCloudMessage(cableCloudMessage, output.SocketPortNumber);
                     }
                 }
             });
         }
 
-        private void passCableCloudMessage(CableCloudMessage cableCloudMessage) {
-            try {
-                var portNumber = linkNumberToPortNumberDictionary[cableCloudMessage.portNumber];
-                var tcpClient = nodesTcpClients[portNumber];
+        private SocketNodePortPair LookUpLinkDictionary(SocketNodePortPair input) {
+            return _linkDictionary[input];
+        }
 
-                sendBytes(CableCloudMessage.serialize(cableCloudMessage), tcpClient);
-                Console.WriteLine("Link number: " + cableCloudMessage.portNumber + " - message sent.");
+        private void PassCableCloudMessage(CableCloudMessage cableCloudMessage, int outputPort) {
+            try {
+                var tcpClient = _nodesTcpClients[outputPort];
+
+                SendBytes(CableCloudMessage.serialize(cableCloudMessage), tcpClient);
+                UpdateStatus("Router " + outputPort + ": " + cableCloudMessage.portNumber + " - message sent.");
             }
-            catch (KeyNotFoundException e) {
-                Console.WriteLine("Link number: " + cableCloudMessage.portNumber + " - offline.");
+            catch (KeyNotFoundException) {
+                UpdateStatus("Router " + outputPort + ": " + cableCloudMessage.portNumber + " - no avaliable link.");
             }
         }
 
-        private void sendBytes(byte[] data, TcpClient tcpClient) {
+        private void SendBytes(byte[] data, TcpClient tcpClient) {
             tcpClient.GetStream().Write(data, 0, data.Length);
         }
 
-        public void addLink(int linkNumber, int portNumber) {
-            linkNumberToPortNumberDictionary.Add(linkNumber, portNumber);
+        public void AddLink(SocketNodePortPair key, SocketNodePortPair value) {
+            _linkDictionary.Add(key, value);
         }
 
-        public void removeLink(int linkNumber) {
-            linkNumberToPortNumberDictionary.Remove(linkNumber);
-        }
-
-        public bool isOnline() {
-            return online;
+        public void RemoveLink(SocketNodePortPair key) {
+            _linkDictionary.Remove(key);
         }
     }
 }

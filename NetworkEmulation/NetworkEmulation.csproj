@@ -47,6 +47,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CableCloud.cs" />
+    <Compile Include="ClippedPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="EditorPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Link.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Link.Designer.cs">
+      <DependentUpon>Link.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogForm.Designer.cs">
+      <DependentUpon>LogForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LogObject.cs" />
+    <Compile Include="SerializableDictionary.cs" />
+    <Compile Include="SocketNodePortPair.cs" />
     <Compile Include="ClientNodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -65,6 +86,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="LogForm.resx">
+      <DependentUpon>LogForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -102,6 +126,7 @@
     <Content Include="rsc\ClientNodeOffline.png" />
     <Content Include="rsc\ClientNodeOnline.png" />
     <Content Include="rsc\ClientNodeSelected.png" />
+    <Content Include="rsc\Delete.png" />
     <Content Include="rsc\NetworkNodeNotSelected.png" />
     <Content Include="rsc\NetworkNodeOffline.png" />
     <Content Include="rsc\NetworkNodeOnline.png" />

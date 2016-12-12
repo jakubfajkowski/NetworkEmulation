@@ -36,10 +36,13 @@
             this.cursorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editorPanel = new System.Windows.Forms.Panel();
+            this.simulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cableCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkManagmentSystemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editorPanel = new NetworkEmulation.EditorPanel();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,6 +52,7 @@
             this.fileToolStripMenuItem,
             this.elementsToolStripMenuItem,
             this.cursorToolStripMenuItem,
+            this.simulationToolStripMenuItem,
             this.logToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -114,12 +118,14 @@
             this.linkToolStripMenuItem.Name = "linkToolStripMenuItem";
             this.linkToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.linkToolStripMenuItem.Text = "Link";
+            this.linkToolStripMenuItem.Click += new System.EventHandler(this.linkToolStripMenuItem_Click);
             // 
             // connectionToolStripMenuItem
             // 
             this.connectionToolStripMenuItem.Name = "connectionToolStripMenuItem";
             this.connectionToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.connectionToolStripMenuItem.Text = "Connection";
+            this.connectionToolStripMenuItem.Click += new System.EventHandler(this.connectionToolStripMenuItem_Click);
             // 
             // cursorToolStripMenuItem
             // 
@@ -144,16 +150,28 @@
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
-            // editorPanel
+            // simulationToolStripMenuItem
             // 
-            this.editorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.editorPanel.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.editorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.editorPanel.Location = new System.Drawing.Point(0, 24);
-            this.editorPanel.Name = "editorPanel";
-            this.editorPanel.Size = new System.Drawing.Size(784, 537);
-            this.editorPanel.TabIndex = 1;
-            this.editorPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.editorPanel_MouseClick);
+            this.simulationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.runToolStripMenuItem,
+            this.stopToolStripMenuItem});
+            this.simulationToolStripMenuItem.Name = "simulationToolStripMenuItem";
+            this.simulationToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
+            this.simulationToolStripMenuItem.Text = "Simulation";
+            // 
+            // runToolStripMenuItem
+            // 
+            this.runToolStripMenuItem.Name = "runToolStripMenuItem";
+            this.runToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.runToolStripMenuItem.Text = "Run";
+            this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
+            // 
+            // stopToolStripMenuItem
+            // 
+            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.stopToolStripMenuItem.Text = "Stop";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // logToolStripMenuItem
             // 
@@ -178,6 +196,18 @@
             this.networkManagmentSystemToolStripMenuItem.Text = "Network Managment System";
             this.networkManagmentSystemToolStripMenuItem.Click += new System.EventHandler(this.networkManagmentSystemToolStripMenuItem_Click);
             // 
+            // editorPanel
+            // 
+            this.editorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.editorPanel.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.editorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.editorPanel.Location = new System.Drawing.Point(0, 24);
+            this.editorPanel.Name = "editorPanel";
+            this.editorPanel.Size = new System.Drawing.Size(784, 537);
+            this.editorPanel.TabIndex = 1;
+            this.editorPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.editorPanel_Paint);
+            this.editorPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.editorPanel_MouseClick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -185,6 +215,7 @@
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.editorPanel);
             this.Controls.Add(this.menuStrip1);
+            this.DoubleBuffered = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "NetworkEmulation";
@@ -206,7 +237,7 @@
         private System.Windows.Forms.ToolStripMenuItem clientNodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem networkNodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem linkToolStripMenuItem;
-        private System.Windows.Forms.Panel editorPanel;
+        private EditorPanel editorPanel;
         private System.Windows.Forms.ToolStripMenuItem connectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cursorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem;
@@ -214,6 +245,9 @@
         private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cableCloudToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem networkManagmentSystemToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem simulationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
     }
 }
 
