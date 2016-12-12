@@ -8,16 +8,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NetworkNode
-{
-    class Program
-    {
 
-        static void Main(string[] args)
-        {
+namespace NetworkNode {
+    class Program {
 
+        static void Main(string[] args) {
 
-            CableCloudMessage message = new CableCloudMessage(23);
+          
+           CableCloudMessage message = new CableCloudMessage(23);
             for (int i = 0; i < 11; i++)
             {
                 message.add(new ATMCell(4, 42, null));
@@ -25,14 +23,14 @@ namespace NetworkNode
                 message.add(new ATMCell(4, 42, null));
                 message.add(new ATMCell(1, 2, null));
             }
-            /*   byte[] dd = CableCloudMessage.serialize(message);
-              Console.WriteLine("wielkosc " + dd.Length);
-              CableCloudMessage ddd = CableCloudMessage.deserialize(dd);
-              Console.WriteLine("wychodzi");
-              Console.WriteLine("link "+ ddd.portNumber);
-              Console.WriteLine("wychodzi");
-
-              */
+          /*   byte[] dd = CableCloudMessage.serialize(message);
+            Console.WriteLine("wielkosc " + dd.Length);
+            CableCloudMessage ddd = CableCloudMessage.deserialize(dd);
+            Console.WriteLine("wychodzi");
+            Console.WriteLine("link "+ ddd.portNumber);
+            Console.WriteLine("wychodzi");
+            
+            */
 
             NetworkNode networkNode = new NetworkNode();
             addConnection(networkNode);
@@ -115,28 +113,28 @@ namespace NetworkNode
                  networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(3, 90, null), 31);
                  networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(1, 2, null), 31);
                */
-            /*
-                        CableCloudMessage message = new CableCloudMessage(23);
-                        for (int i=0;i<32;i++)
-                        {
-                            message.add(new ATMCell(4, 42, null));
-                            message.add(new ATMCell(3, 90, null));
-                            message.add(new ATMCell(4, 42, null));
-                            message.add(new ATMCell(1, 2, null));
-                        }
-                        networkNode.receiveCableCloudMessage(message);
-                        message = new CableCloudMessage(11);
-                        Thread.Sleep(10000);
-                        for (int i = 0; i < 32; i++)
-                        {
-                            message.add(new ATMCell(4, 42, null));
-                            message.add(new ATMCell(3, 90, null));
-                            message.add(new ATMCell(4, 42, null));
-                            message.add(new ATMCell(1, 2, null));
-                        }
-                        networkNode.receiveCableCloudMessage(message);
-                        */
-
+/*
+            CableCloudMessage message = new CableCloudMessage(23);
+            for (int i=0;i<32;i++)
+            {
+                message.add(new ATMCell(4, 42, null));
+                message.add(new ATMCell(3, 90, null));
+                message.add(new ATMCell(4, 42, null));
+                message.add(new ATMCell(1, 2, null));
+            }
+            networkNode.receiveCableCloudMessage(message);
+            message = new CableCloudMessage(11);
+            Thread.Sleep(10000);
+            for (int i = 0; i < 32; i++)
+            {
+                message.add(new ATMCell(4, 42, null));
+                message.add(new ATMCell(3, 90, null));
+                message.add(new ATMCell(4, 42, null));
+                message.add(new ATMCell(1, 2, null));
+            }
+            networkNode.receiveCableCloudMessage(message);
+            */
+              
             //for (int i=0; i<100;i++)
             //networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null));
 

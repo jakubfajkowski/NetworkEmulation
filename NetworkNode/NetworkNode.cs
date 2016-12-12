@@ -11,8 +11,13 @@ using System.Threading;
 namespace NetworkNode
 {
     
-    class NetworkNode : Node
+    public class NetworkNode : Node
     {
+        private const int minLastAddTime = 5000;
+        private const int maxATMCellNumberInCableCloudMessage = 20;
+        private const int sleepTime = 500;
+        private const int nmsPort = 6666;
+
         public int agentPort;
         private TcpListener agentTcpListener;
 
@@ -25,11 +30,13 @@ namespace NetworkNode
         private List<Port> outputCommutationMatrixPorts;
         private bool sent;
 
+        private UdpClient udpClient;
+        private IPEndPoint ipEndpoint;
+        private const int sleepTimeKeepAlive = 500;
+
         /* Minimalny czas po jakim komórki ATM zostaną wysłane z portu wyjściowego pola komutacyjnego [ms]*/
-        private const int minLastAddTime = 5000;
-        private const int maxATMCellNumberInCableCloudMessage = 20;
-        private const int sleepTime = 500;
-        
+
+
 
         public NetworkNode() : base() {
             this.agentPort = freeTcpPort();
@@ -42,6 +49,34 @@ namespace NetworkNode
 
             networkNodeThread = new Thread(runThread);
             networkNodeThread.Start();
+
+            connectToNMS();
+        }
+
+        private void connectToNMS()
+        {
+            udpClient = new UdpClient();
+            ipEndpoint = new IPEndPoint(IPAddress.Loopback, nmsPort);
+            // Wiadomość, że węzeł wstał
+            sendToNMS(Encoding.UTF8.GetBytes("networkNodeStart " + 66));
+
+            Thread keepAliveThread = new Thread(keepAliveThreadRun);
+            keepAliveThread.Start();
+        }
+
+        private void sendToNMS(byte[] bytesToSend)
+        {
+            udpClient.Send(bytesToSend, bytesToSend.Length, ipEndpoint);
+        }
+
+        private void keepAliveThreadRun()
+        {
+            byte[] keepAliveMessage = Encoding.UTF8.GetBytes("keepAlive "+ 66);
+            while (true)
+            {
+                sendToNMS(keepAliveMessage);
+                Thread.Sleep(sleepTimeKeepAlive);
+            }
         }
 
         /* Wątek pobierający komórki ATM z portów wyjściowych pola komutacyjnego i wysyłający je do chmury kablowej */
@@ -59,7 +94,7 @@ namespace NetworkNode
                     if ((port.getATMCellNumber() != 0) && ((DateTime.Now - port.getLastAddTime()).TotalMilliseconds > minLastAddTime) || (port.getATMCellNumber() > maxATMCellNumberInCableCloudMessage))
                     {
                         Console.WriteLine("Rozpoczęcie tworzenia CableCloudMessage...");
-                        CableCloudMessage message = new CableCloudMessage(port.getLinkNumber());
+                        CableCloudMessage message = new CableCloudMessage(port.getPortNumber());
 
                         int ATMCellNumberInPort = port.getATMCellNumber();
                         //Console.WriteLine("Liczba komórek ATM w buforze wyjściowym: " + port.getATMCellNumber());
@@ -74,8 +109,8 @@ namespace NetworkNode
                             message.add(port.getATMCell());                           
                         }
 
-                        Console.WriteLine("Wysyłanie CableCloudMessage na łącze "+ message.portNumber + " Liczba ATMCell: "+ message.atmCells.Count
-                            + " Port: "+ port.getLinkNumber());
+                        Console.WriteLine("Wysyłanie CableCloudMessage na port "+ message.portNumber + " Liczba ATMCell: "+ message.atmCells.Count
+                            + " Port: "+ port.getPortNumber());
                         sendCableCloudMessage(message);
                         sent = true;
                     }

@@ -6,22 +6,23 @@ using System.Threading.Tasks;
 
 namespace NetworkNode
 {
-    class CommutationTableRow
+    public class CommutationTableRow
     {
         private int inVPI;
         private int inVCI;
+        private int inPortNumber;
         private int outVPI;
         // Jeśli wpis nie zawiera VCI to VCI = -1
         private int outVCI;
-        private int outLinkNumber;
+        private int outPortNumber;
 
-        public CommutationTableRow(int inVPI, int inVCI, int outVPI, int outVCI, int outLinkNumber)
+        public CommutationTableRow(int inVPI, int inVCI, int outVPI, int outVCI, int outPortNumber)
         {
             this.inVCI = inVCI;
             this.inVPI = inVPI;
             this.outVCI = outVCI;
             this.outVPI = outVPI;
-            this.outLinkNumber = outLinkNumber;
+            this.outPortNumber = outPortNumber;
         }
 
         /* Metoda sprawdzająca czy podane wejściowe VPI i VCI pasują do danego wpisu
@@ -50,9 +51,9 @@ namespace NetworkNode
         {
             return outVCI;
         }
-        public int getOutLink()
+        public int getOutPort()
         {
-            return outLinkNumber;
+            return outPortNumber;
         }
 
 

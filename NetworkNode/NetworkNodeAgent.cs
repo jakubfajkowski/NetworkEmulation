@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetworkNode
 {
-    class NetworkNodeAgent
+    public class NetworkNodeAgent
     {
         private CommutationTable commutationTable;
 

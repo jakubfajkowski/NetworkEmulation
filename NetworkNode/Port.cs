@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace NetworkNode
 {
-    class Port
+    public class Port
     {
         /* Globalny numer łącza rzeczywistego podłączonego do danego portu */
-        int linkNumber;
         int portNumber;
+        
         List<ATMCell> portBuffer;
         DateTime lastAddTime;
 
 
-        public Port(int linkNumber)
+        public Port(int portNumber)
         {
-            this.linkNumber = linkNumber;
+            this.portNumber = portNumber;
             portBuffer = new List<ATMCell>();
             lastAddTime = DateTime.Now;
         }
@@ -29,7 +29,7 @@ namespace NetworkNode
             if (portBuffer.Count > 0)
             {
                 ATMCell cell = portBuffer[0];
-                portBuffer.RemoveAt(0);
+                portBuffer.Remove(cell);
                 return cell;
             }
             else
@@ -43,9 +43,9 @@ namespace NetworkNode
             //Console.WriteLine("Dodanie ATMCell do bufora wejsciowego/wyjsciowego, liczba komórek w buforze: " + portBuffer.Count);
         }
 
-        public int getLinkNumber()
+        public int getPortNumber()
         {
-            return linkNumber;
+            return portNumber;
         }
 
         public DateTime getLastAddTime()

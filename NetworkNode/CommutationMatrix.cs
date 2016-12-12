@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace NetworkNode
 {
-    class CommutationMatrix
+    public class CommutationMatrix
     {
         // Tablica połączeń in/out ta sama, która się znajduje w NetworkNodeAgent
         private CommutationTable commutationTable;
@@ -75,7 +75,7 @@ namespace NetworkNode
             //Console.WriteLine("Wyszukiwanie portu wejściowego...");
             foreach (Port inPort in inputPorts)
             {
-                if (linkNumber == inPort.getLinkNumber())
+                if (linkNumber == inPort.getPortNumber())
                 {
                     inPort.addATMCell(cell);
                     //Console.WriteLine("Dodanie komórki ATM do portu o łączu wejściowym " + inPort.getLinkNumber());
@@ -102,8 +102,8 @@ namespace NetworkNode
                 if (row.getOutVCI() != -1)
                     cell.VCI = row.getOutVCI();
 
-                //Console.WriteLine("Zmiana VPI/VCI na " + cell.VPI + "/" + cell.VCI + " Wrzucenie komórki do portu wyjściowego o łączu " + row.getOutLink());
-                return addATMCellToOutputPort(cell, row.getOutLink());
+                //Console.WriteLine("Zmiana VPI/VCI na " + cell.VPI + "/" + cell.VCI + " Wrzucenie komórki do portu wyjściowego o łączu " + row.getOutPort());
+                return addATMCellToOutputPort(cell, row.getOutPort());
             }
             return false;
         }
@@ -112,7 +112,7 @@ namespace NetworkNode
         {
             foreach (Port outPort in outputPorts)
             {
-                if (linkNumber == outPort.getLinkNumber())
+                if (linkNumber == outPort.getPortNumber())
                 {
                     outPort.addATMCell(cell);
                     return true;
