@@ -14,6 +14,7 @@ namespace ClientNode {
 
         ClientNode client;
         List<ATMCell> atmCells;
+        CableCloudMessage cableCloudMessage;
 
         public MainForm() {
             InitializeComponent();
@@ -29,7 +30,7 @@ namespace ClientNode {
         {
 
             client.message = textBoxMessage.Text;
-            atmCells = client.createATMCell(1, 1, client.message);
+            cableCloudMessage = client.createCableCloudMessage(1, 1, client.message, 1);
             
             //client.readDataFromATMCells(atmCells);
             //textBoxReceived.Text = client.receivedMessage;
