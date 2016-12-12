@@ -46,29 +46,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CableCloud.cs" />
-    <Compile Include="ClippedPictureBox.cs">
+    <Compile Include="network\CableCloud.cs" />
+    <Compile Include="editor\ClippedPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="EditorPanel.cs">
+    <Compile Include="editor\EditorPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Link.cs">
+    <Compile Include="editor\Link.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Link.Designer.cs">
+    <Compile Include="editor\Link.Designer.cs">
       <DependentUpon>Link.cs</DependentUpon>
     </Compile>
-    <Compile Include="LogForm.cs">
+    <Compile Include="log\LogForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LogForm.Designer.cs">
+    <Compile Include="log\LogForm.Designer.cs">
       <DependentUpon>LogForm.cs</DependentUpon>
     </Compile>
     <Compile Include="LogObject.cs" />
     <Compile Include="SerializableDictionary.cs" />
-    <Compile Include="SocketNodePortPair.cs" />
-    <Compile Include="ClientNodePictureBox.cs">
+    <Compile Include="network\SocketNodePortPair.cs" />
+    <Compile Include="editor\ClientNodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MainForm.cs">
@@ -78,15 +78,15 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NetworkMangmentSystem.cs" />
-    <Compile Include="NetworkNodePictureBox.cs">
+    <Compile Include="editor\NetworkNodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="NodePictureBox.cs">
+    <Compile Include="editor\NodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="LogForm.resx">
+    <EmbeddedResource Include="log\LogForm.resx">
       <DependentUpon>LogForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
@@ -132,6 +132,7 @@
     <Content Include="rsc\NetworkNodeOnline.png" />
     <Content Include="rsc\NetworkNodeSelected.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace NetworkEmulation {
+namespace NetworkEmulation.editor {
     public partial class Link : Control {
         private readonly NodePictureBox _beginNodePictureBox;
         private readonly Color _color = Color.Black;
@@ -10,7 +10,7 @@ namespace NetworkEmulation {
         private readonly int _thickness = 3;
 
         public Link(ref NodePictureBox beginNodePictureBox, ref NodePictureBox endNodePictureBox) {
-            InitializeComponent();
+            //InitializeComponent();
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
 
             _pen = new Pen(_color, _thickness);

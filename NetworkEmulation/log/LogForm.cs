@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace NetworkEmulation {
+namespace NetworkEmulation.log {
     public partial class LogForm : Form {
         private readonly LogObject _logObject;
 

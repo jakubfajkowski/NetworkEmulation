@@ -1,4 +1,6 @@
-﻿namespace NetworkEmulation {
+﻿using NetworkEmulation.editor;
+
+namespace NetworkEmulation {
     partial class MainForm {
         /// <summary>
         /// Required designer variable.
@@ -42,7 +44,7 @@
             this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cableCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkManagmentSystemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editorPanel = new NetworkEmulation.EditorPanel();
+            this.editorPanel = new EditorPanel();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 

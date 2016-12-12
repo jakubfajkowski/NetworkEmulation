@@ -9,6 +9,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation;
+using NetworkEmulation.network;
 using NetworkUtilities;
 
 namespace NetworkEmulationTest {

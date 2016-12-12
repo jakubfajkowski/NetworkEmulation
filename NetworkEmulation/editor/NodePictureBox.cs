@@ -1,8 +1,8 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace NetworkEmulation {
-    public class NodePictureBox : ClippedPictureBox {
+namespace NetworkEmulation.editor {
+    public abstract class NodePictureBox : ClippedPictureBox {
         public delegate void NodeMovingHandler(object sender);
 
         private int _xPos;
@@ -42,5 +42,11 @@ namespace NetworkEmulation {
                 NodeMoving();
             }
         }
+
+        public abstract void MarkAsSelected();
+        public abstract void MarkAsDeselected();
+        public abstract void MarkAsOnline();
+        public abstract void MarkAsOffline();
+
     }
 }

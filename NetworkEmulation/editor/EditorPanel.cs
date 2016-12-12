@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using NetworkEmulation.Properties;
 
-namespace NetworkEmulation {
+namespace NetworkEmulation.editor {
     public enum Mode {
         AddClientNode,
         AddNetworkNode,
@@ -50,19 +50,13 @@ namespace NetworkEmulation {
         private void SelectNodePictureBox(ref NodePictureBox nodePictureBox) {
             if (nodePictureBox == null) return;
 
-            if (nodePictureBox is ClientNodePictureBox)
-                nodePictureBox.Image = Resources.ClientNodeSelected;
-            if (nodePictureBox is NetworkNodePictureBox)
-                nodePictureBox.Image = Resources.NetworkNodeSelected;
+            nodePictureBox.MarkAsSelected();
         }
 
         private void DeselectNodePictureBox(ref NodePictureBox nodePictureBox) {
             if (nodePictureBox == null) return;
 
-            if (nodePictureBox is ClientNodePictureBox)
-                nodePictureBox.Image = Resources.ClientNodeNotSelected;
-            if (nodePictureBox is NetworkNodePictureBox)
-                nodePictureBox.Image = Resources.NetworkNodeNotSelected;
+            nodePictureBox.MarkAsDeselected();
         }
 
         private void AddNodePictureBox(NodePictureBox nodePictureBox) {

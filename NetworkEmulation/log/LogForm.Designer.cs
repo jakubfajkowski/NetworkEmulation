@@ -1,4 +1,4 @@
-﻿namespace NetworkEmulation {
+﻿namespace NetworkEmulation.log {
     partial class LogForm {
         /// <summary>
         /// Required designer variable.

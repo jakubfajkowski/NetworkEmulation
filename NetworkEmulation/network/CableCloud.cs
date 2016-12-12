@@ -8,7 +8,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using NetworkUtilities;
 
-namespace NetworkEmulation {
+namespace NetworkEmulation.network {
     [XmlRoot("CableCloud")]
     public class CableCloud : LogObject, IXmlSerializable {
         private readonly SerializableDictionary<int, TcpClient> _nodesTcpClients;

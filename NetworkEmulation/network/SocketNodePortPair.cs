@@ -2,7 +2,7 @@
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace NetworkEmulation {
+namespace NetworkEmulation.network {
     [XmlRoot("SocketNodePortPair")]
     public class SocketNodePortPair : IXmlSerializable {
         private SocketNodePortPair() {
