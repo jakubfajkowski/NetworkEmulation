@@ -40,7 +40,7 @@ namespace ClientNode
             mainForm.addClientToComboBox(clientName);
         }
 
-        private CableCloudMessage createCableCloudMessage(int vpi, int vci, string message, int portNumber)
+        public CableCloudMessage createCableCloudMessage(int vpi, int vci, string message, int portNumber)
         {
             CableCloudMessage cableCloudMessage = new CableCloudMessage(portNumber);
 
