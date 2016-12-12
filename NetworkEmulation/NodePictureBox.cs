@@ -2,9 +2,11 @@
 using System.Windows.Forms;
 
 namespace NetworkEmulation {
-    class NodePictureBox : ClippedPictureBox {
-        private int xPos;
-        private int yPos;
+    public class NodePictureBox : ClippedPictureBox {
+        public delegate void NodeMovingHandler(object sender);
+
+        private int _xPos;
+        private int _yPos;
 
         public new Point Location {
             get { return base.Location; }
@@ -14,17 +16,30 @@ namespace NetworkEmulation {
             }
         }
 
+        public event NodeMovingHandler OnNodeMoving;
+
+        protected void NodeMoving() {
+            OnNodeMoving?.Invoke(this);
+        }
+
+        public Point CenterPoint() {
+            var imageCenter = new Size(Image.Size.Width/2, Image.Size.Height/2);
+            return Location + imageCenter;
+        }
+
         protected override void OnMouseDown(MouseEventArgs e) {
             if (e.Button == MouseButtons.Left) {
-                xPos = e.X;
-                yPos = e.Y;
+                _xPos = e.X;
+                _yPos = e.Y;
             }
         }
 
         protected override void OnMouseMove(MouseEventArgs e) {
             if (e.Button == MouseButtons.Left) {
-                this.Top += (e.Y - yPos);
-                this.Left += (e.X - xPos);
+                Top += e.Y - _yPos;
+                Left += e.X - _xPos;
+
+                NodeMoving();
             }
         }
     }

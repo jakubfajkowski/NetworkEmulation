@@ -5,12 +5,18 @@ using System.Windows.Forms;
 using NetworkEmulation.Properties;
 
 namespace NetworkEmulation {
-    public enum EditorMode { AddNode, AddLink, Move, Delete }
+    public enum EditorMode {
+        AddNode,
+        AddLink,
+        Move,
+        Delete
+    }
 
     public partial class MainForm : Form {
         private EditorMode _editorMode = EditorMode.Move;
+        private readonly List<Link> _insertedLinks = new List<Link>();
+        private readonly List<NodePictureBox> _insertedNodePictureBoxes = new List<NodePictureBox>();
         private NodePictureBox _selectedNodePictureBox;
-        private List<NodePictureBox> _insertedNodePictureBoxes = new List<NodePictureBox>();
 
         public MainForm() {
             InitializeComponent();
@@ -25,7 +31,7 @@ namespace NetworkEmulation {
         }
 
         private void nodePictureBox_Click(object sender, EventArgs e) {
-            if (_editorMode == EditorMode.Delete) 
+            if (_editorMode == EditorMode.Delete)
                 DeleteNodePictureBox(sender as NodePictureBox);
             if (_editorMode == EditorMode.AddLink)
                 if (_selectedNodePictureBox == null) {
@@ -49,8 +55,10 @@ namespace NetworkEmulation {
         }
 
         private void AddLinkPictureBox(NodePictureBox beginNodePictureBox, NodePictureBox endNodePictureBox) {
-            var linkPictureBox = new LinkPictureBox(beginNodePictureBox, endNodePictureBox);
-            editorPanel.Controls.Add(linkPictureBox);
+            var link = new Link(ref beginNodePictureBox, ref endNodePictureBox);
+            editorPanel.Controls.Add(link);
+            _insertedLinks.Add(link);
+            editorPanel.Refresh();
         }
 
         private static object NewInstance(object obj) {
@@ -83,7 +91,6 @@ namespace NetworkEmulation {
         }
 
         private void connectionToolStripMenuItem_Click(object sender, EventArgs e) {
-
         }
 
         private void moveToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -96,24 +103,25 @@ namespace NetworkEmulation {
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
             editorPanel.Cursor = CursorImage(Resources.Delete);
             _editorMode = EditorMode.Delete;
-            
+
             _selectedNodePictureBox = null;
         }
 
         private void cableCloudToolStripMenuItem_Click(object sender, EventArgs e) {
-
         }
 
         private void networkManagmentSystemToolStripMenuItem_Click(object sender, EventArgs e) {
-
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e) {
-
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e) {
+        }
 
+        private void editorPanel_Paint(object sender, PaintEventArgs e) {
+            var graphics = e.Graphics;
+            foreach (var insertedLink in _insertedLinks) insertedLink.DrawLink(graphics);
         }
     }
 }

@@ -42,7 +42,7 @@
             this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cableCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkManagmentSystemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editorPanel = new System.Windows.Forms.Panel();
+            this.editorPanel = new NetworkEmulation.EditorPanel();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -205,6 +205,7 @@
             this.editorPanel.Name = "editorPanel";
             this.editorPanel.Size = new System.Drawing.Size(784, 537);
             this.editorPanel.TabIndex = 1;
+            this.editorPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.editorPanel_Paint);
             this.editorPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.editorPanel_MouseClick);
             // 
             // MainForm
@@ -236,7 +237,7 @@
         private System.Windows.Forms.ToolStripMenuItem clientNodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem networkNodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem linkToolStripMenuItem;
-        private System.Windows.Forms.Panel editorPanel;
+        private EditorPanel editorPanel;
         private System.Windows.Forms.ToolStripMenuItem connectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cursorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem;

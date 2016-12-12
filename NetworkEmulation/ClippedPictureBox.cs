@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace NetworkEmulation {
-    class ClippedPictureBox : PictureBox {
+    public class ClippedPictureBox : PictureBox {
         public ClippedPictureBox() {
             SizeMode = PictureBoxSizeMode.AutoSize;
         }
@@ -25,9 +20,9 @@ namespace NetworkEmulation {
             var rgn = new Region();
             rgn.MakeEmpty();
             var rc = new Rectangle(0, 0, 0, 0);
-            bool inimage = false;
-            for (int y = 0; y < _img.Height; y++) {
-                for (int x = 0; x < _img.Width; x++) {
+            var inimage = false;
+            for (var y = 0; y < _img.Height; y++) {
+                for (var x = 0; x < _img.Width; x++)
                     if (!inimage) {
                         if (_img.GetPixel(x, y).A > 128) {
                             inimage = true;
@@ -43,7 +38,6 @@ namespace NetworkEmulation {
                             rgn.Union(rc);
                         }
                     }
-                }
                 if (inimage) {
                     inimage = false;
                     rc.Width = _img.Width - rc.X;

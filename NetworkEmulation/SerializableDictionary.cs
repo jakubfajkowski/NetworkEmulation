@@ -8,15 +8,16 @@ namespace NetworkEmulation {
     public class SerializableDictionary<TKey, TValue>
         : Dictionary<TKey, TValue>, IXmlSerializable {
         #region IXmlSerializable Members
+
         public XmlSchema GetSchema() {
             return null;
         }
 
         public void ReadXml(XmlReader reader) {
-            XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
-            XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
+            var keySerializer = new XmlSerializer(typeof(TKey));
+            var valueSerializer = new XmlSerializer(typeof(TValue));
 
-            bool wasEmpty = reader.IsEmptyElement;
+            var wasEmpty = reader.IsEmptyElement;
             reader.Read();
 
             if (wasEmpty)
@@ -26,11 +27,11 @@ namespace NetworkEmulation {
                 reader.ReadStartElement("Item");
 
                 reader.ReadStartElement("Key");
-                TKey key = (TKey)keySerializer.Deserialize(reader);
+                var key = (TKey) keySerializer.Deserialize(reader);
                 reader.ReadEndElement();
 
                 reader.ReadStartElement("Value");
-                TValue value = (TValue)valueSerializer.Deserialize(reader);
+                var value = (TValue) valueSerializer.Deserialize(reader);
                 reader.ReadEndElement();
 
                 Add(key, value);
@@ -42,10 +43,10 @@ namespace NetworkEmulation {
         }
 
         public void WriteXml(XmlWriter writer) {
-            XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
-            XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
+            var keySerializer = new XmlSerializer(typeof(TKey));
+            var valueSerializer = new XmlSerializer(typeof(TValue));
 
-            foreach (TKey key in Keys) {
+            foreach (var key in Keys) {
                 writer.WriteStartElement("Item");
 
                 writer.WriteStartElement("Key");
@@ -53,13 +54,14 @@ namespace NetworkEmulation {
                 writer.WriteEndElement();
 
                 writer.WriteStartElement("Value");
-                TValue value = this[key];
+                var value = this[key];
                 valueSerializer.Serialize(writer, value);
                 writer.WriteEndElement();
 
                 writer.WriteEndElement();
             }
         }
+
         #endregion
     }
 }

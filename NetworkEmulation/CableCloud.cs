@@ -11,17 +11,41 @@ using NetworkUtilities;
 namespace NetworkEmulation {
     [XmlRoot("CableCloud")]
     public class CableCloud : LogObject, IXmlSerializable {
-        private UdpClient _connectionUdpClient;
-        [XmlElement("Links")]
-        private SerializableDictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
         private readonly SerializableDictionary<int, TcpClient> _nodesTcpClients;
-        public bool Online { get; private set; }
+        private UdpClient _connectionUdpClient;
+
+        [XmlElement("Links")] private SerializableDictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
 
         public CableCloud() {
             _nodesTcpClients = new SerializableDictionary<int, TcpClient>();
             _linkDictionary = new SerializableDictionary<SocketNodePortPair, SocketNodePortPair>();
 
             Start();
+        }
+
+        public bool Online { get; private set; }
+
+        public XmlSchema GetSchema() {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader) {
+            var linkSerializer = new XmlSerializer(_linkDictionary.GetType());
+
+            reader.ReadStartElement("CableCloud");
+            reader.ReadStartElement("Links");
+            _linkDictionary =
+                (SerializableDictionary<SocketNodePortPair, SocketNodePortPair>) linkSerializer.Deserialize(reader);
+            reader.ReadEndElement();
+            reader.ReadEndElement();
+        }
+
+        public void WriteXml(XmlWriter writer) {
+            var linkSerializer = new XmlSerializer(_linkDictionary.GetType());
+
+            writer.WriteStartElement("Links");
+            linkSerializer.Serialize(writer, _linkDictionary);
+            writer.WriteEndElement();
         }
 
         private void Start() {
@@ -67,7 +91,8 @@ namespace NetworkEmulation {
                             break;
 
                         var cableCloudMessage = CableCloudMessage.deserialize(buffer);
-                        UpdateStatus("Router " + inputPort + ": " + cableCloudMessage.portNumber + " - message recieved.");
+                        UpdateStatus("Router " + inputPort + ": " + cableCloudMessage.portNumber +
+                                     " - message recieved.");
                         var input = new SocketNodePortPair(cableCloudMessage.portNumber, inputPort);
                         var output = LookUpLinkDictionary(input);
                         cableCloudMessage.portNumber = output.NodePortNumber;
@@ -104,28 +129,6 @@ namespace NetworkEmulation {
 
         public void RemoveLink(SocketNodePortPair key) {
             _linkDictionary.Remove(key);
-        }
-
-        public XmlSchema GetSchema() {
-            return null;
-        }
-
-        public void ReadXml(XmlReader reader) {
-            XmlSerializer linkSerializer = new XmlSerializer(_linkDictionary.GetType());
-
-            reader.ReadStartElement("CableCloud");
-            reader.ReadStartElement("Links");
-            _linkDictionary = (SerializableDictionary<SocketNodePortPair, SocketNodePortPair>) linkSerializer.Deserialize(reader);
-            reader.ReadEndElement();
-            reader.ReadEndElement();
-        }
-
-        public void WriteXml(XmlWriter writer) {
-            XmlSerializer linkSerializer = new XmlSerializer(_linkDictionary.GetType());
-
-            writer.WriteStartElement("Links");
-            linkSerializer.Serialize(writer, _linkDictionary);
-            writer.WriteEndElement();
         }
     }
 }

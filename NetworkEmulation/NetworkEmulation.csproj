@@ -50,8 +50,14 @@
     <Compile Include="ClippedPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LinkPictureBox.cs">
+    <Compile Include="EditorPanel.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Link.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Link.Designer.cs">
+      <DependentUpon>Link.cs</DependentUpon>
     </Compile>
     <Compile Include="LogForm.cs">
       <SubType>Form</SubType>

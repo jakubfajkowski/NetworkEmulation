@@ -1,7 +1,7 @@
 ﻿using NetworkEmulation.Properties;
 
 namespace NetworkEmulation {
-    class ClientNodePictureBox : NodePictureBox {
+    internal class ClientNodePictureBox : NodePictureBox {
         public ClientNodePictureBox() {
             Image = Resources.ClientNodeNotSelected;
         }

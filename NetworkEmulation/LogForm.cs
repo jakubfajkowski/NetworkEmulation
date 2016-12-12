@@ -4,6 +4,7 @@ using System.Windows.Forms;
 namespace NetworkEmulation {
     public partial class LogForm : Form {
         private readonly LogObject _logObject;
+
         public LogForm(ref LogObject logObject) {
             InitializeComponent();
             _logObject = logObject;
