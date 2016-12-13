@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using NetworkEmulation.log;
 using NetworkUtilities;
 
 namespace NetworkEmulation.network {

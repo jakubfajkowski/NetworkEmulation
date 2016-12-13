@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionTableRow.cs" />
+    <Compile Include="network\ConnectionTableRow.cs" />
     <Compile Include="network\CableCloud.cs" />
     <Compile Include="editor\ClippedPictureBox.cs">
       <SubType>Component</SubType>
@@ -66,7 +66,7 @@
     <Compile Include="log\LogForm.Designer.cs">
       <DependentUpon>LogForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LogObject.cs" />
+    <Compile Include="log\LogObject.cs" />
     <Compile Include="SerializableDictionary.cs" />
     <Compile Include="network\SocketNodePortPair.cs" />
     <Compile Include="editor\ClientNodePictureBox.cs">
@@ -78,7 +78,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NetworkMangmentSystem.cs" />
+    <Compile Include="network\NetworkMangmentSystem.cs" />
     <Compile Include="editor\NetworkNodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>

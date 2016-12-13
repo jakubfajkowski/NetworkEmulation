@@ -4,8 +4,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using NetworkEmulation.log;
 
-namespace NetworkEmulation
+namespace NetworkEmulation.network
 {
     public class NetworkMangmentSystem : LogObject
     {
