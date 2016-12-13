@@ -54,6 +54,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CableCloudTest.cs" />
+    <Compile Include="NetworkMangmentSystemTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SocketNodePortPairTest.cs" />
   </ItemGroup>
@@ -61,6 +62,10 @@
     <ProjectReference Include="..\NetworkEmulation\NetworkEmulation.csproj">
       <Project>{2e25ade2-5710-499e-a758-5f355793924b}</Project>
       <Name>NetworkEmulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NetworkNode\NetworkNode.csproj">
+      <Project>{94e8c851-5c8a-400e-b37d-978df01b4bd3}</Project>
+      <Name>NetworkNode</Name>
     </ProjectReference>
     <ProjectReference Include="..\NetworkUtilities\NetworkUtilities.csproj">
       <Project>{f8933e14-6b9c-4b0d-b9ff-1a5fa8190d2f}</Project>

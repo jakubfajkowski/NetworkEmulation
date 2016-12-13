@@ -13,8 +13,7 @@ namespace NMSTest
     {
         static void Main(string[] args)
         {
-            NetworkMangmentSystem nms = new NetworkMangmentSystem();
-            NetworkNode.NetworkNode networkNode = new NetworkNode.NetworkNode();
+            
 
         }
     }
