@@ -12,14 +12,14 @@ namespace NetworkNode
         private int inVCI;
         private int inPortNumber;
         private int outVPI;
-        // Jeśli wpis nie zawiera VCI to VCI = -1
-        private int outVCI;
+        private int outVCI; // Jeśli wpis nie zawiera VCI to VCI = -1
         private int outPortNumber;
 
-        public CommutationTableRow(int inVPI, int inVCI, int outVPI, int outVCI, int outPortNumber)
+        public CommutationTableRow(int inVPI, int inVCI, int inPortNumber, int outVPI, int outVCI, int outPortNumber)
         {
             this.inVCI = inVCI;
             this.inVPI = inVPI;
+            this.inPortNumber = inPortNumber;
             this.outVCI = outVCI;
             this.outVPI = outVPI;
             this.outPortNumber = outPortNumber;
@@ -27,16 +27,16 @@ namespace NetworkNode
 
         /* Metoda sprawdzająca czy podane wejściowe VPI i VCI pasują do danego wpisu
             Wywoływana przy wyszukiwaniu wyjściowych VPI i VCI */
-        public bool checkInIdentifiers(int inVPI, int inVCI)
+        public bool checkInIdentifiers(int inVPI, int inVCI, int inPortNumber)
         {
-            return ((inVPI == this.inVPI) && ((inVCI == this.inVCI) || (inVCI == -1)));     
-        }
+            return ((inPortNumber == this.inPortNumber) && (inVPI == this.inVPI) && ((inVCI == this.inVCI) || (inVCI == -1)));     
+        } 
 
         /* Metoda sprawdzająca czy podane VPI i VCI pasują do danego wpisu
             Wywoływana przy usuwaniu połączenia z tabeli połączeń */
-        public bool checkAllIdentifiers(int inVPI, int inVCI, int outVPI, int outVCI)
+        public bool checkAllIdentifiers(int inVPI, int inVCI, int inPortNumber, int outVPI, int outVCI, int outPortNumber)
         {
-            if ((this.inVCI == inVCI) && (this.inVPI == inVPI) && (this.outVCI == outVCI) && (this.outVPI == outVPI))
+            if ((this.inVCI == inVCI) && (this.inVPI == inVPI) && (this.inPortNumber == inPortNumber) && (this.outVCI == outVCI) && (this.outVPI == outVPI) && (this.outPortNumber == outPortNumber))
                 return true;
             else return false;
         }

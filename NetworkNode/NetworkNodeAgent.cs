@@ -17,15 +17,15 @@ namespace NetworkNode
         }
 
         /* Wywołuje metodę tabeli połączeń, która dodaje połączenie */
-        public void addConnectionToTable(int inVPI, int inVCI, int outVPI, int outVCI, int linkNumber)
+        public void addConnectionToTable(int inVPI, int inVCI, int inPortNumber,int outVPI, int outVCI, int linkNumber)
         {
-            commutationTable.addConnection(inVPI, inVCI, outVPI, outVCI, linkNumber);
+            commutationTable.addConnection(inVPI, inVCI, inPortNumber, outVPI, outVCI, linkNumber);
         }
 
         /* Wywołuje metodę tabeli połączeń, która usuwa połączenie */
-        public bool removeConnectionFromTable(int inVPI, int inVCI, int outVPI, int outVCI)
+        public bool removeConnectionFromTable(int inVPI, int inVCI, int inPortNumber, int outVPI, int outVCI, int outPortNumber)
         {
-            return commutationTable.removeConnection(inVPI, inVCI, outVPI, outVCI);
+            return commutationTable.removeConnection(inVPI, inVCI, inPortNumber, outVPI, outVCI, outPortNumber);
         }
 
         /* Getter potrzebny do tego, żeby przekazać obiekt do pola komutacyjnego (CommutationMatrix) */

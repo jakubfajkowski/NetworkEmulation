@@ -53,7 +53,7 @@ namespace NetworkNode
                     ATMCell cell = inPort.getATMCell();
                     if (cell != null)
                     {
-                        commute(cell);
+                        commute(cell, inPort.getPortNumber());
                         commuted = true;
                     }    
                 }
@@ -70,12 +70,12 @@ namespace NetworkNode
 
 
         /* Metoda dodająca komórkę ATM do bufora pola komutacyjnego*/
-        public void addATMCellToInputPort(ATMCell cell, int linkNumber)
+        public void addATMCellToInputPort(ATMCell cell, int portNumber)
         {
             //Console.WriteLine("Wyszukiwanie portu wejściowego...");
             foreach (Port inPort in inputPorts)
             {
-                if (linkNumber == inPort.getPortNumber())
+                if (portNumber == inPort.getPortNumber())
                 {
                     inPort.addATMCell(cell);
                     //Console.WriteLine("Dodanie komórki ATM do portu o łączu wejściowym " + inPort.getLinkNumber());
@@ -92,10 +92,10 @@ namespace NetworkNode
 
        
         /* Metoda zmieniająca VPI, VCI na podstawie tabeli */
-        public bool commute(ATMCell cell)
+        public bool commute(ATMCell cell, int inPortNumber)
         {
             //Console.WriteLine("tu wchodzi");
-            CommutationTableRow row = commutationTable.check(cell.VPI, cell.VCI);
+            CommutationTableRow row = commutationTable.check(cell.VPI, cell.VCI, inPortNumber);
             if (row != null)
             {
                 cell.VPI = row.getOutVPI();
@@ -108,11 +108,11 @@ namespace NetworkNode
             return false;
         }
 
-        private bool addATMCellToOutputPort(ATMCell cell, int linkNumber)
+        private bool addATMCellToOutputPort(ATMCell cell, int portNumber)
         {
             foreach (Port outPort in outputPorts)
             {
-                if (linkNumber == outPort.getPortNumber())
+                if (portNumber == outPort.getPortNumber())
                 {
                     outPort.addATMCell(cell);
                     return true;
@@ -127,25 +127,17 @@ namespace NetworkNode
         }
 
 
-        public void createInputPort(int linkNumber)
+        public void createInputPort(int portNumber)
         {
-            inputPorts.Add(new Port(linkNumber));
+            inputPorts.Add(new Port(portNumber));
         }
 
-        public void createOutputPort(int linkNumber)
+        public void createOutputPort(int portNumber)
         {
-            outputPorts.Add(new Port(linkNumber));
+            outputPorts.Add(new Port(portNumber));
         }
 
 
-        //Test
-        public Boolean Wypisz()
-        {
-            CommutationTableRow row = (commutationTable.check(1, 2));
-            if (row == null)
-                return false;
-            else
-                return true;
-        }
+        
     }
 }

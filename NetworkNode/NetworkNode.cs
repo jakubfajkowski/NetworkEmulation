@@ -13,9 +13,11 @@ namespace NetworkNode
     
     public class NetworkNode : Node
     {
-        private const int minLastAddTime = 5000;
-        private const int maxATMCellNumberInCableCloudMessage = 20;
-        private const int sleepTime = 500;
+        // Czas po jakim komórki ATM zostaną spakowane w CCM
+        private const int minLastAddTime = 4;
+        private const int maxATMCellNumberInCableCloudMessage = 9;
+        // Czas usypiania wątku, który tworzy CCM
+        private const int sleepTime = 1;
         private const int nmsPort = 6666;
 
         public int agentPort;
@@ -34,7 +36,7 @@ namespace NetworkNode
         private IPEndPoint ipEndpoint;
         private const int sleepTimeKeepAlive = 500;
 
-        /* Minimalny czas po jakim komórki ATM zostaną wysłane z portu wyjściowego pola komutacyjnego [ms]*/
+        
 
 
 
@@ -86,14 +88,14 @@ namespace NetworkNode
             while (!timeToQuit)
             {
                 sent = false;
-                if (j<20)
-                Console.WriteLine("Wywolanie run outBuffer: " + j++);
+                if (j<250)
+                Console.WriteLine(DateTime.Now.Millisecond + "  Wywolanie run outBuffer: " + j++);
                 
                 foreach (Port port in outputCommutationMatrixPorts)
                 {
                     if ((port.getATMCellNumber() != 0) && ((DateTime.Now - port.getLastAddTime()).TotalMilliseconds > minLastAddTime) || (port.getATMCellNumber() > maxATMCellNumberInCableCloudMessage))
                     {
-                        Console.WriteLine("Rozpoczęcie tworzenia CableCloudMessage...");
+                        //Console.WriteLine("Rozpoczęcie tworzenia CableCloudMessage...");
                         CableCloudMessage message = new CableCloudMessage(port.getPortNumber());
 
                         int ATMCellNumberInPort = port.getATMCellNumber();
@@ -109,7 +111,7 @@ namespace NetworkNode
                             message.add(port.getATMCell());                           
                         }
 
-                        Console.WriteLine("Wysyłanie CableCloudMessage na port "+ message.portNumber + " Liczba ATMCell: "+ message.atmCells.Count
+                        Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port "+ message.portNumber + " Liczba ATMCell: "+ message.atmCells.Count
                             + " Port: "+ port.getPortNumber());
                         sendCableCloudMessage(message);
                         sent = true;
@@ -139,10 +141,6 @@ namespace NetworkNode
         /* Metoda wywoływana po wczytaniu danych z wejścia */
         protected override void handleMessage(CableCloudMessage message)
         {
-            Console.WriteLine("wchodzi do handleMessage");
-            //CableCloudMessage message = CableCloudMessage.deserialize(data);
-            //Console.WriteLine("link number:" + message.portNumber);
-            //Console.WriteLine("atm cell: " + message.atmCells.Count);
             receiveCableCloudMessage(message);
         }
     }

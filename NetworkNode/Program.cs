@@ -15,8 +15,8 @@ namespace NetworkNode {
         static void Main(string[] args) {
 
           
-           CableCloudMessage message = new CableCloudMessage(23);
-            for (int i = 0; i < 11; i++)
+           CableCloudMessage message = new CableCloudMessage(11);
+            for (int i = 0; i < 8; i++)
             {
                 message.add(new ATMCell(4, 42, null));
                 message.add(new ATMCell(3, 90, null));
@@ -37,24 +37,23 @@ namespace NetworkNode {
             Test1(networkNode);
 
 
-            Thread.Sleep(500);
-            string message1 = "You can do it";
-            Int32 port = 10001;
+            //Thread.Sleep(500);
+            
             TcpClient client = new TcpClient();
             client.Connect(IPAddress.Loopback, networkNode.cloudPort);
             //Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
             byte[] data = CableCloudMessage.serialize(message);
             NetworkStream stream = client.GetStream();
             stream.Write(data, 0, data.Length);
-            Thread.Sleep(10);
-            stream.Write(data, 0, data.Length);
-            Thread.Sleep(10);
-            stream.Write(data, 0, data.Length);
+            //Thread.Sleep(10);
+            //stream.Write(data, 0, data.Length);
+            //Thread.Sleep(10);
+            //stream.Write(data, 0, data.Length);
             //Thread.Sleep(10);
             //stream.Write(data, 0, data.Length);  
             //Console.WriteLine("Sent: {0}", message);
 
-            Thread.Sleep(10000);
+            Thread.Sleep(1000);
             stream.Write(data, 0, data.Length);
 
 
@@ -64,9 +63,9 @@ namespace NetworkNode {
 
         static void addConnection(NetworkNode networkNode)
         {
-            networkNode.networkNodeAgent.addConnectionToTable(1, 2, 3, 4, 10);
-            networkNode.networkNodeAgent.addConnectionToTable(4, 42, 33, 2, 13);
-            networkNode.networkNodeAgent.addConnectionToTable(3, 90, 2, 33, 46);
+            networkNode.networkNodeAgent.addConnectionToTable(1, 2,11,3, 4, 10);
+            networkNode.networkNodeAgent.addConnectionToTable(4, 42,11, 33, 2, 13);
+            networkNode.networkNodeAgent.addConnectionToTable(3, 90, 11,2, 33, 46);
 
             networkNode.commutationMatrix.createInputPort(11);
             networkNode.commutationMatrix.createInputPort(23);
