@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="editor\Connection.cs" />
+    <Compile Include="editor\IInitializable.cs" />
+    <Compile Include="editor\IMarkable.cs" />
     <Compile Include="network\ConnectionTableRow.cs" />
     <Compile Include="network\CableCloud.cs" />
     <Compile Include="editor\ClippedPictureBox.cs">

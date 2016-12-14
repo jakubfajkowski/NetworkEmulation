@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 
 namespace NetworkEmulation.editor {
-    public abstract class NodePictureBox : ClippedPictureBox {
+    public abstract class NodePictureBox : ClippedPictureBox, IMarkable {
         public delegate void NodeMovingHandler(object sender);
 
         private int _xPos;
@@ -15,6 +15,14 @@ namespace NetworkEmulation.editor {
                 base.Location = value - imageCenter;
             }
         }
+
+        public abstract void MarkAsSelected();
+
+        public abstract void MarkAsDeselected();
+
+        public abstract void MarkAsOnline();
+
+        public abstract void MarkAsOffline();
 
         public event NodeMovingHandler OnNodeMoving;
 
@@ -42,11 +50,5 @@ namespace NetworkEmulation.editor {
                 NodeMoving();
             }
         }
-
-        public abstract void MarkAsSelected();
-        public abstract void MarkAsDeselected();
-        public abstract void MarkAsOnline();
-        public abstract void MarkAsOffline();
-
     }
 }

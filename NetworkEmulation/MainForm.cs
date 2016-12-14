@@ -35,6 +35,8 @@ namespace NetworkEmulation {
         }
 
         private void connectionToolStripMenuItem_Click(object sender, EventArgs e) {
+            editorPanel.Cursor = Cursors.Cross;
+            editorPanel.Mode = Mode.AddConnection;
         }
 
         private void moveToolStripMenuItem_Click(object sender, EventArgs e) {
