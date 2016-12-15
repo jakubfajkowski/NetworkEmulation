@@ -10,31 +10,29 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 
 namespace ClientNode {
-    [XmlRoot("ClientNode")]
-    public class ClientNode : Node, IXmlSerializable {
+    //[XmlRoot("ClientNode")]
+    public class ClientNode : Node {
         public string message;
         public string receivedMessage;
 
-        [XmlElement("clientName", typeof(string))]
-        private string clientName { get; set; }
+        public string ClientName { get; set; }
 
         private int portNumber = 10000;
 
-        List<ClientTableRow> clients;
-        MainForm mainForm;
+        public List<ClientTableRow> Clients { get; set; }
 
         public ClientNode() : base() {
-            clients = new List<ClientTableRow>();
+            Clients = new List<ClientTableRow>();
         }
 
 
         public ClientNode(string[] args) : base() {
             string.Join(" ", args);
-            clients = new List<ClientTableRow>();
+            Clients = new List<ClientTableRow>();
         }
 
         public void addClient(int vpi, int vci, string clientName) {
-            clients.Add(new ClientTableRow(vpi, vci, clientName));
+            Clients.Add(new ClientTableRow(vpi, vci, clientName));
             //mainForm.addClientToComboBox(clientName);
         }
 
@@ -77,31 +75,28 @@ namespace ClientNode {
         }
 
 
-        public XmlSchema GetSchema() {
-            return null;
-        }
+        //public XmlSchema GetSchema() {
+        //    return null;
+        //}
 
-        public void ReadXml(XmlReader reader) {
-            var stringSerializer = new XmlSerializer(typeof(string));
-            var clientsSerializer = new XmlSerializer(typeof(List<ClientTableRow>));
+        //public void ReadXml(XmlReader reader) {
+        //    var stringSerializer = new XmlSerializer(typeof(string));
+        //    var clientsSerializer = new XmlSerializer(typeof(List<ClientTableRow>));
 
-            reader.ReadStartElement("ClientNode");
-            clientName= (string)stringSerializer.Deserialize(reader);
-            reader.ReadStartElement("Clients");
-            clients = clientsSerializer.Deserialize(reader) as List<ClientTableRow>;
-            reader.ReadEndElement();
-            reader.ReadEndElement();
-        }
+        //    reader.ReadStartElement("ClientNode");
+        //    clientName= (string)stringSerializer.Deserialize(reader);
 
-        public void WriteXml(XmlWriter writer) {
-            var stringSerializer = new XmlSerializer(typeof(string));
-            var clientsSerializer = new XmlSerializer(typeof(List<ClientTableRow>));
+        //    clients = clientsSerializer.Deserialize(reader) as List<ClientTableRow>;
+        //    reader.ReadEndElement();
+        //}
 
-            stringSerializer.Serialize(writer, clientName);
+        //public void WriteXml(XmlWriter writer) {
+        //    var stringSerializer = new XmlSerializer(typeof(string));
+        //    var clientsSerializer = new XmlSerializer(typeof(List<ClientTableRow>));
 
-            writer.WriteStartElement("Clients");
-            clientsSerializer.Serialize(writer, clients);
-            writer.WriteEndElement();
-        }
+        //    stringSerializer.Serialize(writer, clientName);
+            
+        //    clientsSerializer.Serialize(writer, clients);
+        //}
     }
 }
