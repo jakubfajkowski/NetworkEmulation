@@ -1,32 +1,26 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkUtilities;
 using ClientNode;
-using System.Collections.Generic;
+using NetworkUtilities;
 
-namespace ClientNodeTest
-{
+namespace ClientNodeTest {
     [TestClass]
-    public class ClientNodeTest
-    {
-        //CableCloudMessage cableCloudMessage;
+    public class ClientNodeTest {
+        [TestMethod]
+        public void SerializeTest() {
+            var expectedClientNode = new ClientNode.ClientNode();
+            var cn = new PrivateObject(expectedClientNode);
 
-        //[TestMethod]
-        //public void createCableCloudMessageTest() {
-        //    var client = new ClientNode.ClientNode();
-        //    String text = "Test text to check if createATMCellTest method works just right.";
-        //    cableCloudMessage = client.createCableCloudMessage(1, 1, text, 10000);
+            cn.SetFieldOrProperty("clientName", "Test");
+            cn.SetFieldOrProperty("vpi", 1);
+            cn.SetFieldOrProperty("vci", 2);
+            cn.SetFieldOrProperty("portNumber", 10000);
 
-        //}
-        //public void createATMCellTest() {
-        //    var client = new ClientNode.ClientNode();
-        //    String text = "Test text to check if createATMCellTest method works just right.";
-        //    atmCellList = client.createATMCell(1, 1, text);
+            var serializedClientNode = XmlSerializator.Serialize(expectedClientNode);
 
-        //    Assert.Equals(2, atmCellList.Count);
-        //}
-        //public void addClientTest() {
-        //    var clientNode = new MainForm();
-        //}
+            var actualClientNode = new ClientNode.ClientNode();
+            XmlSerializator.Deserialize(actualClientNode, serializedClientNode);
+
+        }
     }
 }

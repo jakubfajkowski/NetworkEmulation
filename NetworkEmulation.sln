@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkUtilities", "Network
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkEmulationTest", "NetworkEmulationTest\NetworkEmulationTest.csproj", "{BAECB36A-19A7-423B-8666-AC1424193DE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientNodeTest", "ClientNodeTest\ClientNodeTest.csproj", "{259E8BCF-9757-4266-98C1-35B6B782C247}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientNodeTest", "ClientNodeTest\ClientNodeTest.csproj", "{EA3E1296-A12E-4705-AC57-9D6E36A7CF79}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +47,10 @@ Global
 		{BAECB36A-19A7-423B-8666-AC1424193DE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAECB36A-19A7-423B-8666-AC1424193DE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAECB36A-19A7-423B-8666-AC1424193DE5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{259E8BCF-9757-4266-98C1-35B6B782C247}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{259E8BCF-9757-4266-98C1-35B6B782C247}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{259E8BCF-9757-4266-98C1-35B6B782C247}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{259E8BCF-9757-4266-98C1-35B6B782C247}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA3E1296-A12E-4705-AC57-9D6E36A7CF79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA3E1296-A12E-4705-AC57-9D6E36A7CF79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA3E1296-A12E-4705-AC57-9D6E36A7CF79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA3E1296-A12E-4705-AC57-9D6E36A7CF79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

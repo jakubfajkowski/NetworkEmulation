@@ -30,7 +30,7 @@ namespace ClientNode {
         {
 
             client.message = textBoxMessage.Text;
-            cableCloudMessage = client.createCableCloudMessage(1, 1, client.message, 1);
+            //cableCloudMessage = client.createCableCloudMessage(1, 1, client.message, 1);
 
             //client.readDataFromATMCells(atmCells);
             //textBoxReceived.Text = client.receivedMessage;
