@@ -54,7 +54,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CableCloudTest.cs" />
-    <Compile Include="NetworkMangmentSystemTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SocketNodePortPairTest.cs" />
   </ItemGroup>
