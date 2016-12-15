@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -120,39 +121,18 @@ namespace NetworkEmulationTest {
 
             var expected = ((SerializableDictionary<SocketNodePortPair, SocketNodePortPair>) cc.GetField("_linkDictionary")).Count;
 
-            var serializedCloud = Serialize(cableCloud);
+            var serializedCloud = XmlSerializator.Serialize(cableCloud);
 
             cableCloud.AddLink(RandomSocketNodePortPair(), RandomSocketNodePortPair());
 
-            TextReader textReader = new StringReader(serializedCloud);
-            var settings = new XmlReaderSettings();
-            settings.IgnoreWhitespace = true;
-
-            using (XmlReader xmlReader = XmlReader.Create(textReader, settings)) {
-                cableCloud.ReadXml(xmlReader);
-            }
+            XmlSerializator.Deserialize(cableCloud, serializedCloud);
 
             var actual = ((SerializableDictionary<SocketNodePortPair, SocketNodePortPair>) cc.GetField("_linkDictionary")).Count;
 
             Assert.AreEqual(expected, actual);
         }
 
-        public string Serialize(object obj) {
-            XmlSerializer xsSubmit = new XmlSerializer(obj.GetType());
-            var subReq = obj;
-            var xml = "";
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-
-            using (var sww = new StringWriter()) {
-                using (XmlWriter writer = XmlWriter.Create(sww, settings)) {
-                    xsSubmit.Serialize(writer, subReq);
-                    xml = sww.ToString(); // Your XML
-                }
-            }
-
-            return xml;
-        }
+        
 
         private static CableCloudMessage CreateCableCloudMessage(int linkNumber, int atmCellsNumber) {
             var cableCloudMessage = new CableCloudMessage(linkNumber);

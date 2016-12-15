@@ -2,7 +2,7 @@
 using System.Drawing;
 
 namespace NetworkEmulation.editor {
-    public class Connection : IMarkable{
+    public class Connection : IMarkable, IInitializable{
         private List<Link> _links;
 
         public Connection(List<Link> links) {
@@ -25,6 +25,10 @@ namespace NetworkEmulation.editor {
 
         public void MarkAsOffline() {
             _links.ForEach(link => link.MarkAsOffline());
+        }
+
+        public void Initialize() {
+            throw new System.NotImplementedException();
         }
     }
 }
