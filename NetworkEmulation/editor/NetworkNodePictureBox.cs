@@ -1,4 +1,5 @@
-﻿using NetworkEmulation.Properties;
+﻿using System.Diagnostics;
+using NetworkEmulation.Properties;
 
 namespace NetworkEmulation.editor {
     internal class NetworkNodePictureBox : NodePictureBox {
@@ -6,7 +7,7 @@ namespace NetworkEmulation.editor {
             Image = Resources.NetworkNodeNotSelected;
         }
 
-        public override void Initialize() {
+        public override Process Initialize() {
             throw new System.NotImplementedException();
         }
 

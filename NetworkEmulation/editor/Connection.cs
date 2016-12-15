@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
+using System.Diagnostics;
 
 namespace NetworkEmulation.editor {
     public class Connection : IMarkable, IInitializable{
-        private List<Link> _links;
+        private readonly List<Link> _links;
 
         public Connection(List<Link> links) {
             _links = links;
@@ -27,7 +27,7 @@ namespace NetworkEmulation.editor {
             _links.ForEach(link => link.MarkAsOffline());
         }
 
-        public void Initialize() {
+        public Process Initialize() {
             throw new System.NotImplementedException();
         }
     }

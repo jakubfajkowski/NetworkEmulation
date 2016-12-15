@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace NetworkEmulation.editor {
@@ -59,7 +60,7 @@ namespace NetworkEmulation.editor {
             ChangeStyle(OfflinePen);
         }
 
-        public void Initialize() {
+        public Process Initialize() {
             throw new System.NotImplementedException();
         }
     }

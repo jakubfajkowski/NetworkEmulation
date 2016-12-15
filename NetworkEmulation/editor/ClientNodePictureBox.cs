@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using NetworkEmulation.Properties;
 
 namespace NetworkEmulation.editor {
@@ -7,7 +8,7 @@ namespace NetworkEmulation.editor {
             Image = Resources.ClientNodeNotSelected;
         }
 
-        public override void Initialize() {
+        public override Process Initialize() {
             throw new NotImplementedException();
         }
 
