@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace NetworkEmulation.editor {
@@ -16,7 +17,7 @@ namespace NetworkEmulation.editor {
             }
         }
 
-        public abstract void Initialize();
+        public abstract Process Initialize();
 
         public abstract void MarkAsSelected();
 
