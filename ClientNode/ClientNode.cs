@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NetworkUtilities;
-
+using System.Configuration;
 
 namespace ClientNode
 {
@@ -28,15 +28,14 @@ namespace ClientNode
             clients = new List<ClientTableRow>();
         }
 
-        public ClientNode(string clientName) :base(){
-            this.clientName = clientName;
+        public ClientNode(string[] args) :base(){
 
             clients = new List<ClientTableRow>();
             numberOfClients++;
         }
 
-        public void addClient(int vpi, int vci, int linkNumber, string clientName) {
-            clients.Add(new ClientTableRow(vpi, vci, linkNumber, clientName));
+        public void addClient(int vpi, int vci, int portNumber, string clientName) {
+            clients.Add(new ClientTableRow(vpi, vci, portNumber, clientName));
             mainForm.addClientToComboBox(clientName);
         }
 
