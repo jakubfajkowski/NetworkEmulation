@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using NetworkEmulation.log;
+using System.Text;
 
 namespace NetworkEmulation.network
 {
@@ -14,7 +15,9 @@ namespace NetworkEmulation.network
         private List<ConnectionTableRow> connectionTable;
         private UdpClient listenUdpClient;
         private const int listenUdpPort = 6666;
+       
         private List<string> receivedMessagesList;
+        private List<string> receivedConnectionLabelsList;
         private Thread messageThread;
 
 
@@ -24,7 +27,7 @@ namespace NetworkEmulation.network
             connectionTable = new List<ConnectionTableRow>();
 
             receivedMessagesList = new List<string>();
-            
+            receivedConnectionLabelsList = new List<string>();
 
             var ipEndPoint = new IPEndPoint(IPAddress.Any, listenUdpPort);
             listenUdpClient = new UdpClient(ipEndPoint);
@@ -34,7 +37,35 @@ namespace NetworkEmulation.network
             messageThread = new Thread(runThread);
             messageThread.Start();
         }
+        
+        
 
+        public ConnectionTableRow getRow(int node1, int node2)
+        {
+            foreach (ConnectionTableRow row in connectionTable)
+            {
+                if (row.checkNodes(node1, node2))
+                    return row;
+            }
+            return null;
+        }
+
+        // Wpis w tablicy pola komutacyjnego
+        public void sendConnectionToNetworkNodeAgent(int nodeUdpPort, int inVPI, int inVCI, int inPortNumber, int outVPI, int outVCI, int outPortNumber)
+        {
+            sendMessageToNetworkNode("CreateConnection "+ inVPI + " " + inVCI + " " + inPortNumber + " " + outVPI + " " + outVCI + " " + outPortNumber, nodeUdpPort);
+        }
+
+        // Utworzenie portów do pola komutacyjnego 
+        public void createLink(int node1, int node1OutPortNumber, int node2, int node2InPortNumber)
+        {
+            sendMessageToNetworkNode("CreatePortOut " + node1OutPortNumber, node1);
+            sendMessageToNetworkNode("CreatePortIn " + node2InPortNumber, node2);
+        }
+
+        
+
+        /* Wątek obsługujący keep alive*/
         private void runThread()
         {
             while(true)
@@ -47,10 +78,12 @@ namespace NetworkEmulation.network
                     {
                         case "networkNodeStart":
                             keepAliveDictionary.Add(int.Parse(message[1]), DateTime.Now);
+                            //sendMessageToNetworkNode(Encoding.UTF8.GetBytes("OK " + int.Parse(message[1])), int.Parse(message[1]));
                             break;
-                        case "keepAlive":                         
+                        case "keepAlive":
+                            //Console.WriteLine(receivedMessagesList[0]);
                             keepAliveDictionary[int.Parse(message[1])] = DateTime.Now;
-                            break;                     
+                            break;                 
                     }
                     receivedMessagesList.Remove(receivedMessagesList[0]); 
                 }
@@ -74,6 +107,14 @@ namespace NetworkEmulation.network
         }
 
 
+        private void sendMessageToNetworkNode(string message, int port)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(message);
+            var udpClient = new UdpClient();
+            var ipEndpoint = new IPEndPoint(IPAddress.Loopback, port);
+            udpClient.Send(bytes, bytes.Length, ipEndpoint);
+        }
+
         private void listenForConnectionRequests()
         {
             Task.Run(async () => {
@@ -84,7 +125,8 @@ namespace NetworkEmulation.network
                         //Console.WriteLine("czeka na zgloszenie");
                         var receivedData = await listenUdpClient.ReceiveAsync();
                         //Console.WriteLine("Otrzymal " + System.Text.Encoding.UTF8.GetString(receivedData.Buffer));
-                        addToMessageList(System.Text.Encoding.UTF8.GetString(receivedData.Buffer));
+                        string message = Encoding.UTF8.GetString(receivedData.Buffer);
+                        addToMessageList(message);
                         //EstabilishNodeConnection(BitConverter.ToInt32(receivedData.Buffer, 0));
                     }
                 }

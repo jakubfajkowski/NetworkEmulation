@@ -18,7 +18,7 @@ namespace NetworkNode
         private const int maxATMCellNumberInCableCloudMessage = 9;
         // Czas usypiania wątku, który tworzy CCM
         private const int sleepTime = 1;
-        private const int nmsPort = 6666;
+       // private const int nmsPort = 6666;
 
         public int agentPort;
         private TcpListener agentTcpListener;
@@ -32,9 +32,9 @@ namespace NetworkNode
         private List<Port> outputCommutationMatrixPorts;
         private bool sent;
 
-        private UdpClient udpClient;
-        private IPEndPoint ipEndpoint;
-        private const int sleepTimeKeepAlive = 500;
+      //  private UdpClient udpClient;
+      //  private IPEndPoint ipEndpoint;
+      //  private const int sleepTimeKeepAlive = 500;
 
         
 
@@ -45,40 +45,15 @@ namespace NetworkNode
             agentTcpListener = createTcpListener(IPAddress.Loopback, agentPort);
             listenForConnectRequest(agentTcpListener);
 
-            networkNodeAgent = new NetworkNodeAgent();
+            networkNodeAgent = new NetworkNodeAgent(freeTcpPort());
             commutationMatrix = new CommutationMatrix(networkNodeAgent.getCommutationTable(), this);
             outputCommutationMatrixPorts = commutationMatrix.getOutputPortList();
+            networkNodeAgent.setCommutationMatrix(commutationMatrix);
 
             networkNodeThread = new Thread(runThread);
             networkNodeThread.Start();
 
-            connectToNMS();
-        }
-
-        private void connectToNMS()
-        {
-            udpClient = new UdpClient();
-            ipEndpoint = new IPEndPoint(IPAddress.Loopback, nmsPort);
-            // Wiadomość, że węzeł wstał
-            sendToNMS(Encoding.UTF8.GetBytes("networkNodeStart " + 66));
-
-            Thread keepAliveThread = new Thread(keepAliveThreadRun);
-            keepAliveThread.Start();
-        }
-
-        private void sendToNMS(byte[] bytesToSend)
-        {
-            udpClient.Send(bytesToSend, bytesToSend.Length, ipEndpoint);
-        }
-
-        private void keepAliveThreadRun()
-        {
-            byte[] keepAliveMessage = Encoding.UTF8.GetBytes("keepAlive "+ 66);
-            while (true)
-            {
-                sendToNMS(keepAliveMessage);
-                Thread.Sleep(sleepTimeKeepAlive);
-            }
+          
         }
 
         /* Wątek pobierający komórki ATM z portów wyjściowych pola komutacyjnego i wysyłający je do chmury kablowej */
@@ -88,7 +63,7 @@ namespace NetworkNode
             while (!timeToQuit)
             {
                 sent = false;
-                if (j<250)
+                if (j<0)
                 Console.WriteLine(DateTime.Now.Millisecond + "  Wywolanie run outBuffer: " + j++);
                 
                 foreach (Port port in outputCommutationMatrixPorts)
