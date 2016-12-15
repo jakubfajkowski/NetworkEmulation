@@ -1,27 +1,17 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkEmulation;
 using NetworkEmulation.network;
 
 namespace NetworkEmulationTest {
     [TestClass]
     public class SocketNodePortPairTest {
+        private readonly Dictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
+
         public SocketNodePortPairTest() {
             _linkDictionary = new Dictionary<SocketNodePortPair, SocketNodePortPair>();
         }
 
-        private TestContext testContextInstance;
-
-        public TestContext TestContext {
-            get {
-                return testContextInstance;
-            }
-            set {
-                testContextInstance = value;
-            }
-        }
-
-        private Dictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
+        public TestContext TestContext { get; set; }
 
 
         [TestMethod]

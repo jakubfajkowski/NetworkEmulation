@@ -1,90 +1,76 @@
-﻿using NetworkEmulation.network;
-using NetworkUtilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-
+using NetworkEmulation.network;
+using NetworkUtilities;
 
 namespace NetworkNode {
-    class Program {
-
-        static void Main(string[] args) {
-
-            NetworkMangmentSystem nms = new NetworkMangmentSystem();        
-            NetworkNode networkNode = new NetworkNode();
-            NetworkNode networkNode2 = new NetworkNode();
-            NetworkNode networkNode3 = new NetworkNode();
+    internal class Program {
+        private static void Main(string[] args) {
+            var nms = new NetworkMangmentSystem();
+            var networkNode = new NetworkNode();
+            var networkNode2 = new NetworkNode();
+            var networkNode3 = new NetworkNode();
             //addConnection(networkNode);
             //Test1(networkNode);
 
-            
 
-            createConnection(networkNode, networkNode2, networkNode3, nms);
+            CreateConnection(networkNode, networkNode2, networkNode3, nms);
 
             Console.In.ReadLine();
         }
 
-        static void createConnection(NetworkNode nn1, NetworkNode nn2, NetworkNode nn3, NetworkMangmentSystem nms)
-        {
+        private static void CreateConnection(NetworkNode nn1, NetworkNode nn2, NetworkNode nn3,
+            NetworkMangmentSystem nms) {
             //nms.createLink(nn1.networkNodeAgent.listenUdpPort, 12, nn2.networkNodeAgent.listenUdpPort, 13);
             //nms.createLink(nn2.networkNodeAgent.listenUdpPort, 24, nn3.networkNodeAgent.listenUdpPort, 44);
             //nms.createLink(nn1.networkNodeAgent.listenUdpPort, 1, nn3.networkNodeAgent.listenUdpPort, 2);
 
-            nn1.commutationMatrix.createInputPort(1);
-            nn1.commutationMatrix.createOutputPort(12);
+            nn1.CommutationMatrix.CreateInputPort(1);
+            nn1.CommutationMatrix.CreateOutputPort(12);
 
-            nms.sendConnectionToNetworkNodeAgent(nn1.networkNodeAgent.listenUdpPort, 11, 34, 1, 29, 56, 12);
-            nms.sendConnectionToNetworkNodeAgent(nn1.networkNodeAgent.listenUdpPort, 29, -1, 13, 39, -1, 24);
-            nms.sendConnectionToNetworkNodeAgent(nn1.networkNodeAgent.listenUdpPort, 39, 56, 44, 12, 4, 2);
+            nms.SendConnectionToNetworkNodeAgent(nn1.NetworkNodeAgent.ListenUdpPort, 11, 34, 1, 29, 56, 12);
+            nms.SendConnectionToNetworkNodeAgent(nn1.NetworkNodeAgent.ListenUdpPort, 29, -1, 13, 39, -1, 24);
+            nms.SendConnectionToNetworkNodeAgent(nn1.NetworkNodeAgent.ListenUdpPort, 39, 56, 44, 12, 4, 2);
 
-            CableCloudMessage message = new CableCloudMessage(1);
-            for (int i = 0; i < 1; i++)
-            {
-                message.add(new ATMCell(11,34, null));
-            }
+            var message = new CableCloudMessage(1);
+            for (var i = 0; i < 1; i++)
+                message.Add(new AtmCell(11, 34, null));
 
             Thread.Sleep(1000);
-            TcpClient client = new TcpClient();
-            client.Connect(IPAddress.Loopback, nn1.cloudPort);
-            
-            byte[] data = CableCloudMessage.serialize(message);
-            NetworkStream stream = client.GetStream();
+            var client = new TcpClient();
+            client.Connect(IPAddress.Loopback, nn1.CableCloudTcpPort);
+
+            var data = CableCloudMessage.Serialize(message);
+            var stream = client.GetStream();
             stream.Write(data, 0, data.Length);
 
             // Thread.Sleep(1000);
             // nms.createLink(nn1.networkNodeAgent.listenUdpPort, nn2.networkNodeAgent.listenUdpPort);
-
         }
 
-        static void addConnection(NetworkNode networkNode)
-        {
-            networkNode.networkNodeAgent.addConnectionToTable(1, 2,11,3, 4, 10);
-            networkNode.networkNodeAgent.addConnectionToTable(4, 42,11, 33, 2, 13);
-            networkNode.networkNodeAgent.addConnectionToTable(3, 90, 11,2, 33, 46);
+        private static void AddConnection(NetworkNode networkNode) {
+            networkNode.NetworkNodeAgent.AddConnectionToTable(1, 2, 11, 3, 4, 10);
+            networkNode.NetworkNodeAgent.AddConnectionToTable(4, 42, 11, 33, 2, 13);
+            networkNode.NetworkNodeAgent.AddConnectionToTable(3, 90, 11, 2, 33, 46);
 
-            networkNode.commutationMatrix.createInputPort(11);
-            networkNode.commutationMatrix.createInputPort(23);
-            networkNode.commutationMatrix.createInputPort(31);
+            networkNode.CommutationMatrix.CreateInputPort(11);
+            networkNode.CommutationMatrix.CreateInputPort(23);
+            networkNode.CommutationMatrix.CreateInputPort(31);
 
-            networkNode.commutationMatrix.createOutputPort(10);
-            networkNode.commutationMatrix.createOutputPort(13);
-            networkNode.commutationMatrix.createOutputPort(46);
+            networkNode.CommutationMatrix.CreateOutputPort(10);
+            networkNode.CommutationMatrix.CreateOutputPort(13);
+            networkNode.CommutationMatrix.CreateOutputPort(46);
         }
 
-        static void Test1(NetworkNode networkNode)
-        {
-            CableCloudMessage message = new CableCloudMessage(11);
-            for (int i = 0; i < 8; i++)
-            {
-                message.add(new ATMCell(4, 42, null));
-                message.add(new ATMCell(3, 90, null));
-                message.add(new ATMCell(4, 42, null));
-                message.add(new ATMCell(1, 2, null));
+        private static void Test1(NetworkNode networkNode) {
+            var message = new CableCloudMessage(11);
+            for (var i = 0; i < 8; i++) {
+                message.Add(new AtmCell(4, 42, null));
+                message.Add(new AtmCell(3, 90, null));
+                message.Add(new AtmCell(4, 42, null));
+                message.Add(new AtmCell(1, 2, null));
             }
             /*   byte[] dd = CableCloudMessage.serialize(message);
               Console.WriteLine("wielkosc " + dd.Length);
@@ -95,18 +81,17 @@ namespace NetworkNode {
 
               */
 
-           
-            addConnection(networkNode);
-          
+
+            AddConnection(networkNode);
 
 
             //Thread.Sleep(500);
 
-            TcpClient client = new TcpClient();
-            client.Connect(IPAddress.Loopback, networkNode.cloudPort);
+            var client = new TcpClient();
+            client.Connect(IPAddress.Loopback, networkNode.CableCloudTcpPort);
             //Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
-            byte[] data = CableCloudMessage.serialize(message);
-            NetworkStream stream = client.GetStream();
+            var data = CableCloudMessage.Serialize(message);
+            var stream = client.GetStream();
             stream.Write(data, 0, data.Length);
             //Thread.Sleep(10);
             //stream.Write(data, 0, data.Length);
@@ -118,11 +103,7 @@ namespace NetworkNode {
 
             Thread.Sleep(1000);
             stream.Write(data, 0, data.Length);
-
         }
-
-
-
     }
 }
 

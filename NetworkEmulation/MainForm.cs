@@ -5,9 +5,7 @@ using NetworkEmulation.editor;
 using NetworkEmulation.Properties;
 
 namespace NetworkEmulation {
-    
     public partial class MainForm : Form {
-
         public MainForm() {
             InitializeComponent();
         }

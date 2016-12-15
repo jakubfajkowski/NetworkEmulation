@@ -190,9 +190,9 @@ namespace NetworkEmulation.editor {
             _addedConnections.Add(new Connection(connectionLinks));
         }
 
-        //private static object NewInstance(object obj) {
+        //}
         //    return Activator.CreateInstance(obj.GetType());
 
-        //}
+        //private static object NewInstance(object obj) {
     }
 }

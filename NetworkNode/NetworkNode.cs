@@ -1,122 +1,102 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using NetworkUtilities;
 using System.Threading;
+using NetworkUtilities;
 
-namespace NetworkNode
-{
-    
-    public class NetworkNode : Node
-    {
+namespace NetworkNode {
+    public class NetworkNode : Node {
         // Czas po jakim komórki ATM zostaną spakowane w CCM
-        private const int minLastAddTime = 4;
-        private const int maxATMCellNumberInCableCloudMessage = 9;
+        private const int MinLastAddTime = 4;
+        private const int MaxAtmCellNumberInCableCloudMessage = 9;
         // Czas usypiania wątku, który tworzy CCM
-        private const int sleepTime = 1;
-       // private const int nmsPort = 6666;
+        private const int SleepTime = 1;
+        // private const int nmsPort = 6666;
 
-        public int agentPort;
-        private TcpListener agentTcpListener;
+        public int AgentPort;
+        private readonly TcpListener _agentTcpListener;
 
-        public CommutationMatrix commutationMatrix;
-        public NetworkNodeAgent networkNodeAgent;
+        public CommutationMatrix CommutationMatrix;
+        public NetworkNodeAgent NetworkNodeAgent;
+        private readonly Thread _networkNodeThread;
 
-        private bool timeToQuit = false;
-        private Thread networkNodeThread;
+        private readonly List<Port> _outputCommutationMatrixPorts;
+        private bool _sent;
 
-        private List<Port> outputCommutationMatrixPorts;
-        private bool sent;
+        private readonly bool _timeToQuit = false;
 
-      //  private UdpClient udpClient;
-      //  private IPEndPoint ipEndpoint;
-      //  private const int sleepTimeKeepAlive = 500;
-
-        
+        //  private UdpClient udpClient;
+        //  private IPEndPoint ipEndpoint;
+        //  private const int sleepTimeKeepAlive = 500;
 
 
+        public NetworkNode() {
+            AgentPort = FreeTcpPort();
+            _agentTcpListener = CreateTcpListener(IPAddress.Loopback, AgentPort);
+            ListenForConnectRequest(_agentTcpListener);
 
-        public NetworkNode() : base() {
-            this.agentPort = freeTcpPort();
-            agentTcpListener = createTcpListener(IPAddress.Loopback, agentPort);
-            listenForConnectRequest(agentTcpListener);
+            NetworkNodeAgent = new NetworkNodeAgent(FreeTcpPort());
+            CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), this);
+            _outputCommutationMatrixPorts = CommutationMatrix.GetOutputPortList();
+            NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
 
-            networkNodeAgent = new NetworkNodeAgent(freeTcpPort());
-            commutationMatrix = new CommutationMatrix(networkNodeAgent.getCommutationTable(), this);
-            outputCommutationMatrixPorts = commutationMatrix.getOutputPortList();
-            networkNodeAgent.setCommutationMatrix(commutationMatrix);
-
-            networkNodeThread = new Thread(runThread);
-            networkNodeThread.Start();
-
-          
+            _networkNodeThread = new Thread(RunThread);
+            _networkNodeThread.Start();
         }
 
         /* Wątek pobierający komórki ATM z portów wyjściowych pola komutacyjnego i wysyłający je do chmury kablowej */
-        private void runThread()
-        {
-            int j = 0;
-            while (!timeToQuit)
-            {
-                sent = false;
-                if (j<0)
-                Console.WriteLine(DateTime.Now.Millisecond + "  Wywolanie run outBuffer: " + j++);
-                
-                foreach (Port port in outputCommutationMatrixPorts)
-                {
-                    if ((port.getATMCellNumber() != 0) && ((DateTime.Now - port.getLastAddTime()).TotalMilliseconds > minLastAddTime) || (port.getATMCellNumber() > maxATMCellNumberInCableCloudMessage))
-                    {
+
+        private void RunThread() {
+            var j = 0;
+            while (!_timeToQuit) {
+                _sent = false;
+                if (j < 0)
+                    Console.WriteLine(DateTime.Now.Millisecond + "  Wywolanie run outBuffer: " + j++);
+
+                foreach (var port in _outputCommutationMatrixPorts)
+                    if (((port.GetAtmCellNumber() != 0) &&
+                         ((DateTime.Now - port.GetLastAddTime()).TotalMilliseconds > MinLastAddTime)) ||
+                        (port.GetAtmCellNumber() > MaxAtmCellNumberInCableCloudMessage)) {
                         //Console.WriteLine("Rozpoczęcie tworzenia CableCloudMessage...");
-                        CableCloudMessage message = new CableCloudMessage(port.getPortNumber());
+                        var message = new CableCloudMessage(port.GetPortNumber());
 
-                        int ATMCellNumberInPort = port.getATMCellNumber();
+                        var atmCellNumberInPort = port.GetAtmCellNumber();
                         //Console.WriteLine("Liczba komórek ATM w buforze wyjściowym: " + port.getATMCellNumber());
-                        int ATMCellNumberInMessage;
-                        if (ATMCellNumberInPort > maxATMCellNumberInCableCloudMessage)
-                            ATMCellNumberInMessage = maxATMCellNumberInCableCloudMessage;
+                        int atmCellNumberInMessage;
+                        if (atmCellNumberInPort > MaxAtmCellNumberInCableCloudMessage)
+                            atmCellNumberInMessage = MaxAtmCellNumberInCableCloudMessage;
                         else
-                            ATMCellNumberInMessage = ATMCellNumberInPort;
-                        
-                        for (int i=0; i<ATMCellNumberInMessage; i++)
-                        {
-                            message.add(port.getATMCell());                           
-                        }
+                            atmCellNumberInMessage = atmCellNumberInPort;
 
-                        Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port "+ message.portNumber + " Liczba ATMCell: "+ message.atmCells.Count
-                            + " Port: "+ port.getPortNumber());
-                        sendCableCloudMessage(message);
-                        sent = true;
+                        for (var i = 0; i < atmCellNumberInMessage; i++)
+                            message.Add(port.GetAtmCell());
+
+                        Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
+                                          message.PortNumber + " Liczba ATMCell: " + message.AtmCells.Count
+                                          + " Port: " + port.GetPortNumber());
+                        SendCableCloudMessage(message);
+                        _sent = true;
                     }
-                }
 
-                if (!sent)
-                {
-                    Thread.Sleep(sleepTime);                
-                }
+                if (!_sent)
+                    Thread.Sleep(SleepTime);
             }
         }
 
-        public void receiveCableCloudMessage(CableCloudMessage message)
-        {
-            foreach(ATMCell cell in message.atmCells)
-            {
-                commutationMatrix.addATMCellToInputPort(cell, message.portNumber);
-            }
+        public void ReceiveCableCloudMessage(CableCloudMessage message) {
+            foreach (var cell in message.AtmCells)
+                CommutationMatrix.AddAtmCellToInputPort(cell, message.PortNumber);
         }
 
-        private void sendCableCloudMessage(CableCloudMessage message)
-        {
-            send(CableCloudMessage.serialize(message));
+        private void SendCableCloudMessage(CableCloudMessage message) {
+            Send(CableCloudMessage.Serialize(message));
         }
 
         /* Metoda wywoływana po wczytaniu danych z wejścia */
-        protected override void handleMessage(CableCloudMessage cableCloudMessage)
-        {
-            receiveCableCloudMessage(cableCloudMessage);
+
+        protected override void HandleMessage(CableCloudMessage cableCloudMessage) {
+            ReceiveCableCloudMessage(cableCloudMessage);
         }
     }
 }

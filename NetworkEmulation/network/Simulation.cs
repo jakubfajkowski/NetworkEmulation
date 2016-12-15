@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
 using System.Xml.Schema;
@@ -14,6 +15,18 @@ namespace NetworkEmulation.network {
 
         public Simulation() {
             Prepare();
+        }
+
+        public XmlSchema GetSchema() {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader) {
+            throw new NotImplementedException();
+        }
+
+        public void WriteXml(XmlWriter writer) {
+            throw new NotImplementedException();
         }
 
         private void Prepare() {
@@ -48,18 +61,6 @@ namespace NetworkEmulation.network {
 
         private void KillProcesses() {
             foreach (var process in _processes) process.Kill();
-        }
-
-        public XmlSchema GetSchema() {
-            return null;
-        }
-
-        public void ReadXml(XmlReader reader) {
-            throw new System.NotImplementedException();
-        }
-
-        public void WriteXml(XmlWriter writer) {
-            throw new System.NotImplementedException();
         }
     }
 }

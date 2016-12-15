@@ -5,13 +5,10 @@ namespace ClientNode {
     public class ClientNode : Node {
         public delegate void MessageHandler(object sender, string text);
 
-        private readonly int _portNumber = 10000;
-
         public ClientNode() {
             ClientTable = new List<ClientTableRow>();
         }
 
-        public string ReceivedMessage { get; private set; }
         public string ClientName { get; set; }
         public List<ClientTableRow> ClientTable { get; set; }
 
@@ -33,19 +30,13 @@ namespace ClientNode {
         public void SendMessage(string message, string recieverName) {
             var clientTableRow = SearchUsingClientName(recieverName);
 
-            if (clientTableRow != null) {
-                SendCableCloudMessage(message, clientTableRow);
-            }
-            else {
-                UpdateState("Client " + recieverName + " not found.");
-            }
-            
+            if (clientTableRow != null) SendCableCloudMessage(message, clientTableRow);
+            else UpdateState("Client " + recieverName + " not found.");
         }
 
         private ClientTableRow SearchUsingClientName(string clientName) {
-            foreach (var clientTableRow in ClientTable) {
+            foreach (var clientTableRow in ClientTable)
                 if (clientTableRow.ClientName.Equals(clientName)) return clientTableRow;
-            }
             return null;
         }
 
@@ -55,13 +46,13 @@ namespace ClientNode {
             var portNumber = clientTableRow.PortNumber;
 
             var cableCloudMessage = new CableCloudMessage(portNumber, vpi, vci, message);
-            send(CableCloudMessage.serialize(cableCloudMessage));
-            UpdateState("Sent: " + cableCloudMessage.atmCells.Count + "ATMCells.");
+            Send(CableCloudMessage.Serialize(cableCloudMessage));
+            UpdateState("Sent: " + cableCloudMessage.AtmCells.Count + "ATMCells.");
         }
 
-        protected override void handleMessage(CableCloudMessage cableCloudMessage) {
+        protected override void HandleMessage(CableCloudMessage cableCloudMessage) {
             MessageRecieved(cableCloudMessage.ToString());
-            UpdateState("Recieved: " + cableCloudMessage.atmCells.Count + "ATMCells.");
+            UpdateState("Recieved: " + cableCloudMessage.AtmCells.Count + "ATMCells.");
         }
     }
 }

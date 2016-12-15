@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using NetworkEmulation.Properties;
 
 namespace NetworkEmulation.editor {
@@ -8,7 +9,7 @@ namespace NetworkEmulation.editor {
         }
 
         public override Process Initialize() {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override void MarkAsSelected() {

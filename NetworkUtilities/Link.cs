@@ -1,13 +1,13 @@
 ﻿namespace NetworkUtilities {
-    class Link {
-        public static int linkCounter { get; private set; }
-        public int linkNumber { get; }
-        public int capacity { get; }
-
+    internal class Link {
         public Link(int capacity) {
-            linkCounter++;
-            linkNumber = linkCounter;
-            this.capacity = capacity;
+            LinkCounter++;
+            LinkNumber = LinkCounter;
+            Capacity = capacity;
         }
+
+        public static int LinkCounter { get; private set; }
+        public int LinkNumber { get; }
+        public int Capacity { get; }
     }
 }

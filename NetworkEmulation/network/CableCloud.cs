@@ -91,12 +91,12 @@ namespace NetworkEmulation.network {
                         if (bytesRead <= 0)
                             break;
 
-                        var cableCloudMessage = CableCloudMessage.deserialize(buffer);
-                        UpdateState("Router " + inputPort + ": " + cableCloudMessage.portNumber +
-                                     " - message recieved.");
-                        var input = new SocketNodePortPair(cableCloudMessage.portNumber, inputPort);
+                        var cableCloudMessage = CableCloudMessage.Deserialize(buffer);
+                        UpdateState("Router " + inputPort + ": " + cableCloudMessage.PortNumber +
+                                    " - message recieved.");
+                        var input = new SocketNodePortPair(cableCloudMessage.PortNumber, inputPort);
                         var output = LookUpLinkDictionary(input);
-                        cableCloudMessage.portNumber = output.NodePortNumber;
+                        cableCloudMessage.PortNumber = output.NodePortNumber;
 
                         PassCableCloudMessage(cableCloudMessage, output.SocketPortNumber);
                     }
@@ -112,11 +112,11 @@ namespace NetworkEmulation.network {
             try {
                 var tcpClient = _nodesTcpClients[outputPort];
 
-                SendBytes(CableCloudMessage.serialize(cableCloudMessage), tcpClient);
-                UpdateState("Router " + outputPort + ": " + cableCloudMessage.portNumber + " - message sent.");
+                SendBytes(CableCloudMessage.Serialize(cableCloudMessage), tcpClient);
+                UpdateState("Router " + outputPort + ": " + cableCloudMessage.PortNumber + " - message sent.");
             }
             catch (KeyNotFoundException) {
-                UpdateState("Router " + outputPort + ": " + cableCloudMessage.portNumber + " - no avaliable link.");
+                UpdateState("Router " + outputPort + ": " + cableCloudMessage.PortNumber + " - no avaliable link.");
             }
         }
 

@@ -11,20 +11,20 @@ namespace NetworkEmulation.editor {
             get { return base.Image; }
             set {
                 base.Image = value;
-                clipRegion();
+                ClipRegion();
             }
         }
 
-        private void clipRegion() {
-            var _img = (Bitmap) Image;
+        private void ClipRegion() {
+            var img = (Bitmap) Image;
             var rgn = new Region();
             rgn.MakeEmpty();
             var rc = new Rectangle(0, 0, 0, 0);
             var inimage = false;
-            for (var y = 0; y < _img.Height; y++) {
-                for (var x = 0; x < _img.Width; x++)
+            for (var y = 0; y < img.Height; y++) {
+                for (var x = 0; x < img.Width; x++)
                     if (!inimage) {
-                        if (_img.GetPixel(x, y).A > 128) {
+                        if (img.GetPixel(x, y).A > 128) {
                             inimage = true;
                             rc.X = x;
                             rc.Y = y;
@@ -32,7 +32,7 @@ namespace NetworkEmulation.editor {
                         }
                     }
                     else {
-                        if (_img.GetPixel(x, y).A <= 128) {
+                        if (img.GetPixel(x, y).A <= 128) {
                             inimage = false;
                             rc.Width = x - rc.X;
                             rgn.Union(rc);
@@ -40,7 +40,7 @@ namespace NetworkEmulation.editor {
                     }
                 if (inimage) {
                     inimage = false;
-                    rc.Width = _img.Width - rc.X;
+                    rc.Width = img.Width - rc.X;
                     rgn.Union(rc);
                 }
             }

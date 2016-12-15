@@ -1,11 +1,5 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Xml;
-using ClientNode;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-using System.IO;
 
 namespace ClientNodeTest {
     [TestClass]
@@ -15,12 +9,15 @@ namespace ClientNodeTest {
             var expectedClientNode = new ClientNode.ClientNode();
             var cn = new PrivateObject(expectedClientNode);
 
-            cn.SetFieldOrProperty("clientName", "Test");
+            cn.SetFieldOrProperty("ClientName", "Test");
 
-            var serializedClientNode = XmlSerializator.Serialize(expectedClientNode as object);
+            var serializedClientNode = XmlSerializator.Serialize(expectedClientNode);
 
-            var actualClientNode = XmlSerializator.Deserialize(serializedClientNode, typeof(ClientNode.ClientNode)) as ClientNode.ClientNode;
+            var actualClientNode =
+                XmlSerializator.Deserialize(serializedClientNode, typeof(ClientNode.ClientNode)) as
+                    ClientNode.ClientNode;
         }
+
         [TestMethod]
         public void TableSerializeTest() {
             var expectedClientNode = new ClientNode.ClientNode();
@@ -32,9 +29,11 @@ namespace ClientNodeTest {
             expectedClientNode.AddClient("Misiek", 2, 5, 6);
 
 
-            var serializedClientNode = XmlSerializator.Serialize(expectedClientNode as object);
+            var serializedClientNode = XmlSerializator.Serialize(expectedClientNode);
 
-            var actualClientNode = XmlSerializator.Deserialize(serializedClientNode, typeof(ClientNode.ClientNode)) as ClientNode.ClientNode;
+            var actualClientNode =
+                XmlSerializator.Deserialize(serializedClientNode, typeof(ClientNode.ClientNode)) as
+                    ClientNode.ClientNode;
         }
     }
 }

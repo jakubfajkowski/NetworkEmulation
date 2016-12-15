@@ -1,14 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace NetworkEmulation.editor {
-    public class Connection : IMarkable, IInitializable{
+    public class Connection : IMarkable, IInitializable {
         private readonly List<Link> _links;
 
         public Connection(List<Link> links) {
             _links = links;
 
             MarkAsSelected();
+        }
+
+        public Process Initialize() {
+            throw new NotImplementedException();
         }
 
         public void MarkAsSelected() {
@@ -25,10 +30,6 @@ namespace NetworkEmulation.editor {
 
         public void MarkAsOffline() {
             _links.ForEach(link => link.MarkAsOffline());
-        }
-
-        public Process Initialize() {
-            throw new System.NotImplementedException();
         }
     }
 }

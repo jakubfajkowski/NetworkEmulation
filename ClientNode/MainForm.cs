@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
 using NetworkUtilities;
 
 namespace ClientNode {
     public partial class MainForm : Form {
-        private ClientNode _client;
-        private List<ATMCell> _atmCells;
+        private List<AtmCell> _atmCells;
         private CableCloudMessage _cableCloudMessage;
+        private readonly ClientNode _client;
 
         public MainForm(string[] args) {
             InitializeComponent();

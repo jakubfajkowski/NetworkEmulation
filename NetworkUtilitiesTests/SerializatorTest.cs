@@ -1,27 +1,21 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
 
-namespace NetworkUtilitiesTests
-{
+namespace NetworkUtilitiesTests {
     [TestClass]
-    public class SerializatorTest
-    {
+    public class SerializatorTest {
         [TestMethod]
-        public void serializeTest()
-        {
-            CableCloudMessage message = new CableCloudMessage(6321);
-            byte[] data = Serializator.Serialize(message);
-            object obj = Serializator.Deserialize(data);
-            CableCloudMessage msg = new CableCloudMessage(1);
-            Debug.WriteLine(msg.portNumber);
+        public void SerializeTest() {
+            var message = new CableCloudMessage(6321);
+            var data = Serializator.Serialize(message);
+            var obj = Serializator.Deserialize(data);
+            var msg = new CableCloudMessage(1);
+            Debug.WriteLine(msg.PortNumber);
             if (obj is CableCloudMessage)
-            {
                 msg = (CableCloudMessage) obj;
-            }
-            Assert.AreEqual(message.portNumber, msg.portNumber);
-            Debug.WriteLine(msg.portNumber);
+            Assert.AreEqual(message.PortNumber, msg.PortNumber);
+            Debug.WriteLine(msg.PortNumber);
         }
     }
 }

@@ -1,143 +1,115 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NetworkUtilities;
 using System.Threading;
-using System.Runtime.CompilerServices;
+using NetworkUtilities;
 
-namespace NetworkNode
-{
-    public class CommutationMatrix
-    {
+namespace NetworkNode {
+    public class CommutationMatrix {
         // Tablica połączeń in/out ta sama, która się znajduje w NetworkNodeAgent
-        private CommutationTable commutationTable;
+        private readonly CommutationTable _commutationTable;
+
+        private bool _commuted;
+
+        private readonly List<Port> _inputPorts;
+        private readonly Thread _matrixThread;
         //private List<ATMCell> matrixBuffer;
         /* Obiekt potrzebny do wywołania metody addATMCellToOutBuffer() klasy NetworkNode*/
-        private NetworkNode networkNode;
+        private NetworkNode _networkNode;
+        private readonly List<Port> _outputPorts;
 
-        private List<Port> inputPorts;
-        private List<Port> outputPorts;
-
-        private bool timeToQuit = false;
-        private Thread matrixThread;
-
-        private bool commuted;
+        private readonly bool _timeToQuit = false;
 
 
-        public CommutationMatrix(CommutationTable comTable, NetworkNode networkNode)
-        {
-            this.networkNode = networkNode;
-            commutationTable = comTable;
+        public CommutationMatrix(CommutationTable comTable, NetworkNode networkNode) {
+            this._networkNode = networkNode;
+            _commutationTable = comTable;
             //matrixBuffer = new List<ATMCell>();
-            inputPorts = new List<Port>();
-            outputPorts = new List<Port>();
+            _inputPorts = new List<Port>();
+            _outputPorts = new List<Port>();
 
-            matrixThread = new Thread(runThread);
-            matrixThread.Start();
+            _matrixThread = new Thread(RunThread);
+            _matrixThread.Start();
         }
 
 
-        private void runThread()
-        {
-            int j = 0;
-            while (!timeToQuit)
-            {
+        private void RunThread() {
+            var j = 0;
+            while (!_timeToQuit) {
                 //Console.WriteLine("Wywolanie run matrix: " + j++);
-                commuted = false;
+                _commuted = false;
 
-                foreach (Port inPort in inputPorts)
-                {
+                foreach (var inPort in _inputPorts) {
                     //Console.WriteLine("Wchodzi");     
-                    ATMCell cell = inPort.getATMCell();
-                    if (cell != null)
-                    {
-                        commute(cell, inPort.getPortNumber());
-                        commuted = true;
-                    }    
-                }
-                if (!commuted)
-                {                 
-                    lock (matrixThread)
-                    {
-                        Monitor.Wait(matrixThread);
+                    var cell = inPort.GetAtmCell();
+                    if (cell != null) {
+                        Commute(cell, inPort.GetPortNumber());
+                        _commuted = true;
                     }
-                    //Console.WriteLine("wątek run matrix wstał");
                 }
+                if (!_commuted)
+                    lock (_matrixThread) {
+                        Monitor.Wait(_matrixThread);
+                    }
             }
         }
 
 
         /* Metoda dodająca komórkę ATM do bufora pola komutacyjnego*/
-        public void addATMCellToInputPort(ATMCell cell, int portNumber)
-        {
+
+        public void AddAtmCellToInputPort(AtmCell cell, int portNumber) {
             //Console.WriteLine("Wyszukiwanie portu wejściowego...");
-            foreach (Port inPort in inputPorts)
-            {
-                if (portNumber == inPort.getPortNumber())
-                {
-                    inPort.addATMCell(cell);
+            foreach (var inPort in _inputPorts)
+                if (portNumber == inPort.GetPortNumber()) {
+                    inPort.AddAtmCell(cell);
                     //Console.WriteLine("Dodanie komórki ATM do portu o łączu wejściowym " + inPort.getLinkNumber());
 
-                    lock (matrixThread)
-                    {
-                        Monitor.Pulse(matrixThread);
+                    lock (_matrixThread) {
+                        Monitor.Pulse(_matrixThread);
                     }
-                    
+
                     return;
                 }
-            }    
         }
 
-       
-        /* Metoda zmieniająca VPI, VCI na podstawie tabeli */
-        public bool commute(ATMCell cell, int inPortNumber)
-        {
-            //Console.WriteLine("tu wchodzi");
-            CommutationTableRow row = commutationTable.check(cell.VPI, cell.VCI, inPortNumber);
-            if (row != null)
-            {
-                cell.VPI = row.getOutVPI();
-                if (row.getOutVCI() != -1)
-                    cell.VCI = row.getOutVCI();
 
-                Console.WriteLine("Zmiana VPI/VCI na " + cell.VPI + "/" + cell.VCI + " Wrzucenie komórki do portu wyjściowego o łączu " + row.getOutPort());
-                return addATMCellToOutputPort(cell, row.getOutPort());
+        /* Metoda zmieniająca VPI, VCI na podstawie tabeli */
+
+        public bool Commute(AtmCell cell, int inPortNumber) {
+            //Console.WriteLine("tu wchodzi");
+            var row = _commutationTable.Check(cell.Vpi, cell.Vci, inPortNumber);
+            if (row != null) {
+                cell.Vpi = row.GetOutVpi();
+                if (row.GetOutVci() != -1)
+                    cell.Vci = row.GetOutVci();
+
+                Console.WriteLine("Zmiana VPI/VCI na " + cell.Vpi + "/" + cell.Vci +
+                                  " Wrzucenie komórki do portu wyjściowego o łączu " + row.GetOutPort());
+                return AddAtmCellToOutputPort(cell, row.GetOutPort());
             }
             return false;
         }
 
-        private bool addATMCellToOutputPort(ATMCell cell, int portNumber)
-        {
-            foreach (Port outPort in outputPorts)
-            {
-                if (portNumber == outPort.getPortNumber())
-                {
-                    outPort.addATMCell(cell);
+        private bool AddAtmCellToOutputPort(AtmCell cell, int portNumber) {
+            foreach (var outPort in _outputPorts)
+                if (portNumber == outPort.GetPortNumber()) {
+                    outPort.AddAtmCell(cell);
                     return true;
                 }
-            }
             return false;
         }
 
-        public List<Port> getOutputPortList()
-        {
-            return outputPorts;
+        public List<Port> GetOutputPortList() {
+            return _outputPorts;
         }
 
 
-        public bool createInputPort(int portNumber)
-        {
-            bool isFree = true;
-            foreach (Port port in inputPorts)
-            {
-                if (port.getPortNumber() == portNumber)
+        public bool CreateInputPort(int portNumber) {
+            var isFree = true;
+            foreach (var port in _inputPorts)
+                if (port.GetPortNumber() == portNumber)
                     isFree = false;
-            }
-            if (isFree)
-            {
-                inputPorts.Add(new Port(portNumber));
+            if (isFree) {
+                _inputPorts.Add(new Port(portNumber));
                 Console.WriteLine("Udalo sie utworzyc port wejsciowy " + portNumber);
             }
             else
@@ -145,25 +117,18 @@ namespace NetworkNode
             return isFree;
         }
 
-        public bool createOutputPort(int portNumber)
-        {
-            bool isFree = true;
-            foreach (Port port in outputPorts)
-            {
-                if (port.getPortNumber() == portNumber)
+        public bool CreateOutputPort(int portNumber) {
+            var isFree = true;
+            foreach (var port in _outputPorts)
+                if (port.GetPortNumber() == portNumber)
                     isFree = false;
-            }
-            if (isFree)
-            {
-                outputPorts.Add(new Port(portNumber));
+            if (isFree) {
+                _outputPorts.Add(new Port(portNumber));
                 Console.WriteLine("Udalo sie utworzyc port wyjsciowy " + portNumber);
             }
             else
                 Console.WriteLine("Nie udalo sie utworzyc portu");
-            return isFree;              
+            return isFree;
         }
-
-
-        
     }
 }
