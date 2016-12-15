@@ -37,7 +37,7 @@ namespace ClientNode {
 
             //string selected = comboBoxClients.SelectedItem.ToString();
             addClientToComboBox("hehe");
-            client.addClient(1, 1, 1, "Adam");
+            client.addClient( 1, 1, "Adam");
             
         }
 

@@ -18,19 +18,13 @@ namespace ClientNode {
         [XmlElement("clientName", typeof(string))]
         private string clientName { get; set; }
 
-        [XmlElement("vpi", typeof(int))]
-        private int vpi { get; set; }
-
-        [XmlElement("vci", typeof(int))]
-        private int vci { get; set; }
-
-        [XmlElement("portNumber", typeof(int))]
-        private int portNumber { get; set; }
+        private int portNumber = 10000;
 
         List<ClientTableRow> clients;
         MainForm mainForm;
 
         public ClientNode() : base() {
+            clients = new List<ClientTableRow>();
         }
 
 
@@ -39,14 +33,12 @@ namespace ClientNode {
             clients = new List<ClientTableRow>();
         }
 
-        //------------------------------Do zmiany!-------------------------------------------------
-        public void addClient(int vpi, int vci, int portNumber, string clientName) {
-            clients.Add(new ClientTableRow(vpi, vci, portNumber, clientName));
-            mainForm.addClientToComboBox(clientName);
+        public void addClient(int vpi, int vci, string clientName) {
+            clients.Add(new ClientTableRow(vpi, vci, clientName));
+            //mainForm.addClientToComboBox(clientName);
         }
 
-        //---------------------------------------------------------------------------------------
-        public CableCloudMessage createCableCloudMessage() {
+        public CableCloudMessage createCableCloudMessage(int vpi, int vci) {
             CableCloudMessage cableCloudMessage = new CableCloudMessage(portNumber);
 
             byte[] source = Encoding.UTF8.GetBytes(message);
@@ -91,22 +83,25 @@ namespace ClientNode {
 
         public void ReadXml(XmlReader reader) {
             var stringSerializer = new XmlSerializer(typeof(string));
+            var clientsSerializer = new XmlSerializer(typeof(List<ClientTableRow>));
+
             reader.ReadStartElement("ClientNode");
             clientName= (string)stringSerializer.Deserialize(reader);
-            var intSerializer = new XmlSerializer(typeof(int));
-            vci = (int)intSerializer.Deserialize(reader);
-            vpi = (int)intSerializer.Deserialize(reader);
-            portNumber = (int)intSerializer.Deserialize(reader);
+            reader.ReadStartElement("Clients");
+            clients = clientsSerializer.Deserialize(reader) as List<ClientTableRow>;
+            reader.ReadEndElement();
             reader.ReadEndElement();
         }
 
         public void WriteXml(XmlWriter writer) {
             var stringSerializer = new XmlSerializer(typeof(string));
+            var clientsSerializer = new XmlSerializer(typeof(List<ClientTableRow>));
+
             stringSerializer.Serialize(writer, clientName);
-            var intSerializer = new XmlSerializer(typeof(int));
-            intSerializer.Serialize(writer,vci);
-            intSerializer.Serialize(writer,vpi);
-            intSerializer.Serialize(writer,portNumber);
+
+            writer.WriteStartElement("Clients");
+            clientsSerializer.Serialize(writer, clients);
+            writer.WriteEndElement();
         }
     }
 }
