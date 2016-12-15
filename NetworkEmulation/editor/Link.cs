@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 
 namespace NetworkEmulation.editor {
-    public partial class Link : Control, IMarkable {
+    public partial class Link : Control, IMarkable, IInitializable {
         private readonly NodePictureBox _beginNodePictureBox;
         private readonly NodePictureBox _endNodePictureBox;
         private Pen _pen = DeselectedPen;
@@ -57,6 +57,10 @@ namespace NetworkEmulation.editor {
 
         public void MarkAsOffline() {
             ChangeStyle(OfflinePen);
+        }
+
+        public void Initialize() {
+            throw new System.NotImplementedException();
         }
     }
 }

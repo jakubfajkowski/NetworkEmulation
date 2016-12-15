@@ -70,6 +70,7 @@
       <DependentUpon>LogForm.cs</DependentUpon>
     </Compile>
     <Compile Include="log\LogObject.cs" />
+    <Compile Include="network\Simulation.cs" />
     <Compile Include="SerializableDictionary.cs" />
     <Compile Include="network\SocketNodePortPair.cs" />
     <Compile Include="editor\ClientNodePictureBox.cs">

@@ -7,6 +7,10 @@ namespace NetworkEmulation.editor {
             Image = Resources.ClientNodeNotSelected;
         }
 
+        public override void Initialize() {
+            throw new NotImplementedException();
+        }
+
         public override void MarkAsSelected() {
             Image = Resources.ClientNodeSelected;
         }
