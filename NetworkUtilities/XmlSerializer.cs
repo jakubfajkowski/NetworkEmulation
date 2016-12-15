@@ -4,9 +4,9 @@ using System.Xml;
 using System.Xml.Serialization;
 
 namespace NetworkUtilities {
-    public static class XmlSerializator {
+    public static class XmlSerializer {
         public static string Serialize(IXmlSerializable obj) {
-            var xsSubmit = new XmlSerializer(obj.GetType());
+            var xsSubmit = new System.Xml.Serialization.XmlSerializer(obj.GetType());
             var subReq = obj;
             var xml = "";
             var settings = new XmlWriterSettings();
@@ -34,7 +34,7 @@ namespace NetworkUtilities {
 
         public static string Serialize(object obj) {
             using (var sww = new StringWriter()) {
-                var xml = new XmlSerializer(obj.GetType());
+                var xml = new System.Xml.Serialization.XmlSerializer(obj.GetType());
                 xml.Serialize(sww, obj);
                 return sww.ToString();
             }
@@ -42,7 +42,7 @@ namespace NetworkUtilities {
 
         public static object Deserialize(string serializedObject, Type objectType) {
             using (var sr = new StringReader(serializedObject)) {
-                var xml = new XmlSerializer(objectType);
+                var xml = new System.Xml.Serialization.XmlSerializer(objectType);
                 return xml.Deserialize(sr);
             }
         }

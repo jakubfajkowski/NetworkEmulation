@@ -93,11 +93,11 @@ namespace NetworkEmulationTest {
             var expected =
                 ((SerializableDictionary<SocketNodePortPair, SocketNodePortPair>) cc.GetField("_linkDictionary")).Count;
 
-            var serializedCloud = XmlSerializator.Serialize(cableCloud);
+            var serializedCloud = XmlSerializer.Serialize(cableCloud);
 
             cableCloud.AddLink(RandomSocketNodePortPair(), RandomSocketNodePortPair());
 
-            XmlSerializator.Deserialize(cableCloud, serializedCloud);
+            XmlSerializer.Deserialize(cableCloud, serializedCloud);
 
             var actual =
                 ((SerializableDictionary<SocketNodePortPair, SocketNodePortPair>) cc.GetField("_linkDictionary")).Count;

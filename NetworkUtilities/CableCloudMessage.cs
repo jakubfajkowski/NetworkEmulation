@@ -5,11 +5,25 @@ using System.Text;
 namespace NetworkUtilities {
     [Serializable]
     public class CableCloudMessage {
-        public const int MaxByteBufferSize = 9206;
+        public static int MaxByteBufferSize { get; private set; } = 9206;
+        private static int _maxAtmCellsNumber = 100;
+
+        public static int MaxAtmCellsNumber {
+            get {
+                return _maxAtmCellsNumber;
+            }
+            set {
+                _maxAtmCellsNumber = value;
+                
+                var exampleCloudMessage = new CableCloudMessage(1);
+                exampleCloudMessage.Fill();
+                MaxByteBufferSize = Serialize(exampleCloudMessage).Length;
+            }
+        }
 
         public CableCloudMessage(int portNumber) {
             PortNumber = portNumber;
-            AtmCells = new List<AtmCell>(100);
+            _atmCells = new List<AtmCell>(_maxAtmCellsNumber);
         }
 
         public CableCloudMessage(int portNumber, int vpi, int vci, string message) : this(portNumber) {
@@ -19,35 +33,45 @@ namespace NetworkUtilities {
                 var buffer = new byte[48];
                 if (i <= source.Length - 48) {
                     Buffer.BlockCopy(source, i, buffer, 0, 48);
-                    AtmCells.Add(new AtmCell(vpi, vci, buffer));
+                    _atmCells.Add(new AtmCell(vpi, vci, buffer));
                 }
                 else
                     // gdy długość wiadomości jest mniejsza od 48 bitów, komórka jest wypełniana '0' na pozostałych miejscach
                 {
                     Buffer.BlockCopy(source, i, buffer, 0, source.Length - i);
-                    AtmCells.Add(new AtmCell(vpi, vci, buffer));
+                    _atmCells.Add(new AtmCell(vpi, vci, buffer));
                 }
             }
         }
 
         public int PortNumber { get; set; }
-        public List<AtmCell> AtmCells { get; }
+        private readonly List<AtmCell> _atmCells;
+
+        public List<AtmCell> AtmCells {
+            get { return _atmCells.FindAll(cell => cell.Valid()); }
+        }
 
         public void Add(AtmCell atmCell) {
-            AtmCells.Add(atmCell);
+            _atmCells.Add(atmCell);
+        }
+
+        public void Fill() {
+            while (_atmCells.Count < _maxAtmCellsNumber) {
+                _atmCells.Add(new AtmCell());
+            }
         }
 
         public static byte[] Serialize(CableCloudMessage messageToSerialize) {
-            return Serializator.Serialize(messageToSerialize);
+            return BinarySerializer.Serialize(messageToSerialize);
         }
 
         public static CableCloudMessage Deserialize(byte[] data) {
-            return Serializator.Deserialize(data) as CableCloudMessage;
+            return BinarySerializer.Deserialize(data) as CableCloudMessage;
         }
 
         public override string ToString() {
             var sb = new StringBuilder();
-            foreach (var cell in AtmCells) sb.Append(Encoding.UTF8.GetString(cell.Data));
+            foreach (var cell in _atmCells) sb.Append(Encoding.UTF8.GetString(cell.Data));
             return sb.ToString();
         }
     }

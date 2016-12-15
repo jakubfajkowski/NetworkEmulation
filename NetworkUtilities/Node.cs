@@ -86,7 +86,7 @@ namespace NetworkUtilities {
 
         private void ConnectToCloud() {
             var udpClient = new UdpClient();
-            var bytesToSend = Serializator.Serialize(CableCloudTcpPort);
+            var bytesToSend = BinarySerializer.Serialize(CableCloudTcpPort);
             var ipEndpoint = new IPEndPoint(IPAddress.Loopback, CableCloudUdpPort);
             udpClient.Send(bytesToSend, bytesToSend.Length, ipEndpoint);
         }

@@ -31,7 +31,7 @@ namespace NetworkEmulation.network {
         }
 
         public void ReadXml(XmlReader reader) {
-            var linkSerializer = new XmlSerializer(_linkDictionary.GetType());
+            var linkSerializer = new System.Xml.Serialization.XmlSerializer(_linkDictionary.GetType());
 
             reader.ReadStartElement("CableCloud");
             reader.ReadStartElement("Links");
@@ -42,7 +42,7 @@ namespace NetworkEmulation.network {
         }
 
         public void WriteXml(XmlWriter writer) {
-            var linkSerializer = new XmlSerializer(_linkDictionary.GetType());
+            var linkSerializer = new System.Xml.Serialization.XmlSerializer(_linkDictionary.GetType());
 
             writer.WriteStartElement("Links");
             linkSerializer.Serialize(writer, _linkDictionary);

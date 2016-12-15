@@ -27,7 +27,7 @@ namespace NetworkUtilitiesTests {
 
             return Task.Run(async () => {
                 var receivedData = await udpListener.ReceiveAsync();
-                return Serializator.Deserialize(receivedData.Buffer) as int?;
+                return BinarySerializer.Deserialize(receivedData.Buffer) as int?;
             });
         }
     }

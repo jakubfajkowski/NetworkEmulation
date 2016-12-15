@@ -11,10 +11,10 @@ namespace ClientNodeTest {
 
             cn.SetFieldOrProperty("ClientName", "Test");
 
-            var serializedClientNode = XmlSerializator.Serialize(expectedClientNode);
+            var serializedClientNode = XmlSerializer.Serialize(expectedClientNode);
 
             var actualClientNode =
-                XmlSerializator.Deserialize(serializedClientNode, typeof(ClientNode.ClientNode)) as
+                XmlSerializer.Deserialize(serializedClientNode, typeof(ClientNode.ClientNode)) as
                     ClientNode.ClientNode;
         }
 
@@ -29,10 +29,10 @@ namespace ClientNodeTest {
             expectedClientNode.AddClient("Misiek", 2, 5, 6);
 
 
-            var serializedClientNode = XmlSerializator.Serialize(expectedClientNode);
+            var serializedClientNode = XmlSerializer.Serialize(expectedClientNode);
 
             var actualClientNode =
-                XmlSerializator.Deserialize(serializedClientNode, typeof(ClientNode.ClientNode)) as
+                XmlSerializer.Deserialize(serializedClientNode, typeof(ClientNode.ClientNode)) as
                     ClientNode.ClientNode;
         }
     }

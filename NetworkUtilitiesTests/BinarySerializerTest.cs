@@ -4,12 +4,12 @@ using NetworkUtilities;
 
 namespace NetworkUtilitiesTests {
     [TestClass]
-    public class SerializatorTest {
+    public class BinarySerializerTest {
         [TestMethod]
         public void SerializeTest() {
             var message = new CableCloudMessage(6321);
-            var data = Serializator.Serialize(message);
-            var obj = Serializator.Deserialize(data);
+            var data = BinarySerializer.Serialize(message);
+            var obj = BinarySerializer.Deserialize(data);
             var msg = new CableCloudMessage(1);
             Debug.WriteLine(msg.PortNumber);
             if (obj is CableCloudMessage)
