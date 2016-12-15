@@ -30,5 +30,11 @@
                 return false;
         }
 
+        // Sprawdza czy dane połączenie ma punkty końcowe w węzłach node1 i node2
+        public bool checkNodes(int node1, int node2)
+        {
+            return (node1 == node1InputPort) && (node2 == node2InputPort);
+        }
+
     }
 }

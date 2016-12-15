@@ -102,7 +102,7 @@ namespace NetworkNode
                 if (row.getOutVCI() != -1)
                     cell.VCI = row.getOutVCI();
 
-                //Console.WriteLine("Zmiana VPI/VCI na " + cell.VPI + "/" + cell.VCI + " Wrzucenie komórki do portu wyjściowego o łączu " + row.getOutPort());
+                Console.WriteLine("Zmiana VPI/VCI na " + cell.VPI + "/" + cell.VCI + " Wrzucenie komórki do portu wyjściowego o łączu " + row.getOutPort());
                 return addATMCellToOutputPort(cell, row.getOutPort());
             }
             return false;
@@ -127,14 +127,40 @@ namespace NetworkNode
         }
 
 
-        public void createInputPort(int portNumber)
+        public bool createInputPort(int portNumber)
         {
-            inputPorts.Add(new Port(portNumber));
+            bool isFree = true;
+            foreach (Port port in inputPorts)
+            {
+                if (port.getPortNumber() == portNumber)
+                    isFree = false;
+            }
+            if (isFree)
+            {
+                inputPorts.Add(new Port(portNumber));
+                Console.WriteLine("Udalo sie utworzyc port wejsciowy " + portNumber);
+            }
+            else
+                Console.WriteLine("Nie udalo sie utworzyc portu");
+            return isFree;
         }
 
-        public void createOutputPort(int portNumber)
+        public bool createOutputPort(int portNumber)
         {
-            outputPorts.Add(new Port(portNumber));
+            bool isFree = true;
+            foreach (Port port in outputPorts)
+            {
+                if (port.getPortNumber() == portNumber)
+                    isFree = false;
+            }
+            if (isFree)
+            {
+                outputPorts.Add(new Port(portNumber));
+                Console.WriteLine("Udalo sie utworzyc port wyjsciowy " + portNumber);
+            }
+            else
+                Console.WriteLine("Nie udalo sie utworzyc portu");
+            return isFree;              
         }
 
 

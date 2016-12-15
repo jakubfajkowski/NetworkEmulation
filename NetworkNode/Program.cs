@@ -1,4 +1,5 @@
-﻿using NetworkUtilities;
+﻿using NetworkEmulation.network;
+using NetworkUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,51 +15,50 @@ namespace NetworkNode {
 
         static void Main(string[] args) {
 
-          
-           CableCloudMessage message = new CableCloudMessage(11);
-            for (int i = 0; i < 8; i++)
-            {
-                message.add(new ATMCell(4, 42, null));
-                message.add(new ATMCell(3, 90, null));
-                message.add(new ATMCell(4, 42, null));
-                message.add(new ATMCell(1, 2, null));
-            }
-          /*   byte[] dd = CableCloudMessage.serialize(message);
-            Console.WriteLine("wielkosc " + dd.Length);
-            CableCloudMessage ddd = CableCloudMessage.deserialize(dd);
-            Console.WriteLine("wychodzi");
-            Console.WriteLine("link "+ ddd.portNumber);
-            Console.WriteLine("wychodzi");
-            
-            */
-
+            NetworkMangmentSystem nms = new NetworkMangmentSystem();        
             NetworkNode networkNode = new NetworkNode();
-            addConnection(networkNode);
-            Test1(networkNode);
+            NetworkNode networkNode2 = new NetworkNode();
+            NetworkNode networkNode3 = new NetworkNode();
+            //addConnection(networkNode);
+            //Test1(networkNode);
 
-
-            //Thread.Sleep(500);
             
+
+            createConnection(networkNode, networkNode2, networkNode3, nms);
+
+            Console.In.ReadLine();
+        }
+
+        static void createConnection(NetworkNode nn1, NetworkNode nn2, NetworkNode nn3, NetworkMangmentSystem nms)
+        {
+            //nms.createLink(nn1.networkNodeAgent.listenUdpPort, 12, nn2.networkNodeAgent.listenUdpPort, 13);
+            //nms.createLink(nn2.networkNodeAgent.listenUdpPort, 24, nn3.networkNodeAgent.listenUdpPort, 44);
+            //nms.createLink(nn1.networkNodeAgent.listenUdpPort, 1, nn3.networkNodeAgent.listenUdpPort, 2);
+
+            nn1.commutationMatrix.createInputPort(1);
+            nn1.commutationMatrix.createOutputPort(12);
+
+            nms.sendConnectionToNetworkNodeAgent(nn1.networkNodeAgent.listenUdpPort, 11, 34, 1, 29, 56, 12);
+            nms.sendConnectionToNetworkNodeAgent(nn1.networkNodeAgent.listenUdpPort, 29, -1, 13, 39, -1, 24);
+            nms.sendConnectionToNetworkNodeAgent(nn1.networkNodeAgent.listenUdpPort, 39, 56, 44, 12, 4, 2);
+
+            CableCloudMessage message = new CableCloudMessage(1);
+            for (int i = 0; i < 1; i++)
+            {
+                message.add(new ATMCell(11,34, null));
+            }
+
+            Thread.Sleep(1000);
             TcpClient client = new TcpClient();
-            client.Connect(IPAddress.Loopback, networkNode.cloudPort);
-            //Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
+            client.Connect(IPAddress.Loopback, nn1.cloudPort);
+            
             byte[] data = CableCloudMessage.serialize(message);
             NetworkStream stream = client.GetStream();
             stream.Write(data, 0, data.Length);
-            //Thread.Sleep(10);
-            //stream.Write(data, 0, data.Length);
-            //Thread.Sleep(10);
-            //stream.Write(data, 0, data.Length);
-            //Thread.Sleep(10);
-            //stream.Write(data, 0, data.Length);  
-            //Console.WriteLine("Sent: {0}", message);
 
-            Thread.Sleep(1000);
-            stream.Write(data, 0, data.Length);
+            // Thread.Sleep(1000);
+            // nms.createLink(nn1.networkNodeAgent.listenUdpPort, nn2.networkNodeAgent.listenUdpPort);
 
-
-
-            Console.In.ReadLine();
         }
 
         static void addConnection(NetworkNode networkNode)
@@ -78,64 +78,46 @@ namespace NetworkNode {
 
         static void Test1(NetworkNode networkNode)
         {
+            CableCloudMessage message = new CableCloudMessage(11);
+            for (int i = 0; i < 8; i++)
+            {
+                message.add(new ATMCell(4, 42, null));
+                message.add(new ATMCell(3, 90, null));
+                message.add(new ATMCell(4, 42, null));
+                message.add(new ATMCell(1, 2, null));
+            }
+            /*   byte[] dd = CableCloudMessage.serialize(message);
+              Console.WriteLine("wielkosc " + dd.Length);
+              CableCloudMessage ddd = CableCloudMessage.deserialize(dd);
+              Console.WriteLine("wychodzi");
+              Console.WriteLine("link "+ ddd.portNumber);
+              Console.WriteLine("wychodzi");
 
-            /*   Console.WriteLine("Dodawanie komorki ATM");
-               networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null), 11);
-               Thread.Sleep(500);
-               networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(1, 2, null), 23);
-               networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null), 23);
-               Thread.Sleep(500);
-               networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(1, 2, null), 11);
-               networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(1, 2, null), 31);
-               networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(1, 2, null), 23);
-                 Thread.Sleep(3000);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null), 11);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(1, 2, null), 31);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(1, 2, null), 11);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null), 11);
-                 Thread.Sleep(500);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null), 23);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(3, 90, null), 23);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(3, 90, null), 23);
-                 Thread.Sleep(500);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null), 11);
-                 Thread.Sleep(5000);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(3, 90, null), 23);
-                 Thread.Sleep(500);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null), 11);
-                 Thread.Sleep(500);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null), 11);
-                 Thread.Sleep(500);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null), 11);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(3, 90, null), 23);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(3, 90, null), 23);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(3, 90, null), 31);
-                 networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(1, 2, null), 31);
-               */
-/*
-            CableCloudMessage message = new CableCloudMessage(23);
-            for (int i=0;i<32;i++)
-            {
-                message.add(new ATMCell(4, 42, null));
-                message.add(new ATMCell(3, 90, null));
-                message.add(new ATMCell(4, 42, null));
-                message.add(new ATMCell(1, 2, null));
-            }
-            networkNode.receiveCableCloudMessage(message);
-            message = new CableCloudMessage(11);
-            Thread.Sleep(10000);
-            for (int i = 0; i < 32; i++)
-            {
-                message.add(new ATMCell(4, 42, null));
-                message.add(new ATMCell(3, 90, null));
-                message.add(new ATMCell(4, 42, null));
-                message.add(new ATMCell(1, 2, null));
-            }
-            networkNode.receiveCableCloudMessage(message);
-            */
-              
-            //for (int i=0; i<100;i++)
-            //networkNode.commutationMatrix.addATMCellToInputPort(new ATMCell(4, 42, null));
+              */
+
+           
+            addConnection(networkNode);
+          
+
+
+            //Thread.Sleep(500);
+
+            TcpClient client = new TcpClient();
+            client.Connect(IPAddress.Loopback, networkNode.cloudPort);
+            //Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
+            byte[] data = CableCloudMessage.serialize(message);
+            NetworkStream stream = client.GetStream();
+            stream.Write(data, 0, data.Length);
+            //Thread.Sleep(10);
+            //stream.Write(data, 0, data.Length);
+            //Thread.Sleep(10);
+            //stream.Write(data, 0, data.Length);
+            //Thread.Sleep(10);
+            //stream.Write(data, 0, data.Length);  
+            //Console.WriteLine("Sent: {0}", message);
+
+            Thread.Sleep(1000);
+            stream.Write(data, 0, data.Length);
 
         }
 
