@@ -73,11 +73,11 @@ namespace NetworkEmulation.network {
             try {
                 nodeTcpClient.Connect(IPAddress.Loopback, port);
                 _nodesTcpClients.Add(port, nodeTcpClient);
-                UpdateStatus("Connected to Node on port: " + port);
+                UpdateState("Connected to Node on port: " + port);
                 ListenForNodeMessages(nodeTcpClient, port);
             }
             catch (SocketException e) {
-                UpdateStatus(e.Message);
+                UpdateState(e.Message);
             }
         }
 
@@ -92,7 +92,7 @@ namespace NetworkEmulation.network {
                             break;
 
                         var cableCloudMessage = CableCloudMessage.deserialize(buffer);
-                        UpdateStatus("Router " + inputPort + ": " + cableCloudMessage.portNumber +
+                        UpdateState("Router " + inputPort + ": " + cableCloudMessage.portNumber +
                                      " - message recieved.");
                         var input = new SocketNodePortPair(cableCloudMessage.portNumber, inputPort);
                         var output = LookUpLinkDictionary(input);
@@ -113,10 +113,10 @@ namespace NetworkEmulation.network {
                 var tcpClient = _nodesTcpClients[outputPort];
 
                 SendBytes(CableCloudMessage.serialize(cableCloudMessage), tcpClient);
-                UpdateStatus("Router " + outputPort + ": " + cableCloudMessage.portNumber + " - message sent.");
+                UpdateState("Router " + outputPort + ": " + cableCloudMessage.portNumber + " - message sent.");
             }
             catch (KeyNotFoundException) {
-                UpdateStatus("Router " + outputPort + ": " + cableCloudMessage.portNumber + " - no avaliable link.");
+                UpdateState("Router " + outputPort + ": " + cableCloudMessage.portNumber + " - no avaliable link.");
             }
         }
 

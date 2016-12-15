@@ -139,9 +139,9 @@ namespace NetworkNode
         }
 
         /* Metoda wywoływana po wczytaniu danych z wejścia */
-        protected override void handleMessage(CableCloudMessage message)
+        protected override void handleMessage(CableCloudMessage cableCloudMessage)
         {
-            receiveCableCloudMessage(message);
+            receiveCableCloudMessage(cableCloudMessage);
         }
     }
 }

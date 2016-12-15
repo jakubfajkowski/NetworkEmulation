@@ -4,7 +4,7 @@
 
         public event StateUpdateHandler OnUpdateState;
 
-        protected void UpdateStatus(string state) {
+        protected void UpdateState(string state) {
             OnUpdateState?.Invoke(this, state);
         }
     }

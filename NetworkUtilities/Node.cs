@@ -74,7 +74,7 @@ namespace NetworkUtilities {
             });
         }
 
-        protected virtual void handleMessage(CableCloudMessage message) {
+        protected virtual void handleMessage(CableCloudMessage cableCloudMessage) {
             //Console.WriteLine("Bazowa");
         }
 
