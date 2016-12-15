@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 using NetworkEmulation.editor;
 
 namespace NetworkEmulation.network {
-    public class Simulation {
+    public class Simulation : IXmlSerializable {
         private CableCloud _cableCloud;
         private List<IInitializable> _elements = new List<IInitializable>();
         private NetworkMangmentSystem _networkMangmentSystem;
@@ -45,6 +48,18 @@ namespace NetworkEmulation.network {
 
         private void KillProcesses() {
             foreach (var process in _processes) process.Kill();
+        }
+
+        public XmlSchema GetSchema() {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader) {
+            throw new System.NotImplementedException();
+        }
+
+        public void WriteXml(XmlWriter writer) {
+            throw new System.NotImplementedException();
         }
     }
 }

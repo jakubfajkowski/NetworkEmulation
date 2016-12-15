@@ -42,7 +42,7 @@
             this.buttonSend.TabIndex = 0;
             this.buttonSend.Text = "Send";
             this.buttonSend.UseVisualStyleBackColor = true;
-            this.buttonSend.Click += new System.EventHandler(this.button1_Click);
+            this.buttonSend.Click += new System.EventHandler(this.buttonSend_Click);
             // 
             // textBoxMessage
             // 
@@ -51,7 +51,6 @@
             this.textBoxMessage.Name = "textBoxMessage";
             this.textBoxMessage.Size = new System.Drawing.Size(240, 70);
             this.textBoxMessage.TabIndex = 1;
-            this.textBoxMessage.TextChanged += new System.EventHandler(this.textBoxMessage_TextChanged);
             // 
             // label1
             // 
@@ -61,25 +60,24 @@
             this.label1.Size = new System.Drawing.Size(50, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Message";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // textBoxReceived
             // 
             this.textBoxReceived.Location = new System.Drawing.Point(262, 25);
             this.textBoxReceived.Multiline = true;
             this.textBoxReceived.Name = "textBoxReceived";
+            this.textBoxReceived.ReadOnly = true;
             this.textBoxReceived.Size = new System.Drawing.Size(240, 70);
             this.textBoxReceived.TabIndex = 3;
-            this.textBoxReceived.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // textBoxEventLog
             // 
             this.textBoxEventLog.Location = new System.Drawing.Point(12, 181);
             this.textBoxEventLog.Multiline = true;
             this.textBoxEventLog.Name = "textBoxEventLog";
+            this.textBoxEventLog.ReadOnly = true;
             this.textBoxEventLog.Size = new System.Drawing.Size(490, 70);
             this.textBoxEventLog.TabIndex = 4;
-            this.textBoxEventLog.TextChanged += new System.EventHandler(this.textBoxEventLog_TextChanged);
             // 
             // label2
             // 
@@ -106,7 +104,6 @@
             this.comboBoxClients.Name = "comboBoxClients";
             this.comboBoxClients.Size = new System.Drawing.Size(136, 21);
             this.comboBoxClients.TabIndex = 7;
-            this.comboBoxClients.SelectedIndexChanged += new System.EventHandler(this.comboBoxClients_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -133,7 +130,6 @@
             this.Controls.Add(this.buttonSend);
             this.Name = "MainForm";
             this.Text = "ClientNode";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

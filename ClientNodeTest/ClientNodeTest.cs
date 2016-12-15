@@ -28,8 +28,8 @@ namespace ClientNodeTest {
 
             cn.SetFieldOrProperty("ClientName", "Test");
 
-            expectedClientNode.addClient(3, 4, "Fajka");
-            expectedClientNode.addClient(5, 6, "Misiek");
+            expectedClientNode.AddClient("Fajka", 1, 3, 4);
+            expectedClientNode.AddClient("Misiek", 2, 5, 6);
 
 
             var serializedClientNode = XmlSerializator.Serialize(expectedClientNode as object);

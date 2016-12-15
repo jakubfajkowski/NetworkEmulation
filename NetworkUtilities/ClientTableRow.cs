@@ -1,25 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
-
-namespace ClientNode {
+﻿namespace ClientNode {
     public class ClientTableRow {
-        public string clientName { get; set; }
-        public int vpi { get; set; }
-        public int vci { get; set; }
+        public string ClientName { get; set; }
+        public int PortNumber { get; set; }
+        public int Vpi { get; set; }
+        public int Vci { get; set; }
 
         public ClientTableRow() {}
 
-        public ClientTableRow(int vpi, int vci, string clientName) {
-            this.vpi = vpi;
-            this.vci = vci;
-            this.clientName = clientName;
-
+        public ClientTableRow(string clientName, int portNumber, int vpi, int vci) {
+            ClientName = clientName;
+            PortNumber = portNumber;
+            Vpi = vpi;
+            Vci = vci;
         }
     }
 }

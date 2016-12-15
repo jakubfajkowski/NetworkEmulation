@@ -1,73 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using NetworkUtilities;
 
 namespace ClientNode {
     public partial class MainForm : Form {
-
-        ClientNode client;
-        List<ATMCell> atmCells;
-        CableCloudMessage cableCloudMessage;
+        private ClientNode _client;
+        private List<ATMCell> _atmCells;
+        private CableCloudMessage _cableCloudMessage;
 
         public MainForm(string[] args) {
             InitializeComponent();
-            client = new ClientNode(args);
+            string.Join(" ", args);
+            _client = new ClientNode();
+            _client.OnUpdateState += UpdateState;
+            _client.OnMessageRecieved += MessageRecieved;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-            client.message = textBoxMessage.Text;
-            //cableCloudMessage = client.createCableCloudMessage(1, 1, client.message, 1);
-
-            //client.readDataFromATMCells(atmCells);
-            //textBoxReceived.Text = client.receivedMessage;
-
-            //string selected = comboBoxClients.SelectedItem.ToString();
-            addClientToComboBox("hehe");
-            client.addClient(1, 1, "Adam");
-            
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBoxMessage_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        public void addClientToComboBox(string clientName) {
+        public void AddClientToComboBox(string clientName) {
             comboBoxClients.Items.Add(clientName);
         }
 
-        private void comboBoxClients_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        private void buttonSend_Click(object sender, EventArgs e) {
+            var message = textBoxMessage.Text;
+            var recieverName = comboBoxClients.SelectedItem as string;
 
+            _client.SendMessage(message, recieverName);
         }
 
-        private void textBoxEventLog_TextChanged(object sender, EventArgs e)
-        {
+        private void MessageRecieved(object sender, string message) {
+            textBoxReceived.Text += message;
+        }
 
+        private void UpdateState(object sender, string state) {
+            textBoxEventLog.Text += CreateLogLine(state);
+        }
+
+        private string CreateLogLine(string text) {
+            return $"[{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}] {text}\n";
         }
     }
 }
