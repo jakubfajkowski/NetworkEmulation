@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkEmulationTest", "Net
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientNodeTest", "ClientNodeTest\ClientNodeTest.csproj", "{EA3E1296-A12E-4705-AC57-9D6E36A7CF79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkNodeTest", "NetworkNodeTest\NetworkNodeTest.csproj", "{E1F48DC0-4DE9-462D-8045-1174CB0726A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{EA3E1296-A12E-4705-AC57-9D6E36A7CF79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA3E1296-A12E-4705-AC57-9D6E36A7CF79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA3E1296-A12E-4705-AC57-9D6E36A7CF79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1F48DC0-4DE9-462D-8045-1174CB0726A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1F48DC0-4DE9-462D-8045-1174CB0726A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1F48DC0-4DE9-462D-8045-1174CB0726A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1F48DC0-4DE9-462D-8045-1174CB0726A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

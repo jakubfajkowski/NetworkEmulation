@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using NetworkEmulation.log;
 
 namespace NetworkEmulation.network {
-    public class NetworkMangmentSystem : LogObject {
+    public class NetworkManagmentSystem : LogObject {
         private const int ListenUdpPort = 6666;
         private readonly List<ConnectionTableRow> _connectionTable;
         private readonly Dictionary<int, DateTime> _keepAliveDictionary;
@@ -19,7 +19,7 @@ namespace NetworkEmulation.network {
         private readonly List<string> _receivedMessagesList;
 
 
-        public NetworkMangmentSystem() {
+        public NetworkManagmentSystem() {
             _keepAliveDictionary = new Dictionary<int, DateTime>();
             _connectionTable = new List<ConnectionTableRow>();
 

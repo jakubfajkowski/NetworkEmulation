@@ -46,7 +46,7 @@ namespace ClientNode {
             var portNumber = clientTableRow.PortNumber;
 
             var cableCloudMessage = new CableCloudMessage(portNumber, vpi, vci, message);
-            Send(CableCloudMessage.Serialize(cableCloudMessage));
+            Send(cableCloudMessage.Serialize());
             UpdateState("Sent: " + cableCloudMessage.AtmCells.Count + " ATMCells.");
         }
 

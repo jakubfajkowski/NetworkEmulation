@@ -48,5 +48,27 @@
         public int GetOutPort() {
             return _outPortNumber;
         }
+
+        public override bool Equals(object obj) {
+            var other = obj as CommutationTableRow;
+            if (other == null)
+                return false;
+
+            return _inPortNumber == other._inPortNumber &&
+                   _inVci == other._inVci &&
+                   _inVpi == other._inVpi &&
+                   _outPortNumber == other._outPortNumber &&
+                   _outVci == other._outVci &&
+                   _outVpi == other._outVpi;
+        }
+
+        public override int GetHashCode() {
+            return _inPortNumber ^
+                   _inVci ^
+                   _inVpi ^
+                   _outPortNumber ^
+                   _outVci ^
+                   _outVpi;
+        }
     }
 }

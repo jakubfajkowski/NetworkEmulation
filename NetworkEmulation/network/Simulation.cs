@@ -10,7 +10,7 @@ namespace NetworkEmulation.network {
     public class Simulation : IXmlSerializable {
         private CableCloud _cableCloud;
         private List<IInitializable> _elements = new List<IInitializable>();
-        private NetworkMangmentSystem _networkMangmentSystem;
+        private NetworkManagmentSystem _networkMangmentSystem;
         private List<Process> _processes = new List<Process>();
 
         public Simulation() {
@@ -31,7 +31,7 @@ namespace NetworkEmulation.network {
 
         private void Prepare() {
             _cableCloud = new CableCloud();
-            _networkMangmentSystem = new NetworkMangmentSystem();
+            _networkMangmentSystem = new NetworkManagmentSystem();
             _elements = new List<IInitializable>();
             _processes = new List<Process>();
         }

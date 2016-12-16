@@ -69,7 +69,7 @@ namespace NetworkEmulationTest {
 
             cableCloud.AddLink(input1, output);
             cableCloud.AddLink(input2, output);
-            _bytesToSend = CableCloudMessage.Serialize(CreateCableCloudMessage(1, 100));
+            _bytesToSend = CreateCableCloudMessage(1, 100).Serialize();
 
             var listenerTask1 = StartTcpListener(port1, RecieveMessage);
             ConnectToCableCloud(port1);

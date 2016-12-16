@@ -117,7 +117,7 @@ namespace NetworkEmulation.network {
         private void PassCableCloudMessage(CableCloudMessage cableCloudMessage, int outputPort) {
                 var tcpClient = _nodesTcpClients[outputPort];
 
-                SendBytes(CableCloudMessage.Serialize(cableCloudMessage), tcpClient);
+                SendBytes(cableCloudMessage.Serialize(), tcpClient);
                 UpdateState("Router " + outputPort + ": " + cableCloudMessage.PortNumber + " - message sent.");
         }
 

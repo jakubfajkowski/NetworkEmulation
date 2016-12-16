@@ -99,7 +99,7 @@ namespace NetworkNode {
 
         public bool RemoveConnectionFromTable(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci,
             int outPortNumber) {
-            return _commutationTable.RemoveConnection(inVpi, inVci, inPortNumber, outVpi, outVci, outPortNumber);
+            return _commutationTable.RemoveConnection(new CommutationTableRow(inVpi, inVci, inPortNumber, outVpi, outVci, outPortNumber));
         }
 
         /* Getter potrzebny do tego, żeby przekazać obiekt do pola komutacyjnego (CommutationMatrix) */

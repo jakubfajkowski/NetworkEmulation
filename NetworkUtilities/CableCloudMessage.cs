@@ -17,7 +17,7 @@ namespace NetworkUtilities {
                 
                 var exampleCloudMessage = new CableCloudMessage(1);
                 exampleCloudMessage.Fill();
-                MaxByteBufferSize = Serialize(exampleCloudMessage).Length;
+                MaxByteBufferSize = exampleCloudMessage.Serialize().Length;
             }
         }
 
@@ -61,8 +61,8 @@ namespace NetworkUtilities {
             }
         }
 
-        public static byte[] Serialize(CableCloudMessage messageToSerialize) {
-            return BinarySerializer.Serialize(messageToSerialize);
+        public byte[] Serialize() {
+            return BinarySerializer.Serialize(this);
         }
 
         public static CableCloudMessage Deserialize(byte[] data) {

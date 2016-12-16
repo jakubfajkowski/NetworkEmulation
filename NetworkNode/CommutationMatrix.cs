@@ -12,20 +12,15 @@ namespace NetworkNode {
 
         private readonly List<Port> _inputPorts;
         private readonly Thread _matrixThread;
-        //private List<ATMCell> matrixBuffer;
-        /* Obiekt potrzebny do wywołania metody addATMCellToOutBuffer() klasy NetworkNode*/
-        private NetworkNode _networkNode;
-        private readonly List<Port> _outputPorts;
+        public readonly List<Port> OutputPorts;
 
         private readonly bool _timeToQuit = false;
 
 
-        public CommutationMatrix(CommutationTable comTable, NetworkNode networkNode) {
-            this._networkNode = networkNode;
+        public CommutationMatrix(CommutationTable comTable) {
             _commutationTable = comTable;
-            //matrixBuffer = new List<ATMCell>();
             _inputPorts = new List<Port>();
-            _outputPorts = new List<Port>();
+            OutputPorts = new List<Port>();
 
             _matrixThread = new Thread(RunThread);
             _matrixThread.Start();
@@ -35,11 +30,9 @@ namespace NetworkNode {
         private void RunThread() {
             var j = 0;
             while (!_timeToQuit) {
-                //Console.WriteLine("Wywolanie run matrix: " + j++);
                 _commuted = false;
 
-                foreach (var inPort in _inputPorts) {
-                    //Console.WriteLine("Wchodzi");     
+                foreach (var inPort in _inputPorts) { 
                     var cell = inPort.GetAtmCell();
                     if (cell != null) {
                         Commute(cell, inPort.GetPortNumber());
@@ -75,8 +68,7 @@ namespace NetworkNode {
         /* Metoda zmieniająca VPI, VCI na podstawie tabeli */
 
         public bool Commute(AtmCell cell, int inPortNumber) {
-            //Console.WriteLine("tu wchodzi");
-            var row = _commutationTable.Check(cell.Vpi, cell.Vci, inPortNumber);
+            var row = _commutationTable.FindRow(cell.Vpi, cell.Vci, inPortNumber);
             if (row != null) {
                 cell.Vpi = row.GetOutVpi();
                 if (row.GetOutVci() != -1)
@@ -90,7 +82,7 @@ namespace NetworkNode {
         }
 
         private bool AddAtmCellToOutputPort(AtmCell cell, int portNumber) {
-            foreach (var outPort in _outputPorts)
+            foreach (var outPort in OutputPorts)
                 if (portNumber == outPort.GetPortNumber()) {
                     outPort.AddAtmCell(cell);
                     return true;
@@ -98,36 +90,25 @@ namespace NetworkNode {
             return false;
         }
 
-        public List<Port> GetOutputPortList() {
-            return _outputPorts;
-        }
-
-
         public bool CreateInputPort(int portNumber) {
-            var isFree = true;
-            foreach (var port in _inputPorts)
-                if (port.GetPortNumber() == portNumber)
-                    isFree = false;
-            if (isFree) {
-                _inputPorts.Add(new Port(portNumber));
-                Console.WriteLine("Udalo sie utworzyc port wejsciowy " + portNumber);
-            }
-            else
-                Console.WriteLine("Nie udalo sie utworzyc portu");
-            return isFree;
+            return CreatePort(portNumber, _inputPorts);
         }
 
         public bool CreateOutputPort(int portNumber) {
+            return CreatePort(portNumber, OutputPorts);
+        }
+
+        public bool CreatePort(int portNumber, List<Port> ports) {
             var isFree = true;
-            foreach (var port in _outputPorts)
+            foreach (var port in ports)
                 if (port.GetPortNumber() == portNumber)
                     isFree = false;
             if (isFree) {
-                _outputPorts.Add(new Port(portNumber));
-                Console.WriteLine("Udalo sie utworzyc port wyjsciowy " + portNumber);
+                ports.Add(new Port(portNumber));
+                Console.WriteLine("Port " + portNumber + " has been created.");
             }
             else
-                Console.WriteLine("Nie udalo sie utworzyc portu");
+                Console.WriteLine("Port " + portNumber + " is already used.");
             return isFree;
         }
     }
