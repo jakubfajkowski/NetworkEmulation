@@ -5,7 +5,7 @@ using System.Text;
 namespace NetworkUtilities {
     [Serializable]
     public class CableCloudMessage {
-        public static int MaxByteBufferSize { get; private set; } = 9206;
+        public static int MaxByteBufferSize { get; private set; } = 9204;
         private static int _maxAtmCellsNumber = 100;
 
         public static int MaxAtmCellsNumber {
@@ -71,7 +71,7 @@ namespace NetworkUtilities {
 
         public override string ToString() {
             var sb = new StringBuilder();
-            foreach (var cell in _atmCells) sb.Append(Encoding.UTF8.GetString(cell.Data));
+            foreach (var cell in AtmCells) sb.Append(Encoding.UTF8.GetString(cell.Data));
             return sb.ToString();
         }
     }

@@ -96,6 +96,7 @@ namespace NetworkNode {
         /* Metoda wywoływana po wczytaniu danych z wejścia */
 
         protected override void HandleMessage(CableCloudMessage cableCloudMessage) {
+            Console.WriteLine("NetworkNode - HandleMessage: " + cableCloudMessage.PortNumber);
             ReceiveCableCloudMessage(cableCloudMessage);
         }
     }

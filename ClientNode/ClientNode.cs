@@ -47,12 +47,12 @@ namespace ClientNode {
 
             var cableCloudMessage = new CableCloudMessage(portNumber, vpi, vci, message);
             Send(CableCloudMessage.Serialize(cableCloudMessage));
-            UpdateState("Sent: " + cableCloudMessage.AtmCells.Count + "ATMCells.");
+            UpdateState("Sent: " + cableCloudMessage.AtmCells.Count + " ATMCells.");
         }
 
         protected override void HandleMessage(CableCloudMessage cableCloudMessage) {
             MessageRecieved(cableCloudMessage.ToString());
-            UpdateState("Recieved: " + cableCloudMessage.AtmCells.Count + "ATMCells.");
+            UpdateState("Recieved: " + cableCloudMessage.AtmCells.Count + " ATMCells.");
         }
     }
 }

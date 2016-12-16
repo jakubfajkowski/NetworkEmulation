@@ -62,7 +62,7 @@ namespace NetworkEmulation.network {
                     Online = true;
                     while (true) {
                         var receivedData = await _connectionUdpClient.ReceiveAsync();
-                        EstabilishNodeConnection(BitConverter.ToInt32(receivedData.Buffer, 0));
+                        EstabilishNodeConnection((int) BinarySerializer.Deserialize(receivedData.Buffer));
                     }
                 }
             });
@@ -95,10 +95,16 @@ namespace NetworkEmulation.network {
                         UpdateState("Router " + inputPort + ": " + cableCloudMessage.PortNumber +
                                     " - message recieved.");
                         var input = new SocketNodePortPair(cableCloudMessage.PortNumber, inputPort);
-                        var output = LookUpLinkDictionary(input);
-                        cableCloudMessage.PortNumber = output.NodePortNumber;
 
-                        PassCableCloudMessage(cableCloudMessage, output.SocketPortNumber);
+                        try {
+                            var output = LookUpLinkDictionary(input);
+                            cableCloudMessage.PortNumber = output.NodePortNumber;
+
+                            PassCableCloudMessage(cableCloudMessage, output.SocketPortNumber);
+                        }
+                        catch (KeyNotFoundException) {
+                            UpdateState("Router " + input + ": " + cableCloudMessage.PortNumber + " - no avaliable link.");
+                        }
                     }
                 }
             });
@@ -109,15 +115,10 @@ namespace NetworkEmulation.network {
         }
 
         private void PassCableCloudMessage(CableCloudMessage cableCloudMessage, int outputPort) {
-            try {
                 var tcpClient = _nodesTcpClients[outputPort];
 
                 SendBytes(CableCloudMessage.Serialize(cableCloudMessage), tcpClient);
                 UpdateState("Router " + outputPort + ": " + cableCloudMessage.PortNumber + " - message sent.");
-            }
-            catch (KeyNotFoundException) {
-                UpdateState("Router " + outputPort + ": " + cableCloudMessage.PortNumber + " - no avaliable link.");
-            }
         }
 
         private void SendBytes(byte[] data, TcpClient tcpClient) {

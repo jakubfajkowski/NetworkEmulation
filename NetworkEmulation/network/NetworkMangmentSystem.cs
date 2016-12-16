@@ -49,6 +49,8 @@ namespace NetworkEmulation.network {
             SendMessageToNetworkNode(
                 "CreateConnection " + inVpi + " " + inVci + " " + inPortNumber + " " + outVpi + " " + outVci + " " +
                 outPortNumber, nodeUdpPort);
+            UpdateState("Message to " + nodeUdpPort + ": " +  "CreateConnection " + inVpi + " " + inVci + " " + inPortNumber + " " + outVpi + " " + outVci + " " +
+                outPortNumber);
         }
 
         // Utworzenie portów do pola komutacyjnego 

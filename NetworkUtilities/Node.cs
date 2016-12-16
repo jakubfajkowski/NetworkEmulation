@@ -76,7 +76,6 @@ namespace NetworkUtilities {
             Task.Run(() => {
                 try {
                     _nodeTcpClient.GetStream().Write(data, 0, data.Length);
-                    Debug.WriteLine("SendData: " + Encoding.ASCII.GetString(data) + " dd");
                 }
                 catch {
                     Debug.WriteLine("Sending ERROR!");
