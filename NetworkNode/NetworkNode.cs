@@ -15,24 +15,37 @@ namespace NetworkNode {
 
         public CommutationMatrix CommutationMatrix;
         public NetworkNodeAgent NetworkNodeAgent;
-        private readonly Thread _networkNodeThread;
+        private Thread _networkNodeThread;
         
         private bool _sent;
 
-        private readonly bool _timeToQuit = false;
+        private bool _timeToQuit;
 
-        public NetworkNode() {
-            NetworkNodeAgent = new NetworkNodeAgent(RandomFreePort());
-            CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable());
+        public NetworkNode(int inputPortNumber, int outputPortNumber) {
+            NetworkNodeAgent = new NetworkNodeAgent(RandomFreePort(), this);
+            CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), inputPortNumber, outputPortNumber);
             NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
 
+            startThread();     
+        }
+
+        public void startThread()
+        {
+            _timeToQuit = false;
             _networkNodeThread = new Thread(RunThread);
             _networkNodeThread.Start();
-            
+            CommutationMatrix.startThread();
+            NetworkNodeAgent.startThread();
+        }
+
+        public void shutdown()
+        {
+            _timeToQuit = true;
+            CommutationMatrix.shutdown();
+            NetworkNodeAgent.shutdown();
         }
 
         /* Wątek pobierający komórki ATM z portów wyjściowych pola komutacyjnego i wysyłający je do chmury kablowej */
-
         private void RunThread() {
             var j = 0;
             while (!_timeToQuit) {
@@ -58,9 +71,9 @@ namespace NetworkNode {
                         for (var i = 0; i < atmCellNumberInMessage; i++)
                             message.Add(port.GetAtmCell());
 
-                        Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
-                                          message.PortNumber + " Liczba ATMCell: " + message.AtmCells.Count
-                                          + " Port: " + port.GetPortNumber());
+                       // Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
+                       //                   message.PortNumber + " Liczba ATMCell: " + message.AtmCells.Count
+                       //                   + " Port: " + port.GetPortNumber());
                         SendCableCloudMessage(message);
                         _sent = true;
                     }
