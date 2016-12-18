@@ -11,8 +11,8 @@ using NetworkUtilities;
 using NetworkUtilities.element;
 
 namespace NetworkEmulation.editor.element {
-    public partial class NetworkNodeSP : Form {
-        public NetworkNodeSP() {
+    public partial class NetworkNodeForm : Form {
+        public NetworkNodeForm() {
             InitializeComponent();
         }
 

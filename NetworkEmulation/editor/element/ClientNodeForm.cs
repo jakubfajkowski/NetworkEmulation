@@ -5,8 +5,8 @@ using NetworkUtilities;
 using NetworkUtilities.element;
 
 namespace NetworkEmulation.editor.element {
-    public partial class ClientNodeSP : Form {
-        public ClientNodeSP() {
+    public partial class ClientNodeForm : Form {
+        public ClientNodeForm() {
             InitializeComponent();
         }
 

@@ -52,11 +52,11 @@
     <Compile Include="editor\EditorPanel.Designer.cs">
       <DependentUpon>EditorPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="editor\element\ClientNodeSP.cs">
+    <Compile Include="editor\element\ClientNodeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="editor\element\ClientNodeSP.Designer.cs">
-      <DependentUpon>ClientNodeSP.cs</DependentUpon>
+    <Compile Include="editor\element\ClientNodeForm.Designer.cs">
+      <DependentUpon>ClientNodeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="editor\element\Connection.cs" />
     <Compile Include="editor\element\ConnectionForm.cs">
@@ -71,11 +71,11 @@
     <Compile Include="editor\element\LinkForm.Designer.cs">
       <DependentUpon>LinkForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="editor\element\NetworkNodeSP.cs">
+    <Compile Include="editor\element\NetworkNodeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="editor\element\NetworkNodeSP.Designer.cs">
-      <DependentUpon>NetworkNodeSP.cs</DependentUpon>
+    <Compile Include="editor\element\NetworkNodeForm.Designer.cs">
+      <DependentUpon>NetworkNodeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="editor\IInitializable.cs" />
     <Compile Include="editor\IMarkable.cs" />
@@ -123,8 +123,8 @@
     <EmbeddedResource Include="editor\EditorPanel.resx">
       <DependentUpon>EditorPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="editor\element\ClientNodeSP.resx">
-      <DependentUpon>ClientNodeSP.cs</DependentUpon>
+    <EmbeddedResource Include="editor\element\ClientNodeForm.resx">
+      <DependentUpon>ClientNodeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="editor\element\ConnectionForm.resx">
       <DependentUpon>ConnectionForm.cs</DependentUpon>
@@ -132,8 +132,8 @@
     <EmbeddedResource Include="editor\element\LinkForm.resx">
       <DependentUpon>LinkForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="editor\element\NetworkNodeSP.resx">
-      <DependentUpon>NetworkNodeSP.cs</DependentUpon>
+    <EmbeddedResource Include="editor\element\NetworkNodeForm.resx">
+      <DependentUpon>NetworkNodeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="log\LogForm.resx">
       <DependentUpon>LogForm.cs</DependentUpon>
