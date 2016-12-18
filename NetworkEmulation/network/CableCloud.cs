@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using NetworkEmulation.log;
 using NetworkUtilities;
+using XmlSerializer = System.Xml.Serialization.XmlSerializer;
 
 namespace NetworkEmulation.network {
     [XmlRoot("CableCloud")]
@@ -31,7 +31,7 @@ namespace NetworkEmulation.network {
         }
 
         public void ReadXml(XmlReader reader) {
-            var linkSerializer = new System.Xml.Serialization.XmlSerializer(_linkDictionary.GetType());
+            var linkSerializer = new XmlSerializer(_linkDictionary.GetType());
 
             reader.ReadStartElement("CableCloud");
             reader.ReadStartElement("Links");
@@ -42,7 +42,7 @@ namespace NetworkEmulation.network {
         }
 
         public void WriteXml(XmlWriter writer) {
-            var linkSerializer = new System.Xml.Serialization.XmlSerializer(_linkDictionary.GetType());
+            var linkSerializer = new XmlSerializer(_linkDictionary.GetType());
 
             writer.WriteStartElement("Links");
             linkSerializer.Serialize(writer, _linkDictionary);
@@ -103,7 +103,8 @@ namespace NetworkEmulation.network {
                             PassCableCloudMessage(cableCloudMessage, output.SocketPortNumber);
                         }
                         catch (KeyNotFoundException) {
-                            UpdateState("Router " + input + ": " + cableCloudMessage.PortNumber + " - no avaliable link.");
+                            UpdateState("Router " + input + ": " + cableCloudMessage.PortNumber +
+                                        " - no avaliable link.");
                         }
                     }
                 }
@@ -115,10 +116,10 @@ namespace NetworkEmulation.network {
         }
 
         private void PassCableCloudMessage(CableCloudMessage cableCloudMessage, int outputPort) {
-                var tcpClient = _nodesTcpClients[outputPort];
+            var tcpClient = _nodesTcpClients[outputPort];
 
-                SendBytes(cableCloudMessage.Serialize(), tcpClient);
-                UpdateState("Router " + outputPort + ": " + cableCloudMessage.PortNumber + " - message sent.");
+            SendBytes(cableCloudMessage.Serialize(), tcpClient);
+            UpdateState("Router " + outputPort + ": " + cableCloudMessage.PortNumber + " - message sent.");
         }
 
         private void SendBytes(byte[] data, TcpClient tcpClient) {

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using NetworkEmulation.editor;
 using NetworkEmulation.Properties;
+using NetworkUtilities;
 
 namespace NetworkEmulation {
     public partial class MainForm : Form {
@@ -16,6 +18,46 @@ namespace NetworkEmulation {
             return new Cursor(ptr);
         }
 
+        private void newProjectMenuItem_Click(object sender, EventArgs e) {
+            CreateNewEditorPanel();
+        }
+
+        private EditorPanel CreateNewEditorPanel() {
+            Controls.Remove(editorPanel);
+            var newEditorPanel = new EditorPanel();
+            newEditorPanel.Dock = DockStyle.Fill;
+            newEditorPanel.Location = editorPanel.Location;
+            newEditorPanel.Size = editorPanel.Size;
+            editorPanel = newEditorPanel;
+            Controls.Add(editorPanel);
+
+            return editorPanel;
+        }
+
+        private void saveProjectMenuItem_Click(object sender, EventArgs e) {
+            var saveFileDialog = new SaveFileDialog();
+
+            if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
+                using (var saveFileDialogStream = saveFileDialog.OpenFile()) {
+                    var streamWriter = new StreamWriter(saveFileDialogStream);
+
+                    streamWriter.Write(XmlSerializer.Serialize(editorPanel));
+                }
+            }
+        }
+
+        private void loadProjectMenuItem_Click(object sender, EventArgs e) {
+            var openFileDialog = new OpenFileDialog();
+
+            if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
+                using (var openFileDialogStream = openFileDialog.OpenFile()) {
+                    var streamReader = new StreamReader(openFileDialogStream);
+
+                    editorPanel = CreateNewEditorPanel();
+                    XmlSerializer.Deserialize(editorPanel, streamReader.ReadToEnd());
+                }
+            }
+        }
 
         private void clientNodeToolStripMenuItem_Click(object sender, EventArgs e) {
             editorPanel.Cursor = CursorImage(Resources.ClientNodeNotSelected);

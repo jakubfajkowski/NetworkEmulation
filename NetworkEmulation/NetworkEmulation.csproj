@@ -46,7 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="editor\Connection.cs" />
+    <Compile Include="editor\EditorPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="editor\EditorPanel.Designer.cs">
+      <DependentUpon>EditorPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="editor\element\Connection.cs" />
     <Compile Include="editor\IInitializable.cs" />
     <Compile Include="editor\IMarkable.cs" />
     <Compile Include="network\ConnectionTableRow.cs" />
@@ -54,13 +60,10 @@
     <Compile Include="editor\ClippedPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="editor\EditorPanel.cs">
+    <Compile Include="editor\element\Link.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="editor\Link.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="editor\Link.Designer.cs">
+    <Compile Include="editor\element\Link.Designer.cs">
       <DependentUpon>Link.cs</DependentUpon>
     </Compile>
     <Compile Include="log\LogForm.cs">
@@ -70,10 +73,12 @@
       <DependentUpon>LogForm.cs</DependentUpon>
     </Compile>
     <Compile Include="log\LogObject.cs" />
+    <Compile Include="network\element\ConnectionSerializableParameters.cs" />
+    <Compile Include="network\element\LinkSerializableParameters.cs" />
     <Compile Include="network\Simulation.cs" />
     <Compile Include="SerializableDictionary.cs" />
     <Compile Include="network\SocketNodePortPair.cs" />
-    <Compile Include="editor\ClientNodePictureBox.cs">
+    <Compile Include="editor\element\ClientNodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MainForm.cs">
@@ -83,7 +88,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="network\NetworkManagmentSystem.cs" />
-    <Compile Include="editor\NetworkNodePictureBox.cs">
+    <Compile Include="editor\element\NetworkNodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="editor\NodePictureBox.cs">
@@ -91,6 +96,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="editor\EditorPanel.resx">
+      <DependentUpon>EditorPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="log\LogForm.resx">
       <DependentUpon>LogForm.cs</DependentUpon>
     </EmbeddedResource>

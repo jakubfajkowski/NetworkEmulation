@@ -3,10 +3,10 @@
         public ConnectionTableRow(int node1, int node2, float capacity, float maxCapacity, int inputPort, int outputPort) {
             Node1InputPort = node1;
             Node2InputPort = node2;
-            this.Capacity = capacity;
-            this.MaxCapacity = maxCapacity;
-            this.InputPort = inputPort;
-            this.OutputPort = outputPort;
+            Capacity = capacity;
+            MaxCapacity = maxCapacity;
+            InputPort = inputPort;
+            OutputPort = outputPort;
         }
 
         public int Node1InputPort { get; }

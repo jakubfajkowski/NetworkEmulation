@@ -12,10 +12,10 @@ namespace NetworkEmulationTest {
     [TestClass]
     public class CableCloudTest {
         private readonly IPEndPoint _cableCloudIpEndpoint;
-        private byte[] _bytesRecieved;
-        private byte[] _bytesToSend;
 
         private readonly Random _random;
+        private byte[] _bytesRecieved;
+        private byte[] _bytesToSend;
 
         public CableCloudTest() {
             _random = new Random();

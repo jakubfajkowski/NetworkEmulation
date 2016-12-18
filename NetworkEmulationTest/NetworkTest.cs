@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.network;
@@ -24,13 +22,13 @@ namespace NetworkEmulationTest {
 
             Thread.Sleep(1000);
 
-            var clientNodeA = new ClientNode.ClientNode() {
+            var clientNodeA = new ClientNode.ClientNode {
                 ClientName = "A"
             };
             clientNodeA.OnMessageRecieved += (sender, state) => Console.WriteLine(state);
             clientNodeA.OnUpdateState += (sender, state) => Console.WriteLine(state);
 
-            var clientNodeB = new ClientNode.ClientNode() {
+            var clientNodeB = new ClientNode.ClientNode {
                 ClientName = "B"
             };
             clientNodeB.OnMessageRecieved += (sender, state) => Console.WriteLine(state);

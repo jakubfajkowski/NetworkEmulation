@@ -10,7 +10,7 @@ namespace NetworkUtilities {
             var subReq = obj;
             var xml = "";
             var settings = new XmlWriterSettings();
-            //settings.Indent = true;
+            settings.Indent = true;
 
             using (var sww = new StringWriter()) {
                 using (var writer = XmlWriter.Create(sww, settings)) {

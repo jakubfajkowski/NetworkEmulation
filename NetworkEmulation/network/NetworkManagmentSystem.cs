@@ -14,9 +14,9 @@ namespace NetworkEmulation.network {
         private readonly Dictionary<int, DateTime> _keepAliveDictionary;
         private readonly UdpClient _listenUdpClient;
         private readonly Thread _messageThread;
-        private List<string> _receivedConnectionLabelsList;
 
         private readonly List<string> _receivedMessagesList;
+        private List<string> _receivedConnectionLabelsList;
 
 
         public NetworkManagmentSystem() {
@@ -49,8 +49,9 @@ namespace NetworkEmulation.network {
             SendMessageToNetworkNode(
                 "CreateConnection " + inVpi + " " + inVci + " " + inPortNumber + " " + outVpi + " " + outVci + " " +
                 outPortNumber, nodeUdpPort);
-            UpdateState("Message to " + nodeUdpPort + ": " +  "CreateConnection " + inVpi + " " + inVci + " " + inPortNumber + " " + outVpi + " " + outVci + " " +
-                outPortNumber);
+            UpdateState("Message to " + nodeUdpPort + ": " + "CreateConnection " + inVpi + " " + inVci + " " +
+                        inPortNumber + " " + outVpi + " " + outVci + " " +
+                        outPortNumber);
         }
 
         // Utworzenie portów do pola komutacyjnego 

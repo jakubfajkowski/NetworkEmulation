@@ -5,21 +5,8 @@ using System.Text;
 namespace NetworkUtilities {
     [Serializable]
     public class CableCloudMessage {
-        public static int MaxByteBufferSize { get; private set; } = 9204;
         private static int _maxAtmCellsNumber = 100;
-
-        public static int MaxAtmCellsNumber {
-            get {
-                return _maxAtmCellsNumber;
-            }
-            set {
-                _maxAtmCellsNumber = value;
-                
-                var exampleCloudMessage = new CableCloudMessage(1);
-                exampleCloudMessage.Fill();
-                MaxByteBufferSize = exampleCloudMessage.Serialize().Length;
-            }
-        }
+        private readonly List<AtmCell> _atmCells;
 
         public CableCloudMessage(int portNumber) {
             PortNumber = portNumber;
@@ -44,8 +31,20 @@ namespace NetworkUtilities {
             }
         }
 
+        public static int MaxByteBufferSize { get; private set; } = 9204;
+
+        public static int MaxAtmCellsNumber {
+            get { return _maxAtmCellsNumber; }
+            set {
+                _maxAtmCellsNumber = value;
+
+                var exampleCloudMessage = new CableCloudMessage(1);
+                exampleCloudMessage.Fill();
+                MaxByteBufferSize = exampleCloudMessage.Serialize().Length;
+            }
+        }
+
         public int PortNumber { get; set; }
-        private readonly List<AtmCell> _atmCells;
 
         public List<AtmCell> AtmCells {
             get { return _atmCells.FindAll(cell => cell.Valid()); }
@@ -56,9 +55,7 @@ namespace NetworkUtilities {
         }
 
         public void Fill() {
-            while (_atmCells.Count < _maxAtmCellsNumber) {
-                _atmCells.Add(new AtmCell());
-            }
+            while (_atmCells.Count < _maxAtmCellsNumber) _atmCells.Add(new AtmCell());
         }
 
         public byte[] Serialize() {

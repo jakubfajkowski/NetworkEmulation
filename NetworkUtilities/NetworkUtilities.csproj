@@ -46,6 +46,10 @@
     <Compile Include="ClientTableRow.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="Node.cs" />
+    <Compile Include="element\ClientNodeSerializableParameters.cs" />
+    <Compile Include="element\NetworkNodeSerializableParameters.cs" />
+    <Compile Include="element\NodeSerializableParameters.cs" />
+    <Compile Include="element\SerializableParameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BinarySerializer.cs" />
     <Compile Include="XmlSerializer.cs" />

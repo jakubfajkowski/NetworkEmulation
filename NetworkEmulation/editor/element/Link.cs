@@ -2,9 +2,13 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+using NetworkEmulation.network.element;
 
-namespace NetworkEmulation.editor {
-    public partial class Link : Control, IMarkable, IInitializable {
+namespace NetworkEmulation.editor.element {
+    public partial class Link : Control, IMarkable, IInitializable, IXmlSerializable {
         private static readonly Pen SelectedPen = new Pen(Color.Black, 5);
         private static readonly Pen DeselectedPen = new Pen(Color.Black, 1);
         private static readonly Pen OnlinePen = new Pen(Color.Green, 1);
@@ -25,6 +29,8 @@ namespace NetworkEmulation.editor {
             _endNodePictureBox.OnNodeMoving += sender => Parent.Refresh();
         }
 
+        public LinkSerializableParameters Parameters { get; set; }
+
         public Process Initialize() {
             throw new NotImplementedException();
         }
@@ -43,6 +49,24 @@ namespace NetworkEmulation.editor {
 
         public void MarkAsOffline() {
             ChangeStyle(OfflinePen);
+        }
+
+        public XmlSchema GetSchema() {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader) {
+            var parametersSerializer = new XmlSerializer(typeof(LinkSerializableParameters));
+
+            reader.ReadStartElement(nameof(Link));
+            Parameters = parametersSerializer.Deserialize(reader) as LinkSerializableParameters;
+            reader.ReadEndElement();
+        }
+
+        public void WriteXml(XmlWriter writer) {
+            var parametersSerializer = new XmlSerializer(typeof(LinkSerializableParameters));
+
+            parametersSerializer.Serialize(writer, Parameters);
         }
 
         private void ChangeStyle(Pen pen) {

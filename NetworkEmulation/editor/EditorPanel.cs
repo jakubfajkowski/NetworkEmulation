@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+using NetworkEmulation.editor.element;
 
 namespace NetworkEmulation.editor {
     public enum Mode {
@@ -12,10 +16,11 @@ namespace NetworkEmulation.editor {
         Delete
     }
 
-    public class EditorPanel : Panel {
-        private readonly List<Connection> _addedConnections = new List<Connection>();
-        private readonly List<Link> _addedLinks = new List<Link>();
-        private readonly List<NodePictureBox> _addedNodePictureBoxes = new List<NodePictureBox>();
+    [Serializable]
+    public partial class EditorPanel : UserControl, IXmlSerializable {
+        private List<Connection> _addedConnections = new List<Connection>();
+        private List<Link> _addedLinks = new List<Link>();
+        private List<NodePictureBox> _addedNodePictureBoxes = new List<NodePictureBox>();
         private List<Link> _currentConnectionLinks;
         private NodePictureBox _currentNodePictureBox;
 
@@ -23,11 +28,7 @@ namespace NetworkEmulation.editor {
         private Mode _mode = Mode.Move;
 
         public EditorPanel() {
-            SetStyle(
-                ControlStyles.UserPaint |
-                ControlStyles.AllPaintingInWmPaint |
-                ControlStyles.OptimizedDoubleBuffer,
-                true);
+            InitializeComponent();
         }
 
         public Mode Mode {
@@ -190,9 +191,41 @@ namespace NetworkEmulation.editor {
             _addedConnections.Add(new Connection(connectionLinks));
         }
 
-        //}
+        //private static object NewInstance(object obj) {
         //    return Activator.CreateInstance(obj.GetType());
 
-        //private static object NewInstance(object obj) {
+        //}
+
+        public XmlSchema GetSchema() {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader) {
+            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNodePictureBox>));
+            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNodePictureBox>));
+            var linkSerializer = new XmlSerializer(typeof(List<Link>));
+            var connectionSerializer = new XmlSerializer(typeof(List<Connection>));
+
+            reader.ReadStartElement(nameof(EditorPanel));
+            var clientNodePictureBoxes = clientNodePictureBoxSerializer.Deserialize(reader) as List<NodePictureBox>;
+            if (clientNodePictureBoxes != null) _addedNodePictureBoxes.AddRange(clientNodePictureBoxes);
+            var networkNodePictureBoxes = networkNodePictureBoxSerializer.Deserialize(reader) as List<NodePictureBox>;
+            if (networkNodePictureBoxes != null) _addedNodePictureBoxes.AddRange(networkNodePictureBoxes);
+            _addedLinks = linkSerializer.Deserialize(reader) as List<Link>;
+            _addedConnections = connectionSerializer.Deserialize(reader) as List<Connection>;
+            reader.ReadEndElement();
+        }
+
+        public void WriteXml(XmlWriter writer) {
+            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNodePictureBox>));
+            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNodePictureBox>));
+            var linkSerializer = new XmlSerializer(typeof(List<Link>));
+            var connectionSerializer = new XmlSerializer(typeof(List<Connection>));
+
+            clientNodePictureBoxSerializer.Serialize(writer, _addedNodePictureBoxes.FindAll(box => box is ClientNodePictureBox));
+            networkNodePictureBoxSerializer.Serialize(writer, _addedNodePictureBoxes.FindAll(box => box is NetworkNodePictureBox));
+            linkSerializer.Serialize(writer, _addedLinks);
+            connectionSerializer.Serialize(writer, _addedConnections);
+        }
     }
 }

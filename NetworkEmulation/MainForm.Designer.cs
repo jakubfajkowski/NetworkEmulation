@@ -44,7 +44,7 @@ namespace NetworkEmulation {
             this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cableCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkManagmentSystemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editorPanel = new EditorPanel();
+            this.editorPanel = new NetworkEmulation.editor.EditorPanel();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,18 +77,21 @@ namespace NetworkEmulation {
             this.newProjectMenuItem.Name = "newProjectMenuItem";
             this.newProjectMenuItem.Size = new System.Drawing.Size(149, 22);
             this.newProjectMenuItem.Text = "New Project...";
+            this.newProjectMenuItem.Click += new System.EventHandler(this.newProjectMenuItem_Click);
             // 
             // saveProjectMenuItem
             // 
             this.saveProjectMenuItem.Name = "saveProjectMenuItem";
             this.saveProjectMenuItem.Size = new System.Drawing.Size(149, 22);
             this.saveProjectMenuItem.Text = "Save Project...";
+            this.saveProjectMenuItem.Click += new System.EventHandler(this.saveProjectMenuItem_Click);
             // 
             // loadProjectMenuItem
             // 
             this.loadProjectMenuItem.Name = "loadProjectMenuItem";
             this.loadProjectMenuItem.Size = new System.Drawing.Size(149, 22);
             this.loadProjectMenuItem.Text = "Load Project...";
+            this.loadProjectMenuItem.Click += new System.EventHandler(this.loadProjectMenuItem_Click);
             // 
             // elementsToolStripMenuItem
             // 
@@ -200,7 +203,6 @@ namespace NetworkEmulation {
             // 
             // editorPanel
             // 
-            this.editorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.editorPanel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.editorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.editorPanel.Location = new System.Drawing.Point(0, 24);
@@ -237,7 +239,6 @@ namespace NetworkEmulation {
         private System.Windows.Forms.ToolStripMenuItem clientNodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem networkNodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem linkToolStripMenuItem;
-        private EditorPanel editorPanel;
         private System.Windows.Forms.ToolStripMenuItem connectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cursorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem;
@@ -248,6 +249,7 @@ namespace NetworkEmulation {
         private System.Windows.Forms.ToolStripMenuItem simulationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
+        private EditorPanel editorPanel;
     }
 }
 

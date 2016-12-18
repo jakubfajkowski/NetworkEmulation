@@ -1,4 +1,4 @@
-﻿namespace ClientNode {
+﻿namespace NetworkUtilities {
     public class ClientTableRow {
         public ClientTableRow() {
         }

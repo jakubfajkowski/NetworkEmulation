@@ -22,16 +22,14 @@ namespace NetworkUtilitiesTests {
 
         [TestMethod]
         public void ManyStaticFieldsSettersTest() {
-            for (int i = 0; i < 100; i++) {
-                StaticFieldsSettersTest();
-            }
+            for (var i = 0; i < 100; i++) StaticFieldsSettersTest();
         }
 
         [TestMethod]
         public void GetAtmCellsTest() {
             CableCloudMessage.MaxAtmCellsNumber = _random.Next(0, 10000);
             var cableCloudMessage = new CableCloudMessage(100);
-            var expected = new AtmCell(1,1,new byte[48]);
+            var expected = new AtmCell(1, 1, new byte[48]);
             cableCloudMessage.Add(expected);
             cableCloudMessage.Fill();
 

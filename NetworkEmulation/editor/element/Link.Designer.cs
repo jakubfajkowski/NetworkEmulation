@@ -1,4 +1,4 @@
-﻿namespace NetworkEmulation.editor {
+﻿namespace NetworkEmulation.editor.element {
     partial class Link {
         /// <summary>
         /// Required designer variable.
