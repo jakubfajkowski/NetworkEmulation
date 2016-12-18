@@ -59,6 +59,12 @@
       <DependentUpon>ClientNodeSP.cs</DependentUpon>
     </Compile>
     <Compile Include="editor\element\Connection.cs" />
+    <Compile Include="editor\element\ConnectionSP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="editor\element\ConnectionSP.Designer.cs">
+      <DependentUpon>ConnectionSP.cs</DependentUpon>
+    </Compile>
     <Compile Include="editor\element\LinkSP.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,6 +125,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="editor\element\ClientNodeSP.resx">
       <DependentUpon>ClientNodeSP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="editor\element\ConnectionSP.resx">
+      <DependentUpon>ConnectionSP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="editor\element\LinkSP.resx">
       <DependentUpon>LinkSP.cs</DependentUpon>
