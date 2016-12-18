@@ -8,13 +8,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NetworkEmulation.network.element;
+using NetworkUtilities;
+using NetworkUtilities.element;
 
 namespace NetworkEmulation.editor.element {
     public partial class ConnectionForm : Form {
-        public ConnectionForm() {
+        ConnectionSerializableParameters connectionSP;
+        public ConnectionForm(string[] args) {
+            
             InitializeComponent();
-        }
+            var xml = string.Join(" ", args);
+            connectionSP = XmlSerializer.Deserialize(xml, typeof(ConnectionSerializableParameters)) as ConnectionSerializableParameters;
+            textBoxInputPort.Text = connectionSP;
 
+        }
         private void buttonCancel_Click(object sender, EventArgs e) {
             this.Close();
         }
@@ -23,10 +30,7 @@ namespace NetworkEmulation.editor.element {
             var link= new LinkSerializableParameters() {
                 
             };
-
-            new ConnectionSerializableParameters() {
-                
-            }
+            
             this.Close();
         }
     }

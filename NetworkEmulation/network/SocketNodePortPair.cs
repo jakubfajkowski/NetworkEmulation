@@ -14,7 +14,7 @@ namespace NetworkEmulation.network {
         }
 
         [XmlElement("NodePortNumber", typeof(int))]
-        public int NodePortNumber { get; private set; }
+        public int NodePortNumber { get; set; }
 
         [XmlElement("SocketPortNumber", typeof(int))]
         public int SocketPortNumber { get; private set; }

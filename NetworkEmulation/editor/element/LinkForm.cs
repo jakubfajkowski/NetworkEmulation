@@ -9,10 +9,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NetworkEmulation.network;
 using NetworkEmulation.network.element;
+using NetworkUtilities;
 
 namespace NetworkEmulation.editor.element {
     public partial class LinkForm : Form {
-        public LinkForm() {
+        private LinkSerializableParameters linkSP;
+        public LinkForm(string[] args) {
+            var xml = string.Join(" ", args);
+            linkSP = XmlSerializer.Deserialize(xml, typeof(LinkSerializableParameters)) as LinkSerializableParameters;
             InitializeComponent();
             ExamplePorts();
         }
@@ -28,10 +32,9 @@ namespace NetworkEmulation.editor.element {
         }
 
         private void OkClick(object sender, EventArgs e) {
-            var link = new LinkSerializableParameters() {
-                InputNodePortPair = new SocketNodePortPair(Int32.Parse(comboInputPort.Text), 69),
-                OutputNodePortPair = new SocketNodePortPair(Int32.Parse(comboOutputPort.Text), 69)
-            };
+            linkSP.InputNodePortPair.NodePortNumber = int.Parse(comboInputPort.Text);
+            linkSP.OutputNodePortPair.NodePortNumber = int.Parse(comboOutputPort.Text);
+
             this.Close();
         }
 
