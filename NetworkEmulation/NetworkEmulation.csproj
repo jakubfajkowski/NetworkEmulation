@@ -52,6 +52,12 @@
     <Compile Include="editor\EditorPanel.Designer.cs">
       <DependentUpon>EditorPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="editor\element\ClientNodeSP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="editor\element\ClientNodeSP.Designer.cs">
+      <DependentUpon>ClientNodeSP.cs</DependentUpon>
+    </Compile>
     <Compile Include="editor\element\Connection.cs" />
     <Compile Include="editor\IInitializable.cs" />
     <Compile Include="editor\IMarkable.cs" />
@@ -98,6 +104,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="editor\EditorPanel.resx">
       <DependentUpon>EditorPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="editor\element\ClientNodeSP.resx">
+      <DependentUpon>ClientNodeSP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="log\LogForm.resx">
       <DependentUpon>LogForm.cs</DependentUpon>
