@@ -10,6 +10,7 @@ using NetworkEmulation.log;
 namespace NetworkEmulation.network {
     public class NetworkManagmentSystem : LogObject {
         private const int ListenUdpPort = 6666;
+        private const int MaxTimeNotReceivingKeepAliveMessage = 2000;
         private readonly List<ConnectionTableRow> _connectionTable;
         private readonly Dictionary<int, DateTime> _keepAliveDictionary;
         private readonly UdpClient _listenUdpClient;
@@ -33,6 +34,9 @@ namespace NetworkEmulation.network {
 
             _messageThread = new Thread(RunThread);
             _messageThread.Start();
+
+            Thread checkKeepAliveTableThread = new Thread(checkKeepAliveTable);
+            checkKeepAliveTableThread.Start();
         }
 
 
@@ -75,19 +79,22 @@ namespace NetworkEmulation.network {
 
 
         /* Wątek obsługujący keep alive*/
-
         private void RunThread() {
             while (true)
                 if (_receivedMessagesList.Count > 0) {
                     var message = _receivedMessagesList[0].Split(' ');
 
                     switch (message[0]) {
-                        case "networkNodeStart":
-                            _keepAliveDictionary.Add(int.Parse(message[1]), DateTime.Now);
+                        case "networkNodeStart":                          
+                            try
+                            {
+                                _keepAliveDictionary.Add(int.Parse(message[1]), DateTime.Now);
+                                UpdateState("Network node " + message[1] + " is online.");
+                            }
+                            catch (SystemException e) { };
                             //sendMessageToNetworkNode(Encoding.UTF8.GetBytes("OK " + int.Parse(message[1])), int.Parse(message[1]));
                             break;
-                        case "keepAlive":
-                            //Console.WriteLine(receivedMessagesList[0]);
+                        case "keepAlive":                        
                             _keepAliveDictionary[int.Parse(message[1])] = DateTime.Now;
                             break;
                     }
@@ -98,6 +105,27 @@ namespace NetworkEmulation.network {
                         Monitor.Wait(_messageThread);
                     }
                 }
+        }
+
+        private void checkKeepAliveTable()
+        {
+            while (true)
+            {
+                try
+                {
+                    foreach (KeyValuePair<int, DateTime> node in _keepAliveDictionary)
+                    {
+                        if ((DateTime.Now - node.Value).TotalMilliseconds > MaxTimeNotReceivingKeepAliveMessage)
+                        {
+                            _keepAliveDictionary.Remove(node.Key);
+                            UpdateState("Network node " + node.Key + " is offline.");
+                            Console.WriteLine("Network node " + node.Key + " is offline.");
+                        }
+                    }
+                }
+                catch (InvalidOperationException e) {}
+                Thread.Sleep(500);
+            }
         }
 
         private void AddToMessageList(string message) {

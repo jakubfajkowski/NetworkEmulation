@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NetworkNode {
     public class NetworkNodeAgent {
-        private const int NmsPort = 6666;
+        public static int NmsPort { private get; set; } = 6666;
         private const int SleepTimeKeepAlive = 500;
         private CommutationMatrix _commutationMatrix;
         private NetworkNode _networkNode;
@@ -37,13 +37,13 @@ namespace NetworkNode {
 
         private void ConnectToNms() {
             _udpClient = new UdpClient();
-            _ipEndpoint = new IPEndPoint(IPAddress.Loopback, NmsPort);
-            // Wiadomość, że węzeł wstał
-            SendToNms(Encoding.UTF8.GetBytes("networkNodeStart " + ListenUdpPort));        
+            _ipEndpoint = new IPEndPoint(IPAddress.Loopback, NmsPort);    
         }
 
         public void startThread()
         {
+            // Wiadomość, że węzeł wstał
+            SendToNms(Encoding.UTF8.GetBytes("networkNodeStart " + ListenUdpPort));   
             _timeToQuit = false;
             var keepAliveThread = new Thread(KeepAliveThreadRun);
             keepAliveThread.Start();
@@ -64,7 +64,7 @@ namespace NetworkNode {
 
         private void KeepAliveThreadRun() {
             var keepAliveMessage = Encoding.UTF8.GetBytes("keepAlive " + ListenUdpPort);
-            while (_timeToQuit) {
+            while (!_timeToQuit) {
                 SendToNms(keepAliveMessage);
                 Thread.Sleep(SleepTimeKeepAlive);
             }

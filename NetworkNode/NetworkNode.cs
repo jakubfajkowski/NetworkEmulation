@@ -4,26 +4,26 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using NetworkUtilities;
+using NetworkUtilities.element;
 
 namespace NetworkNode {
     public class NetworkNode : Node {
         // Czas po jakim komórki ATM zostaną spakowane w CCM
         public static int MinLastAddTime { private get; set; } = 4;
-        // Czas usypiania wątku, który tworzy CCM
-        public static int SleepTime { private get; set; } = 1;
-        public static int NmsPort { private get; set; } = 6666;
+        //public static int NmsPort { private get; set; } = 6666;
 
         public CommutationMatrix CommutationMatrix;
         public NetworkNodeAgent NetworkNodeAgent;
         private Thread _networkNodeThread;
-        
-        private bool _sent;
 
         private bool _timeToQuit;
 
-        public NetworkNode(int inputPortNumber, int outputPortNumber) {
-            NetworkNodeAgent = new NetworkNodeAgent(RandomFreePort(), this);
-            CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), inputPortNumber, outputPortNumber);
+        public NetworkNode(NetworkNodeSerializableParameters parameters) {
+            //NmsPort = parameters.NetworkManagmentSystemPort;
+            NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemPort;
+            CableCloudUdpPort = parameters.CloudPort;
+            NetworkNodeAgent = new NetworkNodeAgent(PortRandomizer.RandomFreePort(), this);
+            CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts, parameters.NumberOfPorts);
             NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
 
             startThread();     
@@ -49,7 +49,7 @@ namespace NetworkNode {
         private void RunThread() {
             var j = 0;
             while (!_timeToQuit) {
-                _sent = false;
+                
                 if (j < 0)
                     Console.WriteLine(DateTime.Now.Millisecond + "  Wywolanie run outBuffer: " + j++);
 
@@ -75,11 +75,8 @@ namespace NetworkNode {
                        //                   message.PortNumber + " Liczba ATMCell: " + message.AtmCells.Count
                        //                   + " Port: " + port.GetPortNumber());
                         SendCableCloudMessage(message);
-                        _sent = true;
+                       
                     }
-
-                if (!_sent)
-                    Thread.Sleep(SleepTime);
             }
         }
 
