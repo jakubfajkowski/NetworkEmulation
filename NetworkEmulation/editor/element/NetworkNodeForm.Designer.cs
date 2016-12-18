@@ -1,5 +1,5 @@
 ﻿namespace NetworkEmulation.editor.element {
-    partial class NetworkNodeSP {
+    partial class NetworkNodeForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>
