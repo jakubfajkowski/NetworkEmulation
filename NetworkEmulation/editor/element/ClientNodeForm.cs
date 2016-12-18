@@ -17,7 +17,6 @@ namespace NetworkEmulation.editor.element {
             clientNodeSerializableParameters.IpAddress = textBoxIpAddress.Text;
             clientNodeSerializableParameters.ClientName = textBoxClientName.Text;
             clientNodeSerializableParameters.CloudPort = int.Parse(textBoxCloudPort.Text);
-            clientNodeSerializableParameters.ClientTable.Add(new ClientTableRow(textBoxClientName.Text, int.Parse(textBoxClientPort.Text), int.Parse(textBoxVPI.Text), int.Parse(textBoxVCI.Text)));
 
             this.Close();
         }

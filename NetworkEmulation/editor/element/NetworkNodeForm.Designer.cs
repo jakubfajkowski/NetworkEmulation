@@ -137,7 +137,7 @@
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
-            // NetworkNodeSP
+            // NetworkNodeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -154,8 +154,8 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "NetworkNodeSP";
-            this.Text = "NetworkNodeSP";
+            this.Name = "NetworkNodeForm";
+            this.Text = "NetworkNodeForm";
             this.ResumeLayout(false);
             this.PerformLayout();
 

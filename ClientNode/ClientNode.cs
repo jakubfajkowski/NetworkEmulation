@@ -1,15 +1,24 @@
 ﻿using System.Collections.Generic;
 using NetworkUtilities;
+using NetworkUtilities.element;
 
 namespace ClientNode {
     public class ClientNode : Node {
         public delegate void MessageHandler(object sender, string text);
 
-        public ClientNode() {
+        public ClientNode(ClientNodeSerializableParameters param) {
+            Id = param.Id;
+            ClientName = param.ClientName;
+            CloudPort = param.CloudPort;
+            IpAddress = param.IpAddress;
             ClientTable = new List<ClientTableRow>();
         }
 
+        public int Id { get; set; }
         public string ClientName { get; set; }
+        public int CloudPort { get; set; }
+        //public int ClientPort { get; set; }
+        public string IpAddress { get; set; }
         public List<ClientTableRow> ClientTable { get; set; }
 
         public event MessageHandler OnUpdateState;
@@ -23,8 +32,8 @@ namespace ClientNode {
             OnMessageRecieved?.Invoke(this, message);
         }
 
-        public void AddClient(string clientName, int portNumber, int vpi, int vci) {
-            ClientTable.Add(new ClientTableRow(clientName, portNumber, vpi, vci));
+        public void AddClient(string clientName, int clientPort, int vpi, int vci) {
+            ClientTable.Add(new ClientTableRow(clientName, clientPort, vpi, vci));
         }
 
         public void SendMessage(string message, string recieverName) {
