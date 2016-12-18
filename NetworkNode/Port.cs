@@ -17,7 +17,9 @@ namespace NetworkNode {
         }
 
         public AtmCell GetAtmCell() {
-            return _atmCells.Dequeue();
+            if (_atmCells.Count > 0)
+                return _atmCells.Dequeue();
+            else return null;
         }
 
         public void AddAtmCell(AtmCell cell) {

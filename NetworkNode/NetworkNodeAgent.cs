@@ -10,6 +10,8 @@ namespace NetworkNode {
         private const int NmsPort = 6666;
         private const int SleepTimeKeepAlive = 500;
         private CommutationMatrix _commutationMatrix;
+        private NetworkNode _networkNode;
+        private bool _timeToQuit;
 
         private readonly CommutationTable _commutationTable;
         private IPEndPoint _ipEndpoint;
@@ -20,9 +22,9 @@ namespace NetworkNode {
         private UdpClient _udpClient;
 
 
-        public NetworkNodeAgent(int port) {
+        public NetworkNodeAgent(int port, NetworkNode networkNode) {
             ListenUdpPort = port;
-
+            _networkNode = networkNode;
             _commutationTable = new CommutationTable();
 
             var ipEndPoint = new IPEndPoint(IPAddress.Any, ListenUdpPort);
@@ -37,10 +39,19 @@ namespace NetworkNode {
             _udpClient = new UdpClient();
             _ipEndpoint = new IPEndPoint(IPAddress.Loopback, NmsPort);
             // Wiadomość, że węzeł wstał
-            SendToNms(Encoding.UTF8.GetBytes("networkNodeStart " + ListenUdpPort));
+            SendToNms(Encoding.UTF8.GetBytes("networkNodeStart " + ListenUdpPort));        
+        }
 
+        public void startThread()
+        {
+            _timeToQuit = false;
             var keepAliveThread = new Thread(KeepAliveThreadRun);
             keepAliveThread.Start();
+        }
+
+        public void shutdown()
+        {
+            _timeToQuit = true;
         }
 
         private void SendToNms(byte[] bytesToSend) {
@@ -53,7 +64,7 @@ namespace NetworkNode {
 
         private void KeepAliveThreadRun() {
             var keepAliveMessage = Encoding.UTF8.GetBytes("keepAlive " + ListenUdpPort);
-            while (true) {
+            while (_timeToQuit) {
                 SendToNms(keepAliveMessage);
                 Thread.Sleep(SleepTimeKeepAlive);
             }
@@ -81,6 +92,12 @@ namespace NetworkNode {
                                 break;
                             case "CreatePortIn":
                                 _commutationMatrix.CreateInputPort(int.Parse(messageSplit[1]));
+                                break;
+                            case "Shutdown":
+                                _networkNode.shutdown();
+                                break;
+                            case "Start":
+                                _networkNode.startThread();
                                 break;
                         }
                     }

@@ -11,25 +11,50 @@ namespace NetworkNode {
         private bool _commuted;
 
         private readonly List<Port> _inputPorts;
-        private readonly Thread _matrixThread;
+        private Thread _matrixThread;
         public readonly List<Port> OutputPorts;
 
-        private readonly bool _timeToQuit = false;
+        private bool _timeToQuit;
 
 
-        public CommutationMatrix(CommutationTable comTable) {
+        public CommutationMatrix(CommutationTable comTable, int inputPortNumber, int outputPortNumber) {
             _commutationTable = comTable;
             _inputPorts = new List<Port>();
             OutputPorts = new List<Port>();
 
+            for (int i = 1; i <= inputPortNumber; i++) 
+            {
+                CreateInputPort(i);
+            }
+            for (int i = 1; i <= outputPortNumber; i++)
+            {
+                CreateOutputPort(i);
+            }
+
+            
+        }
+
+        public void startThread()
+        {
+            _timeToQuit = false;
             _matrixThread = new Thread(RunThread);
             _matrixThread.Start();
         }
 
+        public void shutdown()
+        {
+            _timeToQuit = true;
+            lock (_matrixThread)
+            {
+                Monitor.Pulse(_matrixThread);
+            }
+        }
+
 
         private void RunThread() {
-            var j = 0;
+            
             while (!_timeToQuit) {
+                
                 _commuted = false;
 
                 foreach (var inPort in _inputPorts) { 
@@ -74,8 +99,8 @@ namespace NetworkNode {
                 if (row.GetOutVci() != -1)
                     cell.Vci = row.GetOutVci();
 
-                Console.WriteLine("Zmiana VPI/VCI na " + cell.Vpi + "/" + cell.Vci +
-                                  " Wrzucenie komórki do portu wyjściowego o łączu " + row.GetOutPort());
+               // Console.WriteLine("Zmiana VPI/VCI na " + cell.Vpi + "/" + cell.Vci +
+                //                  " Wrzucenie komórki do portu wyjściowego o łączu " + row.GetOutPort());
                 return AddAtmCellToOutputPort(cell, row.GetOutPort());
             }
             return false;
