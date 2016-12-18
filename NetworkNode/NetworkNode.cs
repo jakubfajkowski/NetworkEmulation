@@ -22,7 +22,7 @@ namespace NetworkNode {
             //NmsPort = parameters.NetworkManagmentSystemPort;
             NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemPort;
             CableCloudUdpPort = parameters.CloudPort;
-            NetworkNodeAgent = new NetworkNodeAgent(RandomFreePort(), this);
+            NetworkNodeAgent = new NetworkNodeAgent(PortRandomizer.RandomFreePort(), this);
             CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts, parameters.NumberOfPorts);
             NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
 

@@ -12,7 +12,7 @@ namespace NetworkUtilities {
         private bool _online;
 
         public Node() {
-            CableCloudTcpPort = RandomFreePort();
+            CableCloudTcpPort = PortRandomizer.RandomFreePort();
             _cloudTcpListener = CreateTcpListener(IPAddress.Loopback, CableCloudTcpPort);
             ListenForConnectRequest(_cloudTcpListener);
             ConnectToCloud();
@@ -20,13 +20,6 @@ namespace NetworkUtilities {
 
         public int CableCloudTcpPort { get; }
 
-        protected int RandomFreePort() {
-            var l = new TcpListener(IPAddress.Loopback, 0);
-            l.Start();
-            var port = ((IPEndPoint) l.LocalEndpoint).Port;
-            l.Stop();
-            return port;
-        }
 
         protected TcpListener CreateTcpListener(IPAddress ipAddress, int port) {
             TcpListener tcpListener = null;
