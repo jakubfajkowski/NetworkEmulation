@@ -11,7 +11,7 @@ namespace NetworkEmulation.editor.element {
         }
 
         private void buttonOK_Click(object sender, EventArgs e) {
-            ClientNodeSerializableParameters param = new ClientNodeSerializableParameters {
+            var clientNodeSerializableParameters = new ClientNodeSerializableParameters {
                 Id = int.Parse(textBoxId.Text),
                 ClientName = textBoxClientName.Text,
                 ClientTable =
@@ -20,6 +20,7 @@ namespace NetworkEmulation.editor.element {
                 CloudPort = int.Parse(textBoxCloudPort.Text),
                 IpAddress = textBoxIpAddress.Text
             };
+            this.Close();
         }
 
         private void buttonCancel_Click(object sender, EventArgs e) {

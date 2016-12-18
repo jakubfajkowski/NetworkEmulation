@@ -59,6 +59,12 @@
       <DependentUpon>ClientNodeSP.cs</DependentUpon>
     </Compile>
     <Compile Include="editor\element\Connection.cs" />
+    <Compile Include="editor\element\NetworkNodeSP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="editor\element\NetworkNodeSP.Designer.cs">
+      <DependentUpon>NetworkNodeSP.cs</DependentUpon>
+    </Compile>
     <Compile Include="editor\IInitializable.cs" />
     <Compile Include="editor\IMarkable.cs" />
     <Compile Include="network\ConnectionTableRow.cs" />
@@ -107,6 +113,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="editor\element\ClientNodeSP.resx">
       <DependentUpon>ClientNodeSP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="editor\element\NetworkNodeSP.resx">
+      <DependentUpon>NetworkNodeSP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="log\LogForm.resx">
       <DependentUpon>LogForm.cs</DependentUpon>
