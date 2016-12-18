@@ -1,29 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NetworkUtilities;
 using NetworkUtilities.element;
 
 namespace NetworkEmulation.editor.element {
     public partial class NetworkNodeForm : Form {
-        public NetworkNodeForm() {
+        NetworkNodeSerializableParameters networkNodeSerializableParameters;
+        public NetworkNodeForm(NetworkNodeSerializableParameters param) {
             InitializeComponent();
+            networkNodeSerializableParameters = param;
         }
 
         private void buttonOK_Click(object sender, EventArgs e) {
-            var networkNodeSerializableParameters = new NetworkNodeSerializableParameters {
-                Id = int.Parse(textBoxID.Text),
-                IpAddress = textBoxIpAddress.Text,
-                CloudPort = int.Parse(textBoxCloudPort.Text),
-                NetworkManagmentSystemPort = int.Parse(textBoxNMSPort.Text),
-                NumberOfPorts = int.Parse(textBoxNumberOfPorts.Text)
-            };
+            networkNodeSerializableParameters.Id = int.Parse(textBoxID.Text);
+            networkNodeSerializableParameters.IpAddress = textBoxIpAddress.Text;
+            networkNodeSerializableParameters.CloudPort = int.Parse(textBoxCloudPort.Text);
+            networkNodeSerializableParameters.NetworkManagmentSystemPort = int.Parse(textBoxNMSPort.Text);
+            networkNodeSerializableParameters.NumberOfPorts = int.Parse(textBoxNumberOfPorts.Text);
+
             this.Close();
         }
 
