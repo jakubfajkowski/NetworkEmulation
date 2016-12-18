@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NetworkNode {
     public class NetworkNodeAgent {
-        private const int NmsPort = 6666;
+        public static int NmsPort { private get; set; } = 6666;
         private const int SleepTimeKeepAlive = 500;
         private CommutationMatrix _commutationMatrix;
         private NetworkNode _networkNode;
