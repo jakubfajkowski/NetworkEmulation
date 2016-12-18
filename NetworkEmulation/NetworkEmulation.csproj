@@ -59,17 +59,17 @@
       <DependentUpon>ClientNodeSP.cs</DependentUpon>
     </Compile>
     <Compile Include="editor\element\Connection.cs" />
-    <Compile Include="editor\element\ConnectionSP.cs">
+    <Compile Include="editor\element\ConnectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="editor\element\ConnectionSP.Designer.cs">
-      <DependentUpon>ConnectionSP.cs</DependentUpon>
+    <Compile Include="editor\element\ConnectionForm.Designer.cs">
+      <DependentUpon>ConnectionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="editor\element\LinkSP.cs">
+    <Compile Include="editor\element\LinkForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="editor\element\LinkSP.Designer.cs">
-      <DependentUpon>LinkSP.cs</DependentUpon>
+    <Compile Include="editor\element\LinkForm.Designer.cs">
+      <DependentUpon>LinkForm.cs</DependentUpon>
     </Compile>
     <Compile Include="editor\element\NetworkNodeSP.cs">
       <SubType>Form</SubType>
@@ -126,11 +126,11 @@
     <EmbeddedResource Include="editor\element\ClientNodeSP.resx">
       <DependentUpon>ClientNodeSP.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="editor\element\ConnectionSP.resx">
-      <DependentUpon>ConnectionSP.cs</DependentUpon>
+    <EmbeddedResource Include="editor\element\ConnectionForm.resx">
+      <DependentUpon>ConnectionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="editor\element\LinkSP.resx">
-      <DependentUpon>LinkSP.cs</DependentUpon>
+    <EmbeddedResource Include="editor\element\LinkForm.resx">
+      <DependentUpon>LinkForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="editor\element\NetworkNodeSP.resx">
       <DependentUpon>NetworkNodeSP.cs</DependentUpon>

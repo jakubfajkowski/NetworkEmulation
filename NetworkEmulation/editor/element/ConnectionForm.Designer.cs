@@ -1,5 +1,5 @@
 ﻿namespace NetworkEmulation.editor.element {
-    partial class ConnectionSP {
+    partial class ConnectionForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>

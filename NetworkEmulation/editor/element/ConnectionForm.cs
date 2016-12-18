@@ -10,8 +10,8 @@ using System.Windows.Forms;
 using NetworkEmulation.network.element;
 
 namespace NetworkEmulation.editor.element {
-    public partial class ConnectionSP : Form {
-        public ConnectionSP() {
+    public partial class ConnectionForm : Form {
+        public ConnectionForm() {
             InitializeComponent();
         }
 

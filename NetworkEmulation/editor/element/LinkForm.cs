@@ -11,8 +11,8 @@ using NetworkEmulation.network;
 using NetworkEmulation.network.element;
 
 namespace NetworkEmulation.editor.element {
-    public partial class LinkSP : Form {
-        public LinkSP() {
+    public partial class LinkForm : Form {
+        public LinkForm() {
             InitializeComponent();
             ExamplePorts();
         }
