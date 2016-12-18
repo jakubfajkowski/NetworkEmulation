@@ -54,6 +54,19 @@ namespace NetworkEmulation.network {
                         outPortNumber);
         }
 
+        public void SendShutdownMessage(int nodeUdpPort)
+        {
+            SendMessageToNetworkNode("Shutdown", nodeUdpPort);
+            UpdateState("Shutdown netowrk node " + nodeUdpPort);
+        }
+
+        // Wznowienie działania węzła
+        public void SendStartMessage(int nodeUdpPort)
+        {
+            SendMessageToNetworkNode("Start", nodeUdpPort);
+            UpdateState("Start netowrk node " + nodeUdpPort);
+        }
+
         // Utworzenie portów do pola komutacyjnego 
         public void CreateLink(int node1, int node1OutPortNumber, int node2, int node2InPortNumber) {
             SendMessageToNetworkNode("CreatePortOut " + node1OutPortNumber, node1);
