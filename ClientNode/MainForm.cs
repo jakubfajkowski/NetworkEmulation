@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using NetworkUtilities;
+using NetworkUtilities.element;
 
 namespace ClientNode {
     public partial class MainForm : Form {
@@ -11,13 +12,14 @@ namespace ClientNode {
 
         public MainForm(string[] args) {
             InitializeComponent();
-            string.Join(" ", args);
-            _client = new ClientNode();
+            string joinedArgs = string.Join(" ", args);
+            var param = (ClientNodeSerializableParameters)XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeSerializableParameters));
+            _client = new ClientNode(param);
             _client.OnUpdateState += UpdateState;
             _client.OnMessageRecieved += MessageRecieved;
         }
 
-        public void AddClientToComboBox(string clientName) {
+        public void AddClientToComboBox(object sender, string clientName) {
             comboBoxClients.Items.Add(clientName);
         }
 

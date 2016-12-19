@@ -1,19 +1,31 @@
 ﻿using System.Collections.Generic;
 using NetworkUtilities;
+using NetworkUtilities.element;
 
 namespace ClientNode {
     public class ClientNode : Node {
         public delegate void MessageHandler(object sender, string text);
 
-        public ClientNode() {
-            ClientTable = new List<ClientTableRow>();
+        public ClientNode(ClientNodeSerializableParameters param) {
+            Id = param.Id;
+            ClientName = param.ClientName;
+            CloudPort = param.CloudPort;
+            IpAddress = param.IpAddress;
+            foreach(var client in param.ClientTable) {
+                AddClient(client);
+            }
         }
 
+        public int Id { get; set; }
         public string ClientName { get; set; }
-        public List<ClientTableRow> ClientTable { get; set; }
+        public int CloudPort { get; set; }
+        //public int ClientPort { get; set; }
+        public string IpAddress { get; set; }
+        public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
 
         public event MessageHandler OnUpdateState;
         public event MessageHandler OnMessageRecieved;
+        public event MessageHandler OnNewClientTableRow;
 
         protected void UpdateState(string state) {
             OnUpdateState?.Invoke(this, state);
@@ -23,8 +35,17 @@ namespace ClientNode {
             OnMessageRecieved?.Invoke(this, message);
         }
 
-        public void AddClient(string clientName, int portNumber, int vpi, int vci) {
-            ClientTable.Add(new ClientTableRow(clientName, portNumber, vpi, vci));
+        protected void AddClientToComboBox(string clientName) {
+            OnNewClientTableRow?.Invoke(this, clientName);
+        }
+
+        public void AddClient(string clientName, int clientPort, int vpi, int vci) {
+            ClientTableList.Add(new ClientTableRow(clientName, clientPort, vpi, vci));
+        }
+
+        public void AddClient(ClientTableRow clientTableRow) {
+            AddClient(clientTableRow.ClientName, clientTableRow.PortNumber, clientTableRow.Vpi, clientTableRow.Vci);
+            AddClientToComboBox(clientTableRow.ClientName);
         }
 
         public void SendMessage(string message, string recieverName) {
@@ -35,7 +56,7 @@ namespace ClientNode {
         }
 
         private ClientTableRow SearchUsingClientName(string clientName) {
-            foreach (var clientTableRow in ClientTable)
+            foreach (var clientTableRow in ClientTableList)
                 if (clientTableRow.ClientName.Equals(clientName)) return clientTableRow;
             return null;
         }
