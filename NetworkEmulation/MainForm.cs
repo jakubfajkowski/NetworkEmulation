@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
 using NetworkEmulation.editor;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
@@ -36,27 +37,28 @@ namespace NetworkEmulation {
 
         private void saveProjectMenuItem_Click(object sender, EventArgs e) {
             var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Xml File (.xml)|*.xml";
 
-            if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
+            if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
                 using (var saveFileDialogStream = saveFileDialog.OpenFile()) {
-                    var streamWriter = new StreamWriter(saveFileDialogStream);
+                    var xml = new XmlDocument();
+                    xml.LoadXml(XmlSerializer.Serialize(editorPanel));
 
-                    streamWriter.Write(XmlSerializer.Serialize(editorPanel));
+                    xml.Save(saveFileDialogStream);
                 }
-            }
         }
 
         private void loadProjectMenuItem_Click(object sender, EventArgs e) {
             var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Xml File (.xml)|*.xml";
 
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
+            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                 using (var openFileDialogStream = openFileDialog.OpenFile()) {
                     var streamReader = new StreamReader(openFileDialogStream);
 
                     editorPanel = CreateNewEditorPanel();
                     XmlSerializer.Deserialize(editorPanel, streamReader.ReadToEnd());
                 }
-            }
         }
 
         private void clientNodeToolStripMenuItem_Click(object sender, EventArgs e) {

@@ -35,7 +35,7 @@ namespace NetworkEmulation.network {
             _messageThread = new Thread(RunThread);
             _messageThread.Start();
 
-            Thread checkKeepAliveTableThread = new Thread(checkKeepAliveTable);
+            var checkKeepAliveTableThread = new Thread(checkKeepAliveTable);
             checkKeepAliveTableThread.Start();
         }
 
@@ -58,15 +58,13 @@ namespace NetworkEmulation.network {
                         outPortNumber);
         }
 
-        public void SendShutdownMessage(int nodeUdpPort)
-        {
+        public void SendShutdownMessage(int nodeUdpPort) {
             SendMessageToNetworkNode("Shutdown", nodeUdpPort);
             UpdateState("Shutdown netowrk node " + nodeUdpPort);
         }
 
         // Wznowienie działania węzła
-        public void SendStartMessage(int nodeUdpPort)
-        {
+        public void SendStartMessage(int nodeUdpPort) {
             SendMessageToNetworkNode("Start", nodeUdpPort);
             UpdateState("Start netowrk node " + nodeUdpPort);
         }
@@ -79,22 +77,24 @@ namespace NetworkEmulation.network {
 
 
         /* Wątek obsługujący keep alive*/
+
         private void RunThread() {
             while (true)
                 if (_receivedMessagesList.Count > 0) {
                     var message = _receivedMessagesList[0].Split(' ');
 
                     switch (message[0]) {
-                        case "networkNodeStart":                          
-                            try
-                            {
+                        case "networkNodeStart":
+                            try {
                                 _keepAliveDictionary.Add(int.Parse(message[1]), DateTime.Now);
                                 UpdateState("Network node " + message[1] + " is online.");
                             }
-                            catch (SystemException e) { };
+                            catch (SystemException e) {
+                            }
+                            ;
                             //sendMessageToNetworkNode(Encoding.UTF8.GetBytes("OK " + int.Parse(message[1])), int.Parse(message[1]));
                             break;
-                        case "keepAlive":                        
+                        case "keepAlive":
                             _keepAliveDictionary[int.Parse(message[1])] = DateTime.Now;
                             break;
                     }
@@ -107,23 +107,18 @@ namespace NetworkEmulation.network {
                 }
         }
 
-        private void checkKeepAliveTable()
-        {
-            while (true)
-            {
-                try
-                {
-                    foreach (KeyValuePair<int, DateTime> node in _keepAliveDictionary)
-                    {
-                        if ((DateTime.Now - node.Value).TotalMilliseconds > MaxTimeNotReceivingKeepAliveMessage)
-                        {
+        private void checkKeepAliveTable() {
+            while (true) {
+                try {
+                    foreach (var node in _keepAliveDictionary)
+                        if ((DateTime.Now - node.Value).TotalMilliseconds > MaxTimeNotReceivingKeepAliveMessage) {
                             _keepAliveDictionary.Remove(node.Key);
                             UpdateState("Network node " + node.Key + " is offline.");
                             Console.WriteLine("Network node " + node.Key + " is offline.");
                         }
-                    }
                 }
-                catch (InvalidOperationException e) {}
+                catch (InvalidOperationException e) {
+                }
                 Thread.Sleep(500);
             }
         }

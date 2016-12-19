@@ -11,6 +11,7 @@ namespace NetworkUtilities {
             var xml = "";
             var settings = new XmlWriterSettings();
             settings.Indent = true;
+            //settings.OmitXmlDeclaration = true;
 
             using (var sww = new StringWriter()) {
                 using (var writer = XmlWriter.Create(sww, settings)) {
@@ -45,6 +46,19 @@ namespace NetworkUtilities {
                 var xml = new System.Xml.Serialization.XmlSerializer(objectType);
                 return xml.Deserialize(sr);
             }
+        }
+
+        public static void Serialize<T>(XmlWriter writer, T obj) {
+            var xml = new System.Xml.Serialization.XmlSerializer(typeof(T));
+            xml.Serialize(writer, obj);
+        }
+
+        public static T Deserialize<T>(XmlReader reader) {
+            var xml = new System.Xml.Serialization.XmlSerializer(typeof(T));
+
+            var result = xml.Deserialize(reader) is T ? (T) xml.Deserialize(reader) : default(T);
+
+            return result;
         }
     }
 }

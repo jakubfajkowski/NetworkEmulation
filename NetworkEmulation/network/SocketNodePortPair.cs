@@ -3,8 +3,8 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 
 namespace NetworkEmulation.network {
-    [XmlRoot("SocketNodePortPair")]
-    public class SocketNodePortPair : IXmlSerializable {
+    [XmlRoot]
+    public class SocketNodePortPair {
         private SocketNodePortPair() {
         }
 
@@ -14,30 +14,10 @@ namespace NetworkEmulation.network {
         }
 
         [XmlElement("NodePortNumber", typeof(int))]
-        public int NodePortNumber { get; private set; }
+        public int NodePortNumber { get; set; }
 
         [XmlElement("SocketPortNumber", typeof(int))]
-        public int SocketPortNumber { get; private set; }
-
-        public XmlSchema GetSchema() {
-            return null;
-        }
-
-        public void ReadXml(XmlReader reader) {
-            var intSerializer = new XmlSerializer(typeof(int));
-
-            reader.ReadStartElement("SocketNodePortPair");
-            NodePortNumber = (int) intSerializer.Deserialize(reader);
-            SocketPortNumber = (int) intSerializer.Deserialize(reader);
-            reader.ReadEndElement();
-        }
-
-        public void WriteXml(XmlWriter writer) {
-            var intSerializer = new XmlSerializer(typeof(int));
-
-            intSerializer.Serialize(writer, NodePortNumber);
-            intSerializer.Serialize(writer, SocketPortNumber);
-        }
+        public int SocketPortNumber { get; set; }
 
         public override bool Equals(object obj) {
             var other = obj as SocketNodePortPair;

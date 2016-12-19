@@ -2,6 +2,7 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.network;
+using NetworkUtilities.element;
 
 namespace NetworkEmulationTest {
     [TestClass]
@@ -34,16 +35,14 @@ namespace NetworkEmulationTest {
             clientNodeB.OnMessageRecieved += (sender, state) => Console.WriteLine(state);
             clientNodeB.OnUpdateState += (sender, state) => Console.WriteLine(state);
 
-            var networkNode1 = new NetworkNode.NetworkNode();
-            var networkNode2 = new NetworkNode.NetworkNode();
+            var networkNode1 = new NetworkNode.NetworkNode(new NetworkNodeSerializableParameters {
+                NumberOfPorts = 8
+            });
+            var networkNode2 = new NetworkNode.NetworkNode(new NetworkNodeSerializableParameters{
+                NumberOfPorts = 8
+            });
 
-            Thread.Sleep(1000);
-
-            networkNode1.CommutationMatrix.CreateInputPort(port1);
-            networkNode1.CommutationMatrix.CreateOutputPort(port2);
-
-            networkNode2.CommutationMatrix.CreateInputPort(port3);
-            networkNode2.CommutationMatrix.CreateOutputPort(port4);
+            Thread.Sleep(5000);
 
             var socketNodePortPair1 = new SocketNodePortPair(portA, clientNodeA.CableCloudTcpPort);
             var socketNodePortPair2 = new SocketNodePortPair(port1, networkNode1.CableCloudTcpPort);

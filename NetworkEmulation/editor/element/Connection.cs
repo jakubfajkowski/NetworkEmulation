@@ -1,19 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
 using NetworkEmulation.network.element;
+using NetworkUtilities;
+using UniqueId = NetworkUtilities.UniqueId;
+using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor.element {
-    public class Connection : IMarkable, IInitializable, IXmlSerializable {
-        private readonly List<Link> _links;
+    public class Connection : IMarkable, IInitializable, ISerializable {
+        public List<Link> Links { private get; set; }
 
         public Connection(List<Link> links) {
-            _links = links;
+            Id = UniqueId.Generate();
+            Links = links;
+
+            links.ForEach(link => Parameters.LinksIds.Add(link.Id));
 
             MarkAsSelected();
+        }
+
+        public Connection() {
+            Id = UniqueId.Generate();
         }
 
         public ConnectionSerializableParameters Parameters { get; set; }
@@ -23,19 +33,19 @@ namespace NetworkEmulation.editor.element {
         }
 
         public void MarkAsSelected() {
-            _links.ForEach(link => link.MarkAsSelected());
+            Links.ForEach(link => link.MarkAsSelected());
         }
 
         public void MarkAsDeselected() {
-            _links.ForEach(link => link.MarkAsDeselected());
+            Links.ForEach(link => link.MarkAsDeselected());
         }
 
         public void MarkAsOnline() {
-            _links.ForEach(link => link.MarkAsOnline());
+            Links.ForEach(link => link.MarkAsOnline());
         }
 
         public void MarkAsOffline() {
-            _links.ForEach(link => link.MarkAsOffline());
+            Links.ForEach(link => link.MarkAsOffline());
         }
 
         public XmlSchema GetSchema() {
@@ -43,17 +53,18 @@ namespace NetworkEmulation.editor.element {
         }
 
         public void ReadXml(XmlReader reader) {
-            var parametersSerializer = new XmlSerializer(typeof(ConnectionSerializableParameters));
-
-            reader.ReadStartElement(nameof(Link));
-            Parameters = parametersSerializer.Deserialize(reader) as ConnectionSerializableParameters;
+            reader.MoveToContent();
+            Id = new UniqueId(reader.GetAttribute("Id"));
+            reader.ReadStartElement(nameof(Connection));
+            Parameters = XmlSerializer.Deserialize<ConnectionSerializableParameters>(reader);
             reader.ReadEndElement();
         }
 
         public void WriteXml(XmlWriter writer) {
-            var parametersSerializer = new XmlSerializer(typeof(ConnectionSerializableParameters));
-
-            parametersSerializer.Serialize(writer, Parameters);
+            writer.WriteAttributeString("Id", Id.ToString());
+            XmlSerializer.Serialize(writer, Parameters);
         }
+
+        public UniqueId Id { get; private set; }
     }
 }

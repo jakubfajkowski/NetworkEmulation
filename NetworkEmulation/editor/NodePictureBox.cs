@@ -1,16 +1,23 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using NetworkUtilities;
+using UniqueId = NetworkUtilities.UniqueId;
+using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor {
-    public abstract class NodePictureBox : ClippedPictureBox, IMarkable, IInitializable, IXmlSerializable {
+    public abstract class NodePictureBox : ClippedPictureBox, IMarkable, IInitializable, ISerializable {
         public delegate void NodeMovingHandler(object sender);
 
-        private int _xPos;
-        private int _yPos;
+        private Point _anchor;
+
+        protected NodePictureBox() {
+            Id = UniqueId.Generate();
+        }
 
         public new Point Location {
             get { return base.Location; }
@@ -36,14 +43,20 @@ namespace NetworkEmulation.editor {
         }
 
         public virtual void ReadXml(XmlReader reader) {
-            _xPos = reader.ReadElementContentAsInt();
-            _yPos = reader.ReadElementContentAsInt();
+            reader.MoveToContent();
+            var X = int.Parse(reader.GetAttribute("X"));
+            var Y = int.Parse(reader.GetAttribute("Y"));
+            Location = new Point(X, Y);
+            Id = new UniqueId(reader.GetAttribute("Id"));
         }
 
         public virtual void WriteXml(XmlWriter writer) {
-            writer.WriteElementString(nameof(_xPos), _xPos.ToString());
-            writer.WriteElementString(nameof(_yPos), _yPos.ToString());
+            writer.WriteAttributeString("X", Location.X.ToString());
+            writer.WriteAttributeString("Y", Location.Y.ToString());
+            writer.WriteAttributeString("Id", Id.ToString());
         }
+
+        public UniqueId Id { get; private set; }
 
         public event NodeMovingHandler OnNodeMoving;
 
@@ -58,15 +71,15 @@ namespace NetworkEmulation.editor {
 
         protected override void OnMouseDown(MouseEventArgs e) {
             if (e.Button == MouseButtons.Left) {
-                _xPos = e.X;
-                _yPos = e.Y;
+                _anchor.X = e.X;
+                _anchor.Y = e.Y;
             }
         }
 
         protected override void OnMouseMove(MouseEventArgs e) {
             if (e.Button == MouseButtons.Left) {
-                Top += e.Y - _yPos;
-                Left += e.X - _xPos;
+                Top += e.Y - _anchor.Y;
+                Left += e.X - _anchor.X;
 
                 NodeMoving();
             }

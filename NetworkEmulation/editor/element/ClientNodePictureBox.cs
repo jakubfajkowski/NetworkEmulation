@@ -4,6 +4,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using NetworkEmulation.Properties;
 using NetworkUtilities.element;
+using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor.element {
     public class ClientNodePictureBox : NodePictureBox {
@@ -34,19 +35,15 @@ namespace NetworkEmulation.editor.element {
         }
 
         public override void ReadXml(XmlReader reader) {
-            var parametersSerializer = new XmlSerializer(typeof(ClientNodeSerializableParameters));
-
-            reader.ReadStartElement(nameof(ClientNodePictureBox));
             base.ReadXml(reader);
-            Parameters = parametersSerializer.Deserialize(reader) as ClientNodeSerializableParameters;
+            reader.ReadStartElement(nameof(ClientNodePictureBox));
+            XmlSerializer.Deserialize<ClientNodeSerializableParameters>(reader);
             reader.ReadEndElement();
         }
 
         public override void WriteXml(XmlWriter writer) {
-            var parametersSerializer = new XmlSerializer(typeof(ClientNodeSerializableParameters));
-
             base.WriteXml(writer);
-            parametersSerializer.Serialize(writer, Parameters);
+            XmlSerializer.Serialize(writer, Parameters);
         }
     }
 }

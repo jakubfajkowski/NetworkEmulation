@@ -4,29 +4,31 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
 using NetworkEmulation.network.element;
+using NetworkUtilities;
+using UniqueId = NetworkUtilities.UniqueId;
+using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor.element {
-    public partial class Link : Control, IMarkable, IInitializable, IXmlSerializable {
+    public partial class Link : Control, IMarkable, IInitializable, ISerializable {
         private static readonly Pen SelectedPen = new Pen(Color.Black, 5);
         private static readonly Pen DeselectedPen = new Pen(Color.Black, 1);
         private static readonly Pen OnlinePen = new Pen(Color.Green, 1);
         private static readonly Pen OfflinePen = new Pen(Color.Red, 1);
-        private readonly NodePictureBox _beginNodePictureBox;
-        private readonly NodePictureBox _endNodePictureBox;
+        private NodePictureBox _beginNodePictureBox;
+        private NodePictureBox _endNodePictureBox;
         private Pen _pen = DeselectedPen;
 
+        public Link() {
+            Id = UniqueId.Generate();
+        }
+
         public Link(ref NodePictureBox beginNodePictureBox, ref NodePictureBox endNodePictureBox) {
+            Id = UniqueId.Generate();
             InitializeComponent();
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
 
-            _beginNodePictureBox = beginNodePictureBox;
-            _endNodePictureBox = endNodePictureBox;
-
-
-            _beginNodePictureBox.OnNodeMoving += sender => Parent.Refresh();
-            _endNodePictureBox.OnNodeMoving += sender => Parent.Refresh();
+            SetAttachmentNodePictureBoxes(ref beginNodePictureBox, ref endNodePictureBox);
         }
 
         public LinkSerializableParameters Parameters { get; set; }
@@ -56,17 +58,30 @@ namespace NetworkEmulation.editor.element {
         }
 
         public void ReadXml(XmlReader reader) {
-            var parametersSerializer = new XmlSerializer(typeof(LinkSerializableParameters));
-
+            reader.MoveToContent();
+            Id = new UniqueId(reader.GetAttribute("Id"));
             reader.ReadStartElement(nameof(Link));
-            Parameters = parametersSerializer.Deserialize(reader) as LinkSerializableParameters;
+            Parameters = XmlSerializer.Deserialize<LinkSerializableParameters>(reader);
             reader.ReadEndElement();
         }
 
         public void WriteXml(XmlWriter writer) {
-            var parametersSerializer = new XmlSerializer(typeof(LinkSerializableParameters));
+            writer.WriteAttributeString("Id", Id.ToString());
+            XmlSerializer.Serialize(writer, Parameters);
+        }
 
-            parametersSerializer.Serialize(writer, Parameters);
+        public UniqueId Id { get; private set; }
+
+        public void SetAttachmentNodePictureBoxes(ref NodePictureBox beginNodePictureBox,
+            ref NodePictureBox endNodePictureBox) {
+            _beginNodePictureBox = beginNodePictureBox;
+            _endNodePictureBox = endNodePictureBox;
+
+            Parameters.BeginNodePictureBoxId = _beginNodePictureBox.Id;
+            Parameters.EndNodePictureBoxId = _endNodePictureBox.Id;
+
+            _beginNodePictureBox.OnNodeMoving += sender => Parent.Refresh();
+            _endNodePictureBox.OnNodeMoving += sender => Parent.Refresh();
         }
 
         private void ChangeStyle(Pen pen) {
@@ -77,7 +92,6 @@ namespace NetworkEmulation.editor.element {
         public void DrawLink(Graphics graphics) {
             var beginPoint = _beginNodePictureBox.CenterPoint();
             var endPoint = _endNodePictureBox.CenterPoint();
-
 
             graphics.DrawLine(_pen, beginPoint, endPoint);
         }
