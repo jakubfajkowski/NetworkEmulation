@@ -11,7 +11,9 @@ namespace ClientNode {
             ClientName = param.ClientName;
             CloudPort = param.CloudPort;
             IpAddress = param.IpAddress;
-            ClientTable = new List<ClientTableRow>();
+            foreach(var client in param.ClientTable) {
+                AddClient(client);
+            }
         }
 
         public int Id { get; set; }
@@ -19,7 +21,7 @@ namespace ClientNode {
         public int CloudPort { get; set; }
         //public int ClientPort { get; set; }
         public string IpAddress { get; set; }
-        public List<ClientTableRow> ClientTable { get; set; }
+        public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
 
         public event MessageHandler OnUpdateState;
         public event MessageHandler OnMessageRecieved;
@@ -33,7 +35,11 @@ namespace ClientNode {
         }
 
         public void AddClient(string clientName, int clientPort, int vpi, int vci) {
-            ClientTable.Add(new ClientTableRow(clientName, clientPort, vpi, vci));
+            ClientTableList.Add(new ClientTableRow(clientName, clientPort, vpi, vci));
+        }
+
+        public void AddClient(ClientTableRow clientTableRow) {
+            AddClient(clientTableRow.ClientName, clientTableRow.PortNumber, clientTableRow.Vpi, clientTableRow.Vci);
         }
 
         public void SendMessage(string message, string recieverName) {
