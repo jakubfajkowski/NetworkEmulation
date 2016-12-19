@@ -50,7 +50,7 @@ namespace ClientNode {
         }
 
         private ClientTableRow SearchUsingClientName(string clientName) {
-            foreach (var clientTableRow in ClientTable)
+            foreach (var clientTableRow in ClientTableList)
                 if (clientTableRow.ClientName.Equals(clientName)) return clientTableRow;
             return null;
         }
