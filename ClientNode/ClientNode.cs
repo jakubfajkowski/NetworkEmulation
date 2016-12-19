@@ -25,6 +25,7 @@ namespace ClientNode {
 
         public event MessageHandler OnUpdateState;
         public event MessageHandler OnMessageRecieved;
+        public event MessageHandler OnNewClientTableRow;
 
         protected void UpdateState(string state) {
             OnUpdateState?.Invoke(this, state);
@@ -34,12 +35,17 @@ namespace ClientNode {
             OnMessageRecieved?.Invoke(this, message);
         }
 
+        protected void AddClientToComboBox(string clientName) {
+            OnNewClientTableRow?.Invoke(this, clientName);
+        }
+
         public void AddClient(string clientName, int clientPort, int vpi, int vci) {
             ClientTableList.Add(new ClientTableRow(clientName, clientPort, vpi, vci));
         }
 
         public void AddClient(ClientTableRow clientTableRow) {
             AddClient(clientTableRow.ClientName, clientTableRow.PortNumber, clientTableRow.Vpi, clientTableRow.Vci);
+            AddClientToComboBox(clientTableRow.ClientName);
         }
 
         public void SendMessage(string message, string recieverName) {

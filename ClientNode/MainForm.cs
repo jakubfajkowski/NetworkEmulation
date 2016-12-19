@@ -19,7 +19,7 @@ namespace ClientNode {
             _client.OnMessageRecieved += MessageRecieved;
         }
 
-        public void AddClientToComboBox(string clientName) {
+        public void AddClientToComboBox(object sender, string clientName) {
             comboBoxClients.Items.Add(clientName);
         }
 
