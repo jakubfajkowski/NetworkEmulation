@@ -135,6 +135,7 @@ namespace NetworkEmulation.editor {
                 FailHandlingAddingConnection("Connection should begin with client node.");
             if (beginNodePictureBox is ClientNodePictureBox) {
                 HandlingAddingConnection = true;
+                _currentConnection.BeginClientNodePictureBox = beginNodePictureBox as ClientNodePictureBox;
                 CurrentNodePictureBox = beginNodePictureBox;
             }
         }
@@ -173,6 +174,7 @@ namespace NetworkEmulation.editor {
 
         private void EndHandlingAddingConnection() {
             Add(_currentConnection);
+            _currentConnection.EndClientNodePictureBox= CurrentNodePictureBox as ClientNodePictureBox;
             _currentConnection.FillClientTable();
             _handlingAddingConnection = false;
         }
