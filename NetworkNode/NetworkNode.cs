@@ -6,7 +6,7 @@ using NetworkUtilities.element;
 namespace NetworkNode {
     public class NetworkNode : Node {
         // Czas po jakim komórki ATM zostaną spakowane w CCM
-        public static int MinLastAddTime { private get; set; } = 10;
+        public static int MinLastAddTime { private get; set; } = 100;
 
         public CommutationMatrix CommutationMatrix;
         public NetworkNodeAgent NetworkNodeAgent;
@@ -49,7 +49,7 @@ namespace NetworkNode {
                     if (((port.GetAtmCellNumber() != 0) &&
                          ((DateTime.Now - port.GetLastAddTime()).TotalMilliseconds > MinLastAddTime)) ||
                         (port.GetAtmCellNumber() > CableCloudMessage.MaxAtmCellsNumber)) {
-                        
+                       // Console.WriteLine("Różnica czasu: " + (DateTime.Now - port.GetLastAddTime()).TotalMilliseconds + "   if max: " + (port.GetAtmCellNumber() > CableCloudMessage.MaxAtmCellsNumber));
                         var message = new CableCloudMessage(port.GetPortNumber());
 
                         var atmCellNumberInPort = port.GetAtmCellNumber();
@@ -62,9 +62,9 @@ namespace NetworkNode {
                         for (var i = 0; i < atmCellNumberInMessage; i++)
                             message.Add(port.GetAtmCell());
 
-                       // Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
-                       //                   message.PortNumber + " Liczba ATMCell: " + message.AtmCells.Count
-                       //                   + " Port: " + port.GetPortNumber());
+                        //Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
+                        //                  message.PortNumber + " Liczba ATMCell: " + message.AtmCells.Count
+                        //                  + " Port: " + port.GetPortNumber());
                         SendCableCloudMessage(message);
                        
                     }
