@@ -15,9 +15,12 @@ namespace ClientNode {
             string joinedArgs = string.Join(" ", args);
             var param = (ClientNodeSerializableParameters)XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeSerializableParameters));
             _client = new ClientNode(param);
+
             _client.OnUpdateState += UpdateState;
             _client.OnMessageRecieved += MessageRecieved;
             _client.OnNewClientTableRow += AddClientToComboBox;
+
+            _client.ReadClientTable(param);
         }
 
         public void AddClientToComboBox(object sender, string clientName) {

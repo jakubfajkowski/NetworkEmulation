@@ -11,10 +11,8 @@ namespace NetworkUtilitiesTests {
 
         [TestMethod]
         public void ConnectToCableCloudTest() {
-            Node.CableCloudListeningPort = _random.Next(1024, 65535);
-
-            var listeningTask = StartUdpListener(Node.CableCloudListeningPort);
-            var node = new Node();
+            var listeningTask = StartUdpListener(10000);
+            var node = new Node("127.0.0.1", 10000, 6969);
 
             listeningTask.Wait();
 

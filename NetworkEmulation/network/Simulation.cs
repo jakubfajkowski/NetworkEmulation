@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -13,8 +14,8 @@ namespace NetworkEmulation.network {
         public LogForm CableCloudLogForm { get; }
         public LogForm NetworkManagmentSystemLogForm { get; }
 
-        private CableCloud _cableCloud;
-        private NetworkManagmentSystem _networkManagmentSystem;
+        private readonly CableCloud _cableCloud;
+        private readonly NetworkManagmentSystem _networkManagmentSystem;
 
         private readonly List<NodePictureBox> _initializableNodes;
         private readonly List<Link> _links;
@@ -34,9 +35,6 @@ namespace NetworkEmulation.network {
             _connections = connections;
 
             _processes = new List<Process>();
-
-            InitializeCableCloud();
-            InitializeNetworkManagmentSystem();
         }
 
         private void InitializeCableCloud() {
@@ -45,7 +43,29 @@ namespace NetworkEmulation.network {
             }
         }
 
+        private void MarkAsOnline(IMarkable markable) {
+            markable.MarkAsOnline();
+        }
+
+        private void MarkAsOffline(IMarkable markable) {
+            markable.MarkAsOffline();
+        }
+        private void MarkAsOnline(List<IMarkable> markables) {
+            foreach (var markable in markables) {
+                markable.MarkAsOnline();
+            }
+        }
+
+        private void MarkAsOffline(List<IMarkable> markables) {
+            foreach (var markable in markables) {
+                markable.MarkAsOffline();
+            }
+        }
+
         private void InitializeNetworkManagmentSystem() {
+            _networkManagmentSystem.AreOnline(_initializableNodes.OfType<NetworkNodePictureBox>().ToList());
+            MarkAsOnline(_initializableNodes.OfType<IMarkable>().ToList());
+
             foreach (var connection in _connections) {
                 _networkManagmentSystem.SendConnectionToNetworkNodeAgent(connection);
             }
@@ -54,6 +74,8 @@ namespace NetworkEmulation.network {
         public void Run() {
             InitializeElements();
             StartProcesses();
+            InitializeCableCloud();
+            InitializeNetworkManagmentSystem();
         }
 
         private void InitializeElements() {
@@ -74,7 +96,7 @@ namespace NetworkEmulation.network {
         }
 
         private void KillProcesses() {
-            foreach (var process in _processes) process.Kill();
+            foreach (var process in _processes) if(process.HasExited == false) process.Kill();
         }
     }
 }

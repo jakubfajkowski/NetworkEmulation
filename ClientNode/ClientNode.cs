@@ -8,12 +8,6 @@ namespace ClientNode {
 
         public ClientNode(ClientNodeSerializableParameters parameters) : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort) {
             ClientName = parameters.ClientName;
-
-            if (parameters.ClientTable != null) {
-                foreach (var client in parameters.ClientTable) {
-                    AddClient(client);
-                }
-            }
         }
 
         public string ClientName { get; private set; }
@@ -22,6 +16,14 @@ namespace ClientNode {
         public event MessageHandler OnUpdateState;
         public event MessageHandler OnMessageRecieved;
         public event MessageHandler OnNewClientTableRow;
+
+        public void ReadClientTable(ClientNodeSerializableParameters parameters) {
+            if (parameters.ClientTable != null) {
+                foreach (var client in parameters.ClientTable) {
+                    AddClient(client);
+                }
+            }
+        }
 
         protected void UpdateState(string state) {
             OnUpdateState?.Invoke(this, state);
@@ -35,12 +37,8 @@ namespace ClientNode {
             OnNewClientTableRow?.Invoke(this, clientName);
         }
 
-        public void AddClient(string clientName, int clientPort, int vpi, int vci) {
-            ClientTableList.Add(new ClientTableRow(clientName, clientPort, vpi, vci));
-        }
-
         public void AddClient(ClientTableRow clientTableRow) {
-            AddClient(clientTableRow.ClientName, clientTableRow.PortNumber, clientTableRow.Vpi, clientTableRow.Vci);
+            ClientTableList.Add(clientTableRow);
             AddClientToComboBox(clientTableRow.ClientName);
         }
 

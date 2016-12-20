@@ -143,6 +143,27 @@ namespace NetworkEmulation.network {
             }
         }
 
+        public void AreOnline(List<NetworkNodePictureBox> networkNodePictureBoxes) {
+            //TODO Inaczej to rozwiązać
+            var areOnline = false;
+
+            while (areOnline != true) {
+                areOnline = true;
+                foreach (var networkNodePictureBox in networkNodePictureBoxes) {
+                    var nodeUdpPort = networkNodePictureBox.Parameters.NetworkManagmentSystemDataPort;
+
+                    if (!IsOnline(nodeUdpPort)) {
+                        areOnline = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private bool IsOnline(int nodeUdpPort) {
+            return _keepAliveDictionary.ContainsKey(nodeUdpPort);
+        }
+
         private void AddToMessageList(string message) {
             _receivedMessagesList.Add(message);
             lock (_messageThread) {

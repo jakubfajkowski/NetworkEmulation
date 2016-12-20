@@ -82,7 +82,7 @@ namespace NetworkEmulationTest {
 
             Thread.Sleep(1000);
 
-            clientNodeA.AddClient("B", portA, 1, 1);
+            clientNodeA.AddClient(new ClientTableRow("B", portA, 1, 1));
 
             clientNodeA.SendMessage("Lorem ipsum...", "B");
 

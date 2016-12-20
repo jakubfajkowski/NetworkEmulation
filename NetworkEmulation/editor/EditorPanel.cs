@@ -113,8 +113,9 @@ namespace NetworkEmulation.editor {
                         var previousNodePictureBox = CurrentNodePictureBox;
                         CurrentNodePictureBox = sender as NodePictureBox;
 
-                        if (CurrentNodePictureBox is NetworkNodePictureBox)
-                            new ConnectionForm(_currentConnection).ShowDialog(this);
+                        var networkNodePictureBox = CurrentNodePictureBox as NetworkNodePictureBox;
+                        if (networkNodePictureBox != null)
+                            new ConnectionForm(_currentConnection, networkNodePictureBox.Parameters.NetworkManagmentSystemDataPort).ShowDialog(this);
 
                         HandleAddingConnection(previousNodePictureBox, CurrentNodePictureBox);
                     }

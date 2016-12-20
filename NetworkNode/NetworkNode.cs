@@ -18,6 +18,7 @@ namespace NetworkNode {
             
             NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemListeningPort;
             NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkManagmentSystemDataPort, this);
+            Console.WriteLine("nr portu " + parameters.NetworkManagmentSystemDataPort);
             CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts);
             NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
 
