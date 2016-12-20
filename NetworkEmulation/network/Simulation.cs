@@ -5,34 +5,30 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using NetworkEmulation.editor;
+using NetworkEmulation.editor.element;
 
 namespace NetworkEmulation.network {
     public class Simulation : IXmlSerializable {
-        private CableCloud _cableCloud;
-        private List<IInitializable> _elements = new List<IInitializable>();
-        private NetworkManagmentSystem _networkMangmentSystem;
+        public CableCloud CableCloud { get; private set; }
+        public NetworkManagmentSystem NetworkManagmentSystem { get; private set; }
+
+        private readonly List<IInitializable> _initializableElements;
+        private readonly List<Link> _links;
+        private readonly List<Connection> _connections;
+
         private List<Process> _processes = new List<Process>();
 
-        public Simulation() {
+        public Simulation(List<IInitializable> initializableElements, List<Link> links, List<Connection> connections) {
+            _initializableElements = initializableElements;
+            _links = links;
+            _connections = connections;
+
             Prepare();
         }
 
-        public XmlSchema GetSchema() {
-            return null;
-        }
-
-        public void ReadXml(XmlReader reader) {
-            throw new NotImplementedException();
-        }
-
-        public void WriteXml(XmlWriter writer) {
-            throw new NotImplementedException();
-        }
-
         private void Prepare() {
-            _cableCloud = new CableCloud();
-            _networkMangmentSystem = new NetworkManagmentSystem();
-            _elements = new List<IInitializable>();
+            CableCloud = new CableCloud();
+            NetworkManagmentSystem = new NetworkManagmentSystem();
             _processes = new List<Process>();
         }
 
@@ -42,7 +38,7 @@ namespace NetworkEmulation.network {
         }
 
         private void InitializeElements() {
-            foreach (var element in _elements) {
+            foreach (var element in _initializableElements) {
                 var process = element.Initialize();
 
                 if (process != null)

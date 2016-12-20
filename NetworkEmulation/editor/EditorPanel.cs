@@ -19,30 +19,12 @@ namespace NetworkEmulation.editor {
 
     [Serializable]
     public partial class EditorPanel : UserControl, IXmlSerializable {
-        private List<Connection> _addedConnections = new List<Connection>();
-        private List<Link> _addedLinks = new List<Link>();
+        private readonly List<Connection> _addedConnections = new List<Connection>();
+        private readonly List<Link> _addedLinks = new List<Link>();
         private readonly List<NodePictureBox> _addedNodePictureBoxes = new List<NodePictureBox>();
+
         private Connection _currentConnection;
         private NodePictureBox _currentNodePictureBox;
-
-        private bool _handlingAddingConnection;
-        private Mode _mode = Mode.Move;
-
-        public EditorPanel() {
-            InitializeComponent();
-        }
-
-        public Mode Mode {
-            private get { return _mode; }
-            set {
-                _mode = value;
-                Deselect(_currentNodePictureBox);
-                _currentNodePictureBox = null;
-                _currentConnection = null;
-                _handlingAddingConnection = false;
-            }
-        }
-
         private NodePictureBox CurrentNodePictureBox {
             get { return _currentNodePictureBox; }
             set {
@@ -54,66 +36,28 @@ namespace NetworkEmulation.editor {
             }
         }
 
+        private bool _handlingAddingConnection;
+        private Mode _mode = Mode.Move;
         private bool HandlingAddingConnection {
             get { return _handlingAddingConnection; }
             set {
                 _handlingAddingConnection = value;
-                if (_handlingAddingConnection) _currentConnection = new Connection();
-                else _currentConnection = null;
+                _currentConnection = _handlingAddingConnection ? new Connection() : null;
+            }
+        }
+        public Mode Mode {
+            private get { return _mode; }
+            set {
+                _mode = value;
+                Deselect(_currentNodePictureBox);
+                _currentNodePictureBox = null;
+                _currentConnection = null;
+                _handlingAddingConnection = false;
             }
         }
 
-        public XmlSchema GetSchema() {
-            return null;
-        }
-
-        public void ReadXml(XmlReader reader) {
-            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNodePictureBox>));
-            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNodePictureBox>));
-            var linkSerializer = new XmlSerializer(typeof(List<Link>));
-            var connectionSerializer = new XmlSerializer(typeof(List<Connection>));
-
-            reader.ReadStartElement(nameof(EditorPanel));
-            var clientNodePictureBoxes = clientNodePictureBoxSerializer.Deserialize(reader) as List<ClientNodePictureBox>;
-            if (clientNodePictureBoxes != null) {
-                foreach (var clientNodePictureBox in clientNodePictureBoxes) {
-                    Add(clientNodePictureBox);
-                }
-            }
-
-            var networkNodePictureBoxes = networkNodePictureBoxSerializer.Deserialize(reader) as List<NetworkNodePictureBox>;
-            if (networkNodePictureBoxes != null) {
-                foreach (var networkNodePictureBox in networkNodePictureBoxes) {
-                    Add(networkNodePictureBox);
-                }
-            }
-
-            foreach (var link in linkSerializer.Deserialize(reader) as List<Link>) {
-                Add(link);
-                RestoreReferences(link);
-            }
-
-            foreach (var connection in connectionSerializer.Deserialize(reader) as List<Connection>) {
-                Add(connection);  
-                RestoreReferences(connection); 
-            }
-            reader.ReadEndElement();
-
-            //ShowElements();
-        }
-
-        public void WriteXml(XmlWriter writer) {
-            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNodePictureBox>));
-            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNodePictureBox>));
-            var linkSerializer = new XmlSerializer(typeof(List<Link>));
-            var connectionSerializer = new XmlSerializer(typeof(List<Connection>));
-
-            clientNodePictureBoxSerializer.Serialize(writer,
-                _addedNodePictureBoxes.OfType<ClientNodePictureBox>().ToList());
-            networkNodePictureBoxSerializer.Serialize(writer,
-                _addedNodePictureBoxes.OfType<NetworkNodePictureBox>().ToList());
-            linkSerializer.Serialize(writer, _addedLinks);
-            connectionSerializer.Serialize(writer, _addedConnections);
+        public EditorPanel() {
+            InitializeComponent();
         }
 
         private void Select(IMarkable markable) {
@@ -124,29 +68,65 @@ namespace NetworkEmulation.editor {
             markable?.MarkAsDeselected();
         }
 
-        private void nodePictureBox_Click(object sender, EventArgs e) {
-            if (Mode == Mode.AddConnection)
-                if (!HandlingAddingConnection) {
-                    BeginHandlingAddingConnection(sender as NodePictureBox);
-                }
-                else {
-                    var previousNodePictureBox = CurrentNodePictureBox;
-                    CurrentNodePictureBox = sender as NodePictureBox;
-                    HandleAddingConnection(previousNodePictureBox, CurrentNodePictureBox);
-                }
-            if (Mode == Mode.AddLink)
-                if (CurrentNodePictureBox == null) {
-                    CurrentNodePictureBox = sender as NodePictureBox;
-                }
-                else {
-                    var link = CreateLink(CurrentNodePictureBox, sender as NodePictureBox);
-                    new LinkForm(link).ShowDialog(this);
-                    Add(link);
-                    link.MarkAsDeselected();
-                    CurrentNodePictureBox = null;
-                }
-            if (Mode == Mode.Delete)
-                MessageBox.Show("Not implemented."); //DeleteNodePictureBox(sender as NodePictureBox);
+        protected override void OnMouseClick(MouseEventArgs e) {
+            switch (Mode) {
+                case Mode.AddClientNode:
+                    var clientNodePictureBox = new ClientNodePictureBox();
+                    _currentNodePictureBox = clientNodePictureBox;
+                    new ClientNodeForm(clientNodePictureBox).ShowDialog(this);
+                    break;
+
+                case Mode.AddNetworkNode:
+                    var networkNodePictureBox = new NetworkNodePictureBox();
+                    _currentNodePictureBox = networkNodePictureBox;
+                    new NetworkNodeForm(networkNodePictureBox).ShowDialog(this);
+                    break;
+
+                default:
+                    return;
+            }
+
+            Add(_currentNodePictureBox);
+            _currentNodePictureBox.Location = e.Location;
+        }
+
+        private void nodePictureBox_OnClick(object sender, EventArgs e) {
+            switch (Mode) {
+                case Mode.AddLink:
+                    if (CurrentNodePictureBox == null) {
+                        CurrentNodePictureBox = sender as NodePictureBox;
+                    }
+                    else {
+                        var link = CreateLink(CurrentNodePictureBox, sender as NodePictureBox);
+                        new LinkForm(link).ShowDialog(this);
+                        Add(link);
+                        link.MarkAsDeselected();
+                        CurrentNodePictureBox = null;
+                    }
+                    break;
+
+                case Mode.AddConnection:
+                    if (!HandlingAddingConnection) {
+                        BeginHandlingAddingConnection(sender as NodePictureBox);
+                    }
+                    else {
+                        var previousNodePictureBox = CurrentNodePictureBox;
+                        CurrentNodePictureBox = sender as NodePictureBox;
+
+                        if (CurrentNodePictureBox is NetworkNodePictureBox)
+                            new ConnectionForm(_currentConnection).ShowDialog(this);
+
+                        HandleAddingConnection(previousNodePictureBox, CurrentNodePictureBox);
+                    }
+                    break;
+
+                case Mode.Delete:
+                    MessageBox.Show("Not implemented.");
+                    break;
+
+                default:
+                    return;
+            }
         }
 
         private void BeginHandlingAddingConnection(NodePictureBox beginNodePictureBox) {
@@ -187,14 +167,12 @@ namespace NetworkEmulation.editor {
         }
 
         private void AddLinkToCurrentConnection(Link link) {
-            new ConnectionForm(_currentConnection).ShowDialog(this);
-
             _currentConnection.Add(link);
         }
 
         private void EndHandlingAddingConnection() {
-            var currentConnection = new Connection();
-            Add(currentConnection);
+            Add(_currentConnection);
+            _currentConnection.FillClientTable();
             _handlingAddingConnection = false;
         }
 
@@ -202,28 +180,6 @@ namespace NetworkEmulation.editor {
             MessageBox.Show(message, "Add Connection Error",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             _handlingAddingConnection = false;
-        }
-
-        protected override void OnMouseClick(MouseEventArgs e) {
-            switch (Mode) {
-                case Mode.AddClientNode:
-                    var clientNodePictureBox = new ClientNodePictureBox();
-                    _currentNodePictureBox = clientNodePictureBox;
-                    new ClientNodeForm(clientNodePictureBox).ShowDialog(this);
-                    break;
-
-                case Mode.AddNetworkNode:
-                    var networkNodePictureBox = new NetworkNodePictureBox();
-                    _currentNodePictureBox = networkNodePictureBox;
-                    new NetworkNodeForm(networkNodePictureBox).ShowDialog(this);
-                    break;
-
-                default:
-                    return;
-            }
-
-            Add(_currentNodePictureBox);
-            _currentNodePictureBox.Location = e.Location;
         }
 
         protected override void OnPaint(PaintEventArgs e) {
@@ -234,9 +190,11 @@ namespace NetworkEmulation.editor {
         }
 
         private void Add(NodePictureBox nodePictureBox) {
-            nodePictureBox.Click += nodePictureBox_Click;
+            nodePictureBox.Click += nodePictureBox_OnClick;
             Controls.Add(nodePictureBox);
             _addedNodePictureBoxes.Add(nodePictureBox);
+
+            Deselect(nodePictureBox);
         }
 
         private void DeleteNodePictureBox(NodePictureBox nodePictureBox) {
@@ -247,6 +205,8 @@ namespace NetworkEmulation.editor {
         private void Add(Link link) {
             Controls.Add(link);
             _addedLinks.Add(link);
+
+            Deselect(link);
         }
 
         private Link CreateLink(NodePictureBox beginNodePictureBox, NodePictureBox endNodePictureBox) {
@@ -255,18 +215,57 @@ namespace NetworkEmulation.editor {
 
         private void Add(Connection connection) {
             _addedConnections.Add(connection);
+
+            Select(connection);
         }
 
-        private void ShowElements() {
-            foreach (var link in _addedLinks) {
+        #region IXmlSerializable
+
+        public XmlSchema GetSchema() {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader) {
+            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNodePictureBox>));
+            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNodePictureBox>));
+            var linkSerializer = new XmlSerializer(typeof(List<Link>));
+            var connectionSerializer = new XmlSerializer(typeof(List<Connection>));
+
+            reader.ReadStartElement(nameof(EditorPanel));
+            var clientNodePictureBoxes =
+                clientNodePictureBoxSerializer.Deserialize(reader) as List<ClientNodePictureBox>;
+            if (clientNodePictureBoxes != null)
+                foreach (var clientNodePictureBox in clientNodePictureBoxes) Add(clientNodePictureBox);
+
+            var networkNodePictureBoxes =
+                networkNodePictureBoxSerializer.Deserialize(reader) as List<NetworkNodePictureBox>;
+            if (networkNodePictureBoxes != null)
+                foreach (var networkNodePictureBox in networkNodePictureBoxes) Add(networkNodePictureBox);
+
+            foreach (var link in linkSerializer.Deserialize(reader) as List<Link>) {
                 RestoreReferences(link);
                 Add(link);
             }
 
-            foreach (var connection in _addedConnections) {
+            foreach (var connection in connectionSerializer.Deserialize(reader) as List<Connection>) {
                 RestoreReferences(connection);
                 Add(connection);
             }
+            reader.ReadEndElement();
+        }
+
+        public void WriteXml(XmlWriter writer) {
+            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNodePictureBox>));
+            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNodePictureBox>));
+            var linkSerializer = new XmlSerializer(typeof(List<Link>));
+            var connectionSerializer = new XmlSerializer(typeof(List<Connection>));
+
+            clientNodePictureBoxSerializer.Serialize(writer,
+                _addedNodePictureBoxes.OfType<ClientNodePictureBox>().ToList());
+            networkNodePictureBoxSerializer.Serialize(writer,
+                _addedNodePictureBoxes.OfType<NetworkNodePictureBox>().ToList());
+            linkSerializer.Serialize(writer, _addedLinks);
+            connectionSerializer.Serialize(writer, _addedConnections);
         }
 
         private void RestoreReferences(Link link) {
@@ -284,5 +283,7 @@ namespace NetworkEmulation.editor {
 
             connection.Links = links;
         }
+
+        #endregion
     }
 }
