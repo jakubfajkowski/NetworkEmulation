@@ -28,7 +28,6 @@ namespace NetworkNode {
         public void startThread()
         {
             //_timeToQuit = false;
-            online = true;
             _networkNodeThread = new Thread(RunThread);
             _networkNodeThread.Start();
             CommutationMatrix.startThread();
@@ -38,7 +37,6 @@ namespace NetworkNode {
         public void shutdown()
         {
             //_timeToQuit = true;
-            online = false;
             CommutationMatrix.shutdown();
             NetworkNodeAgent.shutdown();
         }
