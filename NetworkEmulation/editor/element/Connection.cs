@@ -20,10 +20,24 @@ namespace NetworkEmulation.editor.element {
 
         public void Add(Link link) {
             Links.Add(link);
+            Parameters.LinksIds.Add(link.Id);
+
             link.MarkAsSelected();
         }
 
         public ConnectionSerializableParameters Parameters { get; set; }
+
+        public void FillClientTable() {
+            var beginClientPictureBox = Links[0].BeginNodePictureBox as ClientNodePictureBox;
+            var endClientPictureBox = Links[Links.Count - 1].EndNodePictureBox as ClientNodePictureBox;
+
+            var clientName = endClientPictureBox.Parameters.ClientName;
+            var portNumber = Parameters.NodeConnectionInformations[0].InPortNumber;
+            var vpi = Parameters.NodeConnectionInformations[0].InVpi;
+            var vci = Parameters.NodeConnectionInformations[0].InVci;
+
+            beginClientPictureBox.Parameters.ClientTable.Add(new ClientTableRow(clientName, portNumber, vpi, vci));
+        }
 
         public Process Initialize() {
             throw new NotImplementedException();
