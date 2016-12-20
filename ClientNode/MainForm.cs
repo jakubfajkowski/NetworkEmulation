@@ -17,6 +17,7 @@ namespace ClientNode {
             _client = new ClientNode(param);
             _client.OnUpdateState += UpdateState;
             _client.OnMessageRecieved += MessageRecieved;
+            _client.OnNewClientTableRow += AddClientToComboBox;
         }
 
         public void AddClientToComboBox(object sender, string clientName) {
