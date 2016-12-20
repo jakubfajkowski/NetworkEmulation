@@ -10,7 +10,7 @@ using UniqueId = NetworkUtilities.UniqueId;
 using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor.element {
-    public partial class Link : Control, IMarkable, IInitializable, ISerializable {
+    public partial class Link : Control, IMarkable, ISerializable {
         private static readonly Pen SelectedPen = new Pen(Color.Black, 5);
         private static readonly Pen DeselectedPen = new Pen(Color.Black, 1);
         private static readonly Pen OnlinePen = new Pen(Color.Green, 1);
@@ -32,10 +32,6 @@ namespace NetworkEmulation.editor.element {
         }
 
         public LinkSerializableParameters Parameters { get; set; }
-
-        public Process Initialize() {
-            throw new NotImplementedException();
-        }
 
         public void MarkAsSelected() {
             ChangeStyle(SelectedPen);

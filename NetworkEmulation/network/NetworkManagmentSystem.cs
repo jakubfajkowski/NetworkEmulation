@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NetworkEmulation.editor.element;
 using NetworkEmulation.log;
 
 namespace NetworkEmulation.network {
@@ -51,14 +52,20 @@ namespace NetworkEmulation.network {
             return null;
         }
 
-        public void SendConnectionToNetworkNodeAgent(NodeConnectionInformation info) {
-            SendConnectionToNetworkNodeAgent(info.NodeUdpPort,
-                                             info.InVpi,
-                                             info.InVci,
-                                             info.InPortNumber,
-                                             info.OutVpi,
-                                             info.OutVci,
-                                             info.OutPortNumber);
+        public void SendConnectionToNetworkNodeAgent(NodeConnectionInformation information) {
+            SendConnectionToNetworkNodeAgent(information.NodeUdpPort,
+                                             information.InVpi,
+                                             information.InVci,
+                                             information.InPortNumber,
+                                             information.OutVpi,
+                                             information.OutVci,
+                                             information.OutPortNumber);
+        }
+
+        public void SendConnectionToNetworkNodeAgent(Connection connection) {
+            foreach (var information in connection.Parameters.NodeConnectionInformations) {
+                SendConnectionToNetworkNodeAgent(information);
+            }
         }
 
         // Wpis w tablicy pola komutacyjnego

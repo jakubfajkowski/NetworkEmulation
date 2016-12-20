@@ -5,17 +5,16 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using NetworkEmulation.editor.element;
 using NetworkEmulation.log;
 using NetworkUtilities;
-using XmlSerializer = System.Xml.Serialization.XmlSerializer;
 
 namespace NetworkEmulation.network {
-    [XmlRoot("CableCloud")]
-    public class CableCloud : LogObject, IXmlSerializable {
+    public class CableCloud : LogObject {
         private readonly SerializableDictionary<int, TcpClient> _nodesTcpClients;
         private UdpClient _connectionUdpClient;
 
-        [XmlElement("Links")] private SerializableDictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
+        private readonly SerializableDictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
 
         public CableCloud() {
             _nodesTcpClients = new SerializableDictionary<int, TcpClient>();
@@ -25,29 +24,6 @@ namespace NetworkEmulation.network {
         }
 
         public bool Online { get; private set; }
-
-        public XmlSchema GetSchema() {
-            return null;
-        }
-
-        public void ReadXml(XmlReader reader) {
-            var linkSerializer = new XmlSerializer(_linkDictionary.GetType());
-
-            reader.ReadStartElement("CableCloud");
-            reader.ReadStartElement("Links");
-            _linkDictionary =
-                (SerializableDictionary<SocketNodePortPair, SocketNodePortPair>) linkSerializer.Deserialize(reader);
-            reader.ReadEndElement();
-            reader.ReadEndElement();
-        }
-
-        public void WriteXml(XmlWriter writer) {
-            var linkSerializer = new XmlSerializer(_linkDictionary.GetType());
-
-            writer.WriteStartElement("Links");
-            linkSerializer.Serialize(writer, _linkDictionary);
-            writer.WriteEndElement();
-        }
 
         private void Start() {
             var ipEndPoint = new IPEndPoint(IPAddress.Any, 10000);
@@ -127,6 +103,13 @@ namespace NetworkEmulation.network {
         }
 
         public void AddLink(SocketNodePortPair key, SocketNodePortPair value) {
+            _linkDictionary.Add(key, value);
+        }
+
+        public void AddLink(Link link) {
+            var key = link.Parameters.InputNodePortPair;
+            var value = link.Parameters.OutputNodePortPair;
+
             _linkDictionary.Add(key, value);
         }
 

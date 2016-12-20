@@ -100,9 +100,8 @@ namespace NetworkEmulation {
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e) {
-
             _simulation = new Simulation(editorPanel._addedNodePictureBoxes, editorPanel._addedLinks, editorPanel._addedConnections);
-
+            _simulation.Run();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e) {

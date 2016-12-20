@@ -16,20 +16,32 @@ namespace NetworkEmulation.network {
         private readonly List<Link> _links;
         private readonly List<Connection> _connections;
 
-        private List<Process> _processes = new List<Process>();
+        private readonly List<Process> _processes;
 
         public Simulation(List<NodePictureBox> initializableElements, List<Link> links, List<Connection> connections) {
+            CableCloud = new CableCloud();
+            NetworkManagmentSystem = new NetworkManagmentSystem();
+
             _initializableElements = initializableElements;
             _links = links;
             _connections = connections;
 
-            Prepare();
+            _processes = new List<Process>();
+
+            InitializeCableCloud();
+            InitializeNetworkManagmentSystem();
         }
 
-        private void Prepare() {
-            CableCloud = new CableCloud();
-            NetworkManagmentSystem = new NetworkManagmentSystem();
-            _processes = new List<Process>();
+        private void InitializeCableCloud() {
+            foreach (var link in _links) {
+                CableCloud.AddLink(link);
+            }
+        }
+
+        private void InitializeNetworkManagmentSystem() {
+            foreach (var connection in _connections) {
+                NetworkManagmentSystem.SendConnectionToNetworkNodeAgent(connection);
+            }
         }
 
         public void Run() {
@@ -52,7 +64,6 @@ namespace NetworkEmulation.network {
 
         public void Stop() {
             KillProcesses();
-            Prepare();
         }
 
         private void KillProcesses() {

@@ -9,7 +9,7 @@ using UniqueId = NetworkUtilities.UniqueId;
 using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor.element {
-    public class Connection : IMarkable, IInitializable, ISerializable {
+    public class Connection : IMarkable, ISerializable {
         public List<Link> Links { private get; set; }
 
         public Connection() {
@@ -37,10 +37,6 @@ namespace NetworkEmulation.editor.element {
             var vci = Parameters.NodeConnectionInformations[0].InVci;
 
             beginClientPictureBox.Parameters.ClientTable.Add(new ClientTableRow(clientName, portNumber, vpi, vci));
-        }
-
-        public Process Initialize() {
-            throw new NotImplementedException();
         }
 
         public void MarkAsSelected() {
