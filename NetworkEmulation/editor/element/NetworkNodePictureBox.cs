@@ -8,6 +8,8 @@ using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor.element {
     public class NetworkNodePictureBox : NodePictureBox {
+        public NetworkNodeSerializableParameters networkNodeSerializableParameters;
+
         public NetworkNodePictureBox() {
             Image = Resources.NetworkNodeNotSelected;
             Parameters = new NetworkNodeSerializableParameters();
@@ -19,9 +21,9 @@ namespace NetworkEmulation.editor.element {
 
         public override Process Initialize() {
             var process = new Process();
-            process.StartInfo.FileName = "";
+            process.StartInfo.FileName = "..\\..\\..\\NetworkNode\\bin\\Debug\\NetworkNode.exe";
             process.StartInfo.Arguments = XmlSerializer.Serialize(Parameters);
-            throw new NotImplementedException();
+            return process;
         }
 
         public override void MarkAsSelected() {
