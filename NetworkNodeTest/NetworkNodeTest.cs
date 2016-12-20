@@ -3,6 +3,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
 using NetworkUtilities.element;
+using NetworkEmulation.network;
 
 namespace NetworkNodeTest {
     [TestClass]
@@ -29,6 +30,23 @@ namespace NetworkNodeTest {
             var networkNode = new NetworkNode.NetworkNode(parameters);
         }
 
-       
-    }
+        [TestMethod]
+        public void NMSKeepAlive()
+        {
+            var networkNodeSerializableParameters = new NetworkNodeSerializableParameters
+            {
+                NumberOfPorts = 8,
+                CableCloudListeningPort = 10000,
+                IpAddress = "127.0.0.1",
+                CableCloudDataPort = PortRandomizer.RandomFreePort(),
+                NetworkManagmentSystemListeningPort = 6666,
+                NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
+            };
+            NetworkManagmentSystem nms = new NetworkManagmentSystem();
+            var networkNode = new NetworkNode.NetworkNode(networkNodeSerializableParameters);
+            Thread.Sleep(10000);
+        }
+
+
+   }
 }
