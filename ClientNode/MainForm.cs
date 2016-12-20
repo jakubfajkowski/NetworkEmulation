@@ -36,7 +36,6 @@ namespace ClientNode {
 
         private void MessageRecieved(object sender, string message) {
             textBoxReceived.Text += message;
-            textBoxReceived.Text += '\n';
         }
 
         private void UpdateState(object sender, string state) {
