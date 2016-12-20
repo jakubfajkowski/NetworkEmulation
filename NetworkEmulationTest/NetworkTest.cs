@@ -90,7 +90,7 @@ namespace NetworkEmulationTest {
         }
 
         [TestMethod]
-        public void testInitialize() {
+        public void InitializeClientNodeTest() {
             ClientNodePictureBox clientNodePB= new ClientNodePictureBox() {
                 Parameters = new ClientNodeSerializableParameters {
                     ClientName = "Janusz",
@@ -102,6 +102,22 @@ namespace NetworkEmulationTest {
                 }
             };
             clientNodePB.Initialize().Start();
+        }
+
+        [TestMethod]
+        public void InitializeNetworkNodeTest() {
+            var networkNodePictureBox = new NetworkNodePictureBox {
+                Parameters = new NetworkNodeSerializableParameters {
+                    NumberOfPorts = 8,
+                    CableCloudListeningPort = 10000,
+                    IpAddress = "127.0.0.1",
+                    CableCloudDataPort = PortRandomizer.RandomFreePort(),
+                    NetworkManagmentSystemListeningPort = 6666,
+                    NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
+                }
+            };
+
+            networkNodePictureBox.Initialize().Start();
         }
     }
 }

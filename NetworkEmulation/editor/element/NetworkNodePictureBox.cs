@@ -8,12 +8,10 @@ using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor.element {
     public class NetworkNodePictureBox : NodePictureBox {
-        public NetworkNodeSerializableParameters networkNodeSerializableParameters;
-
         public NetworkNodePictureBox() {
             Image = Resources.NetworkNodeNotSelected;
             Parameters = new NetworkNodeSerializableParameters();
-            CableCloudDataPort = PortRandomizer.RandomFreePort();
+            Parameters.NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort();
             Parameters.CableCloudDataPort = CableCloudDataPort;
         }
 

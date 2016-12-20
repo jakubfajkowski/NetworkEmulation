@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkEmulation.network;
 using NetworkUtilities;
 using NetworkUtilities.element;
 
@@ -12,16 +9,24 @@ namespace NetworkNodeTest {
     public class NetworkNodeTest {
         [TestMethod]
         public void NetworkNodeSetupTest() {
-            var networkNodeSerializableParameters = new NetworkNodeSerializableParameters
-            {
-                Id = 1,
+            var networkNodeSerializableParameters = new NetworkNodeSerializableParameters {
+                NumberOfPorts = 8,
+                CableCloudListeningPort = 10000,
                 IpAddress = "127.0.0.1",
-                CloudPort = 10000,
-                NetworkManagmentSystemPort = 6666,
-                NumberOfPorts = 5
+                CableCloudDataPort = PortRandomizer.RandomFreePort(),
+                NetworkManagmentSystemListeningPort = 6666,
+                NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             };
-           
-            var networkNode = new NetworkNode.NetworkNode(networkNodeSerializableParameters);
+
+            string serializedParameters = XmlSerializer.Serialize(networkNodeSerializableParameters);
+
+            string[] args = serializedParameters.Split(' ');
+
+            string joinedArgs = string.Join(" ", args);
+
+            var parameters = (NetworkNodeSerializableParameters)XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeSerializableParameters));
+
+            var networkNode = new NetworkNode.NetworkNode(parameters);
         }
 
        

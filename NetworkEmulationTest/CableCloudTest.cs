@@ -82,30 +82,7 @@ namespace NetworkEmulationTest {
 
             for (var i = 0; i < _bytesToSend.Length; i++) Assert.AreEqual(_bytesToSend[i], _bytesRecieved[i]);
         }
-
-        [TestMethod]
-        public void CableCloudXmlSerializationTest() {
-            var cableCloud = new CableCloud();
-            var cc = new PrivateObject(cableCloud);
-
-            for (var i = 0; i < 10; i++) cableCloud.AddLink(RandomSocketNodePortPair(), RandomSocketNodePortPair());
-
-            var expected =
-                ((SerializableDictionary<SocketNodePortPair, SocketNodePortPair>) cc.GetField("_linkDictionary")).Count;
-
-            var serializedCloud = XmlSerializer.Serialize(cableCloud);
-
-            cableCloud.AddLink(RandomSocketNodePortPair(), RandomSocketNodePortPair());
-
-            XmlSerializer.Deserialize(cableCloud, serializedCloud);
-
-            var actual =
-                ((SerializableDictionary<SocketNodePortPair, SocketNodePortPair>) cc.GetField("_linkDictionary")).Count;
-
-            Assert.AreEqual(expected, actual);
-        }
-
-
+        
         private static CableCloudMessage CreateCableCloudMessage(int linkNumber, int atmCellsNumber) {
             var cableCloudMessage = new CableCloudMessage(linkNumber);
             for (var i = 0; i < atmCellsNumber; i++) cableCloudMessage.Add(new AtmCell(1, 1, new byte[48]));

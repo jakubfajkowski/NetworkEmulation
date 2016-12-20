@@ -9,20 +9,20 @@ using NetworkEmulation.editor.element;
 
 namespace NetworkEmulation.network {
     public class Simulation {
-        public CableCloud CableCloud { get; private set; }
-        public NetworkManagmentSystem NetworkManagmentSystem { get; private set; }
+        public CableCloud CableCloud { get; }
+        public NetworkManagmentSystem NetworkManagmentSystem { get; }
 
-        private readonly List<NodePictureBox> _initializableElements;
+        private readonly List<NodePictureBox> _initializableNodes;
         private readonly List<Link> _links;
         private readonly List<Connection> _connections;
 
         private readonly List<Process> _processes;
 
-        public Simulation(List<NodePictureBox> initializableElements, List<Link> links, List<Connection> connections) {
+        public Simulation(List<NodePictureBox> initializableNodes, List<Link> links, List<Connection> connections) {
             CableCloud = new CableCloud();
             NetworkManagmentSystem = new NetworkManagmentSystem();
 
-            _initializableElements = initializableElements;
+            _initializableNodes = initializableNodes;
             _links = links;
             _connections = connections;
 
@@ -50,7 +50,7 @@ namespace NetworkEmulation.network {
         }
 
         private void InitializeElements() {
-            foreach (var element in _initializableElements) {
+            foreach (var element in _initializableNodes) {
                 var process = element.Initialize();
 
                 if (process != null)
