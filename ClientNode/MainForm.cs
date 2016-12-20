@@ -6,8 +6,6 @@ using NetworkUtilities.element;
 
 namespace ClientNode {
     public partial class MainForm : Form {
-        private List<AtmCell> _atmCells;
-        private CableCloudMessage _cableCloudMessage;
         private readonly ClientNode _client;
 
         public MainForm(string[] args) {
@@ -15,6 +13,8 @@ namespace ClientNode {
             string joinedArgs = string.Join(" ", args);
             var param = (ClientNodeSerializableParameters)XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeSerializableParameters));
             _client = new ClientNode(param);
+
+            this.Text = _client.ClientName;
 
             _client.OnUpdateState += UpdateState;
             _client.OnMessageRecieved += MessageRecieved;
