@@ -116,5 +116,9 @@ namespace NetworkEmulation.network {
         public void RemoveLink(SocketNodePortPair key) {
             _linkDictionary.Remove(key);
         }
+
+        public void Dispose() {
+            _connectionUdpClient.Close();
+        }
     }
 }

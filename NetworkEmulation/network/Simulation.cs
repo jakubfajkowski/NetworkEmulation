@@ -111,6 +111,8 @@ namespace NetworkEmulation.network {
         }
 
         public void Stop() {
+            _cableCloud.Dispose();
+            _networkManagmentSystem.Dispose();
             KillProcesses();
         }
 
