@@ -17,21 +17,16 @@ namespace NetworkNode {
         private bool _timeToQuit;
 
 
-        public CommutationMatrix(CommutationTable comTable, int inputPortNumber, int outputPortNumber) {
+        public CommutationMatrix(CommutationTable comTable, int portNumber) {
             _commutationTable = comTable;
             _inputPorts = new List<Port>();
             OutputPorts = new List<Port>();
 
-            for (int i = 1; i <= inputPortNumber; i++) 
+            for (int i = 1; i <= portNumber; i++) 
             {
                 CreateInputPort(i);
-            }
-            for (int i = 1; i <= outputPortNumber; i++)
-            {
                 CreateOutputPort(i);
-            }
-
-            
+            } 
         }
 
         public void startThread()

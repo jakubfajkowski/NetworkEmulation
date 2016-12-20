@@ -19,9 +19,9 @@ namespace NetworkEmulation.editor {
 
     [Serializable]
     public partial class EditorPanel : UserControl, IXmlSerializable {
-        private readonly List<Connection> _addedConnections = new List<Connection>();
-        private readonly List<Link> _addedLinks = new List<Link>();
-        private readonly List<NodePictureBox> _addedNodePictureBoxes = new List<NodePictureBox>();
+        public List<Connection> _addedConnections { get; private set; } = new List<Connection>();
+        public List<Link> _addedLinks { get; private set; }  = new List<Link>();
+        public List<NodePictureBox> _addedNodePictureBoxes { get; private set; }  = new List<NodePictureBox>();
 
         private Connection _currentConnection;
         private NodePictureBox _currentNodePictureBox;

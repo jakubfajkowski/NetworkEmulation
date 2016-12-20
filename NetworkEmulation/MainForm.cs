@@ -6,9 +6,11 @@ using System.Xml;
 using NetworkEmulation.editor;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
+using NetworkEmulation.network;
 
 namespace NetworkEmulation {
     public partial class MainForm : Form {
+        private Simulation _simulation;
         public MainForm() {
             InitializeComponent();
         }
@@ -98,6 +100,9 @@ namespace NetworkEmulation {
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e) {
+
+            _simulation = new Simulation(editorPanel._addedNodePictureBoxes, editorPanel._addedLinks, editorPanel._addedConnections);
+
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e) {

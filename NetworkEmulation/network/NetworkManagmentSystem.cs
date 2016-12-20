@@ -16,6 +16,10 @@ namespace NetworkEmulation.network {
         private readonly UdpClient _listenUdpClient;
         private readonly Thread _messageThread;
 
+        //private bool isKeepAliveListenerActive;
+        //private bool isCheckKeepAliveTableActive;
+        //private bool isListenForConnectionActive;
+
         private readonly List<string> _receivedMessagesList;
         private List<string> _receivedConnectionLabelsList;
 
@@ -87,7 +91,6 @@ namespace NetworkEmulation.network {
 
 
         /* Wątek obsługujący keep alive*/
-
         private void RunThread() {
             while (true)
                 if (_receivedMessagesList.Count > 0) {

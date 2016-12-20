@@ -15,10 +15,10 @@ namespace NetworkNode {
         private bool _timeToQuit;
 
         public NetworkNode(NetworkNodeSerializableParameters parameters) : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort) {
-            //NmsPort = parameters.NetworkManagmentSystemListeningPort;
+            
             NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemListeningPort;
             NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkManagmentSystemDataPort, this);
-            CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts, parameters.NumberOfPorts);
+            CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts);
             NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
 
             startThread();     
@@ -87,6 +87,7 @@ namespace NetworkNode {
         }
 
         private void SendCableCloudMessage(CableCloudMessage cableCloudMessage) {
+            cableCloudMessage.Fill();
             Send(cableCloudMessage.Serialize());
             Console.WriteLine("Message sent on port: " + cableCloudMessage.PortNumber);
         }

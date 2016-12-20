@@ -18,6 +18,9 @@ namespace NetworkEmulation.editor.element {
         public NetworkNodeSerializableParameters Parameters { get; set; }
 
         public override Process Initialize() {
+            var process = new Process();
+            process.StartInfo.FileName = "";
+            process.StartInfo.Arguments = XmlSerializer.Serialize(Parameters);
             throw new NotImplementedException();
         }
 

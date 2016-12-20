@@ -8,17 +8,17 @@ using NetworkEmulation.editor;
 using NetworkEmulation.editor.element;
 
 namespace NetworkEmulation.network {
-    public class Simulation : IXmlSerializable {
+    public class Simulation {
         public CableCloud CableCloud { get; private set; }
         public NetworkManagmentSystem NetworkManagmentSystem { get; private set; }
 
-        private readonly List<IInitializable> _initializableElements;
+        private readonly List<NodePictureBox> _initializableElements;
         private readonly List<Link> _links;
         private readonly List<Connection> _connections;
 
         private List<Process> _processes = new List<Process>();
 
-        public Simulation(List<IInitializable> initializableElements, List<Link> links, List<Connection> connections) {
+        public Simulation(List<NodePictureBox> initializableElements, List<Link> links, List<Connection> connections) {
             _initializableElements = initializableElements;
             _links = links;
             _connections = connections;
