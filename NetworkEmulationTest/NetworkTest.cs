@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NetworkEmulation.editor.element;
 using NetworkEmulation.network;
 using NetworkUtilities;
 using NetworkUtilities.element;
@@ -86,6 +87,21 @@ namespace NetworkEmulationTest {
             clientNodeA.SendMessage("Lorem ipsum...", "B");
 
             Thread.Sleep(1000);
+        }
+
+        [TestMethod]
+        public void testInitialize() {
+            ClientNodePictureBox clientNodePB= new ClientNodePictureBox() {
+                Parameters = new ClientNodeSerializableParameters {
+                    ClientName = "Janusz",
+                    ClientTable =
+                        new List<ClientTableRow>(new[]
+                            {new ClientTableRow("clientName", 1, 2, 3), new ClientTableRow("clientName2", 1, 2, 3)}),
+                    CableCloudListeningPort = 10000,
+                    IpAddress = "localhost"
+                }
+            };
+            clientNodePB.Initialize().Start();
         }
     }
 }

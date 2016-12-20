@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Windows.Forms;
 using System.Xml;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
@@ -18,7 +21,13 @@ namespace NetworkEmulation.editor.element {
         public ClientNodeSerializableParameters Parameters { get; set; }
 
         public override Process Initialize() {
-            throw new NotImplementedException();
+            var process = new Process {
+                StartInfo = {
+                    FileName = "..\\..\\..\\ClientNode\\bin\\Debug\\ClientNode.exe",
+                    Arguments = XmlSerializer.Serialize(Parameters)
+                }
+            };
+            return process;
         }
 
         public override void MarkAsSelected() {
