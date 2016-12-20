@@ -108,7 +108,12 @@ namespace NetworkEmulation {
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e) {
-            _simulation.Stop();
+            _simulation?.Stop();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+            _simulation?.Stop();
+            Environment.Exit(0);
         }
     }
 }
