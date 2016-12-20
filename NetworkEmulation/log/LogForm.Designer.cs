@@ -30,6 +30,7 @@
             // 
             this.logRichTextBox.Location = new System.Drawing.Point(12, 12);
             this.logRichTextBox.Name = "logRichTextBox";
+            this.logRichTextBox.ReadOnly = true;
             this.logRichTextBox.Size = new System.Drawing.Size(600, 417);
             this.logRichTextBox.TabIndex = 0;
             this.logRichTextBox.Text = "";

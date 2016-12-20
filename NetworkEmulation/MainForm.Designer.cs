@@ -203,6 +203,7 @@ namespace NetworkEmulation {
             // 
             // editorPanel
             // 
+            this.editorPanel.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.editorPanel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.editorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.editorPanel.Location = new System.Drawing.Point(0, 24);
@@ -221,6 +222,7 @@ namespace NetworkEmulation {
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "NetworkEmulation";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

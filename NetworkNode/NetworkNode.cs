@@ -36,7 +36,8 @@ namespace NetworkNode {
 
         public void shutdown()
         {
-            _timeToQuit = true;
+            //_timeToQuit = true;
+            cts.Cancel();
             CommutationMatrix.shutdown();
             NetworkNodeAgent.shutdown();
         }

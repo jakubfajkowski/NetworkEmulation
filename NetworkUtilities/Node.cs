@@ -2,10 +2,12 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetworkUtilities {
     public class Node {
+        protected CancellationTokenSource cts = new CancellationTokenSource();
         private TcpListener _cloudTcpListener;
         private TcpClient _nodeTcpClient;
         private bool _online;
@@ -44,25 +46,23 @@ namespace NetworkUtilities {
             tcpListener.Start();
             Task.Run(async () => {
                 _nodeTcpClient = await tcpListener.AcceptTcpClientAsync();
-                ListenForNodeMessages();
+                ListenForNodeMessages(cts.Token);
                 _online = true;
             });
         }
 
-        private void ListenForNodeMessages() {
-            Task.Run(async () => {
-                using (var ns = _nodeTcpClient.GetStream()) {
-                    var buffer = new byte[CableCloudMessage.MaxByteBufferSize];
+        private async void ListenForNodeMessages(CancellationToken ct) { 
+            using (var ns = _nodeTcpClient.GetStream()) {
+                var buffer = new byte[CableCloudMessage.MaxByteBufferSize];
 
-                    while (true) {
-                        var bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length);
-                        if (bytesRead <= 0)
-                            break;
+                while (!ct.IsCancellationRequested) {
+                    var bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length, ct);
+                    if (bytesRead <= 0)
+                        break;
 
-                        HandleMessage(CableCloudMessage.Deserialize(buffer));
-                    }
+                    HandleMessage(CableCloudMessage.Deserialize(buffer));
                 }
-            });
+            }
         }
 
         protected virtual void HandleMessage(CableCloudMessage cableCloudMessage) {
