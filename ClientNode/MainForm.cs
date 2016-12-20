@@ -36,6 +36,7 @@ namespace ClientNode {
 
         private void MessageRecieved(object sender, string message) {
             textBoxReceived.Text += message;
+            textBoxReceived.Text += '\n';
         }
 
         private void UpdateState(object sender, string state) {
@@ -44,6 +45,10 @@ namespace ClientNode {
 
         private string CreateLogLine(string text) {
             return $"[{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}] {text}\n";
+        }
+
+        private void buttonClear_Click(object sender, EventArgs e) {
+            textBoxReceived.Clear();
         }
     }
 }

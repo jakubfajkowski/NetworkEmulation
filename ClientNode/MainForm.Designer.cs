@@ -32,6 +32,7 @@
             this.textBoxEventLog = new System.Windows.Forms.RichTextBox();
             this.textBoxReceived = new System.Windows.Forms.RichTextBox();
             this.textBoxMessage = new System.Windows.Forms.RichTextBox();
+            this.buttonClear = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonSend
@@ -114,11 +115,22 @@
             this.textBoxMessage.TabIndex = 11;
             this.textBoxMessage.Text = "";
             // 
+            // buttonClear
+            // 
+            this.buttonClear.Location = new System.Drawing.Point(462, 121);
+            this.buttonClear.Name = "buttonClear";
+            this.buttonClear.Size = new System.Drawing.Size(75, 23);
+            this.buttonClear.TabIndex = 12;
+            this.buttonClear.Text = "Clear";
+            this.buttonClear.UseVisualStyleBackColor = true;
+            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(550, 296);
+            this.Controls.Add(this.buttonClear);
             this.Controls.Add(this.textBoxMessage);
             this.Controls.Add(this.textBoxReceived);
             this.Controls.Add(this.textBoxEventLog);
@@ -146,6 +158,7 @@
         private System.Windows.Forms.RichTextBox textBoxEventLog;
         private System.Windows.Forms.RichTextBox textBoxReceived;
         private System.Windows.Forms.RichTextBox textBoxMessage;
+        private System.Windows.Forms.Button buttonClear;
     }
 }
 
