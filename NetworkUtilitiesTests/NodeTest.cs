@@ -11,15 +11,15 @@ namespace NetworkUtilitiesTests {
 
         [TestMethod]
         public void ConnectToCableCloudTest() {
-            Node.CableCloudUdpPort = _random.Next(1024, 65535);
+            Node.CableCloudListeningPort = _random.Next(1024, 65535);
 
-            var listeningTask = StartUdpListener(Node.CableCloudUdpPort);
+            var listeningTask = StartUdpListener(Node.CableCloudListeningPort);
             var node = new Node();
 
             listeningTask.Wait();
 
             Assert.IsFalse(listeningTask.Result == null);
-            Assert.AreEqual(node.CableCloudTcpPort, listeningTask.Result.Value);
+            Assert.AreEqual(node.CableCloudDataPort, listeningTask.Result.Value);
         }
 
         private Task<int?> StartUdpListener(int port) {

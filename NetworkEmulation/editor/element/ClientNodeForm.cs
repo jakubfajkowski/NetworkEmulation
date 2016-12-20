@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Windows.Forms;
-using NetworkUtilities;
+using NetworkEmulation.Properties;
 using NetworkUtilities.element;
 
 namespace NetworkEmulation.editor.element {
     public partial class ClientNodeForm : Form {
-        private readonly ClientNodeSerializableParameters clientNodeSerializableParameters;
+        private readonly ClientNodeSerializableParameters _parameters;
 
-        public ClientNodeForm(ClientNodeSerializableParameters param) {
+        public ClientNodeForm(ClientNodePictureBox clientNodePictureBox) {
             InitializeComponent();
-            clientNodeSerializableParameters = param;
+            _parameters = clientNodePictureBox.Parameters;
+
+            textBoxIpAddress.Text = Settings.Default.IpAddress;
+            textBoxCloudPort.Text = Settings.Default.CableCloudUdpListenerPortNumber.ToString();
         }
 
         private void buttonOK_Click(object sender, EventArgs e) {
-            clientNodeSerializableParameters.IpAddress = textBoxIpAddress.Text;
-            clientNodeSerializableParameters.ClientName = textBoxClientName.Text;
-            clientNodeSerializableParameters.CloudPort = int.Parse(textBoxCloudPort.Text);
-            clientNodeSerializableParameters.ClientTable.Add(new ClientTableRow(textBoxClientName.Text,
-                int.Parse(textBoxClientPort.Text), int.Parse(textBoxVPI.Text), int.Parse(textBoxVCI.Text)));
+            _parameters.IpAddress = textBoxIpAddress.Text;
+            _parameters.ClientName = textBoxClientName.Text;
+            _parameters.CableCloudListeningPort = int.Parse(textBoxCloudPort.Text);
 
             Close();
         }

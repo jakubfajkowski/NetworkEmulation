@@ -100,6 +100,7 @@
     <Compile Include="log\LogObject.cs" />
     <Compile Include="network\element\ConnectionSerializableParameters.cs" />
     <Compile Include="network\element\LinkSerializableParameters.cs" />
+    <Compile Include="network\NodeConnectionInformation.cs" />
     <Compile Include="network\Simulation.cs" />
     <Compile Include="SerializableDictionary.cs" />
     <Compile Include="network\SocketNodePortPair.cs" />

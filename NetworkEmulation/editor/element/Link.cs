@@ -15,17 +15,17 @@ namespace NetworkEmulation.editor.element {
         private static readonly Pen DeselectedPen = new Pen(Color.Black, 1);
         private static readonly Pen OnlinePen = new Pen(Color.Green, 1);
         private static readonly Pen OfflinePen = new Pen(Color.Red, 1);
-        private NodePictureBox _beginNodePictureBox;
-        private NodePictureBox _endNodePictureBox;
+        public NodePictureBox BeginNodePictureBox { get; private set; }
+        public NodePictureBox EndNodePictureBox { get; private set; }
         private Pen _pen = DeselectedPen;
 
         public Link() {
+            InitializeComponent();
             Id = UniqueId.Generate();
+            Parameters = new LinkSerializableParameters();
         }
 
-        public Link(ref NodePictureBox beginNodePictureBox, ref NodePictureBox endNodePictureBox) {
-            Id = UniqueId.Generate();
-            InitializeComponent();
+        public Link(ref NodePictureBox beginNodePictureBox, ref NodePictureBox endNodePictureBox) : this() {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
 
             SetAttachmentNodePictureBoxes(ref beginNodePictureBox, ref endNodePictureBox);
@@ -74,14 +74,14 @@ namespace NetworkEmulation.editor.element {
 
         public void SetAttachmentNodePictureBoxes(ref NodePictureBox beginNodePictureBox,
             ref NodePictureBox endNodePictureBox) {
-            _beginNodePictureBox = beginNodePictureBox;
-            _endNodePictureBox = endNodePictureBox;
+            BeginNodePictureBox = beginNodePictureBox;
+            EndNodePictureBox = endNodePictureBox;
 
-            Parameters.BeginNodePictureBoxId = _beginNodePictureBox.Id;
-            Parameters.EndNodePictureBoxId = _endNodePictureBox.Id;
+            Parameters.BeginNodePictureBoxId = BeginNodePictureBox.Id;
+            Parameters.EndNodePictureBoxId = EndNodePictureBox.Id;
 
-            _beginNodePictureBox.OnNodeMoving += sender => Parent.Refresh();
-            _endNodePictureBox.OnNodeMoving += sender => Parent.Refresh();
+            BeginNodePictureBox.OnNodeMoving += sender => Parent.Refresh();
+            EndNodePictureBox.OnNodeMoving += sender => Parent.Refresh();
         }
 
         private void ChangeStyle(Pen pen) {
@@ -90,15 +90,15 @@ namespace NetworkEmulation.editor.element {
         }
 
         public void DrawLink(Graphics graphics) {
-            var beginPoint = _beginNodePictureBox.CenterPoint();
-            var endPoint = _endNodePictureBox.CenterPoint();
+            var beginPoint = BeginNodePictureBox.CenterPoint();
+            var endPoint = EndNodePictureBox.CenterPoint();
 
             graphics.DrawLine(_pen, beginPoint, endPoint);
         }
 
         public bool IsBetween(NodePictureBox beginNodePictureBox, NodePictureBox endNodePictureBox) {
-            return (_beginNodePictureBox.Equals(beginNodePictureBox) && _endNodePictureBox.Equals(endNodePictureBox)) ||
-                   (_beginNodePictureBox.Equals(endNodePictureBox) && _endNodePictureBox.Equals(beginNodePictureBox));
+            return (BeginNodePictureBox.Equals(beginNodePictureBox) && EndNodePictureBox.Equals(endNodePictureBox)) ||
+                   (BeginNodePictureBox.Equals(endNodePictureBox) && EndNodePictureBox.Equals(beginNodePictureBox));
         }
     }
 }

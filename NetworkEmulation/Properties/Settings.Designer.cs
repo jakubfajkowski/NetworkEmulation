@@ -23,39 +23,60 @@ namespace NetworkEmulation.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10000")]
         public int CableCloudUdpListenerPortNumber {
             get {
                 return ((int)(this["CableCloudUdpListenerPortNumber"]));
             }
+            set {
+                this["CableCloudUdpListenerPortNumber"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("6666")]
         public int NetworkManagmentSystemUdpListenerPortNumber {
             get {
                 return ((int)(this["NetworkManagmentSystemUdpListenerPortNumber"]));
             }
+            set {
+                this["NetworkManagmentSystemUdpListenerPortNumber"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public int MaxAtmCellsNumberInCableCloudMessage {
             get {
                 return ((int)(this["MaxAtmCellsNumberInCableCloudMessage"]));
             }
+            set {
+                this["MaxAtmCellsNumberInCableCloudMessage"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("4")]
         public int AtmCellWaitTime {
             get {
                 return ((int)(this["AtmCellWaitTime"]));
+            }
+            set {
+                this["AtmCellWaitTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
+        public string IpAddress {
+            get {
+                return ((string)(this["IpAddress"]));
             }
         }
     }

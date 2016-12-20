@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.editor.element;
 using NetworkEmulation.network;
@@ -15,8 +14,8 @@ namespace NetworkEmulationTest {
         public void SerializeNetworkNodeSerializableParametersTest() {
             var networkNodeSerializableParameters = new NetworkNodeSerializableParameters {
                 IpAddress = "127.0.0.1",
-                CloudPort = 10000,
-                NetworkManagmentSystemPort = 6666,
+                CableCloudListeningPort = 10000,
+                NetworkManagmentSystemListeningPort = 6666,
                 NumberOfPorts = 5
             };
             var serialized = XmlSerializer.Serialize(networkNodeSerializableParameters);
@@ -30,7 +29,7 @@ namespace NetworkEmulationTest {
                     ClientTable =
                         new List<ClientTableRow>(new[]
                             {new ClientTableRow("clientName", 1, 2, 3), new ClientTableRow("clientName2", 1, 2, 3)}),
-                    CloudPort = 10000,
+                    CableCloudListeningPort = 10000,
                     IpAddress = "localhost"
                 }
             };
@@ -45,9 +44,9 @@ namespace NetworkEmulationTest {
         public void SerializeNetworkNodePictureBox() {
             var networkNodePictureBox = new NetworkNodePictureBox {
                 Parameters = new NetworkNodeSerializableParameters {
-                    CloudPort = 10000,
+                    CableCloudListeningPort = 10000,
                     IpAddress = "localhost",
-                    NetworkManagmentSystemPort = 6666,
+                    NetworkManagmentSystemListeningPort = 6666,
                     NumberOfPorts = 8
                 }
             };
@@ -62,8 +61,8 @@ namespace NetworkEmulationTest {
         public void SerializeLink() {
             var link = new Link {
                 Parameters = new LinkSerializableParameters {
-                    BeginNodePictureBoxId = 1,
-                    EndNodePictureBoxId = 2,
+                    BeginNodePictureBoxId = UniqueId.Generate(),
+                    EndNodePictureBoxId = UniqueId.Generate(),
                     InputNodePortPair = new SocketNodePortPair(3,4),
                     OutputNodePortPair = new SocketNodePortPair(5,6)
                 }

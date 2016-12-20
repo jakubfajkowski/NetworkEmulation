@@ -25,8 +25,8 @@
         private void InitializeComponent() {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboInputPort = new System.Windows.Forms.ComboBox();
-            this.comboOutputPort = new System.Windows.Forms.ComboBox();
+            this.comboBoxInputPort = new System.Windows.Forms.ComboBox();
+            this.comboBoxOutputPort = new System.Windows.Forms.ComboBox();
             this.textBoxCapacity = new System.Windows.Forms.TextBox();
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
@@ -36,7 +36,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(37, 43);
+            this.label1.Location = new System.Drawing.Point(22, 15);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(55, 13);
             this.label1.TabIndex = 0;
@@ -45,41 +45,40 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(37, 91);
+            this.label2.Location = new System.Drawing.Point(11, 46);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 13);
+            this.label2.Size = new System.Drawing.Size(66, 13);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Outrput port: ";
+            this.label2.Text = "Output port: ";
             // 
-            // comboInputPort
+            // comboBoxInputPort
             // 
-            this.comboInputPort.FormattingEnabled = true;
-            this.comboInputPort.Location = new System.Drawing.Point(124, 40);
-            this.comboInputPort.Name = "comboInputPort";
-            this.comboInputPort.Size = new System.Drawing.Size(121, 21);
-            this.comboInputPort.TabIndex = 2;
+            this.comboBoxInputPort.FormattingEnabled = true;
+            this.comboBoxInputPort.Location = new System.Drawing.Point(83, 12);
+            this.comboBoxInputPort.Name = "comboBoxInputPort";
+            this.comboBoxInputPort.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxInputPort.TabIndex = 2;
             // 
-            // comboOutputPort
+            // comboBoxOutputPort
             // 
-            this.comboOutputPort.FormattingEnabled = true;
-            this.comboOutputPort.Location = new System.Drawing.Point(124, 88);
-            this.comboOutputPort.Name = "comboOutputPort";
-            this.comboOutputPort.Size = new System.Drawing.Size(121, 21);
-            this.comboOutputPort.TabIndex = 3;
+            this.comboBoxOutputPort.FormattingEnabled = true;
+            this.comboBoxOutputPort.Location = new System.Drawing.Point(83, 43);
+            this.comboBoxOutputPort.Name = "comboBoxOutputPort";
+            this.comboBoxOutputPort.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxOutputPort.TabIndex = 3;
             // 
             // textBoxCapacity
             // 
-            this.textBoxCapacity.Location = new System.Drawing.Point(124, 129);
+            this.textBoxCapacity.Location = new System.Drawing.Point(83, 74);
             this.textBoxCapacity.Multiline = true;
             this.textBoxCapacity.Name = "textBoxCapacity";
-            this.textBoxCapacity.Size = new System.Drawing.Size(121, 23);
+            this.textBoxCapacity.Size = new System.Drawing.Size(121, 20);
             this.textBoxCapacity.TabIndex = 4;
-            this.textBoxCapacity.Text = "300";
             this.textBoxCapacity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // buttonOk
             // 
-            this.buttonOk.Location = new System.Drawing.Point(40, 207);
+            this.buttonOk.Location = new System.Drawing.Point(48, 110);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 5;
@@ -89,7 +88,7 @@
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(170, 207);
+            this.buttonCancel.Location = new System.Drawing.Point(129, 110);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 6;
@@ -100,27 +99,28 @@
             // Capacity
             // 
             this.Capacity.AutoSize = true;
-            this.Capacity.Location = new System.Drawing.Point(40, 132);
+            this.Capacity.Location = new System.Drawing.Point(23, 77);
             this.Capacity.Name = "Capacity";
             this.Capacity.Size = new System.Drawing.Size(54, 13);
             this.Capacity.TabIndex = 7;
             this.Capacity.Text = "Capacity: ";
             // 
-            // LinkSP
+            // LinkForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ClientSize = new System.Drawing.Size(215, 144);
             this.Controls.Add(this.Capacity);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.textBoxCapacity);
-            this.Controls.Add(this.comboOutputPort);
-            this.Controls.Add(this.comboInputPort);
+            this.Controls.Add(this.comboBoxOutputPort);
+            this.Controls.Add(this.comboBoxInputPort);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "LinkSP";
-            this.Text = "LinkSP";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Name = "LinkForm";
+            this.Text = "LinkForm";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -130,8 +130,8 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboInputPort;
-        private System.Windows.Forms.ComboBox comboOutputPort;
+        private System.Windows.Forms.ComboBox comboBoxInputPort;
+        private System.Windows.Forms.ComboBox comboBoxOutputPort;
         private System.Windows.Forms.TextBox textBoxCapacity;
         private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.Button buttonCancel;

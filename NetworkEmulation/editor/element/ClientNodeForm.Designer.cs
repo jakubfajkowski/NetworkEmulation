@@ -31,14 +31,12 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxIpAddress = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.textBoxId = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(40, 42);
+            this.label1.Location = new System.Drawing.Point(40, 15);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 13);
             this.label1.TabIndex = 0;
@@ -46,14 +44,14 @@
             // 
             // textBoxClientName
             // 
-            this.textBoxClientName.Location = new System.Drawing.Point(84, 39);
+            this.textBoxClientName.Location = new System.Drawing.Point(84, 12);
             this.textBoxClientName.Name = "textBoxClientName";
             this.textBoxClientName.Size = new System.Drawing.Size(148, 20);
             this.textBoxClientName.TabIndex = 4;
             // 
             // textBoxCloudPort
             // 
-            this.textBoxCloudPort.Location = new System.Drawing.Point(84, 65);
+            this.textBoxCloudPort.Location = new System.Drawing.Point(84, 38);
             this.textBoxCloudPort.Name = "textBoxCloudPort";
             this.textBoxCloudPort.Size = new System.Drawing.Size(147, 20);
             this.textBoxCloudPort.TabIndex = 8;
@@ -61,7 +59,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(19, 68);
+            this.label5.Location = new System.Drawing.Point(19, 41);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(59, 13);
             this.label5.TabIndex = 9;
@@ -69,7 +67,7 @@
             // 
             // buttonOK
             // 
-            this.buttonOK.Location = new System.Drawing.Point(84, 130);
+            this.buttonOK.Location = new System.Drawing.Point(75, 90);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 10;
@@ -79,7 +77,7 @@
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(165, 130);
+            this.buttonCancel.Location = new System.Drawing.Point(156, 90);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 11;
@@ -90,7 +88,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(17, 94);
+            this.label6.Location = new System.Drawing.Point(17, 67);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(61, 13);
             this.label6.TabIndex = 12;
@@ -98,34 +96,16 @@
             // 
             // textBoxIpAddress
             // 
-            this.textBoxIpAddress.Location = new System.Drawing.Point(84, 91);
+            this.textBoxIpAddress.Location = new System.Drawing.Point(84, 64);
             this.textBoxIpAddress.Name = "textBoxIpAddress";
             this.textBoxIpAddress.Size = new System.Drawing.Size(147, 20);
             this.textBoxIpAddress.TabIndex = 13;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(59, 16);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(21, 13);
-            this.label7.TabIndex = 14;
-            this.label7.Text = "ID:";
-            // 
-            // textBoxId
-            // 
-            this.textBoxId.Location = new System.Drawing.Point(84, 13);
-            this.textBoxId.Name = "textBoxId";
-            this.textBoxId.Size = new System.Drawing.Size(148, 20);
-            this.textBoxId.TabIndex = 15;
             // 
             // ClientNodeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(252, 165);
-            this.Controls.Add(this.textBoxId);
-            this.Controls.Add(this.label7);
+            this.ClientSize = new System.Drawing.Size(240, 121);
             this.Controls.Add(this.textBoxIpAddress);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.buttonCancel);
@@ -134,6 +114,7 @@
             this.Controls.Add(this.textBoxCloudPort);
             this.Controls.Add(this.textBoxClientName);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "ClientNodeForm";
             this.Text = "ClientNodeForm";
             this.ResumeLayout(false);
@@ -151,7 +132,5 @@
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBoxIpAddress;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBoxId;
     }
 }

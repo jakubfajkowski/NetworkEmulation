@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using NetworkUtilities;
 using NetworkUtilities.element;
@@ -10,7 +7,6 @@ namespace NetworkNode {
     public class NetworkNode : Node {
         // Czas po jakim komórki ATM zostaną spakowane w CCM
         public static int MinLastAddTime { private get; set; } = 4;
-        //public static int NmsPort { private get; set; } = 6666;
 
         public CommutationMatrix CommutationMatrix;
         public NetworkNodeAgent NetworkNodeAgent;
@@ -18,11 +14,10 @@ namespace NetworkNode {
 
         private bool _timeToQuit;
 
-        public NetworkNode(NetworkNodeSerializableParameters parameters) {
-            //NmsPort = parameters.NetworkManagmentSystemPort;
-            NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemPort;
-            CableCloudUdpPort = parameters.CloudPort;
-            NetworkNodeAgent = new NetworkNodeAgent(PortRandomizer.RandomFreePort(), this);
+        public NetworkNode(NetworkNodeSerializableParameters parameters) : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort) {
+            //NmsPort = parameters.NetworkManagmentSystemListeningPort;
+            NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemListeningPort;
+            NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkManagmentSystemDataPort, this);
             CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts, parameters.NumberOfPorts);
             NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
 

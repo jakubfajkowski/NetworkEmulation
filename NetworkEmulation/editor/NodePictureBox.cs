@@ -1,13 +1,10 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
 using NetworkUtilities;
 using UniqueId = NetworkUtilities.UniqueId;
-using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor {
     public abstract class NodePictureBox : ClippedPictureBox, IMarkable, IInitializable, ISerializable {
@@ -15,8 +12,11 @@ namespace NetworkEmulation.editor {
 
         private Point _anchor;
 
+        public int CableCloudDataPort { get; protected set; }
+
         protected NodePictureBox() {
             Id = UniqueId.Generate();
+            CableCloudDataPort = PortRandomizer.RandomFreePort();
         }
 
         public new Point Location {

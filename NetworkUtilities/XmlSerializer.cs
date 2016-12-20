@@ -56,7 +56,7 @@ namespace NetworkUtilities {
         public static T Deserialize<T>(XmlReader reader) {
             var xml = new System.Xml.Serialization.XmlSerializer(typeof(T));
 
-            var result = xml.Deserialize(reader) is T ? (T) xml.Deserialize(reader) : default(T);
+            var result =  (T) xml.Deserialize(reader) ;
 
             return result;
         }

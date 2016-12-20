@@ -44,7 +44,7 @@ namespace NetworkNodeTest {
 
             Thread.Sleep(1000);
             var client = new TcpClient();
-            client.Connect(IPAddress.Loopback, nn1.CableCloudTcpPort);
+            client.Connect(IPAddress.Loopback, nn1.CableCloudDataPort);
 
             var data = message.Serialize();
             var stream = client.GetStream();
@@ -92,7 +92,7 @@ namespace NetworkNodeTest {
             //Thread.Sleep(500);
 
             var client = new TcpClient();
-            client.Connect(IPAddress.Loopback, networkNode.CableCloudTcpPort);
+            client.Connect(IPAddress.Loopback, networkNode.CableCloudDataPort);
             //Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
             var data = message.Serialize();
             var stream = client.GetStream();

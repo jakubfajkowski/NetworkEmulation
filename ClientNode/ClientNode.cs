@@ -6,21 +6,17 @@ namespace ClientNode {
     public class ClientNode : Node {
         public delegate void MessageHandler(object sender, string text);
 
-        public ClientNode(ClientNodeSerializableParameters param) {
-            Id = param.Id;
-            ClientName = param.ClientName;
-            CloudPort = param.CloudPort;
-            IpAddress = param.IpAddress;
-            foreach(var client in param.ClientTable) {
-                AddClient(client);
+        public ClientNode(ClientNodeSerializableParameters parameters) : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort) {
+            ClientName = parameters.ClientName;
+
+            if (parameters.ClientTable != null) {
+                foreach (var client in parameters.ClientTable) {
+                    AddClient(client);
+                }
             }
         }
 
-        public int Id { get; set; }
-        public string ClientName { get; set; }
-        public int CloudPort { get; set; }
-        //public int ClientPort { get; set; }
-        public string IpAddress { get; set; }
+        public string ClientName { get; private set; }
         public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
 
         public event MessageHandler OnUpdateState;

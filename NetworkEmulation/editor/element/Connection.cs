@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using NetworkEmulation.network.element;
@@ -13,17 +12,15 @@ namespace NetworkEmulation.editor.element {
     public class Connection : IMarkable, IInitializable, ISerializable {
         public List<Link> Links { private get; set; }
 
-        public Connection(List<Link> links) {
-            Id = UniqueId.Generate();
-            Links = links;
-
-            links.ForEach(link => Parameters.LinksIds.Add(link.Id));
-
-            MarkAsSelected();
-        }
-
         public Connection() {
             Id = UniqueId.Generate();
+            Links = new List<Link>();
+            Parameters = new ConnectionSerializableParameters();
+        }
+
+        public void Add(Link link) {
+            Links.Add(link);
+            link.MarkAsSelected();
         }
 
         public ConnectionSerializableParameters Parameters { get; set; }

@@ -47,8 +47,8 @@ namespace NetworkEmulationTest {
         public void CableCloudConnectNodeTest() {
             var cableCloud = new CableCloud();
             while (!cableCloud.Online) ;
-            var node = new Node();
-            while (!node.IsOnline()) ;
+            var node = new Node("127.0.0.1", 10000, PortRandomizer.RandomFreePort());
+            while (!node.Online()) ;
 
             var nodesTcpClients =
                 (Dictionary<int, TcpClient>) new PrivateObject(cableCloud).GetField("_nodesTcpClients");

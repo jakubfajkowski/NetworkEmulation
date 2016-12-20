@@ -47,6 +47,16 @@ namespace NetworkEmulation.network {
             return null;
         }
 
+        public void SendConnectionToNetworkNodeAgent(NodeConnectionInformation info) {
+            SendConnectionToNetworkNodeAgent(info.NodeUdpPort,
+                                             info.InVpi,
+                                             info.InVci,
+                                             info.InPortNumber,
+                                             info.OutVpi,
+                                             info.OutVci,
+                                             info.OutPortNumber);
+        }
+
         // Wpis w tablicy pola komutacyjnego
         public void SendConnectionToNetworkNodeAgent(int nodeUdpPort, int inVpi, int inVci, int inPortNumber, int outVpi,
             int outVci, int outPortNumber) {

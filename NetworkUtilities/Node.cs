@@ -6,20 +6,26 @@ using System.Threading.Tasks;
 
 namespace NetworkUtilities {
     public class Node {
-        public static int CableCloudUdpPort = 10000;
-        private readonly TcpListener _cloudTcpListener;
+        private TcpListener _cloudTcpListener;
         private TcpClient _nodeTcpClient;
         private bool _online;
+        protected int CableCloudListeningPort;
+        public int CableCloudDataPort { get; protected set; }
+        protected IPAddress IpAddress;
 
-        public Node() {
-            CableCloudTcpPort = PortRandomizer.RandomFreePort();
-            _cloudTcpListener = CreateTcpListener(IPAddress.Loopback, CableCloudTcpPort);
+        public Node(string ipAddress, int cableCloudListeningPort, int cableCloudDataPort) {
+            IpAddress = IPAddress.Parse(ipAddress);
+            CableCloudListeningPort = cableCloudListeningPort;
+            CableCloudDataPort = cableCloudDataPort;
+            Initialize();
+        }
+
+
+        private void Initialize() {
+            _cloudTcpListener = CreateTcpListener(IpAddress, CableCloudDataPort);
             ListenForConnectRequest(_cloudTcpListener);
             ConnectToCloud();
         }
-
-        public int CableCloudTcpPort { get; }
-
 
         protected TcpListener CreateTcpListener(IPAddress ipAddress, int port) {
             TcpListener tcpListener = null;
@@ -28,7 +34,7 @@ namespace NetworkUtilities {
             }
             catch (Exception e) {
                 Debug.Fail(e.ToString(),
-                    string.Format("Can't connect to port {0}!", CableCloudTcpPort));
+                    $"Can't connect to port {CableCloudDataPort}!");
             }
 
             return tcpListener;
@@ -77,12 +83,12 @@ namespace NetworkUtilities {
 
         private void ConnectToCloud() {
             var udpClient = new UdpClient();
-            var bytesToSend = BinarySerializer.Serialize(CableCloudTcpPort);
-            var ipEndpoint = new IPEndPoint(IPAddress.Loopback, CableCloudUdpPort);
+            var bytesToSend = BinarySerializer.Serialize(CableCloudDataPort);
+            var ipEndpoint = new IPEndPoint(IPAddress.Loopback, CableCloudListeningPort);
             udpClient.Send(bytesToSend, bytesToSend.Length, ipEndpoint);
         }
 
-        public bool IsOnline() {
+        public bool Online() {
             return _online;
         }
     }

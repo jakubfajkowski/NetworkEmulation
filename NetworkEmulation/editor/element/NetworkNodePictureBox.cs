@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Xml;
-using System.Xml.Serialization;
 using NetworkEmulation.Properties;
+using NetworkUtilities;
 using NetworkUtilities.element;
 using XmlSerializer = NetworkUtilities.XmlSerializer;
 
@@ -10,6 +10,9 @@ namespace NetworkEmulation.editor.element {
     public class NetworkNodePictureBox : NodePictureBox {
         public NetworkNodePictureBox() {
             Image = Resources.NetworkNodeNotSelected;
+            Parameters = new NetworkNodeSerializableParameters();
+            CableCloudDataPort = PortRandomizer.RandomFreePort();
+            Parameters.CableCloudDataPort = CableCloudDataPort;
         }
 
         public NetworkNodeSerializableParameters Parameters { get; set; }

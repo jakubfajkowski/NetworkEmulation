@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.network;
+using NetworkUtilities;
 using NetworkUtilities.element;
 
 namespace NetworkEmulationTest {
@@ -9,6 +11,8 @@ namespace NetworkEmulationTest {
     public class NetworkTest {
         [TestMethod]
         public void CreateBasicNetworkTest() {
+            var localhost = "127.0.0.1";
+
             var portA = 1;
             var port1 = 2;
             var port2 = 3;
@@ -23,33 +27,50 @@ namespace NetworkEmulationTest {
 
             Thread.Sleep(1000);
 
-            var clientNodeA = new ClientNode.ClientNode {
-                ClientName = "A"
-            };
+            var clientNodeA = new ClientNode.ClientNode(new ClientNodeSerializableParameters {
+                ClientName = "A",
+                ClientTable = new List<ClientTableRow>(new []{new ClientTableRow("B", portA, 1, 1)}),
+                CableCloudListeningPort = 10000,
+                IpAddress = localhost,
+                CableCloudDataPort = PortRandomizer.RandomFreePort()
+            });
             clientNodeA.OnMessageRecieved += (sender, state) => Console.WriteLine(state);
             clientNodeA.OnUpdateState += (sender, state) => Console.WriteLine(state);
 
-            var clientNodeB = new ClientNode.ClientNode {
-                ClientName = "B"
-            };
+            var clientNodeB = new ClientNode.ClientNode(new ClientNodeSerializableParameters {
+                ClientName = "B",
+                CableCloudListeningPort = 10000,
+                IpAddress = localhost,
+                CableCloudDataPort = PortRandomizer.RandomFreePort()
+            });
             clientNodeB.OnMessageRecieved += (sender, state) => Console.WriteLine(state);
             clientNodeB.OnUpdateState += (sender, state) => Console.WriteLine(state);
 
             var networkNode1 = new NetworkNode.NetworkNode(new NetworkNodeSerializableParameters {
-                NumberOfPorts = 8
+                NumberOfPorts = 8,
+                CableCloudListeningPort = 10000,
+                IpAddress = localhost,
+                CableCloudDataPort = PortRandomizer.RandomFreePort(),
+                NetworkManagmentSystemListeningPort = 6666,
+                NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             });
             var networkNode2 = new NetworkNode.NetworkNode(new NetworkNodeSerializableParameters{
-                NumberOfPorts = 8
+                NumberOfPorts = 8,
+                CableCloudListeningPort = 10000,
+                IpAddress = localhost,
+                CableCloudDataPort = PortRandomizer.RandomFreePort(),
+                NetworkManagmentSystemListeningPort = 6666,
+                NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             });
 
             Thread.Sleep(5000);
 
-            var socketNodePortPair1 = new SocketNodePortPair(portA, clientNodeA.CableCloudTcpPort);
-            var socketNodePortPair2 = new SocketNodePortPair(port1, networkNode1.CableCloudTcpPort);
-            var socketNodePortPair3 = new SocketNodePortPair(port2, networkNode1.CableCloudTcpPort);
-            var socketNodePortPair4 = new SocketNodePortPair(port3, networkNode2.CableCloudTcpPort);
-            var socketNodePortPair5 = new SocketNodePortPair(port4, networkNode2.CableCloudTcpPort);
-            var socketNodePortPair6 = new SocketNodePortPair(portB, clientNodeB.CableCloudTcpPort);
+            var socketNodePortPair1 = new SocketNodePortPair(portA, clientNodeA.CableCloudDataPort);
+            var socketNodePortPair2 = new SocketNodePortPair(port1, networkNode1.CableCloudDataPort);
+            var socketNodePortPair3 = new SocketNodePortPair(port2, networkNode1.CableCloudDataPort);
+            var socketNodePortPair4 = new SocketNodePortPair(port3, networkNode2.CableCloudDataPort);
+            var socketNodePortPair5 = new SocketNodePortPair(port4, networkNode2.CableCloudDataPort);
+            var socketNodePortPair6 = new SocketNodePortPair(portB, clientNodeB.CableCloudDataPort);
 
             cableCloud.AddLink(socketNodePortPair1, socketNodePortPair2);
             cableCloud.AddLink(socketNodePortPair3, socketNodePortPair4);
