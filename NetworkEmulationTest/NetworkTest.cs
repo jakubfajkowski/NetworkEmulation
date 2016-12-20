@@ -98,7 +98,7 @@ namespace NetworkEmulationTest {
                         new List<ClientTableRow>(new[]
                             {new ClientTableRow("clientName", 1, 2, 3), new ClientTableRow("clientName2", 1, 2, 3)}),
                     CableCloudListeningPort = 10000,
-                    IpAddress = "localhost"
+                    IpAddress = "127.0.0.1"
                 }
             };
             clientNodePB.Initialize().Start();
