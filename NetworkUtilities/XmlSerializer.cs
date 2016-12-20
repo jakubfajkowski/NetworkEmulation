@@ -5,6 +5,8 @@ using System.Xml.Serialization;
 
 namespace NetworkUtilities {
     public static class XmlSerializer {
+        private const string Quota = "<QUOTA>";
+
         public static string Serialize(IXmlSerializable obj) {
             var xsSubmit = new System.Xml.Serialization.XmlSerializer(obj.GetType());
             var subReq = obj;
@@ -37,11 +39,17 @@ namespace NetworkUtilities {
             using (var sww = new StringWriter()) {
                 var xml = new System.Xml.Serialization.XmlSerializer(obj.GetType());
                 xml.Serialize(sww, obj);
-                return sww.ToString();
+
+                var xmlString = sww.ToString();
+                xmlString = xmlString.Replace("\"", Quota);
+
+                return xmlString;
             }
         }
 
         public static object Deserialize(string serializedObject, Type objectType) {
+            serializedObject = serializedObject.Replace(Quota, "\"");
+
             using (var sr = new StringReader(serializedObject)) {
                 var xml = new System.Xml.Serialization.XmlSerializer(objectType);
                 return xml.Deserialize(sr);
@@ -55,9 +63,7 @@ namespace NetworkUtilities {
 
         public static T Deserialize<T>(XmlReader reader) {
             var xml = new System.Xml.Serialization.XmlSerializer(typeof(T));
-
             var result =  (T) xml.Deserialize(reader) ;
-
             return result;
         }
     }
