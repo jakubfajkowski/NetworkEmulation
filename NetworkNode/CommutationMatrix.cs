@@ -70,12 +70,9 @@ namespace NetworkNode {
         /* Metoda dodająca komórkę ATM do bufora pola komutacyjnego*/
 
         public void AddAtmCellToInputPort(AtmCell cell, int portNumber) {
-            //Console.WriteLine("Wyszukiwanie portu wejściowego...");
             foreach (var inPort in _inputPorts)
                 if (portNumber == inPort.GetPortNumber()) {
                     inPort.AddAtmCell(cell);
-                    //Console.WriteLine("Dodanie komórki ATM do portu o łączu wejściowym " + inPort.getLinkNumber());
-
                     lock (_matrixThread) {
                         Monitor.Pulse(_matrixThread);
                     }
@@ -86,7 +83,6 @@ namespace NetworkNode {
 
 
         /* Metoda zmieniająca VPI, VCI na podstawie tabeli */
-
         public bool Commute(AtmCell cell, int inPortNumber) {
             var row = _commutationTable.FindRow(cell.Vpi, cell.Vci, inPortNumber);
             if (row != null) {
@@ -123,12 +119,9 @@ namespace NetworkNode {
             foreach (var port in ports)
                 if (port.GetPortNumber() == portNumber)
                     isFree = false;
-            if (isFree) {
+            if (isFree) 
                 ports.Add(new Port(portNumber));
-                Console.WriteLine("Port " + portNumber + " has been created.");
-            }
-            else
-                Console.WriteLine("Port " + portNumber + " is already used.");
+
             return isFree;
         }
     }
