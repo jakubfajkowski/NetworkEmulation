@@ -160,7 +160,7 @@ namespace NetworkEmulation.network {
             }
         }
 
-        private bool IsOnline(int nodeUdpPort) {
+        public bool IsOnline(int nodeUdpPort) {
             return _keepAliveDictionary.ContainsKey(nodeUdpPort);
         }
 

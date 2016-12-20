@@ -31,10 +31,29 @@ namespace NetworkEmulation.network {
             NetworkManagmentSystemLogForm = new LogForm(_networkManagmentSystem);
 
             _initializableNodes = initializableNodes;
+
+            foreach (var initializableNode in _initializableNodes.OfType<NetworkNodePictureBox>()) {
+                initializableNode.DoubleClick += InitializableNodeOnDoubleClick;
+            }
+
             _links = links;
             _connections = connections;
 
             _processes = new List<Process>();
+        }
+
+        private void InitializableNodeOnDoubleClick(object sender, EventArgs eventArgs) {
+            var networkNodePictureBox = sender as NetworkNodePictureBox;
+            var nodeUdpPort = networkNodePictureBox.Parameters.NetworkManagmentSystemDataPort;
+
+            if (_networkManagmentSystem.IsOnline(nodeUdpPort)) {
+                _networkManagmentSystem.SendShutdownMessage(nodeUdpPort);
+                MarkAsOffline(networkNodePictureBox);
+            }
+            else {
+                _networkManagmentSystem.SendStartMessage(nodeUdpPort);
+                MarkAsOnline(networkNodePictureBox);
+            }
         }
 
         private void InitializeCableCloud() {
