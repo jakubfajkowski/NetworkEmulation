@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -68,12 +69,13 @@ namespace NetworkEmulation.network {
                             break;
 
                         var cableCloudMessage = CableCloudMessage.Deserialize(buffer);
-                        UpdateState("Router " + inputPort + ": " + cableCloudMessage.PortNumber +
-                                    " - message recieved.");
+                        UpdateState("Router " + inputPort + ": " + cableCloudMessage.PortNumber + " - " + cableCloudMessage.AtmCells.Count + " ATM cells recieved.");
                         var input = new SocketNodePortPair(cableCloudMessage.PortNumber, inputPort);
 
+                        SocketNodePortPair output = null;
+
                         try {
-                            var output = LookUpLinkDictionary(input);
+                            output = LookUpLinkDictionary(input);
                             cableCloudMessage.PortNumber = output.NodePortNumber;
 
                             PassCableCloudMessage(cableCloudMessage, output.SocketPortNumber);
@@ -81,6 +83,11 @@ namespace NetworkEmulation.network {
                         catch (KeyNotFoundException) {
                             UpdateState("Router " + input + ": " + cableCloudMessage.PortNumber +
                                         " - no avaliable link.");
+                        }
+                        catch (Exception) {
+                            if (output != null) _nodesTcpClients.Remove(output.SocketPortNumber);
+                            UpdateState("Router " + input + ": " + cableCloudMessage.PortNumber +
+                                        " - could not connect.");
                         }
                     }
                 }
@@ -95,7 +102,7 @@ namespace NetworkEmulation.network {
             var tcpClient = _nodesTcpClients[outputPort];
 
             SendBytes(cableCloudMessage.Serialize(), tcpClient);
-            UpdateState("Router " + outputPort + ": " + cableCloudMessage.PortNumber + " - message sent.");
+            UpdateState("Router " + outputPort + ": " + cableCloudMessage.PortNumber + " - " + cableCloudMessage.AtmCells.Count + " ATM cells sent.");
         }
 
         private void SendBytes(byte[] data, TcpClient tcpClient) {

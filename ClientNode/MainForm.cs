@@ -50,5 +50,9 @@ namespace ClientNode {
         private void buttonClear_Click(object sender, EventArgs e) {
             textBoxReceived.Clear();
         }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+            Environment.Exit(0);
+        }
     }
 }

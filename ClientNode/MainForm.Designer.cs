@@ -142,6 +142,7 @@
             this.Controls.Add(this.buttonSend);
             this.Name = "MainForm";
             this.Text = "ClientNode";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -1,4 +1,4 @@
-﻿
+﻿using System;
 using NetworkUtilities;
 using NetworkUtilities.element;
 
@@ -8,6 +8,7 @@ namespace NetworkNode {
             string joinedArgs = string.Join(" ", args);          
             var parameters = (NetworkNodeSerializableParameters)XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeSerializableParameters));           
             var networkNode = new NetworkNode(parameters);
+            Console.Title = parameters.NetworkManagmentSystemDataPort.ToString();
         }
     }
 }

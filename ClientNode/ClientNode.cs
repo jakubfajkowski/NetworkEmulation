@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using NetworkUtilities;
 using NetworkUtilities.element;
 
@@ -65,6 +67,7 @@ namespace ClientNode {
             foreach (var cableCloudMessage in cableCloudMessages) {
                 Send(cableCloudMessage.Serialize());
                 UpdateState("Sent: " + cableCloudMessage.AtmCells.Count + " ATMCells.");
+                Thread.Sleep(100);
             }
         }
 
