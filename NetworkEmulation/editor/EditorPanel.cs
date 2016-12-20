@@ -135,6 +135,7 @@ namespace NetworkEmulation.editor {
                 FailHandlingAddingConnection("Connection should begin with client node.");
             if (beginNodePictureBox is ClientNodePictureBox) {
                 HandlingAddingConnection = true;
+                _currentConnection.BeginClientNodePictureBox = beginNodePictureBox as ClientNodePictureBox;
                 CurrentNodePictureBox = beginNodePictureBox;
             }
         }
@@ -173,6 +174,7 @@ namespace NetworkEmulation.editor {
 
         private void EndHandlingAddingConnection() {
             Add(_currentConnection);
+            _currentConnection.EndClientNodePictureBox= CurrentNodePictureBox as ClientNodePictureBox;
             _currentConnection.FillClientTable();
             _handlingAddingConnection = false;
         }
@@ -279,11 +281,19 @@ namespace NetworkEmulation.editor {
             link.SetAttachmentNodePictureBoxes(ref beginNodePictureBox, ref endNodePictureBox);
         }
 
+
         private void RestoreReferences(Connection connection) {
             var links = _addedLinks.FindAll(link => connection.Parameters.LinksIds.Contains(link.Id));
-
             connection.Links = links;
-        }
+
+            var beginNodePictureBoxId = connection.Parameters.BeginClientNodePictureBoxId;
+            var endNodePictureBoxId = connection.Parameters.EndClientNodePictureBoxId;
+            
+            var beginNodePictureBox = _addedNodePictureBoxes.Find(box => box.Id.Equals(beginNodePictureBoxId));
+            var endNodePictureBox = _addedNodePictureBoxes.Find(box => box.Id.Equals(endNodePictureBoxId));
+            connection.BeginClientNodePictureBox = beginNodePictureBox as ClientNodePictureBox;
+            connection.EndClientNodePictureBox = endNodePictureBox as ClientNodePictureBox;
+           }
 
         #endregion
     }

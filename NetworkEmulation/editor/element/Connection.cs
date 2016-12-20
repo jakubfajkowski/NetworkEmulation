@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Text;
 using System.Xml;
 using System.Xml.Schema;
 using NetworkEmulation.network.element;
@@ -11,6 +12,24 @@ using XmlSerializer = NetworkUtilities.XmlSerializer;
 namespace NetworkEmulation.editor.element {
     public class Connection : IMarkable, ISerializable {
         public List<Link> Links { private get; set; }
+        private ClientNodePictureBox _beginClientNodePictureBox;
+        private ClientNodePictureBox _endClientNodePictureBox;
+
+        public ClientNodePictureBox BeginClientNodePictureBox {
+            private get { return _beginClientNodePictureBox; }
+            set {
+                _beginClientNodePictureBox = value;
+                Parameters.BeginClientNodePictureBoxId = value.Id;
+            }
+        }
+
+        public ClientNodePictureBox EndClientNodePictureBox {
+            private get { return _endClientNodePictureBox; }
+            set {
+                _endClientNodePictureBox = value;
+                Parameters.EndClientNodePictureBoxId = value.Id;
+            }
+        }
 
         public Connection() {
             Id = UniqueId.Generate();
@@ -19,7 +38,7 @@ namespace NetworkEmulation.editor.element {
         }
 
         public void Add(Link link) {
-            Links.Add(link);
+           Links.Add(link);
             Parameters.LinksIds.Add(link.Id);
 
             link.MarkAsSelected();
@@ -28,15 +47,13 @@ namespace NetworkEmulation.editor.element {
         public ConnectionSerializableParameters Parameters { get; set; }
 
         public void FillClientTable() {
-            var beginClientPictureBox = Links[0].BeginNodePictureBox as ClientNodePictureBox;
-            var endClientPictureBox = Links[Links.Count - 1].EndNodePictureBox as ClientNodePictureBox;
-
-            var clientName = endClientPictureBox.Parameters.ClientName;
+            
+            var clientName = EndClientNodePictureBox.Parameters.ClientName;
             var portNumber = Parameters.NodeConnectionInformations[0].InPortNumber;
             var vpi = Parameters.NodeConnectionInformations[0].InVpi;
             var vci = Parameters.NodeConnectionInformations[0].InVci;
 
-            beginClientPictureBox.Parameters.ClientTable.Add(new ClientTableRow(clientName, portNumber, vpi, vci));
+            BeginClientNodePictureBox.Parameters.ClientTable.Add(new ClientTableRow(clientName, portNumber, vpi, vci));
         }
 
         public void MarkAsSelected() {
