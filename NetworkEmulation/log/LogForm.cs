@@ -5,7 +5,7 @@ namespace NetworkEmulation.log {
     public partial class LogForm : Form {
         private readonly LogObject _logObject;
 
-        public LogForm(ref LogObject logObject) {
+        public LogForm(LogObject logObject) {
             InitializeComponent();
             _logObject = logObject;
             _logObject.OnUpdateState += UpdateState;

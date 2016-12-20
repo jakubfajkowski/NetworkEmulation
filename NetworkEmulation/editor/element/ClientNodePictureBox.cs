@@ -24,7 +24,8 @@ namespace NetworkEmulation.editor.element {
             var process = new Process {
                 StartInfo = {
                     FileName = "..\\..\\..\\ClientNode\\bin\\Debug\\ClientNode.exe",
-                    Arguments = XmlSerializer.Serialize(Parameters)
+                    Arguments = XmlSerializer.Serialize(Parameters),
+                    UseShellExecute = false
                 }
             };
             return process;
@@ -49,7 +50,7 @@ namespace NetworkEmulation.editor.element {
         public override void ReadXml(XmlReader reader) {
             base.ReadXml(reader);
             reader.ReadStartElement(nameof(ClientNodePictureBox));
-            XmlSerializer.Deserialize<ClientNodeSerializableParameters>(reader);
+            Parameters = XmlSerializer.Deserialize<ClientNodeSerializableParameters>(reader);
             reader.ReadEndElement();
         }
 

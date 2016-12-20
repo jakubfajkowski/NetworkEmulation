@@ -6,11 +6,15 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using NetworkEmulation.editor;
 using NetworkEmulation.editor.element;
+using NetworkEmulation.log;
 
 namespace NetworkEmulation.network {
     public class Simulation {
-        public CableCloud CableCloud { get; }
-        public NetworkManagmentSystem NetworkManagmentSystem { get; }
+        public LogForm CableCloudLogForm { get; }
+        public LogForm NetworkManagmentSystemLogForm { get; }
+
+        private CableCloud _cableCloud;
+        private NetworkManagmentSystem _networkManagmentSystem;
 
         private readonly List<NodePictureBox> _initializableNodes;
         private readonly List<Link> _links;
@@ -19,8 +23,11 @@ namespace NetworkEmulation.network {
         private readonly List<Process> _processes;
 
         public Simulation(List<NodePictureBox> initializableNodes, List<Link> links, List<Connection> connections) {
-            CableCloud = new CableCloud();
-            NetworkManagmentSystem = new NetworkManagmentSystem();
+            _cableCloud = new CableCloud();
+            CableCloudLogForm = new LogForm(_cableCloud);
+
+            _networkManagmentSystem = new NetworkManagmentSystem();
+            NetworkManagmentSystemLogForm = new LogForm(_networkManagmentSystem);
 
             _initializableNodes = initializableNodes;
             _links = links;
@@ -34,13 +41,13 @@ namespace NetworkEmulation.network {
 
         private void InitializeCableCloud() {
             foreach (var link in _links) {
-                CableCloud.AddLink(link);
+                _cableCloud.AddLink(link);
             }
         }
 
         private void InitializeNetworkManagmentSystem() {
             foreach (var connection in _connections) {
-                NetworkManagmentSystem.SendConnectionToNetworkNodeAgent(connection);
+                _networkManagmentSystem.SendConnectionToNetworkNodeAgent(connection);
             }
         }
 

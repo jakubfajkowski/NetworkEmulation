@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using NetworkEmulation.editor;
+using NetworkEmulation.log;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
 using NetworkEmulation.network;
@@ -94,9 +95,11 @@ namespace NetworkEmulation {
         }
 
         private void cableCloudToolStripMenuItem_Click(object sender, EventArgs e) {
+            _simulation.CableCloudLogForm.ShowDialog(this);
         }
 
         private void networkManagmentSystemToolStripMenuItem_Click(object sender, EventArgs e) {
+            _simulation.NetworkManagmentSystemLogForm.ShowDialog(this);
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -105,6 +108,7 @@ namespace NetworkEmulation {
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e) {
+            _simulation.Stop();
         }
     }
 }
