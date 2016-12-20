@@ -193,5 +193,9 @@ namespace NetworkEmulation.network {
                 }
             });
         }
+
+        public void Dispose() {
+            _listenUdpClient.Close();
+        }
     }
 }
