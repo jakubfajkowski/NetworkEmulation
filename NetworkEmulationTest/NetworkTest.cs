@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.editor.element;
@@ -84,7 +85,13 @@ namespace NetworkEmulationTest {
 
             clientNodeA.AddClient(new ClientTableRow("B", portA, 1, 1));
 
-            clientNodeA.SendMessage("Lorem ipsum...", "B");
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < 500; i++) {
+                sb.Append("0123456789");
+            }
+
+            clientNodeA.SendMessage(sb.ToString(), "B");
 
             Thread.Sleep(1000);
         }

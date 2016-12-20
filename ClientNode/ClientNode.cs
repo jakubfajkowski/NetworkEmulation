@@ -60,9 +60,12 @@ namespace ClientNode {
             var vpi = clientTableRow.Vpi;
             var portNumber = clientTableRow.PortNumber;
 
-            var cableCloudMessage = new CableCloudMessage(portNumber, vpi, vci, message);
-            Send(cableCloudMessage.Serialize());
-            UpdateState("Sent: " + cableCloudMessage.AtmCells.Count + " ATMCells.");
+            var cableCloudMessages = CableCloudMessage.Generate(portNumber, vpi, vci, message);
+
+            foreach (var cableCloudMessage in cableCloudMessages) {
+                Send(cableCloudMessage.Serialize());
+                UpdateState("Sent: " + cableCloudMessage.AtmCells.Count + " ATMCells.");
+            }
         }
 
         protected override void HandleMessage(CableCloudMessage cableCloudMessage) {

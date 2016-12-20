@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace NetworkUtilities {
@@ -13,22 +14,10 @@ namespace NetworkUtilities {
             _atmCells = new List<AtmCell>(_maxAtmCellsNumber);
         }
 
-        public CableCloudMessage(int portNumber, int vpi, int vci, string message) : this(portNumber) {
-            var source = Encoding.UTF8.GetBytes(message);
-
-            for (var i = 0; i < source.Length; i += 48) {
-                var buffer = new byte[48];
-                if (i <= source.Length - 48) {
-                    Buffer.BlockCopy(source, i, buffer, 0, 48);
-                    _atmCells.Add(new AtmCell(vpi, vci, buffer));
-                }
-                else
-                    // gdy długość wiadomości jest mniejsza od 48 bitów, komórka jest wypełniana '0' na pozostałych miejscach
-                {
-                    Buffer.BlockCopy(source, i, buffer, 0, source.Length - i);
-                    _atmCells.Add(new AtmCell(vpi, vci, buffer));
-                }
-            }
+        private CableCloudMessage(int portNumber, List<AtmCell> atmCells) {
+            PortNumber = portNumber;
+            _atmCells = atmCells;
+            Fill();
         }
 
         public static int MaxByteBufferSize { get; private set; } = 9204;
@@ -38,8 +27,7 @@ namespace NetworkUtilities {
             set {
                 _maxAtmCellsNumber = value;
 
-                var exampleCloudMessage = new CableCloudMessage(1);
-                exampleCloudMessage.Fill();
+                var exampleCloudMessage = new CableCloudMessage(0);
                 MaxByteBufferSize = exampleCloudMessage.Serialize().Length;
             }
         }
@@ -56,6 +44,20 @@ namespace NetworkUtilities {
 
         public void Fill() {
             while (_atmCells.Count < _maxAtmCellsNumber) _atmCells.Add(new AtmCell());
+        }
+
+        public static List<CableCloudMessage> Generate(int portNumber, int vpi, int vci, string message) {
+            var atmCells = AtmCell.Generate(vpi, vci, message);
+            var cableCloudMessages = new List<CableCloudMessage>();
+
+            while (atmCells.Count >= MaxAtmCellsNumber) {
+                var atmCellsPart = atmCells.GetRange(0, MaxAtmCellsNumber);
+                atmCells.RemoveRange(0, MaxAtmCellsNumber);
+                cableCloudMessages.Add(new CableCloudMessage(portNumber, atmCellsPart));
+            }
+            cableCloudMessages.Add(new CableCloudMessage(portNumber, atmCells));
+
+            return cableCloudMessages;
         }
 
         public byte[] Serialize() {
