@@ -122,7 +122,7 @@ namespace NetworkEmulation.network {
         }
 
         public void Dispose() {
-            UpdateState("Cable Cloud - offline.");
+            UpdateState("Cable Cloud shutting down.");
             _connectionUdpClient.Close();
         }
     }
