@@ -62,9 +62,9 @@ namespace NetworkNode {
                         for (var i = 0; i < atmCellNumberInMessage; i++)
                             message.Add(port.GetAtmCell());
 
-                      //  Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
+                        //Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
                          //                 message.PortNumber + " Liczba ATMCell: " + message.AtmCells.Count
-                        //                  + " Port: " + port.GetPortNumber());
+                          //                + " Port: " + port.GetPortNumber());
                         SendCableCloudMessage(message);
                         sent = true;
                     }
