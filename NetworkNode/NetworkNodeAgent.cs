@@ -84,13 +84,7 @@ namespace NetworkNode {
                                 AddConnectionToTable(int.Parse(messageSplit[1]), int.Parse(messageSplit[2]),
                                     int.Parse(messageSplit[3]),
                                     int.Parse(messageSplit[4]), int.Parse(messageSplit[5]), int.Parse(messageSplit[6]));
-                                break;
-                            case "Shutdown":
-                                _networkNode.shutdown();
-                                break;
-                            case "Start":
-                                _networkNode.startThread();
-                                break;
+                                break;                           
                         }
                     }
                 }
