@@ -23,8 +23,8 @@ namespace NetworkNode {
         }
 
         public void AddAtmCell(AtmCell cell) {
-            _atmCells.Enqueue(cell);
             _lastAddTime = DateTime.Now;
+            _atmCells.Enqueue(cell);      
         }
 
         public int GetPortNumber() {
