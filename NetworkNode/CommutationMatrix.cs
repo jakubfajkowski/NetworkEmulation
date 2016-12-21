@@ -91,8 +91,8 @@ namespace NetworkNode {
                 if (row.GetOutVci() != -1)
                     cell.Vci = row.GetOutVci();
 
-              //  Console.WriteLine("Zmiana VPI/VCI na " + cell.Vpi + "/" + cell.Vci +
-               //                   " Wrzucenie komórki do portu wyjściowego o łączu " + row.GetOutPort());
+                //Console.WriteLine("Zmiana VPI/VCI na " + cell.Vpi + "/" + cell.Vci +
+                //                  " Wrzucenie komórki do portu wyjściowego o łączu " + row.GetOutPort());
                 return AddAtmCellToOutputPort(cell, row.GetOutPort());
             }
             //else
