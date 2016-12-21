@@ -5,6 +5,7 @@ namespace NetworkEmulation.editor {
     public class ClippedPictureBox : PictureBox {
         public ClippedPictureBox() {
             SizeMode = PictureBoxSizeMode.AutoSize;
+            SetStyle(ControlStyles.DoubleBuffer, true);
         }
 
         public new Image Image {

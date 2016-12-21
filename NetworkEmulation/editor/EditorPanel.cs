@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -190,6 +191,16 @@ namespace NetworkEmulation.editor {
 
             var graphics = e.Graphics;
             foreach (var insertedLink in _addedLinks) insertedLink.DrawLink(graphics);
+            foreach (var addedNodePictureBox in _addedNodePictureBoxes) {
+                var clientNodePictureBox = addedNodePictureBox as ClientNodePictureBox;
+
+                if (clientNodePictureBox == null) continue;
+                using (var myFont = new Font("Arial", 8)) {
+                    var centerPoint = clientNodePictureBox.CenterPoint();
+                    var namePoint = new Point(centerPoint.X - 12, centerPoint.Y + 32);
+                    graphics.DrawString(clientNodePictureBox.Parameters.ClientName, myFont, Brushes.Black, namePoint);
+                }
+            }
         }
 
         private void Add(NodePictureBox nodePictureBox) {
