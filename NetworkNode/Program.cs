@@ -8,7 +8,7 @@ namespace NetworkNode {
             string joinedArgs = string.Join(" ", args);          
             var parameters = (NetworkNodeSerializableParameters)XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeSerializableParameters));           
             var networkNode = new NetworkNode(parameters);
-            Console.Title = $"Network Node ({parameters.CableCloudDataPort})";
+            Console.Title = $"Network Node (CC:{parameters.CableCloudDataPort}|NN:{parameters.NetworkManagmentSystemDataPort})";
         }
     }
 }
