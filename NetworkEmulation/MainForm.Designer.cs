@@ -75,21 +75,21 @@ namespace NetworkEmulation {
             // newProjectMenuItem
             // 
             this.newProjectMenuItem.Name = "newProjectMenuItem";
-            this.newProjectMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.newProjectMenuItem.Size = new System.Drawing.Size(152, 22);
             this.newProjectMenuItem.Text = "New Project...";
             this.newProjectMenuItem.Click += new System.EventHandler(this.newProjectMenuItem_Click);
             // 
             // saveProjectMenuItem
             // 
             this.saveProjectMenuItem.Name = "saveProjectMenuItem";
-            this.saveProjectMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.saveProjectMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveProjectMenuItem.Text = "Save Project...";
             this.saveProjectMenuItem.Click += new System.EventHandler(this.saveProjectMenuItem_Click);
             // 
             // loadProjectMenuItem
             // 
             this.loadProjectMenuItem.Name = "loadProjectMenuItem";
-            this.loadProjectMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.loadProjectMenuItem.Size = new System.Drawing.Size(152, 22);
             this.loadProjectMenuItem.Text = "Load Project...";
             this.loadProjectMenuItem.Click += new System.EventHandler(this.loadProjectMenuItem_Click);
             // 
@@ -107,28 +107,28 @@ namespace NetworkEmulation {
             // clientNodeToolStripMenuItem
             // 
             this.clientNodeToolStripMenuItem.Name = "clientNodeToolStripMenuItem";
-            this.clientNodeToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.clientNodeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.clientNodeToolStripMenuItem.Text = "Client Node";
             this.clientNodeToolStripMenuItem.Click += new System.EventHandler(this.clientNodeToolStripMenuItem_Click);
             // 
             // networkNodeToolStripMenuItem
             // 
             this.networkNodeToolStripMenuItem.Name = "networkNodeToolStripMenuItem";
-            this.networkNodeToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.networkNodeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.networkNodeToolStripMenuItem.Text = "Network Node";
             this.networkNodeToolStripMenuItem.Click += new System.EventHandler(this.networkNodeToolStripMenuItem_Click);
             // 
             // linkToolStripMenuItem
             // 
             this.linkToolStripMenuItem.Name = "linkToolStripMenuItem";
-            this.linkToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.linkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.linkToolStripMenuItem.Text = "Link";
             this.linkToolStripMenuItem.Click += new System.EventHandler(this.linkToolStripMenuItem_Click);
             // 
             // connectionToolStripMenuItem
             // 
             this.connectionToolStripMenuItem.Name = "connectionToolStripMenuItem";
-            this.connectionToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.connectionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.connectionToolStripMenuItem.Text = "Connection";
             this.connectionToolStripMenuItem.Click += new System.EventHandler(this.connectionToolStripMenuItem_Click);
             // 
@@ -144,14 +144,15 @@ namespace NetworkEmulation {
             // moveToolStripMenuItem
             // 
             this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
-            this.moveToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.moveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.moveToolStripMenuItem.Text = "Move";
             this.moveToolStripMenuItem.Click += new System.EventHandler(this.moveToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
+            this.deleteToolStripMenuItem.Enabled = false;
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -167,14 +168,15 @@ namespace NetworkEmulation {
             // runToolStripMenuItem
             // 
             this.runToolStripMenuItem.Name = "runToolStripMenuItem";
-            this.runToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.runToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.runToolStripMenuItem.Text = "Run";
             this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
+            this.stopToolStripMenuItem.Enabled = false;
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 

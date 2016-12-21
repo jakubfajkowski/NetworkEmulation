@@ -12,7 +12,7 @@ using NetworkEmulation.log;
 
 namespace NetworkEmulation.network {
     public class Simulation {
-        private bool _running;
+        public bool Running { get; private set; }
 
         public LogForm CableCloudLogForm { get; }
         public LogForm NetworkManagmentSystemLogForm { get; }
@@ -58,7 +58,7 @@ namespace NetworkEmulation.network {
         }
 
         private void PrepareNetworkManagmentSystemLogForm() {
-            CableCloudLogForm.Text = "Network Managment System Log";
+            NetworkManagmentSystemLogForm.Text = "Network Managment System Log";
             NetworkManagmentSystemLogForm.Shown += NetworkManagmentSystemLogForm_Shown;
             NetworkManagmentSystemLogForm.Show();
         }
@@ -159,12 +159,12 @@ namespace NetworkEmulation.network {
         }
 
         public void Run() {
-            if (!_running) {
+            if (!Running) {
                 InitializeElements();
                 StartProcesses();
                 InitializeCableCloud();
                 InitializeNetworkManagmentSystem();
-                _running = true;
+                Running = true;
             }
         }
 
@@ -197,7 +197,7 @@ namespace NetworkEmulation.network {
             _networkManagmentSystem.Dispose();
             KillProcesses();
 
-            _running = false;
+            Running = false;
         }
 
         private void KillProcesses() {

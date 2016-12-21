@@ -110,6 +110,7 @@ namespace NetworkEmulation {
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e) {
+            runToolStripMenuItem.Enabled = false;
             _simulation = new Simulation(editorPanel._addedNodePictureBoxes, editorPanel._addedLinks, editorPanel._addedConnections);
             MessageBox.Show("Simulation running.");
         }
@@ -117,6 +118,8 @@ namespace NetworkEmulation {
         private void stopToolStripMenuItem_Click(object sender, EventArgs e) {
             _simulation?.Stop();
             MessageBox.Show("Simulation stopped.");
+            runToolStripMenuItem.Enabled = true;
+            stopToolStripMenuItem.Enabled = false;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
