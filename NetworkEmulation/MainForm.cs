@@ -95,15 +95,16 @@ namespace NetworkEmulation {
         }
 
         private void cableCloudToolStripMenuItem_Click(object sender, EventArgs e) {
+            if (_simulation == null) return;
             HandleLogFormOpen(_simulation.CableCloudLogForm);
         }
 
         private void networkManagmentSystemToolStripMenuItem_Click(object sender, EventArgs e) {
+            if (_simulation == null) return;
             HandleLogFormOpen(_simulation.NetworkManagmentSystemLogForm);
         }
 
         private void HandleLogFormOpen(LogForm logForm) {
-            if (logForm == null) return;
             if (!logForm.Visible)
                 logForm.Show();
         }
