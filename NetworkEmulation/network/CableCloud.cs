@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
 using NetworkEmulation.editor.element;
 using NetworkEmulation.log;
 using NetworkUtilities;
@@ -125,6 +122,7 @@ namespace NetworkEmulation.network {
         }
 
         public void Dispose() {
+            UpdateState("Cable Cloud - offline.");
             _connectionUdpClient.Close();
         }
     }

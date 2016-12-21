@@ -26,6 +26,7 @@ namespace NetworkEmulation.editor.element {
                     FileName = "..\\..\\..\\NetworkNode\\bin\\Release\\NetworkNode.exe",
                     #endif
                     Arguments = XmlSerializer.Serialize(Parameters),
+                    WindowStyle = ProcessWindowStyle.Minimized
                 }
             };
 

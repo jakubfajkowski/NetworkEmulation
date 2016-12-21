@@ -28,10 +28,11 @@
             // 
             // logRichTextBox
             // 
-            this.logRichTextBox.Location = new System.Drawing.Point(12, 12);
+            this.logRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logRichTextBox.Location = new System.Drawing.Point(0, 0);
             this.logRichTextBox.Name = "logRichTextBox";
             this.logRichTextBox.ReadOnly = true;
-            this.logRichTextBox.Size = new System.Drawing.Size(600, 417);
+            this.logRichTextBox.Size = new System.Drawing.Size(483, 297);
             this.logRichTextBox.TabIndex = 0;
             this.logRichTextBox.Text = "";
             // 
@@ -39,9 +40,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(624, 441);
+            this.ClientSize = new System.Drawing.Size(483, 297);
             this.Controls.Add(this.logRichTextBox);
             this.Name = "LogForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LogForm_FormClosing);
             this.Shown += new System.EventHandler(this.LogForm_Shown);
             this.ResumeLayout(false);
 

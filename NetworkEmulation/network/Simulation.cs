@@ -31,13 +31,11 @@ namespace NetworkEmulation.network {
             //TODO Zmienić metodę pokazywania logu
             _cableCloud = new CableCloud();
             CableCloudLogForm = new LogForm(_cableCloud);
-            CableCloudLogForm.Shown += CableCloudLogForm_Shown;
-            CableCloudLogForm.Show();
+            PreapareCableCloudLogForm();
 
             _networkManagmentSystem = new NetworkManagmentSystem();
             NetworkManagmentSystemLogForm = new LogForm(_networkManagmentSystem);
-            NetworkManagmentSystemLogForm.Shown += NetworkManagmentSystemLogForm_Shown;
-            NetworkManagmentSystemLogForm.Show();
+            PrepareNetworkManagmentSystemLogForm();
 
             _initializableNodes = initializableNodes;
 
@@ -49,6 +47,18 @@ namespace NetworkEmulation.network {
             _connections = connections;
 
             _processes = new Dictionary<int, Process>();
+        }
+
+        private void PreapareCableCloudLogForm() {
+            CableCloudLogForm.Text = "Cable Cloud Log";
+            CableCloudLogForm.Shown += CableCloudLogForm_Shown;
+            CableCloudLogForm.Show();
+        }
+
+        private void PrepareNetworkManagmentSystemLogForm() {
+            CableCloudLogForm.Text = "Network Managment System Log";
+            NetworkManagmentSystemLogForm.Shown += NetworkManagmentSystemLogForm_Shown;
+            NetworkManagmentSystemLogForm.Show();
         }
 
         private void CableCloudLogForm_Shown(object sender, EventArgs e) {

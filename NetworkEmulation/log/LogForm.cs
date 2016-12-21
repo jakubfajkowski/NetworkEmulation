@@ -4,6 +4,7 @@ using System.Windows.Forms;
 namespace NetworkEmulation.log {
     public partial class LogForm : Form {
         private readonly LogObject _logObject;
+        private bool _bound;
 
         public LogForm(LogObject logObject) {
             InitializeComponent();
@@ -19,7 +20,17 @@ namespace NetworkEmulation.log {
         }
 
         private void LogForm_Shown(object sender, EventArgs e) {
-            _logObject.OnUpdateState += (s, state) => BeginInvoke(new Action(() => UpdateState(s, state)));
+            if (!_bound) {
+                _logObject.OnUpdateState += (s, state) => BeginInvoke(new Action(() => UpdateState(s, state)));
+                _bound = true;
+            }
+        }
+
+        private void LogForm_FormClosing(object sender, FormClosingEventArgs e) {
+            if (e.CloseReason == CloseReason.UserClosing) {
+                e.Cancel = true;
+                Hide();
+            }
         }
     }
 }

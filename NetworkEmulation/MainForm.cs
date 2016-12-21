@@ -95,19 +95,21 @@ namespace NetworkEmulation {
         }
 
         private void cableCloudToolStripMenuItem_Click(object sender, EventArgs e) {
-            _simulation.CableCloudLogForm.ShowDialog();
+            _simulation.CableCloudLogForm?.ShowDialog();
         }
 
         private void networkManagmentSystemToolStripMenuItem_Click(object sender, EventArgs e) {
-            _simulation.NetworkManagmentSystemLogForm.ShowDialog();
+            _simulation.NetworkManagmentSystemLogForm?.ShowDialog();
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e) {
             _simulation = new Simulation(editorPanel._addedNodePictureBoxes, editorPanel._addedLinks, editorPanel._addedConnections);
+            MessageBox.Show("Simulation running.");
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e) {
             _simulation?.Stop();
+            MessageBox.Show("Simulation stopped.");
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
