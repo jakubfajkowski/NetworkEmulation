@@ -16,7 +16,10 @@ namespace NetworkEmulation.network {
         public LogForm NetworkManagmentSystemLogForm { get; }
 
         private readonly CableCloud _cableCloud;
+        private bool _cableCloudLogFormShown;
         private readonly NetworkManagmentSystem _networkManagmentSystem;
+        private bool _networkManagmentSystemLogFormShown;
+
 
         private readonly List<NodePictureBox> _initializableNodes;
         private readonly List<Link> _links;
@@ -25,13 +28,16 @@ namespace NetworkEmulation.network {
         private readonly Dictionary<int, Process> _processes;
 
         public Simulation(List<NodePictureBox> initializableNodes, List<Link> links, List<Connection> connections) {
+            //TODO Zmienić metodę pokazywania logu
             _cableCloud = new CableCloud();
             CableCloudLogForm = new LogForm(_cableCloud);
-            _cableCloud.OnUpdateState += (sender, state) => Console.WriteLine(state);
+            CableCloudLogForm.Shown += CableCloudLogForm_Shown;
+            CableCloudLogForm.Show();
 
             _networkManagmentSystem = new NetworkManagmentSystem();
             NetworkManagmentSystemLogForm = new LogForm(_networkManagmentSystem);
-            _networkManagmentSystem.OnUpdateState += (sender, state) => Console.WriteLine(state);
+            NetworkManagmentSystemLogForm.Shown += NetworkManagmentSystemLogForm_Shown;
+            NetworkManagmentSystemLogForm.Show();
 
             _initializableNodes = initializableNodes;
 
@@ -43,6 +49,22 @@ namespace NetworkEmulation.network {
             _connections = connections;
 
             _processes = new Dictionary<int, Process>();
+        }
+
+        private void CableCloudLogForm_Shown(object sender, EventArgs e) {
+            _cableCloudLogFormShown = true;
+
+            if (_networkManagmentSystemLogFormShown) {
+                Run();
+            }
+        }
+
+        private void NetworkManagmentSystemLogForm_Shown(object sender, EventArgs e) {
+            _networkManagmentSystemLogFormShown = true;
+
+            if (_cableCloudLogFormShown) {
+                Run();
+            }
         }
 
         private void InitializableNodeOnDoubleClick(object sender, EventArgs eventArgs) {

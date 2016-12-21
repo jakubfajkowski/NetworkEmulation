@@ -8,7 +8,6 @@ namespace NetworkEmulation.log {
         public LogForm(LogObject logObject) {
             InitializeComponent();
             _logObject = logObject;
-            _logObject.OnUpdateState += UpdateState;
         }
 
         private void UpdateState(object sender, string state) {
@@ -19,8 +18,8 @@ namespace NetworkEmulation.log {
             return $"[{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}] {text}\n";
         }
 
-        private void LogForm_FormClosed(object sender, FormClosedEventArgs e) {
-            _logObject.OnUpdateState -= UpdateState;
+        private void LogForm_Shown(object sender, EventArgs e) {
+            _logObject.OnUpdateState += (s, state) => BeginInvoke(new Action(() => UpdateState(s, state)));
         }
     }
 }

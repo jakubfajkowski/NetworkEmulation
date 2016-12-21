@@ -42,7 +42,7 @@
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.logRichTextBox);
             this.Name = "LogForm";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LogForm_FormClosed);
+            this.Shown += new System.EventHandler(this.LogForm_Shown);
             this.ResumeLayout(false);
 
         }
