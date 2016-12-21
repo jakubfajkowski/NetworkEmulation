@@ -14,7 +14,7 @@ namespace ClientNode {
             var param = (ClientNodeSerializableParameters)XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeSerializableParameters));
             _client = new ClientNode(param);
 
-            this.Text = _client.ClientName;
+            Text = $"Client Node ({_client.ClientName})";
 
             _client.OnUpdateState += UpdateState;
             _client.OnMessageRecieved += MessageRecieved;
