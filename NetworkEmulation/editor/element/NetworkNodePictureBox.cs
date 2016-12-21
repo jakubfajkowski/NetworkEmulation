@@ -18,9 +18,17 @@ namespace NetworkEmulation.editor.element {
         public NetworkNodeSerializableParameters Parameters { get; set; }
 
         public override Process Initialize() {
-            var process = new Process();
-            process.StartInfo.FileName = "..\\..\\..\\NetworkNode\\bin\\Debug\\NetworkNode.exe";
-            process.StartInfo.Arguments = XmlSerializer.Serialize(Parameters);
+            var process = new Process {
+                StartInfo = {
+                    #if DEBUG
+                    FileName = "..\\..\\..\\NetworkNode\\bin\\Debug\\NetworkNode.exe",
+                    #else
+                    FileName = "..\\..\\..\\NetworkNode\\bin\\Release\\NetworkNode.exe",
+                    #endif
+                    Arguments = XmlSerializer.Serialize(Parameters),
+                }
+            };
+
             return process;
         }
 

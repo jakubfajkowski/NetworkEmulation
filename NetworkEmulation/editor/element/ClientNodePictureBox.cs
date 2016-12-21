@@ -23,7 +23,11 @@ namespace NetworkEmulation.editor.element {
         public override Process Initialize() {
             var process = new Process {
                 StartInfo = {
+                    #if DEBUG
                     FileName = "..\\..\\..\\ClientNode\\bin\\Debug\\ClientNode.exe",
+                    #else
+                    FileName = "..\\..\\..\\ClientNode\\bin\\Release\\ClientNode.exe",
+                    #endif
                     Arguments = XmlSerializer.Serialize(Parameters),
                     UseShellExecute = false
                 }
