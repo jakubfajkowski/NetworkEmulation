@@ -21,7 +21,7 @@
 
         public bool CheckInIdentifiers(int inVpi, int inVci, int inPortNumber) {
             return (inPortNumber == this._inPortNumber) && (inVpi == this._inVpi) &&
-                   ((inVci == this._inVci) || (inVci == -1));
+                   ((inVci == this._inVci) || (_inVci == -1));
         }
 
         /* Metoda sprawdzająca czy podane VPI i VCI pasują do danego wpisu

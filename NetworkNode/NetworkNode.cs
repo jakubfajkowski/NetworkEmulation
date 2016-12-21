@@ -44,7 +44,7 @@ namespace NetworkNode {
         /* Wątek pobierający komórki ATM z portów wyjściowych pola komutacyjnego i wysyłający je do chmury kablowej */
         private void RunThread() {
             while (!_timeToQuit) {
-              
+                bool sent = false;
                 foreach (var port in CommutationMatrix.OutputPorts)
                     if (((port.GetAtmCellNumber() != 0) &&
                          ((DateTime.Now - port.GetLastAddTime()).TotalMilliseconds > MinLastAddTime)) ||
@@ -62,12 +62,16 @@ namespace NetworkNode {
                         for (var i = 0; i < atmCellNumberInMessage; i++)
                             message.Add(port.GetAtmCell());
 
-                        //Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
-                        //                  message.PortNumber + " Liczba ATMCell: " + message.AtmCells.Count
+                      //  Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
+                         //                 message.PortNumber + " Liczba ATMCell: " + message.AtmCells.Count
                         //                  + " Port: " + port.GetPortNumber());
                         SendCableCloudMessage(message);
-                       
+                        sent = true;
                     }
+                if (!sent)
+                {
+                    Thread.Sleep(10);
+                }
             }
         }
 
