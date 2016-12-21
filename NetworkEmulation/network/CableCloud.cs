@@ -47,7 +47,7 @@ namespace NetworkEmulation.network {
             try {
                 nodeTcpClient.Connect(IPAddress.Loopback, port);
                 _nodesTcpClients.Add(port, nodeTcpClient);
-                UpdateState("Connected to Node on port: " + port);
+                UpdateState("Connected to Node on TCP port: " + port);
                 ListenForNodeMessages(nodeTcpClient, port);
             }
             catch (SocketException e) {
@@ -66,7 +66,7 @@ namespace NetworkEmulation.network {
                             break;
 
                         var cableCloudMessage = CableCloudMessage.Deserialize(buffer);
-                        UpdateState("Router " + inputPort + ": " + cableCloudMessage.PortNumber + " - " + cableCloudMessage.AtmCells.Count + " ATM cells recieved.");
+                        UpdateState("Node [" + inputPort + "] from ATM port:" + cableCloudMessage.PortNumber + " - " + cableCloudMessage.AtmCells.Count + " ATM cells recieved.");
                         var input = new SocketNodePortPair(cableCloudMessage.PortNumber, inputPort);
 
                         SocketNodePortPair output = null;
@@ -78,12 +78,12 @@ namespace NetworkEmulation.network {
                             PassCableCloudMessage(cableCloudMessage, output.SocketPortNumber);
                         }
                         catch (KeyNotFoundException) {
-                            UpdateState("Router " + input + ": " + cableCloudMessage.PortNumber +
+                            UpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " + cableCloudMessage.PortNumber +
                                         " - no avaliable link.");
                         }
                         catch (Exception) {
                             if (output != null) _nodesTcpClients.Remove(output.SocketPortNumber);
-                            UpdateState("Router " + input + ": " + cableCloudMessage.PortNumber +
+                            UpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " + cableCloudMessage.PortNumber +
                                         " - could not connect.");
                         }
                     }
@@ -99,7 +99,7 @@ namespace NetworkEmulation.network {
             var tcpClient = _nodesTcpClients[outputPort];
 
             SendBytes(cableCloudMessage.Serialize(), tcpClient);
-            UpdateState("Router " + outputPort + ": " + cableCloudMessage.PortNumber + " - " + cableCloudMessage.AtmCells.Count + " ATM cells sent.");
+            UpdateState("Node [" + outputPort + "] to ATM port: " + cableCloudMessage.PortNumber + " - " + cableCloudMessage.AtmCells.Count + " ATM cells sent.");
         }
 
         private void SendBytes(byte[] data, TcpClient tcpClient) {
