@@ -54,18 +54,17 @@ namespace NetworkEmulation.network {
 
         public void SendConnectionToNetworkNodeAgent(NodeConnectionInformation information) {
             SendConnectionToNetworkNodeAgent(information.NodeUdpPort,
-                                             information.InVpi,
-                                             information.InVci,
-                                             information.InPortNumber,
-                                             information.OutVpi,
-                                             information.OutVci,
-                                             information.OutPortNumber);
+                information.InVpi,
+                information.InVci,
+                information.InPortNumber,
+                information.OutVpi,
+                information.OutVci,
+                information.OutPortNumber);
         }
 
         public void SendConnectionToNetworkNodeAgent(Connection connection) {
-            foreach (var information in connection.Parameters.NodeConnectionInformations) {
+            foreach (var information in connection.Parameters.NodeConnectionInformations)
                 SendConnectionToNetworkNodeAgent(information);
-            }
         }
 
         // Wpis w tablicy pola komutacyjnego
@@ -74,12 +73,14 @@ namespace NetworkEmulation.network {
             SendMessageToNetworkNode(
                 "CreateConnection " + inVpi + " " + inVci + " " + inPortNumber + " " + outVpi + " " + outVci + " " +
                 outPortNumber, nodeUdpPort);
-            UpdateState(" Message to " + nodeUdpPort + ": " + "CreateConnection inVpi:" + inVpi + ", inVci: " + inVci + ", inPort: " +
+            UpdateState(" Message to " + nodeUdpPort + ": " + "CreateConnection inVpi:" + inVpi + ", inVci: " + inVci +
+                        ", inPort: " +
                         inPortNumber + ", outVpi: " + outVpi + ", outVci: " + outVci + ", outPort: " +
                         outPortNumber);
         }
 
         /* Wątek obsługujący keep alive*/
+
         private void RunThread() {
             while (true)
                 if (_receivedMessagesList.Count > 0) {

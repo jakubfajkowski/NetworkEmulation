@@ -10,6 +10,7 @@ namespace ClientNodeTest {
         [TestMethod]
         public void AddClientTest() {
             var parameters = new ClientNodeSerializableParameters {
+                MaxAtmCellsNumberInCableCloudMessage = 100,
                 ClientName = "Janusz",
                 ClientTable =
                     new List<ClientTableRow>(new[]

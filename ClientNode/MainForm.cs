@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using NetworkUtilities;
 using NetworkUtilities.element;
@@ -10,8 +9,10 @@ namespace ClientNode {
 
         public MainForm(string[] args) {
             InitializeComponent();
-            string joinedArgs = string.Join(" ", args);
-            var param = (ClientNodeSerializableParameters)XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeSerializableParameters));
+            var joinedArgs = string.Join(" ", args);
+            var param =
+                (ClientNodeSerializableParameters)
+                XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeSerializableParameters));
             _client = new ClientNode(param);
 
             Text = $"Client Node ({_client.ClientName})";

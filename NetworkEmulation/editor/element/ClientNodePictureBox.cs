@@ -1,13 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Windows.Forms;
+﻿using System.Diagnostics;
 using System.Xml;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
 using NetworkUtilities.element;
-using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor.element {
     public class ClientNodePictureBox : NodePictureBox {
@@ -23,9 +18,9 @@ namespace NetworkEmulation.editor.element {
         public override Process Initialize() {
             var process = new Process {
                 StartInfo = {
-                    #if DEBUG
+#if DEBUG
                     FileName = "..\\..\\..\\ClientNode\\bin\\Debug\\ClientNode.exe",
-                    #else
+#else
                     FileName = "..\\..\\..\\ClientNode\\bin\\Release\\ClientNode.exe",
                     #endif
                     Arguments = XmlSerializer.Serialize(Parameters),

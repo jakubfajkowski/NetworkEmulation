@@ -1,22 +1,17 @@
-﻿using System;
-using System.Diagnostics;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using NetworkEmulation.network.element;
 using NetworkUtilities;
 using UniqueId = NetworkUtilities.UniqueId;
-using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor.element {
     public partial class Link : Control, IMarkable, ISerializable {
         private static readonly Pen SelectedPen = new Pen(Color.Black, 5);
         private static readonly Pen DeselectedPen = new Pen(Color.Black, 1);
-        private static readonly Pen OnlinePen = new Pen(Color.Green, 1);
-        private static readonly Pen OfflinePen = new Pen(Color.Red, 1);
-        public NodePictureBox BeginNodePictureBox { get; private set; }
-        public NodePictureBox EndNodePictureBox { get; private set; }
+        private static readonly Pen OnlinePen = new Pen(Color.Green, 5);
+        private static readonly Pen OfflinePen = new Pen(Color.Red, 5);
         private Pen _pen = DeselectedPen;
 
         public Link() {
@@ -30,6 +25,9 @@ namespace NetworkEmulation.editor.element {
 
             SetAttachmentNodePictureBoxes(ref beginNodePictureBox, ref endNodePictureBox);
         }
+
+        public NodePictureBox BeginNodePictureBox { get; private set; }
+        public NodePictureBox EndNodePictureBox { get; private set; }
 
         public LinkSerializableParameters Parameters { get; set; }
 

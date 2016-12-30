@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NetworkEmulation.network;
 using NetworkUtilities;
 using NetworkUtilities.element;
-using NetworkEmulation.network;
 
 namespace NetworkNodeTest {
     [TestClass]
@@ -19,22 +18,22 @@ namespace NetworkNodeTest {
                 NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             };
 
-            string serializedParameters = XmlSerializer.Serialize(networkNodeSerializableParameters);
+            var serializedParameters = XmlSerializer.Serialize(networkNodeSerializableParameters);
 
-            string[] args = serializedParameters.Split(' ');
+            var args = serializedParameters.Split(' ');
 
-            string joinedArgs = string.Join(" ", args);
+            var joinedArgs = string.Join(" ", args);
 
-            var parameters = (NetworkNodeSerializableParameters)XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeSerializableParameters));
+            var parameters =
+                (NetworkNodeSerializableParameters)
+                XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeSerializableParameters));
 
             var networkNode = new NetworkNode.NetworkNode(parameters);
         }
 
         [TestMethod]
-        public void NMSKeepAlive()
-        {
-            var networkNodeSerializableParameters = new NetworkNodeSerializableParameters
-            {
+        public void NMSKeepAlive() {
+            var networkNodeSerializableParameters = new NetworkNodeSerializableParameters {
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
                 IpAddress = "127.0.0.1",
@@ -42,11 +41,9 @@ namespace NetworkNodeTest {
                 NetworkManagmentSystemListeningPort = 6666,
                 NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             };
-            NetworkManagmentSystem nms = new NetworkManagmentSystem();
+            var nms = new NetworkManagmentSystem();
             var networkNode = new NetworkNode.NetworkNode(networkNodeSerializableParameters);
             Thread.Sleep(10000);
         }
-
-
-   }
+    }
 }

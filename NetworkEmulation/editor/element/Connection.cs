@@ -1,19 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing.Text;
+﻿using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
 using NetworkEmulation.network.element;
 using NetworkUtilities;
 using UniqueId = NetworkUtilities.UniqueId;
-using XmlSerializer = NetworkUtilities.XmlSerializer;
 
 namespace NetworkEmulation.editor.element {
     public class Connection : IMarkable, ISerializable {
-        public List<Link> Links { private get; set; }
         private ClientNodePictureBox _beginClientNodePictureBox;
         private ClientNodePictureBox _endClientNodePictureBox;
+
+        public Connection() {
+            Id = UniqueId.Generate();
+            Links = new List<Link>();
+            Parameters = new ConnectionSerializableParameters();
+        }
+
+        public List<Link> Links { private get; set; }
 
         public ClientNodePictureBox BeginClientNodePictureBox {
             private get { return _beginClientNodePictureBox; }
@@ -31,30 +34,7 @@ namespace NetworkEmulation.editor.element {
             }
         }
 
-        public Connection() {
-            Id = UniqueId.Generate();
-            Links = new List<Link>();
-            Parameters = new ConnectionSerializableParameters();
-        }
-
-        public void Add(Link link) {
-           Links.Add(link);
-            Parameters.LinksIds.Add(link.Id);
-
-            link.MarkAsSelected();
-        }
-
         public ConnectionSerializableParameters Parameters { get; set; }
-
-        public void FillClientTable() {
-            
-            var clientName = EndClientNodePictureBox.Parameters.ClientName;
-            var portNumber = Parameters.NodeConnectionInformations[0].InPortNumber;
-            var vpi = Parameters.NodeConnectionInformations[0].InVpi;
-            var vci = Parameters.NodeConnectionInformations[0].InVci;
-
-            BeginClientNodePictureBox.Parameters.ClientTable.Add(new ClientTableRow(clientName, portNumber, vpi, vci));
-        }
 
         public void MarkAsSelected() {
             Links.ForEach(link => link.MarkAsSelected());
@@ -65,11 +45,19 @@ namespace NetworkEmulation.editor.element {
         }
 
         public void MarkAsOnline() {
-            Links.ForEach(link => link.MarkAsOnline());
+            Links.FindAll(
+                link =>
+                    !(link.BeginNodePictureBox is ClientNodePictureBox) &&
+                    !(link.EndNodePictureBox is ClientNodePictureBox)).ForEach(
+                link => link.MarkAsOnline());
         }
 
         public void MarkAsOffline() {
-            Links.ForEach(link => link.MarkAsOffline());
+            Links.FindAll(
+                link =>
+                    !(link.BeginNodePictureBox is ClientNodePictureBox) &&
+                    !(link.EndNodePictureBox is ClientNodePictureBox)).ForEach(
+                link => link.MarkAsOffline());
         }
 
         public XmlSchema GetSchema() {
@@ -90,5 +78,21 @@ namespace NetworkEmulation.editor.element {
         }
 
         public UniqueId Id { get; private set; }
+
+        public void Add(Link link) {
+            Links.Add(link);
+            Parameters.LinksIds.Add(link.Id);
+
+            link.MarkAsSelected();
+        }
+
+        public void FillClientTable() {
+            var clientName = EndClientNodePictureBox.Parameters.ClientName;
+            var portNumber = Parameters.NodeConnectionInformations[0].InPortNumber;
+            var vpi = Parameters.NodeConnectionInformations[0].InVpi;
+            var vci = Parameters.NodeConnectionInformations[0].InVci;
+
+            BeginClientNodePictureBox.Parameters.ClientTable.Add(new ClientTableRow(clientName, portNumber, vpi, vci));
+        }
     }
 }

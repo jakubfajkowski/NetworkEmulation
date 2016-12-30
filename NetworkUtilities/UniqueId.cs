@@ -2,17 +2,18 @@
 using System.Xml.Serialization;
 
 namespace NetworkUtilities {
-    [Serializable, XmlRoot]
+    [Serializable]
+    [XmlRoot]
     public class UniqueId {
-        [XmlAttribute]
-        public string Value { get; set; }
-        
         private UniqueId() {
         }
 
         public UniqueId(string value) {
             Value = value;
         }
+
+        [XmlAttribute]
+        public string Value { get; set; }
 
         public static UniqueId Generate() {
             return new UniqueId {
@@ -25,7 +26,7 @@ namespace NetworkUtilities {
         }
 
         public override bool Equals(object obj) {
-            if (obj == null || obj.GetType() != typeof(UniqueId)) return false;
+            if ((obj == null) || (obj.GetType() != typeof(UniqueId))) return false;
             return Value.Equals(obj.ToString());
         }
 

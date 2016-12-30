@@ -63,7 +63,7 @@ namespace NetworkUtilities {
 
         public static T Deserialize<T>(XmlReader reader) {
             var xml = new System.Xml.Serialization.XmlSerializer(typeof(T));
-            var result =  (T) xml.Deserialize(reader) ;
+            var result = (T) xml.Deserialize(reader);
             return result;
         }
     }

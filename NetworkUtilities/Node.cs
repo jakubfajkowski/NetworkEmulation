@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
@@ -7,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace NetworkUtilities {
     public class Node {
-        protected CancellationTokenSource cts = new CancellationTokenSource();
+        public delegate void MessageHandler(object sender, string text);
+
         private TcpListener _cloudTcpListener;
         private TcpClient _nodeTcpClient;
         private bool _online;
         protected int CableCloudListeningPort;
-        public int CableCloudDataPort { get; protected set; }
+        protected CancellationTokenSource cts = new CancellationTokenSource();
         protected IPAddress IpAddress;
 
         public Node(string ipAddress, int cableCloudListeningPort, int cableCloudDataPort) {
@@ -22,11 +24,19 @@ namespace NetworkUtilities {
             Initialize();
         }
 
+        public int CableCloudDataPort { get; protected set; }
+
 
         private void Initialize() {
             _cloudTcpListener = CreateTcpListener(IpAddress, CableCloudDataPort);
             ListenForConnectRequest(_cloudTcpListener);
             ConnectToCloud();
+        }
+
+        public event MessageHandler OnUpdateState;
+
+        protected void UpdateState(string state) {
+            OnUpdateState?.Invoke(this, state);
         }
 
         protected TcpListener CreateTcpListener(IPAddress ipAddress, int port) {
@@ -51,7 +61,7 @@ namespace NetworkUtilities {
             });
         }
 
-        private async void ListenForNodeMessages(CancellationToken ct) { 
+        private async void ListenForNodeMessages(CancellationToken ct) {
             using (var ns = _nodeTcpClient.GetStream()) {
                 var buffer = new byte[CableCloudMessage.MaxByteBufferSize];
 
@@ -60,25 +70,29 @@ namespace NetworkUtilities {
                     if (bytesRead <= 0)
                         break;
 
-                    HandleMessage(CableCloudMessage.Deserialize(buffer));
+                    Recieve(CableCloudMessage.Deserialize(buffer));
                 }
             }
         }
 
-        protected virtual void HandleMessage(CableCloudMessage cableCloudMessage) {
+        protected virtual void Recieve(CableCloudMessage cableCloudMessage) {
             Debug.WriteLine("Recieved: " + cableCloudMessage);
         }
 
 
-        public void Send(byte[] data) {
-            Task.Run(() => {
-                try {
-                    _nodeTcpClient.GetStream().Write(data, 0, data.Length);
-                }
-                catch {
-                    Debug.WriteLine("Sending ERROR!");
-                }
-            });
+        protected void Send(CableCloudMessage cableCloudMessage) {
+            try {
+                var data = cableCloudMessage.Serialize();
+                _nodeTcpClient.GetStream().Write(data, 0, data.Length);
+            }
+            catch {
+                Debug.WriteLine("Sending ERROR!");
+            }
+        }
+
+        public List<AtmCell> AtmCells(CableCloudMessage cableCloudMessage) {
+            var atmCells = BinarySerializer.Deserialize(cableCloudMessage.Data) as List<AtmCell>;
+            return atmCells?.FindAll(cell => cell.Valid());
         }
 
         private void ConnectToCloud() {

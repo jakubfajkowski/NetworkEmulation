@@ -36,7 +36,7 @@ namespace NetworkUtilities {
                     atmCells.Add(new AtmCell(vpi, vci, buffer));
                 }
                 else
-                // gdy długość wiadomości jest mniejsza od 48 bitów, komórka jest wypełniana '0' na pozostałych miejscach
+                    // gdy długość wiadomości jest mniejsza od 48 bitów, komórka jest wypełniana '0' na pozostałych miejscach
                 {
                     Buffer.BlockCopy(source, i, buffer, 0, source.Length - i);
                     atmCells.Add(new AtmCell(vpi, vci, buffer));

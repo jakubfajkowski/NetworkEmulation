@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
 
@@ -12,10 +13,12 @@ namespace NetworkUtilitiesTests {
             CableCloudMessage.MaxAtmCellsNumber = _random.Next(0, 10000);
             var expectedBytesLength = CableCloudMessage.MaxByteBufferSize;
 
-            var cableCloudMessage = new CableCloudMessage(100);
-            cableCloudMessage.Fill();
+            var atmCells = new List<AtmCell>();
+            for (var i = 0; i < CableCloudMessage.MaxAtmCellsNumber; i++) atmCells.Add(new AtmCell());
 
-            var actualBytesLength = BinarySerializer.Serialize(cableCloudMessage).Length;
+            var cableCloudMessage = new CableCloudMessage(100, atmCells);
+
+            var actualBytesLength = cableCloudMessage.Serialize().Length;
 
             Assert.AreEqual(expectedBytesLength, actualBytesLength);
         }
@@ -23,19 +26,6 @@ namespace NetworkUtilitiesTests {
         [TestMethod]
         public void ManyStaticFieldsSettersTest() {
             for (var i = 0; i < 100; i++) StaticFieldsSettersTest();
-        }
-
-        [TestMethod]
-        public void GetAtmCellsTest() {
-            CableCloudMessage.MaxAtmCellsNumber = _random.Next(0, 10000);
-            var cableCloudMessage = new CableCloudMessage(100);
-            var expected = new AtmCell(1, 1, new byte[48]);
-            cableCloudMessage.Add(expected);
-            cableCloudMessage.Fill();
-
-            var actual = cableCloudMessage.AtmCells[0];
-            Assert.AreEqual(1, cableCloudMessage.AtmCells.Count);
-            Assert.AreEqual(expected, actual);
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkEmulation;
 using NetworkEmulation.network;
 using NetworkUtilities;
 
@@ -82,12 +81,12 @@ namespace NetworkEmulationTest {
 
             for (var i = 0; i < _bytesToSend.Length; i++) Assert.AreEqual(_bytesToSend[i], _bytesRecieved[i]);
         }
-        
-        private static CableCloudMessage CreateCableCloudMessage(int linkNumber, int atmCellsNumber) {
-            var cableCloudMessage = new CableCloudMessage(linkNumber);
-            for (var i = 0; i < atmCellsNumber; i++) cableCloudMessage.Add(new AtmCell(1, 1, new byte[48]));
 
-            return cableCloudMessage;
+        private static CableCloudMessage CreateCableCloudMessage(int linkNumber, int atmCellsNumber) {
+            var atmCells = new List<AtmCell>();
+            for (var i = 0; i < atmCellsNumber; i++) atmCells.Add(new AtmCell(1, 1, new byte[48]));
+
+            return new CableCloudMessage(1, atmCells);
         }
 
         private SocketNodePortPair RandomSocketNodePortPair() {

@@ -5,7 +5,6 @@ using NetworkEmulation.network;
 using NetworkEmulation.network.element;
 using NetworkUtilities;
 using NetworkUtilities.element;
-using UniqueId = NetworkUtilities.UniqueId;
 
 namespace NetworkEmulationTest {
     [TestClass]
@@ -63,8 +62,8 @@ namespace NetworkEmulationTest {
                 Parameters = new LinkSerializableParameters {
                     BeginNodePictureBoxId = UniqueId.Generate(),
                     EndNodePictureBoxId = UniqueId.Generate(),
-                    InputNodePortPair = new SocketNodePortPair(3,4),
-                    OutputNodePortPair = new SocketNodePortPair(5,6)
+                    InputNodePortPair = new SocketNodePortPair(3, 4),
+                    OutputNodePortPair = new SocketNodePortPair(5, 6)
                 }
             };
 
@@ -75,7 +74,7 @@ namespace NetworkEmulationTest {
         }
 
         [TestMethod]
-        public void SerializeConnection() { 
+        public void SerializeConnection() {
             var connection = new Connection {
                 Parameters = new ConnectionSerializableParameters {
                     LinksIds = new List<UniqueId>(new[] {UniqueId.Generate(), UniqueId.Generate(), UniqueId.Generate()})

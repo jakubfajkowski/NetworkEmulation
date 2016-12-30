@@ -1,34 +1,25 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using NetworkUtilities;
 using NetworkUtilities.element;
 
 namespace ClientNode {
     public class ClientNode : Node {
-        public delegate void MessageHandler(object sender, string text);
+        public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
 
-        public ClientNode(ClientNodeSerializableParameters parameters) : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort) {
+        public ClientNode(ClientNodeSerializableParameters parameters)
+            : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort) {
+            CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             ClientName = parameters.ClientName;
         }
 
         public string ClientName { get; private set; }
-        public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
-
-        public event MessageHandler OnUpdateState;
         public event MessageHandler OnMessageRecieved;
         public event MessageHandler OnNewClientTableRow;
 
         public void ReadClientTable(ClientNodeSerializableParameters parameters) {
-            if (parameters.ClientTable != null) {
-                foreach (var client in parameters.ClientTable) {
-                    AddClient(client);
-                }
-            }
-        }
-
-        protected void UpdateState(string state) {
-            OnUpdateState?.Invoke(this, state);
+            if (parameters.ClientTable != null) foreach (var client in parameters.ClientTable) AddClient(client);
         }
 
         protected void MessageRecieved(string message) {
@@ -62,18 +53,39 @@ namespace ClientNode {
             var vpi = clientTableRow.Vpi;
             var portNumber = clientTableRow.PortNumber;
 
-            var cableCloudMessages = CableCloudMessage.Generate(portNumber, vpi, vci, message);
+            var cableCloudMessages = Generate(portNumber, vpi, vci, message);
 
             foreach (var cableCloudMessage in cableCloudMessages) {
-                Send(cableCloudMessage.Serialize());
-                UpdateState("Sent: " + cableCloudMessage.AtmCells.Count + " ATMCells.");
-                Thread.Sleep(100);
+                Send(cableCloudMessage);
+                UpdateState("Sent: " + AtmCells(cableCloudMessage).Count + " ATMCells.");
+                Thread.Sleep(500);
             }
         }
 
-        protected override void HandleMessage(CableCloudMessage cableCloudMessage) {
-            MessageRecieved(cableCloudMessage.ToString());
-            UpdateState("Recieved: " + cableCloudMessage.AtmCells.Count + " ATMCells.");
+
+        public static List<CableCloudMessage> Generate(int portNumber, int vpi, int vci, string message) {
+            var atmCells = AtmCell.Generate(vpi, vci, message);
+            var cableCloudMessages = new List<CableCloudMessage>();
+
+            while (atmCells.Count >= CableCloudMessage.MaxAtmCellsNumber) {
+                var atmCellsPart = atmCells.GetRange(0, CableCloudMessage.MaxAtmCellsNumber);
+                atmCells.RemoveRange(0, CableCloudMessage.MaxAtmCellsNumber);
+                cableCloudMessages.Add(new CableCloudMessage(portNumber, atmCellsPart));
+            }
+            cableCloudMessages.Add(new CableCloudMessage(portNumber, atmCells));
+
+            return cableCloudMessages;
+        }
+
+        public string ToString(CableCloudMessage cableCloudMessage) {
+            var sb = new StringBuilder();
+            foreach (var cell in AtmCells(cableCloudMessage)) sb.Append(Encoding.UTF8.GetString(cell.Data));
+            return sb.ToString();
+        }
+
+        protected override void Recieve(CableCloudMessage cableCloudMessage) {
+            MessageRecieved(ToString(cableCloudMessage));
+            UpdateState("Recieved: " + AtmCells(cableCloudMessage).Count + " ATMCells.");
         }
     }
 }

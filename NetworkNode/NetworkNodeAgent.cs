@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -7,19 +6,18 @@ using System.Threading.Tasks;
 
 namespace NetworkNode {
     public class NetworkNodeAgent {
-        public static int NmsPort { private get; set; } = 6666;
         private const int SleepTimeKeepAlive = 500;
+
+        private readonly CommutationTable _commutationTable;
+
+        private readonly UdpClient _listenUdpClient;
         private CommutationMatrix _commutationMatrix;
+        private IPEndPoint _ipEndpoint;
         private NetworkNode _networkNode;
         private bool _timeToQuit;
 
-        private readonly CommutationTable _commutationTable;
-        private IPEndPoint _ipEndpoint;
-
-        private readonly UdpClient _listenUdpClient;
-        public int ListenUdpPort;
-
         private UdpClient _udpClient;
+        public int ListenUdpPort;
 
 
         public NetworkNodeAgent(int port, NetworkNode networkNode) {
@@ -35,22 +33,22 @@ namespace NetworkNode {
             ConnectToNms();
         }
 
+        public static int NmsPort { private get; set; } = 6666;
+
         private void ConnectToNms() {
             _udpClient = new UdpClient();
-            _ipEndpoint = new IPEndPoint(IPAddress.Loopback, NmsPort);    
+            _ipEndpoint = new IPEndPoint(IPAddress.Loopback, NmsPort);
         }
 
-        public void startThread()
-        {
+        public void startThread() {
             // Wiadomość, że węzeł wstał
-            SendToNms(Encoding.UTF8.GetBytes("networkNodeStart " + ListenUdpPort));   
+            SendToNms(Encoding.UTF8.GetBytes("networkNodeStart " + ListenUdpPort));
             _timeToQuit = false;
             var keepAliveThread = new Thread(KeepAliveThreadRun);
             keepAliveThread.Start();
         }
 
-        public void shutdown()
-        {
+        public void shutdown() {
             _timeToQuit = true;
         }
 
@@ -73,7 +71,7 @@ namespace NetworkNode {
         private void ListenForConnectionRequests() {
             Task.Run(async () => {
                 using (_listenUdpClient) {
-                    while (true) {                      
+                    while (true) {
                         var receivedData = await _listenUdpClient.ReceiveAsync();
 
                         var message = Encoding.UTF8.GetString(receivedData.Buffer);
@@ -84,7 +82,7 @@ namespace NetworkNode {
                                 AddConnectionToTable(int.Parse(messageSplit[1]), int.Parse(messageSplit[2]),
                                     int.Parse(messageSplit[3]),
                                     int.Parse(messageSplit[4]), int.Parse(messageSplit[5]), int.Parse(messageSplit[6]));
-                                break;                           
+                                break;
                         }
                     }
                 }
@@ -93,17 +91,22 @@ namespace NetworkNode {
 
 
         /* Wywołuje metodę tabeli połączeń, która dodaje połączenie */
+
         public void AddConnectionToTable(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci, int linkNumber) {
             _commutationTable.AddConnection(inVpi, inVci, inPortNumber, outVpi, outVci, linkNumber);
         }
 
         /* Wywołuje metodę tabeli połączeń, która usuwa połączenie */
+
         public bool RemoveConnectionFromTable(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci,
             int outPortNumber) {
-            return _commutationTable.RemoveConnection(new CommutationTableRow(inVpi, inVci, inPortNumber, outVpi, outVci, outPortNumber));
+            return
+                _commutationTable.RemoveConnection(new CommutationTableRow(inVpi, inVci, inPortNumber, outVpi, outVci,
+                    outPortNumber));
         }
 
         /* Getter potrzebny do tego, żeby przekazać obiekt do pola komutacyjnego (CommutationMatrix) */
+
         public CommutationTable GetCommutationTable() {
             return _commutationTable;
         }

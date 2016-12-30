@@ -12,12 +12,12 @@ namespace NetworkEmulation.editor {
 
         private Point _anchor;
 
-        public int CableCloudDataPort { get; protected set; }
-
         protected NodePictureBox() {
             Id = UniqueId.Generate();
             CableCloudDataPort = PortRandomizer.RandomFreePort();
         }
+
+        public int CableCloudDataPort { get; protected set; }
 
         public new Point Location {
             get { return base.Location; }

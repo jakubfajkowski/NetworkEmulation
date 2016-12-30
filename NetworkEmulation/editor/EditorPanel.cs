@@ -20,12 +20,20 @@ namespace NetworkEmulation.editor {
 
     [Serializable]
     public partial class EditorPanel : UserControl, IXmlSerializable {
-        public List<Connection> _addedConnections { get; private set; } = new List<Connection>();
-        public List<Link> _addedLinks { get; private set; }  = new List<Link>();
-        public List<NodePictureBox> _addedNodePictureBoxes { get; private set; }  = new List<NodePictureBox>();
-
         private Connection _currentConnection;
         private NodePictureBox _currentNodePictureBox;
+
+        private bool _handlingAddingConnection;
+        private Mode _mode = Mode.Move;
+
+        public EditorPanel() {
+            InitializeComponent();
+        }
+
+        public List<Connection> _addedConnections { get; } = new List<Connection>();
+        public List<Link> _addedLinks { get; } = new List<Link>();
+        public List<NodePictureBox> _addedNodePictureBoxes { get; } = new List<NodePictureBox>();
+
         private NodePictureBox CurrentNodePictureBox {
             get { return _currentNodePictureBox; }
             set {
@@ -37,8 +45,6 @@ namespace NetworkEmulation.editor {
             }
         }
 
-        private bool _handlingAddingConnection;
-        private Mode _mode = Mode.Move;
         private bool HandlingAddingConnection {
             get { return _handlingAddingConnection; }
             set {
@@ -46,6 +52,7 @@ namespace NetworkEmulation.editor {
                 _currentConnection = _handlingAddingConnection ? new Connection() : null;
             }
         }
+
         public Mode Mode {
             private get { return _mode; }
             set {
@@ -55,10 +62,6 @@ namespace NetworkEmulation.editor {
                 _currentConnection = null;
                 _handlingAddingConnection = false;
             }
-        }
-
-        public EditorPanel() {
-            InitializeComponent();
         }
 
         private void Select(IMarkable markable) {
@@ -116,7 +119,8 @@ namespace NetworkEmulation.editor {
 
                         var networkNodePictureBox = CurrentNodePictureBox as NetworkNodePictureBox;
                         if (networkNodePictureBox != null)
-                            new ConnectionForm(_currentConnection, networkNodePictureBox.Parameters.NetworkManagmentSystemDataPort).ShowDialog(this);
+                            new ConnectionForm(_currentConnection,
+                                networkNodePictureBox.Parameters.NetworkManagmentSystemDataPort).ShowDialog(this);
 
                         HandleAddingConnection(previousNodePictureBox, CurrentNodePictureBox);
                     }
@@ -175,7 +179,7 @@ namespace NetworkEmulation.editor {
 
         private void EndHandlingAddingConnection() {
             Add(_currentConnection);
-            _currentConnection.EndClientNodePictureBox= CurrentNodePictureBox as ClientNodePictureBox;
+            _currentConnection.EndClientNodePictureBox = CurrentNodePictureBox as ClientNodePictureBox;
             _currentConnection.FillClientTable();
             _handlingAddingConnection = false;
         }
@@ -299,12 +303,12 @@ namespace NetworkEmulation.editor {
 
             var beginNodePictureBoxId = connection.Parameters.BeginClientNodePictureBoxId;
             var endNodePictureBoxId = connection.Parameters.EndClientNodePictureBoxId;
-            
+
             var beginNodePictureBox = _addedNodePictureBoxes.Find(box => box.Id.Equals(beginNodePictureBoxId));
             var endNodePictureBox = _addedNodePictureBoxes.Find(box => box.Id.Equals(endNodePictureBoxId));
             connection.BeginClientNodePictureBox = beginNodePictureBox as ClientNodePictureBox;
             connection.EndClientNodePictureBox = endNodePictureBox as ClientNodePictureBox;
-           }
+        }
 
         #endregion
     }

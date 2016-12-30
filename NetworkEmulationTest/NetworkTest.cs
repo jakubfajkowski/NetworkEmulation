@@ -14,6 +14,7 @@ namespace NetworkEmulationTest {
         [TestMethod]
         public void CreateBasicNetworkTest() {
             var localhost = "127.0.0.1";
+            var maxAtmCellsInCableCloudMessage = 100;
 
             var portA = 1;
             var port1 = 2;
@@ -30,25 +31,28 @@ namespace NetworkEmulationTest {
             Thread.Sleep(1000);
 
             var clientNodeA = new ClientNode.ClientNode(new ClientNodeSerializableParameters {
+                MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "A",
-                ClientTable = new List<ClientTableRow>(new []{new ClientTableRow("B", portA, 1, 1)}),
+                ClientTable = new List<ClientTableRow>(new[] {new ClientTableRow("B", portA, 1, 1)}),
                 CableCloudListeningPort = 10000,
                 IpAddress = localhost,
                 CableCloudDataPort = PortRandomizer.RandomFreePort()
             });
-            clientNodeA.OnMessageRecieved += (sender, state) => Console.WriteLine(state);
+            //clientNodeA.OnMessageRecieved += (sender, state) => Console.WriteLine(state);
             clientNodeA.OnUpdateState += (sender, state) => Console.WriteLine(state);
 
             var clientNodeB = new ClientNode.ClientNode(new ClientNodeSerializableParameters {
+                MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "B",
                 CableCloudListeningPort = 10000,
                 IpAddress = localhost,
                 CableCloudDataPort = PortRandomizer.RandomFreePort()
             });
-            clientNodeB.OnMessageRecieved += (sender, state) => Console.WriteLine(state);
+            //clientNodeB.OnMessageRecieved += (sender, state) => Console.WriteLine(state);
             clientNodeB.OnUpdateState += (sender, state) => Console.WriteLine(state);
 
             var networkNode1 = new NetworkNode.NetworkNode(new NetworkNodeSerializableParameters {
+                MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
                 IpAddress = localhost,
@@ -56,7 +60,9 @@ namespace NetworkEmulationTest {
                 NetworkManagmentSystemListeningPort = 6666,
                 NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             });
-            var networkNode2 = new NetworkNode.NetworkNode(new NetworkNodeSerializableParameters{
+
+            var networkNode2 = new NetworkNode.NetworkNode(new NetworkNodeSerializableParameters {
+                MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
                 IpAddress = localhost,
@@ -85,20 +91,18 @@ namespace NetworkEmulationTest {
 
             clientNodeA.AddClient(new ClientTableRow("B", portA, 1, 1));
 
-            StringBuilder sb = new StringBuilder();
+            //var sb = new StringBuilder();
 
-            for (int i = 0; i < 500; i++) {
-                sb.Append("0123456789");
-            }
+            //for (var i = 0; i < 5000; i++) sb.Append("0123456789");
 
-            clientNodeA.SendMessage(sb.ToString(), "B");
+            clientNodeA.SendMessage("Message", "B");
 
             Thread.Sleep(1000);
         }
 
         [TestMethod]
         public void InitializeClientNodeTest() {
-            ClientNodePictureBox clientNodePB= new ClientNodePictureBox() {
+            var clientNodePB = new ClientNodePictureBox {
                 Parameters = new ClientNodeSerializableParameters {
                     ClientName = "Janusz",
                     ClientTable =

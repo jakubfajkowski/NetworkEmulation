@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using NetworkUtilities;
 
@@ -8,11 +7,11 @@ namespace NetworkNode {
         // Tablica połączeń in/out ta sama, która się znajduje w NetworkNodeAgent
         private readonly CommutationTable _commutationTable;
 
-        private bool _commuted;
-
         private readonly List<Port> _inputPorts;
-        private Thread _matrixThread;
         public readonly List<Port> OutputPorts;
+
+        private bool _commuted;
+        private Thread _matrixThread;
 
         private bool _timeToQuit;
 
@@ -22,37 +21,31 @@ namespace NetworkNode {
             _inputPorts = new List<Port>();
             OutputPorts = new List<Port>();
 
-            for (int i = 1; i <= portNumber; i++) 
-            {
+            for (var i = 1; i <= portNumber; i++) {
                 CreateInputPort(i);
                 CreateOutputPort(i);
-            } 
+            }
         }
 
-        public void startThread()
-        {
+        public void startThread() {
             _timeToQuit = false;
             _matrixThread = new Thread(RunThread);
             _matrixThread.Start();
         }
 
-        public void shutdown()
-        {
+        public void shutdown() {
             _timeToQuit = true;
-            lock (_matrixThread)
-            {
+            lock (_matrixThread) {
                 Monitor.Pulse(_matrixThread);
             }
         }
 
 
         private void RunThread() {
-            
             while (!_timeToQuit) {
-                
                 _commuted = false;
 
-                foreach (var inPort in _inputPorts) { 
+                foreach (var inPort in _inputPorts) {
                     var cell = inPort.GetAtmCell();
                     if (cell != null) {
                         Commute(cell, inPort.GetPortNumber());
@@ -83,20 +76,20 @@ namespace NetworkNode {
 
 
         /* Metoda zmieniająca VPI, VCI na podstawie tabeli */
+
         public bool Commute(AtmCell cell, int inPortNumber) {
             var row = _commutationTable.FindRow(cell.Vpi, cell.Vci, inPortNumber);
-            if (row != null)
-            {
-                Console.Write("["+DateTime.Now + "] Changed inVpi: " + cell.Vpi + " inVci: "+cell.Vci);
+            if (row != null) {
+                //Console.Write("["+DateTime.Now + "] Changed inVpi: " + cell.Vpi + " inVci: "+cell.Vci);
                 cell.Vpi = row.GetOutVpi();
                 if (row.GetOutVci() != -1)
                     cell.Vci = row.GetOutVci();
 
-                Console.WriteLine(" outVpi: " + cell.Vpi + " outVci: " + cell.Vci);
+                //Console.WriteLine(" outVpi: " + cell.Vpi + " outVci: " + cell.Vci);
                 return AddAtmCellToOutputPort(cell, row.GetOutPort());
             }
             //else
-               // Console.WriteLine("WYWALILO BLAD");
+            // Console.WriteLine("WYWALILO BLAD");
             return false;
         }
 
@@ -122,7 +115,7 @@ namespace NetworkNode {
             foreach (var port in ports)
                 if (port.GetPortNumber() == portNumber)
                     isFree = false;
-            if (isFree) 
+            if (isFree)
                 ports.Add(new Port(portNumber));
 
             return isFree;

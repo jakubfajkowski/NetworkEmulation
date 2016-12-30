@@ -25,7 +25,7 @@ namespace NetworkEmulation.editor.element {
                 InPortNumber = int.Parse(textBoxInputPort.Text),
                 OutVpi = int.Parse(textBoxOutputVpi.Text),
                 OutVci = int.Parse(textBoxOutputVci.Text),
-                OutPortNumber = int.Parse(textBoxOutputPort.Text),
+                OutPortNumber = int.Parse(textBoxOutputPort.Text)
             });
 
             Close();
