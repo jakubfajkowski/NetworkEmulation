@@ -1,4 +1,4 @@
-﻿using NetworkEmulation.editor;
+﻿using NetworkEmulation.Editor;
 
 namespace NetworkEmulation {
     partial class MainForm {
@@ -44,7 +44,7 @@ namespace NetworkEmulation {
             this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cableCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkManagmentSystemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editorPanel = new NetworkEmulation.editor.EditorPanel();
+            this.editorPanel = new NetworkEmulation.Editor.EditorPanel();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 

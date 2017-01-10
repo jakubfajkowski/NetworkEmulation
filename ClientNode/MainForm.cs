@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using NetworkUtilities;
-using NetworkUtilities.element;
+using NetworkUtilities.Element;
+using NetworkUtilities.Serialization;
 
 namespace ClientNode {
     public partial class MainForm : Form {
@@ -11,8 +12,8 @@ namespace ClientNode {
             InitializeComponent();
             var joinedArgs = string.Join(" ", args);
             var param =
-                (ClientNodeSerializableParameters)
-                XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeSerializableParameters));
+                (ClientNodeModel)
+                XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeModel));
             _client = new ClientNode(param);
 
             Text = $"Client Node ({_client.ClientName})";

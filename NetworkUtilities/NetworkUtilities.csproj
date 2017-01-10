@@ -45,18 +45,28 @@
     <Compile Include="AtmCell.cs" />
     <Compile Include="CableCloudMessage.cs" />
     <Compile Include="ClientTableRow.cs" />
-    <Compile Include="ISerializable.cs" />
+    <Compile Include="ControlPlane\CallingPartyCallController.cs" />
+    <Compile Include="ControlPlane\ConnectionController.cs" />
+    <Compile Include="ControlPlane\HierarchicalPathComputationServer.cs" />
+    <Compile Include="ControlPlane\LinkResourceManager.cs" />
+    <Compile Include="ControlPlane\NetworkCallController.cs" />
+    <Compile Include="ControlPlane\RoutingController.cs" />
+    <Compile Include="ControlPlane\SignallingMessage.cs" />
+    <Compile Include="ControlPlane\StepByStepPathComputationServer.cs" />
+    <Compile Include="ControlPlane\SubnetworkPoint.cs" />
+    <Compile Include="Serialization\ISerializable.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="Node.cs" />
-    <Compile Include="element\ClientNodeSerializableParameters.cs" />
-    <Compile Include="element\NetworkNodeSerializableParameters.cs" />
-    <Compile Include="element\NodeSerializableParameters.cs" />
+    <Compile Include="Element\ClientNodeModel.cs" />
+    <Compile Include="Element\NetworkNodeModel.cs" />
+    <Compile Include="Element\NodeModel.cs" />
     <Compile Include="PortRandomizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BinarySerializer.cs" />
+    <Compile Include="Serialization\BinarySerializer.cs" />
     <Compile Include="UniqueId.cs" />
-    <Compile Include="XmlSerializer.cs" />
+    <Compile Include="Serialization\XmlSerializer.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

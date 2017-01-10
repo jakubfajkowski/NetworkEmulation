@@ -1,4 +1,4 @@
-﻿namespace NetworkEmulation.log {
+﻿namespace NetworkEmulation.Log {
     public class LogObject {
         public delegate void StateUpdateHandler(object sender, string state);
 

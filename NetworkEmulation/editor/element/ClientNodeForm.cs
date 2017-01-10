@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
 using NetworkEmulation.Properties;
-using NetworkUtilities.element;
+using NetworkUtilities.Element;
 
-namespace NetworkEmulation.editor.element {
+namespace NetworkEmulation.Editor.Element {
     public partial class ClientNodeForm : Form {
-        private readonly ClientNodeSerializableParameters _parameters;
+        private readonly ClientNodeModel _parameters;
 
         public ClientNodeForm(ClientNodePictureBox clientNodePictureBox) {
             InitializeComponent();

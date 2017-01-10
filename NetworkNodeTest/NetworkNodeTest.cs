@@ -1,15 +1,16 @@
 ﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkEmulation.network;
+using NetworkEmulation.Network;
 using NetworkUtilities;
-using NetworkUtilities.element;
+using NetworkUtilities.Element;
+using NetworkUtilities.Serialization;
 
 namespace NetworkNodeTest {
     [TestClass]
     public class NetworkNodeTest {
         [TestMethod]
         public void NetworkNodeSetupTest() {
-            var networkNodeSerializableParameters = new NetworkNodeSerializableParameters {
+            var networkNodeSerializableParameters = new NetworkNodeModel {
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
                 IpAddress = "127.0.0.1",
@@ -25,15 +26,15 @@ namespace NetworkNodeTest {
             var joinedArgs = string.Join(" ", args);
 
             var parameters =
-                (NetworkNodeSerializableParameters)
-                XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeSerializableParameters));
+                (NetworkNodeModel)
+                XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeModel));
 
             var networkNode = new NetworkNode.NetworkNode(parameters);
         }
 
         [TestMethod]
         public void NMSKeepAlive() {
-            var networkNodeSerializableParameters = new NetworkNodeSerializableParameters {
+            var networkNodeSerializableParameters = new NetworkNodeModel {
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
                 IpAddress = "127.0.0.1",

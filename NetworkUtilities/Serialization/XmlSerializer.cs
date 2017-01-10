@@ -3,7 +3,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace NetworkUtilities {
+namespace NetworkUtilities.Serialization {
     public static class XmlSerializer {
         private const string Quota = "<QUOTA>";
 

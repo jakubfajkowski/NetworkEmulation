@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace NetworkEmulation.editor {
+namespace NetworkEmulation.Editor {
     public interface IInitializable {
         Process Initialize();
     }

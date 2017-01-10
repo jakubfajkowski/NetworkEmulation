@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
-using NetworkUtilities.element;
+using NetworkUtilities.Element;
 
 namespace ClientNodeTest {
     [TestClass]
     public class ClientNodeTest {
         [TestMethod]
         public void AddClientTest() {
-            var parameters = new ClientNodeSerializableParameters {
+            var parameters = new ClientNodeModel {
                 MaxAtmCellsNumberInCableCloudMessage = 100,
                 ClientName = "Janusz",
                 ClientTable =

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace NetworkUtilities {
+namespace NetworkUtilities.Serialization {
     public static class BinarySerializer {
         public static byte[] Serialize(object anySerializableObject) {
             using (var memoryStream = new MemoryStream()) {

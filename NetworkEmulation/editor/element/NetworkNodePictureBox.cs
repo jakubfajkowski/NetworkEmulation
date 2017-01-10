@@ -2,18 +2,19 @@
 using System.Xml;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
-using NetworkUtilities.element;
+using NetworkUtilities.Element;
+using NetworkUtilities.Serialization;
 
-namespace NetworkEmulation.editor.element {
+namespace NetworkEmulation.Editor.Element {
     public class NetworkNodePictureBox : NodePictureBox {
         public NetworkNodePictureBox() {
             Image = Resources.NetworkNodeNotSelected;
-            Parameters = new NetworkNodeSerializableParameters();
+            Parameters = new NetworkNodeModel();
             Parameters.NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort();
             Parameters.CableCloudDataPort = CableCloudDataPort;
         }
 
-        public NetworkNodeSerializableParameters Parameters { get; set; }
+        public NetworkNodeModel Parameters { get; set; }
 
         public override Process Initialize() {
             var process = new Process {
@@ -50,7 +51,7 @@ namespace NetworkEmulation.editor.element {
         public override void ReadXml(XmlReader reader) {
             base.ReadXml(reader);
             reader.ReadStartElement(nameof(NetworkNodePictureBox));
-            Parameters = XmlSerializer.Deserialize<NetworkNodeSerializableParameters>(reader);
+            Parameters = XmlSerializer.Deserialize<NetworkNodeModel>(reader);
             reader.ReadEndElement();
         }
 

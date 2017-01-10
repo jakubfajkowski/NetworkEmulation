@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
-using NetworkEmulation.network.element;
+using NetworkEmulation.Network.Element;
 using NetworkUtilities;
+using NetworkUtilities.Serialization;
 using UniqueId = NetworkUtilities.UniqueId;
 
-namespace NetworkEmulation.editor.element {
+namespace NetworkEmulation.Editor.Element {
     public class Connection : IMarkable, ISerializable {
         private ClientNodePictureBox _beginClientNodePictureBox;
         private ClientNodePictureBox _endClientNodePictureBox;
@@ -13,7 +14,7 @@ namespace NetworkEmulation.editor.element {
         public Connection() {
             Id = UniqueId.Generate();
             Links = new List<Link>();
-            Parameters = new ConnectionSerializableParameters();
+            Parameters = new ConnectionModel();
         }
 
         public List<Link> Links { private get; set; }
@@ -34,7 +35,7 @@ namespace NetworkEmulation.editor.element {
             }
         }
 
-        public ConnectionSerializableParameters Parameters { get; set; }
+        public ConnectionModel Parameters { get; set; }
 
         public void MarkAsSelected() {
             Links.ForEach(link => link.MarkAsSelected());
@@ -68,7 +69,7 @@ namespace NetworkEmulation.editor.element {
             reader.MoveToContent();
             Id = new UniqueId(reader.GetAttribute("Id"));
             reader.ReadStartElement(nameof(Connection));
-            Parameters = XmlSerializer.Deserialize<ConnectionSerializableParameters>(reader);
+            Parameters = XmlSerializer.Deserialize<ConnectionModel>(reader);
             reader.ReadEndElement();
         }
 

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using NetworkEmulation.editor.element;
-using NetworkEmulation.log;
+using NetworkEmulation.Editor.Element;
+using NetworkEmulation.Log;
 using NetworkUtilities;
+using NetworkUtilities.Serialization;
 
-namespace NetworkEmulation.network {
+namespace NetworkEmulation.Network {
     public class CableCloud : LogObject {
         private readonly SerializableDictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
         private readonly SerializableDictionary<int, TcpClient> _nodesTcpClients;

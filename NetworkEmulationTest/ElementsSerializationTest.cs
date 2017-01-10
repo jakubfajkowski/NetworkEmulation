@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkEmulation.editor.element;
-using NetworkEmulation.network;
-using NetworkEmulation.network.element;
+using NetworkEmulation.Editor.Element;
+using NetworkEmulation.Network;
+using NetworkEmulation.Network.Element;
 using NetworkUtilities;
-using NetworkUtilities.element;
+using NetworkUtilities.Element;
+using NetworkUtilities.Serialization;
 
 namespace NetworkEmulationTest {
     [TestClass]
     public class ElementsSerializationTest {
         [TestMethod]
         public void SerializeNetworkNodeSerializableParametersTest() {
-            var networkNodeSerializableParameters = new NetworkNodeSerializableParameters {
+            var networkNodeSerializableParameters = new NetworkNodeModel {
                 IpAddress = "127.0.0.1",
                 CableCloudListeningPort = 10000,
                 NetworkManagmentSystemListeningPort = 6666,
@@ -23,7 +24,7 @@ namespace NetworkEmulationTest {
         [TestMethod]
         public void SerializeClientNodePictureBox() {
             var clientNodePictureBox = new ClientNodePictureBox {
-                Parameters = new ClientNodeSerializableParameters {
+                Parameters = new ClientNodeModel {
                     ClientName = "Janusz",
                     ClientTable =
                         new List<ClientTableRow>(new[]
@@ -42,7 +43,7 @@ namespace NetworkEmulationTest {
         [TestMethod]
         public void SerializeNetworkNodePictureBox() {
             var networkNodePictureBox = new NetworkNodePictureBox {
-                Parameters = new NetworkNodeSerializableParameters {
+                Parameters = new NetworkNodeModel {
                     CableCloudListeningPort = 10000,
                     IpAddress = "localhost",
                     NetworkManagmentSystemListeningPort = 6666,
@@ -59,7 +60,7 @@ namespace NetworkEmulationTest {
         [TestMethod]
         public void SerializeLink() {
             var link = new Link {
-                Parameters = new LinkSerializableParameters {
+                Parameters = new LinkModel {
                     BeginNodePictureBoxId = UniqueId.Generate(),
                     EndNodePictureBoxId = UniqueId.Generate(),
                     InputNodePortPair = new SocketNodePortPair(3, 4),
@@ -76,7 +77,7 @@ namespace NetworkEmulationTest {
         [TestMethod]
         public void SerializeConnection() {
             var connection = new Connection {
-                Parameters = new ConnectionSerializableParameters {
+                Parameters = new ConnectionModel {
                     LinksIds = new List<UniqueId>(new[] {UniqueId.Generate(), UniqueId.Generate(), UniqueId.Generate()})
                 }
             };

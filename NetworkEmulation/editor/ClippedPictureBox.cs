@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace NetworkEmulation.editor {
+namespace NetworkEmulation.Editor {
     public class ClippedPictureBox : PictureBox {
         public ClippedPictureBox() {
             SizeMode = PictureBoxSizeMode.AutoSize;

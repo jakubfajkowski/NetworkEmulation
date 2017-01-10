@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using NetworkEmulation.network;
+using NetworkEmulation.Network;
 
-namespace NetworkEmulation.editor.element {
+namespace NetworkEmulation.Editor.Element {
     public partial class LinkForm : Form {
         private readonly Link _link;
 

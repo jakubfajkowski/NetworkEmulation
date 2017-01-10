@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using NetworkEmulation.editor;
-using NetworkEmulation.editor.element;
-using NetworkEmulation.log;
+using NetworkEmulation.Editor;
+using NetworkEmulation.Editor.Element;
+using NetworkEmulation.Log;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
 
-namespace NetworkEmulation.network {
+namespace NetworkEmulation.Network {
     public class Simulation {
         private readonly CableCloud _cableCloud;
         private readonly List<Connection> _connections;

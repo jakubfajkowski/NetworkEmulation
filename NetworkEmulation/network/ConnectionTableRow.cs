@@ -1,4 +1,4 @@
-﻿namespace NetworkEmulation.network {
+﻿namespace NetworkEmulation.Network {
     public class ConnectionTableRow {
         public ConnectionTableRow(int node1, int node2, float capacity, float maxCapacity, int inputPort, int outputPort) {
             Node1InputPort = node1;

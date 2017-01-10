@@ -2,13 +2,13 @@
 using System.Text;
 using System.Threading;
 using NetworkUtilities;
-using NetworkUtilities.element;
+using NetworkUtilities.Element;
 
 namespace ClientNode {
     public class ClientNode : Node {
         public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
 
-        public ClientNode(ClientNodeSerializableParameters parameters)
+        public ClientNode(ClientNodeModel parameters)
             : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             ClientName = parameters.ClientName;
@@ -18,7 +18,7 @@ namespace ClientNode {
         public event MessageHandler OnMessageRecieved;
         public event MessageHandler OnNewClientTableRow;
 
-        public void ReadClientTable(ClientNodeSerializableParameters parameters) {
+        public void ReadClientTable(ClientNodeModel parameters) {
             if (parameters.ClientTable != null) foreach (var client in parameters.ClientTable) AddClient(client);
         }
 

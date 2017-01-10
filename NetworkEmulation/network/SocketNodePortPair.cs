@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace NetworkEmulation.network {
+namespace NetworkEmulation.Network {
     [XmlRoot]
     public class SocketNodePortPair {
         private SocketNodePortPair() {

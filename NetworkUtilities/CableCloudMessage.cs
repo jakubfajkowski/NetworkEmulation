@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NetworkUtilities.Serialization;
 
 namespace NetworkUtilities {
     [Serializable]

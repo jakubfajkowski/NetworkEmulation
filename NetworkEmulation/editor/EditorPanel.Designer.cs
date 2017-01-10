@@ -1,4 +1,4 @@
-﻿namespace NetworkEmulation.editor {
+﻿namespace NetworkEmulation.Editor {
     partial class EditorPanel {
         /// <summary> 
         /// Required designer variable.

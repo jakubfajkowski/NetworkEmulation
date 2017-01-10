@@ -5,10 +5,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NetworkEmulation.editor.element;
-using NetworkEmulation.log;
+using NetworkEmulation.Editor.Element;
+using NetworkEmulation.Log;
 
-namespace NetworkEmulation.network {
+namespace NetworkEmulation.Network {
     public class NetworkManagmentSystem : LogObject {
         private const int ListenUdpPort = 6666;
         private const int MaxTimeNotReceivingKeepAliveMessage = 2000;

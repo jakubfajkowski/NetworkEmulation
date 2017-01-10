@@ -4,9 +4,10 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using NetworkUtilities;
+using NetworkUtilities.Serialization;
 using UniqueId = NetworkUtilities.UniqueId;
 
-namespace NetworkEmulation.editor {
+namespace NetworkEmulation.Editor {
     public abstract class NodePictureBox : ClippedPictureBox, IMarkable, IInitializable, ISerializable {
         public delegate void NodeMovingHandler(object sender);
 

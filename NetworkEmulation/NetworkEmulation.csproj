@@ -47,64 +47,64 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="editor\EditorPanel.cs">
+    <Compile Include="Editor\EditorPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="editor\EditorPanel.Designer.cs">
+    <Compile Include="Editor\EditorPanel.Designer.cs">
       <DependentUpon>EditorPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="editor\element\ClientNodeForm.cs">
+    <Compile Include="Editor\Element\ClientNodeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="editor\element\ClientNodeForm.Designer.cs">
+    <Compile Include="Editor\Element\ClientNodeForm.Designer.cs">
       <DependentUpon>ClientNodeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="editor\element\Connection.cs" />
-    <Compile Include="editor\element\ConnectionForm.cs">
+    <Compile Include="Editor\Element\Connection.cs" />
+    <Compile Include="Editor\Element\ConnectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="editor\element\ConnectionForm.Designer.cs">
+    <Compile Include="Editor\Element\ConnectionForm.Designer.cs">
       <DependentUpon>ConnectionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="editor\element\LinkForm.cs">
+    <Compile Include="Editor\Element\LinkForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="editor\element\LinkForm.Designer.cs">
+    <Compile Include="Editor\Element\LinkForm.Designer.cs">
       <DependentUpon>LinkForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="editor\element\NetworkNodeForm.cs">
+    <Compile Include="Editor\Element\NetworkNodeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="editor\element\NetworkNodeForm.Designer.cs">
+    <Compile Include="Editor\Element\NetworkNodeForm.Designer.cs">
       <DependentUpon>NetworkNodeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="editor\IInitializable.cs" />
-    <Compile Include="editor\IMarkable.cs" />
-    <Compile Include="network\ConnectionTableRow.cs" />
-    <Compile Include="network\CableCloud.cs" />
-    <Compile Include="editor\ClippedPictureBox.cs">
+    <Compile Include="Editor\IInitializable.cs" />
+    <Compile Include="Editor\IMarkable.cs" />
+    <Compile Include="Network\ConnectionTableRow.cs" />
+    <Compile Include="Network\CableCloud.cs" />
+    <Compile Include="Editor\ClippedPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="editor\element\Link.cs">
+    <Compile Include="Editor\Element\Link.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="editor\element\Link.Designer.cs">
+    <Compile Include="Editor\Element\Link.Designer.cs">
       <DependentUpon>Link.cs</DependentUpon>
     </Compile>
-    <Compile Include="log\LogForm.cs">
+    <Compile Include="Log\LogForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="log\LogForm.Designer.cs">
+    <Compile Include="Log\LogForm.Designer.cs">
       <DependentUpon>LogForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="log\LogObject.cs" />
-    <Compile Include="network\element\ConnectionSerializableParameters.cs" />
-    <Compile Include="network\element\LinkSerializableParameters.cs" />
-    <Compile Include="network\NodeConnectionInformation.cs" />
-    <Compile Include="network\Simulation.cs" />
+    <Compile Include="Log\LogObject.cs" />
+    <Compile Include="Network\Element\ConnectionModel.cs" />
+    <Compile Include="Network\Element\LinkModel.cs" />
+    <Compile Include="Network\NodeConnectionInformation.cs" />
+    <Compile Include="Network\Simulation.cs" />
     <Compile Include="SerializableDictionary.cs" />
-    <Compile Include="network\SocketNodePortPair.cs" />
-    <Compile Include="editor\element\ClientNodePictureBox.cs">
+    <Compile Include="Network\SocketNodePortPair.cs" />
+    <Compile Include="Editor\Element\ClientNodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MainForm.cs">
@@ -113,31 +113,31 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="network\NetworkManagmentSystem.cs" />
-    <Compile Include="editor\element\NetworkNodePictureBox.cs">
+    <Compile Include="Network\NetworkManagmentSystem.cs" />
+    <Compile Include="Editor\Element\NetworkNodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="editor\NodePictureBox.cs">
+    <Compile Include="Editor\NodePictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="editor\EditorPanel.resx">
+    <EmbeddedResource Include="Editor\EditorPanel.resx">
       <DependentUpon>EditorPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="editor\element\ClientNodeForm.resx">
+    <EmbeddedResource Include="Editor\Element\ClientNodeForm.resx">
       <DependentUpon>ClientNodeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="editor\element\ConnectionForm.resx">
+    <EmbeddedResource Include="Editor\Element\ConnectionForm.resx">
       <DependentUpon>ConnectionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="editor\element\LinkForm.resx">
+    <EmbeddedResource Include="Editor\Element\LinkForm.resx">
       <DependentUpon>LinkForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="editor\element\NetworkNodeForm.resx">
+    <EmbeddedResource Include="Editor\Element\NetworkNodeForm.resx">
       <DependentUpon>NetworkNodeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="log\LogForm.resx">
+    <EmbeddedResource Include="Log\LogForm.resx">
       <DependentUpon>LogForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
@@ -173,15 +173,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="rsc\ClientNodeNotSelected.png" />
-    <Content Include="rsc\ClientNodeOffline.png" />
-    <Content Include="rsc\ClientNodeOnline.png" />
-    <Content Include="rsc\ClientNodeSelected.png" />
-    <Content Include="rsc\Delete.png" />
-    <Content Include="rsc\NetworkNodeNotSelected.png" />
-    <Content Include="rsc\NetworkNodeOffline.png" />
-    <Content Include="rsc\NetworkNodeOnline.png" />
-    <Content Include="rsc\NetworkNodeSelected.png" />
+    <None Include="Resources\ClientNodeBackup.png" />
+    <Content Include="Resources\ClientNodeNotSelected.png" />
+    <Content Include="Resources\ClientNodeOffline.png" />
+    <Content Include="Resources\ClientNodeOnline.png" />
+    <Content Include="Resources\ClientNodeSelected.png" />
+    <Content Include="Resources\Delete.png" />
+    <None Include="Resources\NetworkNodeBackup.png" />
+    <Content Include="Resources\NetworkNodeNotSelected.png" />
+    <Content Include="Resources\NetworkNodeOffline.png" />
+    <Content Include="Resources\NetworkNodeOnline.png" />
+    <Content Include="Resources\NetworkNodeSelected.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

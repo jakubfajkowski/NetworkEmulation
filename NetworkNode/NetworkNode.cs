@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using NetworkUtilities;
-using NetworkUtilities.element;
+using NetworkUtilities.Element;
 
 namespace NetworkNode {
     public class NetworkNode : Node {
@@ -13,7 +13,7 @@ namespace NetworkNode {
         public CommutationMatrix CommutationMatrix;
         public NetworkNodeAgent NetworkNodeAgent;
 
-        public NetworkNode(NetworkNodeSerializableParameters parameters)
+        public NetworkNode(NetworkNodeModel parameters)
             : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemListeningPort;

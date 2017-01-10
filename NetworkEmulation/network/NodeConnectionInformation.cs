@@ -1,4 +1,4 @@
-﻿namespace NetworkEmulation.network {
+﻿namespace NetworkEmulation.Network {
     public class NodeConnectionInformation {
         public int NodeUdpPort { get; set; }
         public int InVpi { get; set; }

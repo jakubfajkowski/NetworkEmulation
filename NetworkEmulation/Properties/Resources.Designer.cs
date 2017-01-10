@@ -39,7 +39,7 @@ namespace NetworkEmulation.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    var temp = new global::System.Resources.ResourceManager("NetworkEmulation.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("NetworkEmulation.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,9 +63,19 @@ namespace NetworkEmulation.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ClientNodeBackup {
+            get {
+                object obj = ResourceManager.GetObject("ClientNodeBackup", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ClientNodeNotSelected {
             get {
-                var obj = ResourceManager.GetObject("ClientNodeNotSelected", resourceCulture);
+                object obj = ResourceManager.GetObject("ClientNodeNotSelected", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -75,7 +85,7 @@ namespace NetworkEmulation.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap ClientNodeOffline {
             get {
-                var obj = ResourceManager.GetObject("ClientNodeOffline", resourceCulture);
+                object obj = ResourceManager.GetObject("ClientNodeOffline", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -85,7 +95,7 @@ namespace NetworkEmulation.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap ClientNodeOnline {
             get {
-                var obj = ResourceManager.GetObject("ClientNodeOnline", resourceCulture);
+                object obj = ResourceManager.GetObject("ClientNodeOnline", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -95,7 +105,7 @@ namespace NetworkEmulation.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap ClientNodeSelected {
             get {
-                var obj = ResourceManager.GetObject("ClientNodeSelected", resourceCulture);
+                object obj = ResourceManager.GetObject("ClientNodeSelected", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -105,7 +115,17 @@ namespace NetworkEmulation.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Delete {
             get {
-                var obj = ResourceManager.GetObject("Delete", resourceCulture);
+                object obj = ResourceManager.GetObject("Delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NetworkNodeBackup {
+            get {
+                object obj = ResourceManager.GetObject("NetworkNodeBackup", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -115,7 +135,7 @@ namespace NetworkEmulation.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap NetworkNodeNotSelected {
             get {
-                var obj = ResourceManager.GetObject("NetworkNodeNotSelected", resourceCulture);
+                object obj = ResourceManager.GetObject("NetworkNodeNotSelected", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -125,7 +145,7 @@ namespace NetworkEmulation.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap NetworkNodeOffline {
             get {
-                var obj = ResourceManager.GetObject("NetworkNodeOffline", resourceCulture);
+                object obj = ResourceManager.GetObject("NetworkNodeOffline", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -135,7 +155,7 @@ namespace NetworkEmulation.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap NetworkNodeOnline {
             get {
-                var obj = ResourceManager.GetObject("NetworkNodeOnline", resourceCulture);
+                object obj = ResourceManager.GetObject("NetworkNodeOnline", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -145,7 +165,7 @@ namespace NetworkEmulation.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap NetworkNodeSelected {
             get {
-                var obj = ResourceManager.GetObject("NetworkNodeSelected", resourceCulture);
+                object obj = ResourceManager.GetObject("NetworkNodeSelected", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

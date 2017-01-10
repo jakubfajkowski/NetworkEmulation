@@ -2,11 +2,12 @@
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
-using NetworkEmulation.network.element;
+using NetworkEmulation.Network.Element;
 using NetworkUtilities;
+using NetworkUtilities.Serialization;
 using UniqueId = NetworkUtilities.UniqueId;
 
-namespace NetworkEmulation.editor.element {
+namespace NetworkEmulation.Editor.Element {
     public partial class Link : Control, IMarkable, ISerializable {
         private static readonly Pen SelectedPen = new Pen(Color.Black, 5);
         private static readonly Pen DeselectedPen = new Pen(Color.Black, 1);
@@ -17,7 +18,7 @@ namespace NetworkEmulation.editor.element {
         public Link() {
             InitializeComponent();
             Id = UniqueId.Generate();
-            Parameters = new LinkSerializableParameters();
+            Parameters = new LinkModel();
         }
 
         public Link(ref NodePictureBox beginNodePictureBox, ref NodePictureBox endNodePictureBox) : this() {
@@ -29,7 +30,7 @@ namespace NetworkEmulation.editor.element {
         public NodePictureBox BeginNodePictureBox { get; private set; }
         public NodePictureBox EndNodePictureBox { get; private set; }
 
-        public LinkSerializableParameters Parameters { get; set; }
+        public LinkModel Parameters { get; set; }
 
         public void MarkAsSelected() {
             ChangeStyle(SelectedPen);
@@ -55,7 +56,7 @@ namespace NetworkEmulation.editor.element {
             reader.MoveToContent();
             Id = new UniqueId(reader.GetAttribute("Id"));
             reader.ReadStartElement(nameof(Link));
-            Parameters = XmlSerializer.Deserialize<LinkSerializableParameters>(reader);
+            Parameters = XmlSerializer.Deserialize<LinkModel>(reader);
             reader.ReadEndElement();
         }
 

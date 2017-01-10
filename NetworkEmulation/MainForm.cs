@@ -3,11 +3,12 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
-using NetworkEmulation.editor;
-using NetworkEmulation.log;
-using NetworkEmulation.network;
+using NetworkEmulation.Editor;
+using NetworkEmulation.Log;
+using NetworkEmulation.Network;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
+using NetworkUtilities.Serialization;
 
 namespace NetworkEmulation {
     public partial class MainForm : Form {

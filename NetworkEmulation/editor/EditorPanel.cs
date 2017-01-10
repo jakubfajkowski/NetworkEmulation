@@ -6,9 +6,9 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using NetworkEmulation.editor.element;
+using NetworkEmulation.Editor.Element;
 
-namespace NetworkEmulation.editor {
+namespace NetworkEmulation.Editor {
     public enum Mode {
         AddClientNode,
         AddNetworkNode,
