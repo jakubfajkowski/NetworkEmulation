@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading;
 using NetworkEmulation.Editor;
 using NetworkEmulation.Editor.Element;
-using NetworkEmulation.Log;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
+using NetworkUtilities.Log;
 
 namespace NetworkEmulation.Network {
     public class Simulation {

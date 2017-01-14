@@ -4,10 +4,10 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using NetworkEmulation.Editor;
-using NetworkEmulation.Log;
 using NetworkEmulation.Network;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
+using NetworkUtilities.Log;
 using NetworkUtilities.Serialization;
 
 namespace NetworkEmulation {
