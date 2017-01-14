@@ -5,7 +5,7 @@ using NetworkUtilities.Serialization;
 namespace NetworkUtilities {
     [Serializable]
     public class CableCloudMessage {
-        private static int _maxAtmCellsNumber;
+        public static int MaxAtmCellsNumber = 100;
 
         public CableCloudMessage(int portNumber, byte[] data) {
             PortNumber = portNumber;
@@ -29,27 +29,5 @@ namespace NetworkUtilities {
         public byte[] Data { get; private set; }
 
         public int PortNumber { get; set; }
-
-        public static int MaxByteBufferSize { get; private set; }
-
-        public static int MaxAtmCellsNumber {
-            get { return _maxAtmCellsNumber; }
-            set {
-                _maxAtmCellsNumber = value;
-
-                var atmCells = new List<AtmCell>();
-                
-                var exampleCloudMessage = new CableCloudMessage(0, Fill(atmCells));
-                MaxByteBufferSize = exampleCloudMessage.Serialize().Length + 2;
-            }
-        }
-
-        public byte[] Serialize() {
-            return BinarySerializer.Serialize(this);
-        }
-
-        public static CableCloudMessage Deserialize(byte[] data) {
-            return BinarySerializer.Deserialize(data) as CableCloudMessage;
-        }
     }
 }

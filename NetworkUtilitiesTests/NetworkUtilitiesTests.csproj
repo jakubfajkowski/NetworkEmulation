@@ -54,10 +54,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="NodeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BinarySerializerTest.cs" />
-    <Compile Include="CableCloudMessageTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

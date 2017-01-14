@@ -117,7 +117,6 @@ namespace NetworkEmulation.Network {
                         if ((DateTime.Now - node.Value).TotalMilliseconds > MaxTimeNotReceivingKeepAliveMessage) {
                             _keepAliveDictionary.Remove(node.Key);
                             UpdateState("Network node " + node.Key + " is offline.");
-                            Console.WriteLine("Network node " + node.Key + " is offline.");
                         }
                 }
                 catch (InvalidOperationException e) {

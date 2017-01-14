@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -6,7 +7,7 @@ using NetworkUtilities.Log;
 using NetworkUtilities.Serialization;
 
 namespace NetworkUtilities {
-    public class ConnectionManager : LogObject {
+    public abstract class ConnectionManager : LogObject {
         protected readonly Dictionary<int, TcpClient> NodesTcpClients;
         private UdpClient _connectionUdpClient;
 
@@ -50,12 +51,15 @@ namespace NetworkUtilities {
             }
         }
 
-        protected virtual Task Listen(TcpClient nodeTcpClient, int port) {
-            return null;
+        protected abstract Task Listen(TcpClient nodeTcpClient, int port);
+
+
+        protected void SendObject(object objectToSend, Stream networkStream) {
+            BinarySerializer.SerializeToStream(objectToSend, networkStream);
         }
 
-        protected void SendBytes(byte[] data, TcpClient tcpClient) {
-            tcpClient.GetStream().Write(data, 0, data.Length);
+        protected object RecieveObject(Stream networkStream) {
+            return BinarySerializer.DeserializeFromStream(networkStream);
         }
 
         public void Dispose() {

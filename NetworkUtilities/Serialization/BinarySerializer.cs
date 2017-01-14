@@ -9,14 +9,15 @@ namespace NetworkUtilities.Serialization {
         public static int PreambuleLength { get; private set; } = sizeof(int);
 
         public static void SerializeToStream(object anySerializableObject, Stream stream) {
-            var serializedObject = Serialize(anySerializableObject);
-            var serializedObjectLength = BitConverter.GetBytes(serializedObject.Length);
+            new BinaryFormatter().Serialize(stream, anySerializableObject);
+            //var serializedObject = Serialize(anySerializableObject);
+            //var serializedObjectLength = BitConverter.GetBytes(serializedObject.Length);
 
-            var merged = new byte[serializedObjectLength.Length + serializedObject.Length];
-            serializedObjectLength.CopyTo(merged, 0);
-            serializedObject.CopyTo(merged, serializedObjectLength.Length);
+            //var merged = new byte[serializedObjectLength.Length + serializedObject.Length];
+            //serializedObjectLength.CopyTo(merged, 0);
+            //serializedObject.CopyTo(merged, serializedObjectLength.Length);
 
-            stream.Write(merged, 0, merged.Length);
+            //stream.Write(merged, 0, merged.Length);
         }
 
         public static byte[] Serialize(object anySerializableObject) {
@@ -25,24 +26,13 @@ namespace NetworkUtilities.Serialization {
                 return memoryStream.ToArray();
             }
         }
-        public static async Task<object> DeserializeFromStream(Stream stream) {
-            var serializedObjectLengthBytes = new byte[PreambuleLength];
-
-            int serializedObjectLength;
-            do {
-                await stream.ReadAsync(serializedObjectLengthBytes, 0, PreambuleLength);
-                serializedObjectLength = BitConverter.ToInt32(serializedObjectLengthBytes, 0);
-            } while (serializedObjectLength == 0);
-
-            var serializedObjectBytes = new byte[serializedObjectLength];
-            stream.Read(serializedObjectBytes, 0, serializedObjectLength);
-            var serializedObject = Deserialize(serializedObjectBytes);
-            return serializedObject;
+        public static object DeserializeFromStream(Stream stream) {
+            return new BinaryFormatter().Deserialize(stream);
         }
 
         public static object Deserialize(byte[] serializedObject) {
             using (var memoryStream = new MemoryStream(serializedObject)) {
-                return new BinaryFormatter().Deserialize(memoryStream);
+                    return new BinaryFormatter().Deserialize(memoryStream);
             }
         }
 
