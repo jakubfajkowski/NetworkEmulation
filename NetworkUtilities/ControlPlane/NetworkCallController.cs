@@ -40,6 +40,21 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callConfirmation);
         }
 
+        private void CallCoordinationResponse(bool confirmed) {
+            var callCoordinationResponse = new SignallingMessage(SignallingMessageOperation.CallCoordinationResponse, confirmed);
+            SendMessage(callCoordinationResponse);
+        }
+
+        private void CallRequestResponse(bool confirmed) {
+            var callRequestResponse = new SignallingMessage(SignallingMessageOperation.CallRequestResponse, confirmed);
+            SendMessage(callRequestResponse);
+        }
+
+        private void CallTeardownResponse(bool confirmed) {
+            var callTeardownResponse = new SignallingMessage(SignallingMessageOperation.CallTeardownResponse, confirmed);
+            SendMessage(callTeardownResponse);
+        }
+
         public override void RecieveMessage(SignallingMessage message) {
 
             switch (message.Operation)
