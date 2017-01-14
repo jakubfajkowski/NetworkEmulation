@@ -48,6 +48,7 @@
     <Compile Include="ControlPlane\CallingPartyCallController.cs" />
     <Compile Include="ControlPlane\ConnectionController.cs" />
     <Compile Include="ControlPlane\ControlPlaneElement.cs" />
+    <Compile Include="ControlPlane\Directory.cs" />
     <Compile Include="ControlPlane\HierarchicalPathComputationServer.cs" />
     <Compile Include="ControlPlane\NetworkCallController.cs" />
     <Compile Include="ControlPlane\RoutingController.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="ControlPlane\SignallingMessageOperation.cs" />
     <Compile Include="ControlPlane\StepByStepPathComputationServer.cs" />
     <Compile Include="ControlPlane\SubnetworkPoint.cs" />
+    <Compile Include="NetworkAddress.cs" />
     <Compile Include="Serialization\ISerializable.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="Node.cs" />
