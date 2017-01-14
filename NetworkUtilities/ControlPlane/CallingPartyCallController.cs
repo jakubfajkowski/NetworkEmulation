@@ -5,6 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NetworkUtilities.ControlPlane {
-    class CallingPartyCallController {
+    class CallingPartyCallController : ControlPlaneElement {
+
+        private void CallRequest(string clientA, string clientZ) {
+            
+        }
+
+        private void CallTeardown(string clientA, string clientZ) {
+            
+        }
+
     }
 }
