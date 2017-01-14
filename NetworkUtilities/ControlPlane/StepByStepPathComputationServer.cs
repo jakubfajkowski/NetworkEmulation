@@ -12,7 +12,6 @@ namespace NetworkUtilities.ControlPlane {
         private NetworkCallController networkCallController;
 
         public StepByStepPathComputationServer() {
-            connectionController = new ConnectionController();
             //TODO Bind send message handler.
         }
 
