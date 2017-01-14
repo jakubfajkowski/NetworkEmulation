@@ -1,12 +1,19 @@
 ﻿namespace NetworkUtilities.ControlPlane {
     public enum SignallingMessageOperation {
-        LocalTopology,
+        //CPCC operations
+        CallRequest,
+        CallRequestResponse,
+        CallAccept,
+        CallAcceptResponse,
+        CallTeardown,
+        CallTeardownResponse,
+        //NCC operations
         DirectoryRequest,
         DirectoryResponse,
-        CallRequest,
         CallCoordination,
-        CallTeardown,
+        CallCoordinationResponse,
         ConnectionRequest,
-        CallAccept
+        ConnectionRequestResponse
+        
     }
 }

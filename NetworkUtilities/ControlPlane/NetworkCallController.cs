@@ -32,6 +32,24 @@ namespace NetworkUtilities.ControlPlane {
                 case SignallingMessageOperation.CallTeardown:
 
                     break;
+                case SignallingMessageOperation.CallCoordination:
+
+                    break;
+                case SignallingMessageOperation.CallTeardownResponse:
+
+                    break;
+                case SignallingMessageOperation.CallAcceptResponse:
+
+                    break;
+                case SignallingMessageOperation.DirectoryResponse:
+
+                    break;
+                case SignallingMessageOperation.CallCoordinationResponse:
+
+                    break;
+                case SignallingMessageOperation.ConnectionRequestResponse:
+
+                    break;
             }
         }
     }
