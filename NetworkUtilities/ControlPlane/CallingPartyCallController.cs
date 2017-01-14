@@ -15,5 +15,8 @@ namespace NetworkUtilities.ControlPlane {
             
         }
 
+        public override void RecieveMessage(SignallingMessage message)
+        {
+        }
     }
 }

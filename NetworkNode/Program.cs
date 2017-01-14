@@ -13,7 +13,7 @@ namespace NetworkNode {
               var networkNode = new NetworkNode(parameters);
               Console.Title =
                   $"Network Node (CC:{parameters.CableCloudDataPort}|NN:{parameters.NetworkManagmentSystemDataPort})";
-                  
+                 
             /*
             var networkNodeSerializableParameters = new NetworkNodeModel
             {
