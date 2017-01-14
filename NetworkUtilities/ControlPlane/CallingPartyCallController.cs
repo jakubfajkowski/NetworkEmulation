@@ -25,6 +25,16 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callConfirmation);
         }
 
+        private void CallAcceptResponse(bool confirmed) {
+            var callAcceptResponse = new SignallingMessage(SignallingMessageOperation.CallAcceptResponse, confirmed);
+            SendMessage(callAcceptResponse);
+        }
+
+        private void CallTeardownResponse(bool confirmed) {
+            var callTeardownResponse = new SignallingMessage(SignallingMessageOperation.CallTeardownResponse, confirmed);
+            SendMessage(callTeardownResponse);
+        }
+
         public override void RecieveMessage(SignallingMessage message) {
 
             switch (message.Operation)

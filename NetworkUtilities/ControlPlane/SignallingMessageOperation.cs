@@ -7,6 +7,7 @@
         CallAcceptResponse,
         CallTeardown,
         CallTeardownResponse,
+        CpccCallConfirmation,
         //NCC operations
         DirectoryRequest,
         DirectoryResponse,
@@ -14,6 +15,7 @@
         CallCoordinationResponse,
         ConnectionRequest,
         ConnectionRequestResponse,
+        NccCallConfirmation,     
         //CC operations
         ConnectionRequestCC, // NCC do CC
         RouteTableQuery, // CC do RC???
@@ -21,11 +23,6 @@
         GetLabelsFromLRM, // CC(HPCS) do CC(NN)
         //LRM operations
         GetLabels
-        
-        ConnectionRequestResponse,
-        NccCallConfirmation,
-        CpccCallConfirmation
-        
         
     }
 }
