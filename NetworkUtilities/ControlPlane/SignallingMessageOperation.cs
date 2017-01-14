@@ -13,7 +13,9 @@
         CallCoordination,
         CallCoordinationResponse,
         ConnectionRequest,
-        ConnectionRequestResponse
-        
+        ConnectionRequestResponse,
+        //CC operations
+        ConnectionRequestCC,
+        RouteTableQuery     
     }
 }
