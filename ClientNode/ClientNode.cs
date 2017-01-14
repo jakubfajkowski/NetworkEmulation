@@ -58,7 +58,6 @@ namespace ClientNode {
             foreach (var cableCloudMessage in cableCloudMessages) {
                 Send(cableCloudMessage);
                 UpdateState("Sent: " + AtmCells(cableCloudMessage).Count + " ATMCells.");
-                Thread.Sleep(500);
             }
         }
 

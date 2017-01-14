@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NetworkEmulation.Editor.Element;
-using NetworkEmulation.Log;
+using NetworkUtilities.Log;
 
 namespace NetworkEmulation.Network {
     public class NetworkManagmentSystem : LogObject {
@@ -117,7 +117,6 @@ namespace NetworkEmulation.Network {
                         if ((DateTime.Now - node.Value).TotalMilliseconds > MaxTimeNotReceivingKeepAliveMessage) {
                             _keepAliveDictionary.Remove(node.Key);
                             UpdateState("Network node " + node.Key + " is offline.");
-                            Console.WriteLine("Network node " + node.Key + " is offline.");
                         }
                 }
                 catch (InvalidOperationException e) {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -8,14 +9,13 @@ using System.Threading.Tasks;
 using NetworkUtilities.Serialization;
 
 namespace NetworkUtilities {
-    public class Node {
+    public abstract class Node {
         public delegate void MessageHandler(object sender, string text);
 
         private TcpListener _cloudTcpListener;
         private TcpClient _nodeTcpClient;
         private bool _online;
         protected int CableCloudListeningPort;
-        protected CancellationTokenSource cts = new CancellationTokenSource();
         protected IPAddress IpAddress;
 
         public Node(string ipAddress, int cableCloudListeningPort, int cableCloudDataPort) {
@@ -57,38 +57,31 @@ namespace NetworkUtilities {
             tcpListener.Start();
             Task.Run(async () => {
                 _nodeTcpClient = await tcpListener.AcceptTcpClientAsync();
-                ListenForNodeMessages(cts.Token);
                 _online = true;
+                ListenForNodeMessages();
             });
         }
 
-        private async void ListenForNodeMessages(CancellationToken ct) {
-            using (var ns = _nodeTcpClient.GetStream()) {
-                var buffer = new byte[CableCloudMessage.MaxByteBufferSize];
-
-                while (!ct.IsCancellationRequested) {
-                    var bytesRead = await ns.ReadAsync(buffer, 0, buffer.Length, ct);
-                    if (bytesRead <= 0)
-                        break;
-
-                    Recieve(CableCloudMessage.Deserialize(buffer));
-                }
+        private void ListenForNodeMessages() {
+            while (Online()) {
+                var cableCloudMessage = (CableCloudMessage) RecieveObject(_nodeTcpClient.GetStream());
+                Recieve(cableCloudMessage);
             }
         }
 
-        protected virtual void Recieve(CableCloudMessage cableCloudMessage) {
-            Debug.WriteLine("Recieved: " + cableCloudMessage);
-        }
+        protected abstract void Recieve(CableCloudMessage cableCloudMessage);
 
 
         protected void Send(CableCloudMessage cableCloudMessage) {
-            try {
-                var data = cableCloudMessage.Serialize();
-                _nodeTcpClient.GetStream().Write(data, 0, data.Length);
-            }
-            catch {
-                Debug.WriteLine("Sending ERROR!");
-            }
+            SendObject(cableCloudMessage, _nodeTcpClient.GetStream());
+        }
+
+        protected void SendObject(object objectToSend, Stream networkStream) {
+            BinarySerializer.SerializeToStream(objectToSend, networkStream);
+        }
+
+        protected object RecieveObject(Stream networkStream) {
+            return BinarySerializer.DeserializeFromStream(networkStream);
         }
 
         public List<AtmCell> AtmCells(CableCloudMessage cableCloudMessage) {

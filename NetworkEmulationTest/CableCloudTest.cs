@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.Network;
 using NetworkUtilities;
+using NetworkUtilities.Serialization;
 
 namespace NetworkEmulationTest {
     [TestClass]
@@ -38,19 +39,7 @@ namespace NetworkEmulationTest {
             listenerTask.Wait();
 
             var nodesTcpClients =
-                (Dictionary<int, TcpClient>) new PrivateObject(cableCloud).GetField("_nodesTcpClients");
-            Assert.AreEqual(1, nodesTcpClients.Count);
-        }
-
-        [TestMethod]
-        public void CableCloudConnectNodeTest() {
-            var cableCloud = new CableCloud();
-            while (!cableCloud.Online) ;
-            var node = new Node("127.0.0.1", 10000, PortRandomizer.RandomFreePort());
-            while (!node.Online()) ;
-
-            var nodesTcpClients =
-                (Dictionary<int, TcpClient>) new PrivateObject(cableCloud).GetField("_nodesTcpClients");
+                (Dictionary<int, TcpClient>) new PrivateObject(cableCloud).GetField("NodesTcpClients");
             Assert.AreEqual(1, nodesTcpClients.Count);
         }
 
@@ -68,7 +57,7 @@ namespace NetworkEmulationTest {
 
             cableCloud.AddLink(input1, output);
             cableCloud.AddLink(input2, output);
-            _bytesToSend = CreateCableCloudMessage(1, 100).Serialize();
+            _bytesToSend = BinarySerializer.Serialize(CreateCableCloudMessage(1, 100));
 
             var listenerTask1 = StartTcpListener(port1, RecieveMessage);
             ConnectToCableCloud(port1);

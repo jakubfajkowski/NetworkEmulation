@@ -91,13 +91,6 @@
     <Compile Include="Editor\Element\Link.Designer.cs">
       <DependentUpon>Link.cs</DependentUpon>
     </Compile>
-    <Compile Include="Log\LogForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Log\LogForm.Designer.cs">
-      <DependentUpon>LogForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Log\LogObject.cs" />
     <Compile Include="Network\Element\ConnectionModel.cs" />
     <Compile Include="Network\Element\LinkModel.cs" />
     <Compile Include="Network\NodeConnectionInformation.cs" />
@@ -136,9 +129,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editor\Element\NetworkNodeForm.resx">
       <DependentUpon>NetworkNodeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Log\LogForm.resx">
-      <DependentUpon>LogForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

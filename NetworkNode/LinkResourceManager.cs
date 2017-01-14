@@ -8,15 +8,13 @@ using NetworkUtilities.ControlPlane;
 
 namespace NetworkNode
 {
-    class LinkResourceManager : ControlPlaneElement
+    public class LinkResourceManager : ControlPlaneElement
     {
-
         public static int maxLabelNumber = 1000;
-        private readonly CommutationTable commutationTable;
+        private CommutationTable commutationTable;
         private Dictionary<int, double> capacityDictionary;
         private Dictionary<int, double> freeCapacityDictionary;
-
-        Random random;
+        private Random random;
 
         public LinkResourceManager(CommutationTable commutationTable, int numberOfPorts, int capacity)
         {
@@ -32,7 +30,7 @@ namespace NetworkNode
             }
         }
 
-        public void getNewLabels(int portNumber)
+        public int[] getNewLabels(int portNumber)
         {
             int VPI;
             int VCI;
@@ -46,14 +44,27 @@ namespace NetworkNode
                 if (commutationTable.FindRow(VPI, VCI, portNumber) == null)
                     break;
             }
-
-            // ZWRACA VPI VCI
+            return new int[] { VPI, VCI };
         }
 
         public override void RecieveMessage(SignallingMessage message)
         {
-
+            switch (message.Operation)
+            {
+                case SignallingMessageOperation.GetLabels:
+                    Debug.WriteLine("GetLabels " + (int)message.Payload + " port.");
+                    int[] labels = getNewLabels((int)message.Payload);
+                    Debug.WriteLine(capacityDictionary.Count+" Send labels " + (int)message.Payload + " port, VPI: " + labels[0] + ", VCI:" + labels[1]);
+                    sendLabels(labels);
+                    break;
+            }
         }
+
+        private void sendLabels(int[] labels)
+        {
+            SendMessage(new SignallingMessage(SignallingMessageOperation.SetLabels, labels));
+        }
+
 
     }
 }

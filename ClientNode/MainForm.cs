@@ -18,11 +18,24 @@ namespace ClientNode {
 
             Text = $"Client Node ({_client.ClientName})";
 
+            textBoxEventLog.TextChanged += textBox_enableAutoscroll;
+            textBoxReceived.TextChanged += textBox_enableAutoscroll;
+
             _client.OnUpdateState += UpdateState;
             _client.OnMessageRecieved += MessageRecieved;
             _client.OnNewClientTableRow += AddClientToComboBox;
 
             _client.ReadClientTable(param);
+        }
+
+        private void textBox_enableAutoscroll(object sender, EventArgs e) {
+            var textBox = sender as TextBox;
+            if (textBox == null) {
+                return;
+            }
+
+            textBox.SelectionLength = textBox.Text.Length;
+            textBox.ScrollToCaret();
         }
 
         public void AddClientToComboBox(object sender, string clientName) {
@@ -37,11 +50,11 @@ namespace ClientNode {
         }
 
         private void MessageRecieved(object sender, string message) {
-            textBoxReceived.Text += message;
+            textBoxReceived.AppendText(message);
         }
 
         private void UpdateState(object sender, string state) {
-            textBoxEventLog.Text += CreateLogLine(state);
+            textBoxEventLog.AppendText(CreateLogLine(state));
         }
 
         private string CreateLogLine(string text) {

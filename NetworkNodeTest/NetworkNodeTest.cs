@@ -4,6 +4,8 @@ using NetworkEmulation.Network;
 using NetworkUtilities;
 using NetworkUtilities.Element;
 using NetworkUtilities.Serialization;
+using NetworkNode;
+using NetworkUtilities.ControlPlane;
 
 namespace NetworkNodeTest {
     [TestClass]
@@ -47,6 +49,22 @@ namespace NetworkNodeTest {
             Thread.Sleep(10000);
         }
 
-      
+        [TestMethod]
+        public void LRMandCCConnectionTest()
+        {
+            var LRM = new LinkResourceManager(new CommutationTable(),3,300);
+            var LRM2 = new LinkResourceManager(new CommutationTable(), 4, 400);
+            var CC = new ConnectionController(1234,1245);
+
+            LRM.OnMessageToSend += (sender, message) => CC.RecieveMessage(message);
+            LRM2.OnMessageToSend += (sender, message) => CC.RecieveMessage(message);
+            CC.OnMessageToSend += (sender, message) => LRM.RecieveMessage(message);
+
+            CC.SendGetLabelsMessage();
+            CC.OnMessageToSend += (sender, message) => LRM2.RecieveMessage(message);
+            CC.SendGetLabelsMessage();
+        }
+
+
     }
 }
