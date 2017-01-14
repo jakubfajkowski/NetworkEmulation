@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace NetworkEmulation.Log {
+namespace NetworkUtilities.Log {
     public partial class LogForm : Form {
         private readonly LogObject _logObject;
         private bool _bound;
@@ -12,7 +12,7 @@ namespace NetworkEmulation.Log {
         }
 
         private void UpdateState(object sender, string state) {
-            logRichTextBox.Text += CreateLogLine(state);
+            logRichTextBox.AppendText(CreateLogLine(state));
         }
 
         private string CreateLogLine(string text) {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NetworkEmulation.Editor.Element;
-using NetworkEmulation.Log;
+using NetworkUtilities.Log;
 
 namespace NetworkEmulation.Network {
     public class NetworkManagmentSystem : LogObject {

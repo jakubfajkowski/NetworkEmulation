@@ -38,7 +38,7 @@ namespace NetworkEmulationTest {
             listenerTask.Wait();
 
             var nodesTcpClients =
-                (Dictionary<int, TcpClient>) new PrivateObject(cableCloud).GetField("_nodesTcpClients");
+                (Dictionary<int, TcpClient>) new PrivateObject(cableCloud).GetField("NodesTcpClients");
             Assert.AreEqual(1, nodesTcpClients.Count);
         }
 
@@ -50,7 +50,7 @@ namespace NetworkEmulationTest {
             while (!node.Online()) ;
 
             var nodesTcpClients =
-                (Dictionary<int, TcpClient>) new PrivateObject(cableCloud).GetField("_nodesTcpClients");
+                (Dictionary<int, TcpClient>) new PrivateObject(cableCloud).GetField("NodesTcpClients");
             Assert.AreEqual(1, nodesTcpClients.Count);
         }
 
