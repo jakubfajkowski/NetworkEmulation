@@ -1,6 +1,12 @@
 ﻿namespace NetworkUtilities.ControlPlane {
     public enum SignallingMessageOperation {
         LocalTopology,
-        DirectoryRequest
+        DirectoryRequest,
+        DirectoryResponse,
+        CallRequest,
+        CallCoordination,
+        CallTeardown,
+        ConnectionRequest,
+        CallAccept
     }
 }

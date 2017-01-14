@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,16 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         public override void RecieveMessage(SignallingMessage message) {
-            throw new NotImplementedException();
+
+            switch (message.Operation)
+            {
+                case SignallingMessageOperation.CallRequest:
+
+                    break;
+                case SignallingMessageOperation.CallTeardown:
+
+                    break;
+            }
         }
     }
 }
