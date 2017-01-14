@@ -6,15 +6,15 @@ using NetworkUtilities.Serialization;
 namespace NetworkNode {
     internal class Program {
         private static void Main(string[] args) {
-            /*  var joinedArgs = string.Join(" ", args);
+              var joinedArgs = string.Join(" ", args);
               var parameters =
                   (NetworkNodeModel)
                   XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeModel));
               var networkNode = new NetworkNode(parameters);
               Console.Title =
                   $"Network Node (CC:{parameters.CableCloudDataPort}|NN:{parameters.NetworkManagmentSystemDataPort})";
-                  */
-
+                  
+            /*
             var networkNodeSerializableParameters = new NetworkNodeModel
             {
                 NumberOfPorts = 8,
@@ -30,6 +30,7 @@ namespace NetworkNode {
            //  networkNode.linkResourceManager.getNewLabels(1);
 
             Console.ReadLine();
+            */
         }
     }
 }
