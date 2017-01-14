@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NetworkUtilities.ControlPlane {
-    abstract class ControlPlaneElement {
+    public abstract class ControlPlaneElement {
         public delegate void MessageToSendHandler(object sender, SignallingMessage message);
 
         public event MessageToSendHandler OnMessageToSend;

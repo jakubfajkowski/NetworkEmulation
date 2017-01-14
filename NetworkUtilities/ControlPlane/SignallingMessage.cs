@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NetworkUtilities.ControlPlane {
-    class SignallingMessage {
+    public class SignallingMessage {
         public SignallingMessageOperation Operation { get; private set; }
         public Object Payload { get; private set; }
 

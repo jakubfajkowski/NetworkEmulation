@@ -46,5 +46,22 @@ namespace NetworkNodeTest {
             var networkNode = new NetworkNode.NetworkNode(networkNodeSerializableParameters);
             Thread.Sleep(10000);
         }
+
+        [TestMethod]
+        public void LRMLabels()
+        {
+            var networkNodeSerializableParameters = new NetworkNodeModel
+            {
+                NumberOfPorts = 8,
+                CableCloudListeningPort = 10000,
+                IpAddress = "127.0.0.1",
+                CableCloudDataPort = PortRandomizer.RandomFreePort(),
+                NetworkManagmentSystemListeningPort = 6666,
+                NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
+            };
+            var networkNode = new NetworkNode.NetworkNode(networkNodeSerializableParameters);
+
+            networkNode.linkResourceManager.getNewLabels(1);
+        }
     }
 }

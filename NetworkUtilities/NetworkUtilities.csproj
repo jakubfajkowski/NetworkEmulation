@@ -49,7 +49,6 @@
     <Compile Include="ControlPlane\ConnectionController.cs" />
     <Compile Include="ControlPlane\ControlPlaneElement.cs" />
     <Compile Include="ControlPlane\HierarchicalPathComputationServer.cs" />
-    <Compile Include="ControlPlane\LinkResourceManager.cs" />
     <Compile Include="ControlPlane\NetworkCallController.cs" />
     <Compile Include="ControlPlane\RoutingController.cs" />
     <Compile Include="ControlPlane\SignallingMessage.cs" />

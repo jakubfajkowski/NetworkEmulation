@@ -12,6 +12,8 @@ namespace NetworkNode {
        
         public CommutationMatrix CommutationMatrix;
         public NetworkNodeAgent NetworkNodeAgent;
+        private LinkResourceManager linkResourceManager;
+
 
         public NetworkNode(NetworkNodeModel parameters)
             : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort)
@@ -25,6 +27,8 @@ namespace NetworkNode {
 
             CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts);
             NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
+
+            linkResourceManager = new LinkResourceManager(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts, 300); // ZMIENIC CAPACITY
         }
 
 
