@@ -56,8 +56,8 @@
     <Compile Include="ControlPlane\SignallingMessage.cs" />
     <Compile Include="ControlPlane\SignallingMessageOperation.cs" />
     <Compile Include="ControlPlane\StepByStepPathComputationServer.cs" />
-    <Compile Include="ControlPlane\SubnetworkPointPool.cs" />
     <Compile Include="ControlPlane\SubnetworkPoint.cs" />
+    <Compile Include="ControlPlane\SubnetworkPointPool.cs" />
     <Compile Include="Log\LogForm.cs">
       <SubType>Form</SubType>
     </Compile>
