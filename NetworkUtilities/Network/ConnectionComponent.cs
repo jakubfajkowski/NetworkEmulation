@@ -58,7 +58,7 @@ namespace NetworkUtilities.Network {
 
         private void ListenForMessages() {
             while (Online) {
-                var cableCloudMessage = (CableCloudMessage) RecieveObject();
+                var cableCloudMessage = (CableCloudMessage) ReceiveObject();
                 OnObjectReceived(cableCloudMessage);
             }
         }
@@ -66,7 +66,7 @@ namespace NetworkUtilities.Network {
             ObjectReceived?.Invoke(this, receivedObject);
         }
 
-        private object RecieveObject() {
+        private object ReceiveObject() {
             var networkStream = _connectionObjectTcpClient.GetStream();
             return BinarySerializer.DeserializeFromStream(networkStream);
         }

@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
-    class HierarchicalPathComputationServer : ConnectionManager {
-        protected override Task Listen(TcpClient nodeTcpClient, int port) {
-            throw new NotImplementedException();
+    class HierarchicalPathComputationServer : PathComputationServer {
+        private readonly ConnectionController connectionController;
+        private readonly RoutingController routingController;
+
+        public HierarchicalPathComputationServer(int port) : base(port) {
+            connectionController = new ConnectionController();
+            routingController = new RoutingController();
         }
     }
 }

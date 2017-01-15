@@ -11,7 +11,7 @@ namespace NetworkUtilities.Element {
         public List<string> Snp { get; set; }
 
         SubnetworkPointPool(NetworkAddress networkAddress, int port) {
-            NetworkSnppAddress = networkAddress.Append(port);
+            //NetworkSnppAddress = networkAddress.Append(port);
         }
     }
 }

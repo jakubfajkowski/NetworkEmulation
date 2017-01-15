@@ -23,7 +23,7 @@ namespace NetworkEmulationTest {
             var port4 = 5;
             var portB = 6;
 
-            var cableCloud = new CableCloud();
+            var cableCloud = new CableCloud(10000);
             cableCloud.UpdateState += (sender, state) => Console.WriteLine(state);
             var nms = new NetworkManagmentSystem();
             nms.UpdateState += (sender, state) => Console.WriteLine(state);
@@ -38,7 +38,7 @@ namespace NetworkEmulationTest {
                 IpAddress = localhost,
                 CableCloudDataPort = PortRandomizer.RandomFreePort()
             });
-            //clientNodeA.OnMessageRecieved += (sender, state) => Console.WriteLine(state);
+            //clientNodeA.OnMessageReceived += (sender, state) => Console.WriteLine(state);
             clientNodeA.UpdateState += (sender, state) => Console.WriteLine(state);
 
             var clientNodeB = new ClientNode.ClientNode(new ClientNodeModel {
@@ -48,7 +48,7 @@ namespace NetworkEmulationTest {
                 IpAddress = localhost,
                 CableCloudDataPort = PortRandomizer.RandomFreePort()
             });
-            //clientNodeB.OnMessageRecieved += (sender, state) => Console.WriteLine(state);
+            //clientNodeB.OnMessageReceived += (sender, state) => Console.WriteLine(state);
             clientNodeB.UpdateState += (sender, state) => Console.WriteLine(state);
 
             var networkNode1 = new NetworkNode.NetworkNode(new NetworkNodeModel {

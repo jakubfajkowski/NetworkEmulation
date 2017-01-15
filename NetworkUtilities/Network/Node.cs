@@ -30,10 +30,10 @@ namespace NetworkUtilities.Network {
 
         private void OnCableCloudMessageReceived(object sender, object receivedObject) {
             var cableCloudMessage = (CableCloudMessage) receivedObject;
-            Recieve(cableCloudMessage);
+            Receive(cableCloudMessage);
         }
 
-        protected abstract void Recieve(CableCloudMessage cableCloudMessage);
+        protected abstract void Receive(CableCloudMessage cableCloudMessage);
 
         protected void Send(CableCloudMessage cableCloudMessage) {
             _dataPlaneConnectionComponent.SendObject(cableCloudMessage);

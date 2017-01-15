@@ -29,7 +29,7 @@ namespace NetworkUtilities.ControlPlane {
         public void UpdateDierctory() {
         }
 
-        public override void RecieveMessage(SignallingMessage message) {
+        public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
                 case SignallingMessageOperation.DirectoryRequest:
                     if (message.Payload is string[]) {

@@ -78,12 +78,12 @@ namespace NetworkNode {
             }
         }
 
-        protected override void Recieve(CableCloudMessage cableCloudMessage) {
+        protected override void Receive(CableCloudMessage cableCloudMessage) {
             ReceiveCableCloudMessage(cableCloudMessage);        
         }
 
         public void ReceiveCableCloudMessage(CableCloudMessage cableCloudMessage) {
-            Console.WriteLine("[" + DateTime.Now + "] Message recieved on port: " + cableCloudMessage.PortNumber);
+            Console.WriteLine("[" + DateTime.Now + "] Message received on port: " + cableCloudMessage.PortNumber);
             Console.WriteLine("[" + DateTime.Now + "] Received " + ExtractAtmCells(cableCloudMessage).Count + " atmcells");
 
             /* foreach (var cell in ExtractAtmCells(cableCloudMessage))

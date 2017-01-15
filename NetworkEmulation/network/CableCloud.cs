@@ -5,45 +5,40 @@ using System.Threading.Tasks;
 using NetworkEmulation.Editor.Element;
 using NetworkUtilities;
 using NetworkUtilities.Network;
-using NetworkUtilities.Serialization;
 
 namespace NetworkEmulation.Network {
     public class CableCloud : ConnectionManager {
-        private readonly SerializableDictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
+        private readonly Dictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
 
-        public CableCloud() {
-            _linkDictionary = new SerializableDictionary<SocketNodePortPair, SocketNodePortPair>();
+        public CableCloud(int port) : base(port) {
+            _linkDictionary = new Dictionary<SocketNodePortPair, SocketNodePortPair>();
         }
 
-        protected override Task Listen(TcpClient nodeTcpClient, int inputPort) {
-            return new Task(() => {
-                while (true) {
-                    var cableCloudMessage = (CableCloudMessage) RecieveObject(nodeTcpClient.GetStream());
-                    OnUpdateState("Node [" + inputPort + "] from ATM port: " + cableCloudMessage.PortNumber + " - " +
-                                cableCloudMessage.Data.Length + " bytes recieved.");
-                    var input = new SocketNodePortPair(cableCloudMessage.PortNumber, inputPort);
+        protected override void HandleReceivedObject(object receivedObject, int inputPort) {
+            var cableCloudMessage = (CableCloudMessage) receivedObject;
+            OnUpdateState("Node [" + inputPort + "] from ATM port: " + cableCloudMessage.PortNumber + " - " +
+                        cableCloudMessage.Data.Length + " bytes received.");
 
-                    SocketNodePortPair output = null;
+            var input = new SocketNodePortPair(cableCloudMessage.PortNumber, inputPort);
+            SocketNodePortPair output = null;
 
-                    try {
-                        output = LookUpLinkDictionary(input);
-                        cableCloudMessage.PortNumber = output.NodePortNumber;
+            try {
+                output = LookUpLinkDictionary(input);
+                cableCloudMessage.PortNumber = output.NodePortNumber;
 
-                        PassCableCloudMessage(cableCloudMessage, output.SocketPortNumber);
-                    }
-                    catch (KeyNotFoundException) {
-                        OnUpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " +
-                                    cableCloudMessage.PortNumber +
-                                    " - no avaliable link.");
-                    }
-                    catch (Exception) {
-                        if (output != null) NodesTcpClients.Remove(output.SocketPortNumber);
-                        OnUpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " +
-                                    cableCloudMessage.PortNumber +
-                                    " - could not connect.");
-                    }
-                }
-            });
+                PassCableCloudMessage(cableCloudMessage, output.SocketPortNumber);
+            }
+            catch (KeyNotFoundException) {
+                OnUpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " +
+                            cableCloudMessage.PortNumber +
+                            " - no avaliable link.");
+            }
+            catch (Exception) {
+                if (output != null) DisconnectClient(output.SocketPortNumber);
+                OnUpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " +
+                            cableCloudMessage.PortNumber +
+                            " - could not connect.");
+            }
         }
 
         private SocketNodePortPair LookUpLinkDictionary(SocketNodePortPair input) {
@@ -51,9 +46,7 @@ namespace NetworkEmulation.Network {
         }
 
         private void PassCableCloudMessage(CableCloudMessage cableCloudMessage, int outputPort) {
-            var tcpClient = NodesTcpClients[outputPort];
-
-            SendObject(cableCloudMessage, tcpClient.GetStream());
+            SendObject(cableCloudMessage, outputPort);
             OnUpdateState("Node [" + outputPort + "] to   ATM port: " + cableCloudMessage.PortNumber + " - " +
                         cableCloudMessage.Data.Length + " bytes sent.");
         }

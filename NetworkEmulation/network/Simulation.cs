@@ -25,7 +25,7 @@ namespace NetworkEmulation.Network {
 
         public Simulation(List<NodePictureBox> initializableNodes, List<Link> links, List<Connection> connections) {
             //TODO Zmienić metodę pokazywania logu
-            _cableCloud = new CableCloud();
+            _cableCloud = new CableCloud(Settings.Default.CableCloudUdpListenerPortNumber);
             CableCloudLogForm = new LogForm(_cableCloud);
             PreapareCableCloudLogForm();
 

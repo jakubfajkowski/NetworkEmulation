@@ -28,7 +28,7 @@ namespace NetworkUtilities.ControlPlane {
             _currentlyHandledSessions.Remove(sessionId);
         }
 
-        public virtual void RecieveMessage(SignallingMessage message) {
+        public virtual void ReceiveMessage(SignallingMessage message) {
             var sessionId = message.SessionId;
 
             if (!IsCurrentlyHandled(sessionId)) {
