@@ -8,29 +8,35 @@ using System.Diagnostics;
 
 namespace NetworkUtilities.ControlPlane {
     public class ConnectionController : ControlPlaneElement {
+        private readonly int _networkNodeAgentUdpPort;
+        private int _udpPortLrm;
 
-        private int networkNodeAgentUdpPort;
-        private int udpPortLRM;
-
-        private int udpPortRC;
-        private Dictionary<String, int> udpPortsCC;
+        private int _udpPortRc;
+        private Dictionary<string, int> _udpPortsCc;
+        private Queue<SubnetworkPointPool> _snpPools;
 
         // Jeśli CC jest w NetworkNode
-        public ConnectionController(int networkNodeAgentUdpPort, int udpPortLRM)
-        {
-            this.networkNodeAgentUdpPort = networkNodeAgentUdpPort;
-            this.udpPortLRM = udpPortLRM;
+        public ConnectionController(int networkNodeAgentUdpPort, int udpPortLRM) {
+            _networkNodeAgentUdpPort = networkNodeAgentUdpPort;
+            _udpPortLrm = udpPortLRM;
         }
 
 
-        public override void RecieveMessage(SignallingMessage message)
-        {
-            switch (message.Operation)
-            {
-                case SignallingMessageOperation.ConnectionRequestCC:
+        public override void RecieveMessage(SignallingMessage message) {
+            switch (message.Operation) {
+                case SignallingMessageOperation.ConnectionRequest:
+
+                    message.Operation = SignallingMessageOperation.RouteTableQuery;
+                    SendMessage(message);
+                    break;
+                case SignallingMessageOperation.RouteTableQueryResponse:
+                    HandleRouteTableQueryResponse(message);
+                    break;
+                case SignallingMessageOperation.ConnectionRequestResponse:
+                    HandleConnectionRequestResponse(message);
                     break;
                 case SignallingMessageOperation.SetLabels:
-                    int[] labels = (int[])message.Payload;
+                    var labels = (int[]) message.Payload;
                     Debug.WriteLine("Received VPI: " + labels[0] + ", VCI: " + labels[1]);
                     break;
                 case SignallingMessageOperation.GetLabelsFromLRM:
@@ -38,33 +44,59 @@ namespace NetworkUtilities.ControlPlane {
             }
         }
 
-        public void SendGetLabelsMessage()
-        {
+        private void HandleConnectionRequestResponse(SignallingMessage msg) {
+            if (_snpPools == null) {
+                msg.DestinationAddress.GetParentsAddress();
+                SendMessage(msg);
+            }
+            else if (Convert.ToBoolean(msg.Payload)) {
+                HandleRouteTableQueryResponse(msg);
+            }
+            else {
+                msg.DestinationAddress.GetParentsAddress();
+                msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
+                SendMessage(msg);
+            }
+        }
+
+        public void SendGetLabelsMessage() {
             //SendMessage(new SignallingMessage(SignallingMessageOperation.GetLabels, 1));
         }
 
-        public void SendConnectionToNetworkNodeAgent(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci, int outPortNumber)
-        {
-            string message = "CreateConnection " + inVpi + " " + inVci + " " + inPortNumber + " " + outVpi + " " + outVci + " " + outPortNumber;
+        public void SendConnectionToNetworkNodeAgent(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci,
+            int outPortNumber) {
+            var message = "CreateConnection " + inVpi + " " + inVci + " " + inPortNumber + " " + outVpi + " " + outVci +
+                          " " + outPortNumber;
             var bytes = Encoding.UTF8.GetBytes(message);
             var udpClient = new UdpClient();
-            var ipEndpoint = new IPEndPoint(IPAddress.Loopback, networkNodeAgentUdpPort);
+            var ipEndpoint = new IPEndPoint(IPAddress.Loopback, _networkNodeAgentUdpPort);
             udpClient.Send(bytes, bytes.Length, ipEndpoint);
         }
 
-        public void RouteTableQuery(SubnetworkPointPool snppA, SubnetworkPointPool snppB) {
+        private void HandleRouteTableQueryResponse(SignallingMessage msg) {
+            if (msg.Operation.Equals(SignallingMessageOperation.RouteTableQueryResponse))
+                _snpPools = msg.Payload as Queue<SubnetworkPointPool>;
+            if (_snpPools != null) {
+                var snpps = new[] {
+                    _snpPools.Dequeue(),
+                    _snpPools.Dequeue()
+                };
+                var levelsOfAddress = msg.DestinationAddress.Levels + 1;
+                msg.Operation = SignallingMessageOperation.ConnectionRequest;
+                msg.DestinationAddress = snpps[0].NetworkSnppAddress.GetRootFromBeggining(levelsOfAddress);
+                msg.Payload = snpps;
+                SendMessage(msg);
+            }
+            else {
+                msg.Payload = false;
+                msg.DestinationAddress.GetParentsAddress();
+                msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
+                SendMessage(msg);
+            }
         }
 
-        public void ConnectionRequest(SubnetworkPointPool snppA, SubnetworkPointPool snppB) {
-            //var snpps = new List<SubnetworkPointPool> {snppA, snppB};
-            //var signallingMessage = new SignallingMessage(SignallingMessageOperation.ConnectionRequestCC, snpps);
-            //SendMessage(signallingMessage);
-        }
 
         public void LinkConnectionRequest() {
         }
-
-
-       
     }
 }

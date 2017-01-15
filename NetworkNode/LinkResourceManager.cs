@@ -47,7 +47,7 @@ namespace NetworkNode
             return new int[] { VPI, VCI };
         }
 
-        public override void RecieveMessage(SignallingMessage message)
+        public override void ReceiveMessage(SignallingMessage message)
         {
             switch (message.Operation)
             {

@@ -78,25 +78,25 @@ namespace NetworkNode {
             }
         }
 
-        protected override void Recieve(CableCloudMessage cableCloudMessage) {
+        protected override void Receive(CableCloudMessage cableCloudMessage) {
             ReceiveCableCloudMessage(cableCloudMessage);        
         }
 
         public void ReceiveCableCloudMessage(CableCloudMessage cableCloudMessage) {
-            Console.WriteLine("[" + DateTime.Now + "] Message recieved on port: " + cableCloudMessage.PortNumber);
-            Console.WriteLine("[" + DateTime.Now + "] Received " + AtmCells(cableCloudMessage).Count + " atmcells");
+            Console.WriteLine("[" + DateTime.Now + "] Message received on port: " + cableCloudMessage.PortNumber);
+            Console.WriteLine("[" + DateTime.Now + "] Received " + ExtractAtmCells(cableCloudMessage).Count + " atmcells");
 
-            /* foreach (var cell in AtmCells(cableCloudMessage))
+            /* foreach (var cell in ExtractAtmCells(cableCloudMessage))
                  CommutationMatrix.AddAtmCellToInputPort(cell, cableCloudMessage.PortNumber);
                  */
                 
-            SendCableCloudMessage(CommutationMatrix.CommuteAllCells(AtmCells(cableCloudMessage),cableCloudMessage.PortNumber));
+            SendCableCloudMessage(CommutationMatrix.CommuteAllCells(ExtractAtmCells(cableCloudMessage),cableCloudMessage.PortNumber));
         }
 
         private void SendCableCloudMessage(CableCloudMessage cableCloudMessage) {
             Send(cableCloudMessage);
             Console.WriteLine("[" + DateTime.Now + "] Message sent on port: " + cableCloudMessage.PortNumber);
-            Console.WriteLine("[" + DateTime.Now + "] Sent " + AtmCells(cableCloudMessage).Count + " atmcells");
+            Console.WriteLine("[" + DateTime.Now + "] Sent " + ExtractAtmCells(cableCloudMessage).Count + " atmcells");
         }
     }
 }

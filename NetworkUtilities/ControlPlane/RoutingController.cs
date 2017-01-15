@@ -9,7 +9,7 @@ namespace NetworkUtilities.ControlPlane {
     class RoutingController : ControlPlaneElement {
         private List<Link> _list;
 
-        public override void RecieveMessage(SignallingMessage message) {
+        public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
                 case SignallingMessageOperation.RouteTableQuery:
                     var snpps = message.Payload as List<SubnetworkPointPool>;

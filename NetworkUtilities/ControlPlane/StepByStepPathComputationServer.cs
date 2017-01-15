@@ -7,21 +7,15 @@ using System.Threading.Tasks;
 using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
-    class StepByStepPathComputationServer : ConnectionManager {
-        private ConnectionController connectionController;
-        private RoutingController routingController;
-        private NetworkCallController networkCallController;
+    class StepByStepPathComputationServer : PathComputationServer {
+        private readonly ConnectionController _connectionController;
+        private readonly NetworkCallController _networkCallController;
+        private readonly RoutingController _routingController;
 
-        public StepByStepPathComputationServer() {
-            //TODO Bind send message handler.
-        }
-
-        protected override Task Listen(TcpClient nodeTcpClient, int port) {
-            throw new NotImplementedException();
-        }
-
-        private void HandleMessage(object sender, SignallingMessage message) {
-            //TODO: Message handling.
+        public StepByStepPathComputationServer(int port) : base(port) {
+            _connectionController = new ConnectionController();
+            _networkCallController = new NetworkCallController();
+            _routingController = new RoutingController();
         }
     }
 }

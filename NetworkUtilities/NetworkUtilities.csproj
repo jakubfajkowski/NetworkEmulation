@@ -46,6 +46,7 @@
     <Compile Include="AtmCell.cs" />
     <Compile Include="CableCloudMessage.cs" />
     <Compile Include="ClientTableRow.cs" />
+    <Compile Include="ControlPlane\PathComputationServer.cs" />
     <Compile Include="Network\ConnectionManager.cs" />
     <Compile Include="ControlPlane\CallingPartyCallController.cs" />
     <Compile Include="ControlPlane\ConnectionController.cs" />

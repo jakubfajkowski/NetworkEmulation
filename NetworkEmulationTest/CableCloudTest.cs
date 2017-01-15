@@ -14,7 +14,7 @@ namespace NetworkEmulationTest {
         private readonly IPEndPoint _cableCloudIpEndpoint;
 
         private readonly Random _random;
-        private byte[] _bytesRecieved;
+        private byte[] _bytesReceived;
         private byte[] _bytesToSend;
 
         public CableCloudTest() {
@@ -30,7 +30,7 @@ namespace NetworkEmulationTest {
 
         [TestMethod]
         public void CableCloudBindEndpointTest() {
-            var cableCloud = new CableCloud();
+            var cableCloud = new CableCloud(10000);
             var port = 10001;
 
             var listenerTask = StartTcpListener(port, Listen);
@@ -45,8 +45,8 @@ namespace NetworkEmulationTest {
 
         [TestMethod]
         public void CableCloudPassMessageTest() {
-            var cableCloud = new CableCloud();
-            cableCloud.OnUpdateState += (sender, state) => Console.WriteLine(state);
+            var cableCloud = new CableCloud(10000);
+            cableCloud.UpdateState += (sender, state) => Console.WriteLine(state);
             var port1 = 10001;
             var port2 = 10002;
             var port3 = 10003;
@@ -59,7 +59,7 @@ namespace NetworkEmulationTest {
             cableCloud.AddLink(input2, output);
             _bytesToSend = BinarySerializer.Serialize(CreateCableCloudMessage(1, 100));
 
-            var listenerTask1 = StartTcpListener(port1, RecieveMessage);
+            var listenerTask1 = StartTcpListener(port1, ReceiveMessage);
             ConnectToCableCloud(port1);
             var listenerTask2 = StartTcpListener(port2, SendMessage);
             ConnectToCableCloud(port2);
@@ -68,7 +68,7 @@ namespace NetworkEmulationTest {
 
             Task.WaitAll(listenerTask1, listenerTask2, listenerTask3);
 
-            for (var i = 0; i < _bytesToSend.Length; i++) Assert.AreEqual(_bytesToSend[i], _bytesRecieved[i]);
+            for (var i = 0; i < _bytesToSend.Length; i++) Assert.AreEqual(_bytesToSend[i], _bytesReceived[i]);
         }
 
         private static CableCloudMessage CreateCableCloudMessage(int linkNumber, int atmCellsNumber) {
@@ -107,11 +107,11 @@ namespace NetworkEmulationTest {
             });
         }
 
-        private Task RecieveMessage(TcpListener tcpListener) {
+        private Task ReceiveMessage(TcpListener tcpListener) {
             return Task.Run(async () => {
                 var tcpClient = await tcpListener.AcceptTcpClientAsync();
-                _bytesRecieved = new byte[_bytesToSend.Length];
-                await tcpClient.GetStream().ReadAsync(_bytesRecieved, 0, _bytesRecieved.Length);
+                _bytesReceived = new byte[_bytesToSend.Length];
+                await tcpClient.GetStream().ReadAsync(_bytesReceived, 0, _bytesReceived.Length);
             });
         }
 

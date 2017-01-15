@@ -16,15 +16,15 @@ namespace ClientNode {
         }
 
         public string ClientName { get; private set; }
-        public event MessageHandler OnMessageRecieved;
+        public event MessageHandler OnMessageReceived;
         public event MessageHandler OnNewClientTableRow;
 
         public void ReadClientTable(ClientNodeModel parameters) {
             if (parameters.ClientTable != null) foreach (var client in parameters.ClientTable) AddClient(client);
         }
 
-        protected void MessageRecieved(string message) {
-            OnMessageRecieved?.Invoke(this, message);
+        protected void MessageReceived(string message) {
+            OnMessageReceived?.Invoke(this, message);
         }
 
         protected void AddClientToComboBox(string clientName) {
@@ -36,11 +36,11 @@ namespace ClientNode {
             AddClientToComboBox(clientTableRow.ClientName);
         }
 
-        public void SendMessage(string message, string recieverName) {
-            var clientTableRow = SearchUsingClientName(recieverName);
+        public void SendMessage(string message, string receiverName) {
+            var clientTableRow = SearchUsingClientName(receiverName);
 
             if (clientTableRow != null) SendCableCloudMessage(message, clientTableRow);
-            else UpdateState("Client " + recieverName + " not found.");
+            else OnUpdateState("Client " + receiverName + " not found.");
         }
 
         private ClientTableRow SearchUsingClientName(string clientName) {
@@ -58,7 +58,7 @@ namespace ClientNode {
 
             foreach (var cableCloudMessage in cableCloudMessages) {
                 Send(cableCloudMessage);
-                UpdateState("Sent: " + AtmCells(cableCloudMessage).Count + " ATMCells.");
+                OnUpdateState("Sent: " + ExtractAtmCells(cableCloudMessage).Count + " ATMCells.");
             }
         }
 
@@ -79,13 +79,13 @@ namespace ClientNode {
 
         public string ToString(CableCloudMessage cableCloudMessage) {
             var sb = new StringBuilder();
-            foreach (var cell in AtmCells(cableCloudMessage)) sb.Append(Encoding.UTF8.GetString(cell.Data));
+            foreach (var cell in ExtractAtmCells(cableCloudMessage)) sb.Append(Encoding.UTF8.GetString(cell.Data));
             return sb.ToString();
         }
 
-        protected override void Recieve(CableCloudMessage cableCloudMessage) {
-            MessageRecieved(ToString(cableCloudMessage));
-            UpdateState("Recieved: " + AtmCells(cableCloudMessage).Count + " ATMCells.");
+        protected override void Receive(CableCloudMessage cableCloudMessage) {
+            MessageReceived(ToString(cableCloudMessage));
+            OnUpdateState("Received: " + ExtractAtmCells(cableCloudMessage).Count + " ATMCells.");
         }
     }
 }

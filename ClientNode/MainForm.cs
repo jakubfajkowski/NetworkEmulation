@@ -21,8 +21,8 @@ namespace ClientNode {
             textBoxEventLog.TextChanged += textBox_enableAutoscroll;
             textBoxReceived.TextChanged += textBox_enableAutoscroll;
 
-            _client.OnUpdateState += UpdateState;
-            _client.OnMessageRecieved += MessageRecieved;
+            _client.UpdateState += UpdateState;
+            _client.OnMessageReceived += MessageReceived;
             _client.OnNewClientTableRow += AddClientToComboBox;
 
             _client.ReadClientTable(param);
@@ -44,12 +44,12 @@ namespace ClientNode {
 
         private void buttonSend_Click(object sender, EventArgs e) {
             var message = textBoxMessage.Text;
-            var recieverName = comboBoxClients.SelectedItem as string;
+            var receiverName = comboBoxClients.SelectedItem as string;
 
-            _client.SendMessage(message, recieverName);
+            _client.SendMessage(message, receiverName);
         }
 
-        private void MessageRecieved(object sender, string message) {
+        private void MessageReceived(object sender, string message) {
             textBoxReceived.AppendText(message);
         }
 
