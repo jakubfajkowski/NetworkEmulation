@@ -8,7 +8,7 @@ namespace NetworkUtilities.ControlPlane {
     class CallingPartyCallController : ControlPlaneElement
     {
 
-        private void CallRequest(string clientA, string clientZ) {
+        private void SendCallRequest(string clientA, string clientZ) {
             string[] clientNames = { clientA, clientZ };
             SignallingMessage callRequest = new SignallingMessage() {
                 Operation = SignallingMessageOperation.CallRequest,
@@ -17,24 +17,34 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callRequest);
         }
 
-        private void CallTeardown(string clientA, string clientZ) {
-            string[] clientNames = { clientA, clientZ };
-            SignallingMessage callTeardown = new SignallingMessage(SignallingMessageOperation.CallTeardown, clientNames);
+        private void SendCallTeardown(SignallingMessage message) {
+            var callTeardown = message;
+            callTeardown.Operation = SignallingMessageOperation.CallTeardown;
+            //callTeardown.Payload = 
             SendMessage(callTeardown);
         }
 
-        private void CpccCallConfirmation(bool confirmed) {
-            var callConfirmation = new SignallingMessage(SignallingMessageOperation.CpccCallConfirmation, confirmed);
+        private void SendCallConfirmation(SignallingMessage message) {
+            bool confirmed;
+            var callConfirmation = message;
+            callConfirmation.Operation = SignallingMessageOperation.CallConfirmation;
+            //callConfirmation.Payload =
             SendMessage(callConfirmation);
         }
 
-        private void CallAcceptResponse(bool confirmed) {
-            var callAcceptResponse = new SignallingMessage(SignallingMessageOperation.CallAcceptResponse, confirmed);
+        private void SendCallAcceptResponse(SignallingMessage message) {
+            bool confirmed;
+            var callAcceptResponse = message;
+            callAcceptResponse.Operation = SignallingMessageOperation.CallAcceptResponse;
+            //callAcceptResponse.Payload =
             SendMessage(callAcceptResponse);
         }
 
-        private void CallTeardownResponse(bool confirmed) {
-            var callTeardownResponse = new SignallingMessage(SignallingMessageOperation.CallTeardownResponse, confirmed);
+        private void CallTeardownResponse(SignallingMessage message) {
+            bool confirmed;
+            var callTeardownResponse = message;
+            callTeardownResponse.Operation = SignallingMessageOperation.CallTeardownResponse;
+            //callTeardownResponse.Payload =
             SendMessage(callTeardownResponse);
         }
 
