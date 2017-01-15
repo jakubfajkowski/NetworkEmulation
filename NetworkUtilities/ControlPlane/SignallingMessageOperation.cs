@@ -12,12 +12,10 @@
         DirectoryResponse,
         CallCoordination,
         CallCoordinationResponse,
-        ConnectionRequest,
-        ConnectionRequestResponse,
+        ConnectionRequest,              // CC(NCC)   -> CC
+        ConnectionRequestResponse,      // CC       -> CC(NCC)
         CallConfirmation,     
         //CC operations
-        ConnectionRequestCC,            // CC       -> CC
-        ConnectionRequestResponseCC,    // CC       -> CC
         RouteTableQuery,                // CC       -> RC
         RouteTableQueryResponse,        // RC       -> CC
         SetLabels,                      // LRM(NN)  -> CC(NN)

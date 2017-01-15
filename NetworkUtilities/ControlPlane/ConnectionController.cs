@@ -13,7 +13,7 @@ namespace NetworkUtilities.ControlPlane {
 
         private int _udpPortRc;
         private Dictionary<string, int> _udpPortsCc;
-        private Queue<SubnetworkPointPool> snpPools;
+        private Queue<SubnetworkPointPool> _snpPools;
 
         // Jeśli CC jest w NetworkNode
         public ConnectionController(int networkNodeAgentUdpPort, int udpPortLRM) {
@@ -24,15 +24,16 @@ namespace NetworkUtilities.ControlPlane {
 
         public override void RecieveMessage(SignallingMessage message) {
             switch (message.Operation) {
-                case SignallingMessageOperation.ConnectionRequestCC:
+                case SignallingMessageOperation.ConnectionRequest:
+
                     message.Operation = SignallingMessageOperation.RouteTableQuery;
                     SendMessage(message);
                     break;
                 case SignallingMessageOperation.RouteTableQueryResponse:
                     HandleRouteTableQueryResponse(message);
                     break;
-                case SignallingMessageOperation.ConnectionRequestResponseCC:
-
+                case SignallingMessageOperation.ConnectionRequestResponse:
+                    HandleConnectionRequestResponse(message);
                     break;
                 case SignallingMessageOperation.SetLabels:
                     var labels = (int[]) message.Payload;
@@ -43,8 +44,22 @@ namespace NetworkUtilities.ControlPlane {
             }
         }
 
-        public void SendGetLabelsMessage()
-        {
+        private void HandleConnectionRequestResponse(SignallingMessage msg) {
+            if (_snpPools == null) {
+                msg.DestinationAddress.GetParentsAddress();
+                SendMessage(msg);
+            }
+            else if (Convert.ToBoolean(msg.Payload)) {
+                HandleRouteTableQueryResponse(msg);
+            }
+            else {
+                msg.DestinationAddress.GetParentsAddress();
+                msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
+                SendMessage(msg);
+            }
+        }
+
+        public void SendGetLabelsMessage() {
             //SendMessage(new SignallingMessage(SignallingMessageOperation.GetLabels, 1));
         }
 
@@ -59,22 +74,27 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleRouteTableQueryResponse(SignallingMessage msg) {
-            if (snpPools.Count != 0) {
-                snpPools = msg.Payload as Queue<SubnetworkPointPool>;
-                var snpps = new SubnetworkPointPool[2] {
-                    snpPools.Dequeue(),
-                    snpPools.Dequeue()
+            if (msg.Operation.Equals(SignallingMessageOperation.RouteTableQueryResponse))
+                _snpPools = msg.Payload as Queue<SubnetworkPointPool>;
+            if (_snpPools != null) {
+                var snpps = new[] {
+                    _snpPools.Dequeue(),
+                    _snpPools.Dequeue()
                 };
-                var destinationAddress = snpps[0].NetworkSnppAddress.GetId(msg.DestinationAddress.);
-                msg.DestinationAddress = destinationAddress;
+                var levelsOfAddress = msg.DestinationAddress.Levels + 1;
+                msg.Operation = SignallingMessageOperation.ConnectionRequest;
+                msg.DestinationAddress = snpps[0].NetworkSnppAddress.GetRootFromBeggining(levelsOfAddress);
+                msg.Payload = snpps;
+                SendMessage(msg);
+            }
+            else {
+                msg.Payload = false;
+                msg.DestinationAddress.GetParentsAddress();
+                msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
+                SendMessage(msg);
             }
         }
 
-        public void ConnectionRequest(SubnetworkPointPool snppA, SubnetworkPointPool snppB) {
-            //var snpps = new List<SubnetworkPointPool> {snppA, snppB};
-            //var signallingMessage = new SignallingMessage(SignallingMessageOperation.ConnectionRequestCC, snpps);
-            //SendMessage(signallingMessage);
-        }
 
         public void LinkConnectionRequest() {
         }

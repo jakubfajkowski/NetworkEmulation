@@ -14,8 +14,8 @@ namespace NetworkUtilities {
             Levels = _value.Split(Separator).Length;
         }
 
-        public NetworkAddress Append(NetworkAddress networkAddress, int number) {
-            var value = networkAddress._value + Separator + number;
+        public NetworkAddress Append(int number) {
+            var value = _value + Separator + number;
             return new NetworkAddress(value);
         }
 
