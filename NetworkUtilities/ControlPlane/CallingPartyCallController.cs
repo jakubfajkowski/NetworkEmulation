@@ -10,7 +10,10 @@ namespace NetworkUtilities.ControlPlane {
 
         private void CallRequest(string clientA, string clientZ) {
             string[] clientNames = { clientA, clientZ };
-            SignallingMessage callRequest = new SignallingMessage(SignallingMessageOperation.CallRequest, clientNames);
+            SignallingMessage callRequest = new SignallingMessage() {
+                Operation = SignallingMessageOperation.CallRequest,
+                Payload = clientNames
+            };
             SendMessage(callRequest);
         }
 

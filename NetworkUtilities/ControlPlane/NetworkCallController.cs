@@ -8,15 +8,19 @@ using System.Threading.Tasks;
 namespace NetworkUtilities.ControlPlane {
     class NetworkCallController : ControlPlaneElement
     {
-        Queue<NetworkAddress[]> networkAddresseses = new Queue<NetworkAddress[]>();
+        private readonly Queue<NetworkAddress[]> _networkAddresseses = new Queue<NetworkAddress[]>();
 
         private void DirectoryRequest(string[] clientNames) {
             var directioryRequest = new SignallingMessage(SignallingMessageOperation.DirectoryRequest, clientNames);
             SendMessage(directioryRequest);
         }
 
-        private void DirectoryRequest(NetworkAddress[] clientAddress) {
-            var directioryRequest = new SignallingMessage(SignallingMessageOperation.DirectoryRequest, clientAddress);
+        private void SendDirectoryRequest(SignallingMessage message) {
+            var directioryRequest = message;
+
+            directioryRequest.Operation = SignallingMessageOperation.DirectoryRequest;
+            directioryRequest.Payload = (string[]) message.Payload;
+
             SendMessage(directioryRequest);
         }
 
@@ -60,7 +64,7 @@ namespace NetworkUtilities.ControlPlane {
             switch (message.Operation)
             {
                 case SignallingMessageOperation.CallRequest:
-                    DirectoryRequest((string[])message.Payload);
+                    SendDirectoryRequest(message);
                     break;
                 case SignallingMessageOperation.CallTeardown:
 
@@ -77,7 +81,7 @@ namespace NetworkUtilities.ControlPlane {
                 case SignallingMessageOperation.DirectoryResponse:
                     //warunek po networkAddress czy wysłać callCoordination czy CallAccept
                     if (message.Payload is NetworkAddress[]) {
-                        networkAddresseses.Enqueue((NetworkAddress[])message.Payload);
+                        _networkAddresseses.Enqueue((NetworkAddress[])message.Payload);
                         CallCoordination((NetworkAddress[])message.Payload);
                     } else if (message.Payload is string[]) {
                         CallAccept((string[])message.Payload);
@@ -92,7 +96,7 @@ namespace NetworkUtilities.ControlPlane {
                     break;
                 case SignallingMessageOperation.NccCallConfirmation:
                     if ((bool) message.Payload) {
-                        ConnectionRequest(networkAddresseses.Dequeue());
+                        ConnectionRequest(_networkAddresseses.Dequeue());
                     }
                     break;
                 case SignallingMessageOperation.CpccCallConfirmation:

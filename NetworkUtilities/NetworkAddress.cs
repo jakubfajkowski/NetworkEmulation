@@ -1,5 +1,5 @@
 ﻿namespace NetworkUtilities {
-    class NetworkAddress {
+    public class NetworkAddress {
         private readonly string _value;
 
         public NetworkAddress(string value) {

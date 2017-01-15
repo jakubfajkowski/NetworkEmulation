@@ -5,13 +5,14 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
+using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Serialization;
 
 namespace NetworkUtilitiesTests {
     [TestClass]
     public class BinarySerializerTest {
         [TestMethod]
-        public void SerializeTest() {
+        public void SerializeCableCloudMessageTest() {
             var message = new CableCloudMessage(1, AtmCell.Generate(1,1,"TEST"));
             var data = BinarySerializer.Serialize(message);
             var obj = BinarySerializer.Deserialize(data);
@@ -24,7 +25,7 @@ namespace NetworkUtilitiesTests {
         }
 
         [TestMethod]
-        public void StreamSerializeTest() {
+        public void StreamSerializeCableCloudMessageTest() {
             var tcpListener = new TcpListener(IPAddress.Loopback, 10000);
             tcpListener.Start();
             var acceptTask = AcceptTask(tcpListener);
@@ -42,6 +43,27 @@ namespace NetworkUtilitiesTests {
             var actual = (CableCloudMessage) recieveTask;
 
             Assert.AreEqual(expected.PortNumber, actual.PortNumber);
+        }
+
+        [TestMethod]
+        public void StreamSerializeSignallingMessageTest() {
+            var tcpListener = new TcpListener(IPAddress.Loopback, 10000);
+            tcpListener.Start();
+            var acceptTask = AcceptTask(tcpListener);
+
+            var client1 = new TcpClient();
+            client1.Connect(IPAddress.Loopback, 10000);
+            var client2 = acceptTask.Result;
+
+
+            var expected = new SignallingMessage();
+
+            var recieveTask = BinarySerializer.DeserializeFromStream(client2.GetStream());
+
+            BinarySerializer.SerializeToStream(expected, client1.GetStream());
+            var actual = (SignallingMessage)recieveTask;
+
+            Assert.AreEqual(expected.SessionId, actual.SessionId);
         }
 
         private async Task<TcpClient> AcceptTask(TcpListener tcpListener) {
