@@ -21,7 +21,7 @@ namespace NetworkUtilities.Log {
 
         private void LogForm_Shown(object sender, EventArgs e) {
             if (!_bound) {
-                _logObject.OnUpdateState += (s, state) => BeginInvoke(new Action(() => UpdateState(s, state)));
+                _logObject.UpdateState += (s, state) => BeginInvoke(new Action(() => UpdateState(s, state)));
                 _bound = true;
             }
         }

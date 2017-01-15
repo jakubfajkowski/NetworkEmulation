@@ -40,7 +40,7 @@ namespace ClientNode {
             var clientTableRow = SearchUsingClientName(recieverName);
 
             if (clientTableRow != null) SendCableCloudMessage(message, clientTableRow);
-            else UpdateState("Client " + recieverName + " not found.");
+            else OnUpdateState("Client " + recieverName + " not found.");
         }
 
         private ClientTableRow SearchUsingClientName(string clientName) {
@@ -58,7 +58,7 @@ namespace ClientNode {
 
             foreach (var cableCloudMessage in cableCloudMessages) {
                 Send(cableCloudMessage);
-                UpdateState("Sent: " + AtmCells(cableCloudMessage).Count + " ATMCells.");
+                OnUpdateState("Sent: " + ExtractAtmCells(cableCloudMessage).Count + " ATMCells.");
             }
         }
 
@@ -79,13 +79,13 @@ namespace ClientNode {
 
         public string ToString(CableCloudMessage cableCloudMessage) {
             var sb = new StringBuilder();
-            foreach (var cell in AtmCells(cableCloudMessage)) sb.Append(Encoding.UTF8.GetString(cell.Data));
+            foreach (var cell in ExtractAtmCells(cableCloudMessage)) sb.Append(Encoding.UTF8.GetString(cell.Data));
             return sb.ToString();
         }
 
         protected override void Recieve(CableCloudMessage cableCloudMessage) {
             MessageRecieved(ToString(cableCloudMessage));
-            UpdateState("Recieved: " + AtmCells(cableCloudMessage).Count + " ATMCells.");
+            OnUpdateState("Recieved: " + ExtractAtmCells(cableCloudMessage).Count + " ATMCells.");
         }
     }
 }
