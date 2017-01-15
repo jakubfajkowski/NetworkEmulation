@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 namespace NetworkUtilities.ControlPlane {
     class NetworkCallController : ControlPlaneElement
     {
-        private readonly Queue<NetworkAddress[]> _networkAddresseses = new Queue<NetworkAddress[]>();
+        private bool callConfirmed { get; set; }
+        //private readonly Queue<NetworkAddress[]> _networkAddresseses = new Queue<NetworkAddress[]>();
+        private readonly Dictionary<UniqueId, NetworkAddress[]> _networkAddressDictionary = new Dictionary<UniqueId, NetworkAddress[]>();
+
 
         private void SendDirectoryRequest(SignallingMessage message) {
             var directioryRequest = message;
@@ -21,6 +24,7 @@ namespace NetworkUtilities.ControlPlane {
             var callCoordination = message;
             callCoordination.Operation = SignallingMessageOperation.CallCoordination;
             callCoordination.Payload = (NetworkAddress[]) message.Payload;
+            callCoordination.DestinationAddress = _networkAddressDictionary[message.SessionId][1].GetParentsAddress();
             SendMessage(callCoordination);
         }
 
@@ -28,6 +32,7 @@ namespace NetworkUtilities.ControlPlane {
             var connectionRequest = message;
             connectionRequest.Operation = SignallingMessageOperation.ConnectionRequest;
             connectionRequest.Payload = (NetworkAddress[])message.Payload;
+            connectionRequest.DestinationAddress = _networkAddressDictionary[message.SessionId][1].GetRootFromBeginning(2);
             SendMessage(connectionRequest);
         }
 
@@ -35,6 +40,7 @@ namespace NetworkUtilities.ControlPlane {
             var callAccept = message;
             callAccept.Operation = SignallingMessageOperation.CallAccept;
             callAccept.Payload = message.Payload;
+            callAccept.DestinationAddress = _networkAddressDictionary[message.SessionId][1];
             SendMessage(callAccept);
         }
 
@@ -48,36 +54,40 @@ namespace NetworkUtilities.ControlPlane {
         private void SendCallCoordinationResponse(SignallingMessage message) {
             var callCoordinationResponse = message;
             callCoordinationResponse.Operation = SignallingMessageOperation.CallCoordinationResponse;
-            callCoordinationResponse.Payload = message.Payload;
+            callCoordinationResponse.Payload = (bool)true;
+            callCoordinationResponse.DestinationAddress =_networkAddressDictionary[message.SessionId][0].GetParentsAddress();
             SendMessage(callCoordinationResponse);
         }
 
         private void SendCallRequestResponse(SignallingMessage message) {
             var callRequestResponse = message;
             callRequestResponse.Operation = SignallingMessageOperation.CallRequestResponse;
-            callRequestResponse.Payload = message.Payload;
+            callRequestResponse.Payload = (bool) true;
+            callRequestResponse.DestinationAddress = _networkAddressDictionary[message.SessionId][0];
             SendMessage(callRequestResponse);
         }
 
         private void SendCallTeardownResponse(SignallingMessage message) {
             var callTeardownResponse = message;
             callTeardownResponse.Operation = SignallingMessageOperation.CallTeardownResponse;
-            callTeardownResponse.Payload = message.Payload;
+            callTeardownResponse.Payload = (bool)true;
             SendMessage(callTeardownResponse);
         }
 
         public override void RecieveMessage(SignallingMessage message) {
-
+            base.RecieveMessage(message);
             switch (message.Operation)
             {
                 case SignallingMessageOperation.CallRequest:
+                    SendCallRequestResponse(message);
                     SendDirectoryRequest(message);
                     break;
                 case SignallingMessageOperation.CallTeardown:
-
+                    SendCallTeardownResponse(message);
                     break;
                 case SignallingMessageOperation.CallCoordination:
-                    
+                    SendCallCoordinationResponse(message);
+                    SendCallAccept(message);
                     break;
                 case SignallingMessageOperation.CallTeardownResponse:
 
@@ -85,14 +95,20 @@ namespace NetworkUtilities.ControlPlane {
                 case SignallingMessageOperation.CallAcceptResponse:
 
                     break;
-                case SignallingMessageOperation.DirectoryResponse:
-                    //if (message.Payload is NetworkAddress[]) {
-                    //    _networkAddresseses.Enqueue((NetworkAddress[])message.Payload);
-                    //    CallCoordination((NetworkAddress[])message.Payload);
-                    //}
-                    //else if (message.Payload is string[]) {
-                    //    CallAccept((string[])message.Payload);
-                    //}
+                case SignallingMessageOperation.DirectoryResponseAddress:
+                    var networkAdress = (NetworkAddress[]) message.Payload;
+                    _networkAddressDictionary.Add(message.SessionId, networkAdress);
+
+                    if (networkAdress[0].GetId(0) == networkAdress[1].GetId(0)) {
+                        SendCallAccept(message);
+                    }
+                    else {
+                        SendCallCoordination(message);
+                    }
+
+                    break;
+                case SignallingMessageOperation.DirectoryResponseName:
+                    var clientName = (string[])message.Payload;
 
                     break;
                 case SignallingMessageOperation.CallCoordinationResponse:
@@ -102,10 +118,10 @@ namespace NetworkUtilities.ControlPlane {
 
                     break;
                 case SignallingMessageOperation.CallConfirmation:
-                    //if ((bool) message.Payload) {
-                    //    ConnectionRequest(_networkAddresseses.Dequeue());
-                    //    SendCallConfirmation(true);
-                    //}
+                    if ((bool) message.Payload) {
+                        SendConnectionRequest(message);
+                    }
+                    
                     break;
             }
         }

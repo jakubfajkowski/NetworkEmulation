@@ -43,7 +43,7 @@ namespace NetworkUtilities {
             return new NetworkAddress(value);
         }
 
-        public NetworkAddress GetRootFromBeggining(int level) {
+        public NetworkAddress GetRootFromBeginning(int level) {
             var ids = _value.Split(Separator);
             var value = string.Join(Separator.ToString(), ids.Take(level));
             return new NetworkAddress(value);

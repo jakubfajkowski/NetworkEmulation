@@ -9,7 +9,7 @@ namespace NetworkUtilities.ControlPlane {
         private void SendDirectoryResponseAddress(SignallingMessage message) {
             var clientAddress = clientAdderssDictionary[(string[])message.Payload];
             var directioryResponse = message;
-            directioryResponse.Operation = SignallingMessageOperation.DirectoryResponse;
+            directioryResponse.Operation = SignallingMessageOperation.DirectoryResponseAddress;
             directioryResponse.Payload = clientAddress;
             SendMessage(directioryResponse);
         }
@@ -17,13 +17,13 @@ namespace NetworkUtilities.ControlPlane {
         private void SendDirectoryResponseName(SignallingMessage message) {
             var clientName = clientAdderssDictionary.FirstOrDefault(x => x.Value == (NetworkAddress[])message.Payload).Key;
             var directioryResponse = message;
-            directioryResponse.Operation = SignallingMessageOperation.DirectoryResponse;
+            directioryResponse.Operation = SignallingMessageOperation.DirectoryResponseName;
             directioryResponse.Payload = clientName;
             SendMessage(directioryResponse);
         }
 
         private void SendDirectoryResponseSNPP(SignallingMessage message) {
-            
+            //???
         }
 
         public void UpdateDierctory() {

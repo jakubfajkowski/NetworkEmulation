@@ -9,7 +9,8 @@
         CallTeardownResponse,
         //NCC operations
         DirectoryRequest,
-        DirectoryResponse,
+        DirectoryResponseAddress,
+        DirectoryResponseName,
         CallCoordination,
         CallCoordinationResponse,
         ConnectionRequest,
