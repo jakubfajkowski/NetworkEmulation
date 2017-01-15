@@ -2,7 +2,7 @@
     public enum SignallingMessageOperation {
         //CPCC operations
         CallRequest,
-        CallRequestResponse,
+        CallRequestResponse,            // CC       -> NCC
         CallAccept,
         CallAcceptResponse,
         CallTeardown,
@@ -16,10 +16,12 @@
         ConnectionRequestResponse,
         CallConfirmation,     
         //CC operations
-        ConnectionRequestCC, // NCC do CC
-        RouteTableQuery, // CC do RC???
-        SetLabels, // LRM(NN) do CC(NN)
-        GetLabelsFromLRM, // CC(HPCS) do CC(NN)
+        ConnectionRequestCC,            // CC       -> CC
+        ConnectionRequestResponseCC,    // CC       -> CC
+        RouteTableQuery,                // CC       -> RC
+        RouteTableQueryResponse,        // RC       -> CC
+        SetLabels,                      // LRM(NN)  -> CC(NN)
+        GetLabelsFromLRM,               // CC(HPCS) -> CC(NN)
         //LRM operations
         GetLabels
         

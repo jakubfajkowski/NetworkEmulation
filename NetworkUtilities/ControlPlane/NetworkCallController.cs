@@ -86,14 +86,14 @@ namespace NetworkUtilities.ControlPlane {
 
                     break;
                 case SignallingMessageOperation.DirectoryResponse:
-                    //warunek po networkAddress czy wysłać callCoordination czy CallAccept
                     //if (message.Payload is NetworkAddress[]) {
                     //    _networkAddresseses.Enqueue((NetworkAddress[])message.Payload);
                     //    CallCoordination((NetworkAddress[])message.Payload);
-                    //} else if (message.Payload is string[]) {
+                    //}
+                    //else if (message.Payload is string[]) {
                     //    CallAccept((string[])message.Payload);
                     //}
-                    
+
                     break;
                 case SignallingMessageOperation.CallCoordinationResponse:
 
