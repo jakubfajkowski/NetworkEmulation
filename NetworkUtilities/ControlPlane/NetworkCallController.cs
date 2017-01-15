@@ -10,52 +10,59 @@ namespace NetworkUtilities.ControlPlane {
     {
         private readonly Queue<NetworkAddress[]> _networkAddresseses = new Queue<NetworkAddress[]>();
 
-        private void DirectoryRequest(string[] clientNames) {
-            var directioryRequest = new SignallingMessage(SignallingMessageOperation.DirectoryRequest, clientNames);
-            SendMessage(directioryRequest);
-        }
-
         private void SendDirectoryRequest(SignallingMessage message) {
             var directioryRequest = message;
-
             directioryRequest.Operation = SignallingMessageOperation.DirectoryRequest;
             directioryRequest.Payload = (string[]) message.Payload;
-
             SendMessage(directioryRequest);
         }
 
-        private void CallCoordination(NetworkAddress[] clientAddresses) {
-            var callCoordination = new SignallingMessage(SignallingMessageOperation.CallCoordination, clientAddresses);
+        private void SendCallCoordination(SignallingMessage message) {
+            var callCoordination = message;
+            callCoordination.Operation = SignallingMessageOperation.CallCoordination;
+            callCoordination.Payload = (NetworkAddress[]) message.Payload;
             SendMessage(callCoordination);
         }
 
-        private void ConnectionRequest(NetworkAddress[] clientAddresses) {
-            var callCoordination = new SignallingMessage(SignallingMessageOperation.ConnectionRequest, clientAddresses);
-            SendMessage(callCoordination);
+        private void SendConnectionRequest(SignallingMessage message) {
+            var connectionRequest = message;
+            connectionRequest.Operation = SignallingMessageOperation.ConnectionRequest;
+            connectionRequest.Payload = (NetworkAddress[])message.Payload;
+            SendMessage(connectionRequest);
         }
 
-        private void CallAccept(string[] clientNames) {
-            var callAccept = new SignallingMessage(SignallingMessageOperation.CallAccept, clientNames);
+        private void SendCallAccept(SignallingMessage message) {
+            var callAccept = message;
+            callAccept.Operation = SignallingMessageOperation.CallAccept;
+            callAccept.Payload = message.Payload;
             SendMessage(callAccept);
         }
 
-        private void NccCallConfirmation(bool confirmed) {
-            var callConfirmation = new SignallingMessage(SignallingMessageOperation.NccCallConfirmation, confirmed);
+        private void SendCallConfirmation(SignallingMessage message) {
+            var callConfirmation = message;
+            callConfirmation.Operation = SignallingMessageOperation.CallConfirmation;
+            callConfirmation.Payload = message.Payload;
             SendMessage(callConfirmation);
         }
 
-        private void CallCoordinationResponse(bool confirmed) {
-            var callCoordinationResponse = new SignallingMessage(SignallingMessageOperation.CallCoordinationResponse, confirmed);
+        private void SendCallCoordinationResponse(SignallingMessage message) {
+            var callCoordinationResponse = message;
+            callCoordinationResponse.Operation = SignallingMessageOperation.CallCoordinationResponse;
+            callCoordinationResponse.Payload = message.Payload;
             SendMessage(callCoordinationResponse);
         }
 
-        private void CallRequestResponse(bool confirmed) {
-            var callRequestResponse = new SignallingMessage(SignallingMessageOperation.CallRequestResponse, confirmed);
+        private void SendCallRequestResponse(SignallingMessage message) {
+            var callRequestResponse = message;
+            callRequestResponse.Operation = SignallingMessageOperation.CallRequestResponse;
+            callRequestResponse.Payload = message.Payload;
             SendMessage(callRequestResponse);
         }
 
-        private void CallTeardownResponse(bool confirmed) {
-            var callTeardownResponse = new SignallingMessage(SignallingMessageOperation.CallTeardownResponse, confirmed);
+        private void SendCallTeardownResponse(SignallingMessage message) {
+            var callTeardownResponse = message;
+            callTeardownResponse.Operation = SignallingMessageOperation.CallTeardownResponse;
+            callTeardownResponse.Payload = message.Payload;
             SendMessage(callTeardownResponse);
         }
 
@@ -80,12 +87,12 @@ namespace NetworkUtilities.ControlPlane {
                     break;
                 case SignallingMessageOperation.DirectoryResponse:
                     //warunek po networkAddress czy wysłać callCoordination czy CallAccept
-                    if (message.Payload is NetworkAddress[]) {
-                        _networkAddresseses.Enqueue((NetworkAddress[])message.Payload);
-                        CallCoordination((NetworkAddress[])message.Payload);
-                    } else if (message.Payload is string[]) {
-                        CallAccept((string[])message.Payload);
-                    }
+                    //if (message.Payload is NetworkAddress[]) {
+                    //    _networkAddresseses.Enqueue((NetworkAddress[])message.Payload);
+                    //    CallCoordination((NetworkAddress[])message.Payload);
+                    //} else if (message.Payload is string[]) {
+                    //    CallAccept((string[])message.Payload);
+                    //}
                     
                     break;
                 case SignallingMessageOperation.CallCoordinationResponse:
@@ -94,15 +101,11 @@ namespace NetworkUtilities.ControlPlane {
                 case SignallingMessageOperation.ConnectionRequestResponse:
 
                     break;
-                case SignallingMessageOperation.NccCallConfirmation:
-                    if ((bool) message.Payload) {
-                        ConnectionRequest(_networkAddresseses.Dequeue());
-                    }
-                    break;
-                case SignallingMessageOperation.CpccCallConfirmation:
-                    if ((bool)message.Payload) {
-                        NccCallConfirmation(true);
-                    }
+                case SignallingMessageOperation.CallConfirmation:
+                    //if ((bool) message.Payload) {
+                    //    ConnectionRequest(_networkAddresseses.Dequeue());
+                    //    SendCallConfirmation(true);
+                    //}
                     break;
             }
         }
