@@ -15,12 +15,6 @@ namespace NetworkUtilities.ControlPlane {
         private Dictionary<string, int> _udpPortsCc;
         private Queue<SubnetworkPointPool> _snpPools;
 
-        // Jeśli CC jest w NetworkNode
-        public ConnectionController(int networkNodeAgentUdpPort, int udpPortLRM) {
-            _networkNodeAgentUdpPort = networkNodeAgentUdpPort;
-            _udpPortLrm = udpPortLRM;
-        }
-
 
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
@@ -83,7 +77,7 @@ namespace NetworkUtilities.ControlPlane {
                 };
                 var levelsOfAddress = msg.DestinationAddress.Levels + 1;
                 msg.Operation = SignallingMessageOperation.ConnectionRequest;
-                msg.DestinationAddress = snpps[0].NetworkSnppAddress.GetRootFromBeggining(levelsOfAddress);
+                msg.DestinationAddress = snpps[0].NetworkSnppAddress.GetRootFromBeginning(levelsOfAddress);
                 msg.Payload = snpps;
                 SendMessage(msg);
             }
