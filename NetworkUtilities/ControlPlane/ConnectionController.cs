@@ -5,8 +5,6 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using System.Diagnostics;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace NetworkUtilities.ControlPlane {
     public class ConnectionController : ControlPlaneElement {
@@ -45,8 +43,9 @@ namespace NetworkUtilities.ControlPlane {
             }
         }
 
-        public void SendGetLabelsMessage() {
-            SendMessage(new SignallingMessage(SignallingMessageOperation.GetLabels, 1));
+        public void SendGetLabelsMessage()
+        {
+            //SendMessage(new SignallingMessage(SignallingMessageOperation.GetLabels, 1));
         }
 
         public void SendConnectionToNetworkNodeAgent(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci,
@@ -71,7 +70,11 @@ namespace NetworkUtilities.ControlPlane {
             }
         }
 
-        private void HandleConnectionRE
+        public void ConnectionRequest(SubnetworkPointPool snppA, SubnetworkPointPool snppB) {
+            //var snpps = new List<SubnetworkPointPool> {snppA, snppB};
+            //var signallingMessage = new SignallingMessage(SignallingMessageOperation.ConnectionRequestCC, snpps);
+            //SendMessage(signallingMessage);
+        }
 
         public void LinkConnectionRequest() {
         }

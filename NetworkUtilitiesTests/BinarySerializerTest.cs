@@ -37,10 +37,8 @@ namespace NetworkUtilitiesTests {
 
             var expected = new CableCloudMessage(1, AtmCell.Generate(1, 1, "TEST"));
 
-            var recieveTask = BinarySerializer.DeserializeFromStream(client2.GetStream());
-
             BinarySerializer.SerializeToStream(expected, client1.GetStream());
-            var actual = (CableCloudMessage) recieveTask;
+            var actual = (CableCloudMessage) BinarySerializer.DeserializeFromStream(client2.GetStream());
 
             Assert.AreEqual(expected.PortNumber, actual.PortNumber);
         }
@@ -58,10 +56,10 @@ namespace NetworkUtilitiesTests {
 
             var expected = new SignallingMessage();
 
-            var recieveTask = BinarySerializer.DeserializeFromStream(client2.GetStream());
-
+            
             BinarySerializer.SerializeToStream(expected, client1.GetStream());
-            var actual = (SignallingMessage)recieveTask;
+            var actual = (SignallingMessage) BinarySerializer.DeserializeFromStream(client2.GetStream());
+            ;
 
             Assert.AreEqual(expected.SessionId, actual.SessionId);
         }

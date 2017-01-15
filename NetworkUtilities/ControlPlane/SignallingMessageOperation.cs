@@ -7,7 +7,6 @@
         CallAcceptResponse,
         CallTeardown,
         CallTeardownResponse,
-        CpccCallConfirmation,
         //NCC operations
         DirectoryRequest,
         DirectoryResponse,
@@ -15,7 +14,7 @@
         CallCoordinationResponse,
         ConnectionRequest,
         ConnectionRequestResponse,
-        NccCallConfirmation,     
+        CallConfirmation,     
         //CC operations
         ConnectionRequestCC,            // CC       -> CC
         ConnectionRequestResponseCC,    // CC       -> CC

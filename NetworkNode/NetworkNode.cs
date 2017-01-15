@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using NetworkUtilities;
 using NetworkUtilities.Element;
+using NetworkUtilities.Network;
 
 namespace NetworkNode {
     public class NetworkNode : Node {

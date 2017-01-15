@@ -10,14 +10,6 @@ namespace NetworkUtilities.Serialization {
 
         public static void SerializeToStream(object anySerializableObject, Stream stream) {
             new BinaryFormatter().Serialize(stream, anySerializableObject);
-            //var serializedObject = Serialize(anySerializableObject);
-            //var serializedObjectLength = BitConverter.GetBytes(serializedObject.Length);
-
-            //var merged = new byte[serializedObjectLength.Length + serializedObject.Length];
-            //serializedObjectLength.CopyTo(merged, 0);
-            //serializedObject.CopyTo(merged, serializedObjectLength.Length);
-
-            //stream.Write(merged, 0, merged.Length);
         }
 
         public static byte[] Serialize(object anySerializableObject) {

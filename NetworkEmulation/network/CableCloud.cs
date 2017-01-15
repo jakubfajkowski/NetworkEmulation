@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using NetworkEmulation.Editor.Element;
 using NetworkUtilities;
+using NetworkUtilities.Network;
 using NetworkUtilities.Serialization;
 
 namespace NetworkEmulation.Network {

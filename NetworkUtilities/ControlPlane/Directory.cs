@@ -7,17 +7,17 @@ namespace NetworkUtilities.ControlPlane {
             new Dictionary<string[], NetworkAddress[]>();
 
         private void DirectoryResponse(string[] clientName) {
-            var clientAddress = clientAdderssDictionary[clientName];
+            //var clientAddress = clientAdderssDictionary[clientName];
 
-            var directioryResponse = new SignallingMessage(SignallingMessageOperation.DirectoryResponse, clientAddress);
-            SendMessage(directioryResponse);
+            //var directioryResponse = new SignallingMessage(SignallingMessageOperation.DirectoryResponse, clientAddress);
+            //SendMessage(directioryResponse);
         }
 
         private void DirectoryResponse(NetworkAddress[] clientAddress) {
-            var clientName = clientAdderssDictionary.FirstOrDefault(x => x.Value == clientAddress).Key;
+            //var clientName = clientAdderssDictionary.FirstOrDefault(x => x.Value == clientAddress).Key;
 
-            var directioryResponse = new SignallingMessage(SignallingMessageOperation.DirectoryResponse, clientName);
-            SendMessage(directioryResponse);
+            //var directioryResponse = new SignallingMessage(SignallingMessageOperation.DirectoryResponse, clientName);
+            //SendMessage(directioryResponse);
         }
 
         public void UpdateDierctory() {
