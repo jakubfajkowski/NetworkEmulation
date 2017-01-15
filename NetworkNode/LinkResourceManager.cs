@@ -62,7 +62,7 @@ namespace NetworkNode
 
         private void sendLabels(int[] labels)
         {
-            SendMessage(new SignallingMessage(SignallingMessageOperation.SetLabels, labels));
+            //SendMessage(new SignallingMessage(SignallingMessageOperation.SetLabels, labels));
         }
 
 

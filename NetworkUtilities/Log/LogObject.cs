@@ -1,8 +1,8 @@
 ﻿namespace NetworkUtilities.Log {
     public class LogObject {
-        public delegate void StateUpdateHandler(object sender, string state);
+        public delegate void MessageHandler(object sender, string state);
 
-        public event StateUpdateHandler OnUpdateState;
+        public event MessageHandler OnUpdateState;
 
         protected void UpdateState(string state) {
             OnUpdateState?.Invoke(this, state);

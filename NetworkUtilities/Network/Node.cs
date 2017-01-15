@@ -4,21 +4,19 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
+using NetworkUtilities.Log;
 using NetworkUtilities.Serialization;
 
-namespace NetworkUtilities {
-    public abstract class Node {
-        public delegate void MessageHandler(object sender, string text);
-
+namespace NetworkUtilities.Network {
+    public abstract class Node : LogObject {
         private TcpListener _cloudTcpListener;
         private TcpClient _nodeTcpClient;
         private bool _online;
         protected int CableCloudListeningPort;
         protected IPAddress IpAddress;
 
-        public Node(string ipAddress, int cableCloudListeningPort, int cableCloudDataPort) {
+        protected Node(string ipAddress, int cableCloudListeningPort, int cableCloudDataPort) {
             IpAddress = IPAddress.Parse(ipAddress);
             CableCloudListeningPort = cableCloudListeningPort;
             CableCloudDataPort = cableCloudDataPort;
@@ -32,12 +30,6 @@ namespace NetworkUtilities {
             _cloudTcpListener = CreateTcpListener(IpAddress, CableCloudDataPort);
             ListenForConnectRequest(_cloudTcpListener);
             ConnectToCloud();
-        }
-
-        public event MessageHandler OnUpdateState;
-
-        protected void UpdateState(string state) {
-            OnUpdateState?.Invoke(this, state);
         }
 
         protected TcpListener CreateTcpListener(IPAddress ipAddress, int port) {
