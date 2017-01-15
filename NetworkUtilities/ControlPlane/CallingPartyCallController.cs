@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace NetworkUtilities.ControlPlane {
     class CallingPartyCallController : ControlPlaneElement
     {
-
         private void SendCallRequest(string clientA, string clientZ) {
             string[] clientNames = { clientA, clientZ };
             SignallingMessage callRequest = new SignallingMessage() {
@@ -17,11 +16,12 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callRequest);
         }
 
-        private void SendCallTeardown(SignallingMessage message) {
-            var callTeardown = message;
-            callTeardown.Operation = SignallingMessageOperation.CallTeardown;
-            //callTeardown.Payload = 
-            SendMessage(callTeardown);
+        private void SendCallTeardown(string clientA, string clientZ) {
+            //string[] clientNames = { clientA, clientZ };
+            //var callTeardown = activeSession[clientNames];
+            //callTeardown.Operation = SignallingMessageOperation.CallTeardown;
+            //callTeardown.Payload = clientNames;
+            //SendMessage(callTeardown);
         }
 
         private void SendCallConfirmation(SignallingMessage message) {
