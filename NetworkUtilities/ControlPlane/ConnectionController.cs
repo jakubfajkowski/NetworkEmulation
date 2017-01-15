@@ -22,7 +22,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
 
-        public override void RecieveMessage(SignallingMessage message) {
+        public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
                 case SignallingMessageOperation.ConnectionRequest:
 

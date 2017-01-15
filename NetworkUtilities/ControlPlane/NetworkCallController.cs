@@ -74,8 +74,8 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callTeardownResponse);
         }
 
-        public override void RecieveMessage(SignallingMessage message) {
-            base.RecieveMessage(message);
+        public override void ReceiveMessage(SignallingMessage message) {
+            base.ReceiveMessage(message);
             switch (message.Operation)
             {
                 case SignallingMessageOperation.CallRequest:
