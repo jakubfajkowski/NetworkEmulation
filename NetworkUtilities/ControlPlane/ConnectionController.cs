@@ -40,7 +40,7 @@ namespace NetworkUtilities.ControlPlane {
 
         public void SendGetLabelsMessage()
         {
-            SendMessage(new SignallingMessage(SignallingMessageOperation.GetLabels, 1));
+            //SendMessage(new SignallingMessage(SignallingMessageOperation.GetLabels, 1));
         }
 
         public void SendConnectionToNetworkNodeAgent(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci, int outPortNumber)
@@ -56,9 +56,9 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         public void ConnectionRequest(SubnetworkPointPool snppA, SubnetworkPointPool snppB) {
-            var snpps = new List<SubnetworkPointPool> {snppA, snppB};
-            var signallingMessage = new SignallingMessage(SignallingMessageOperation.ConnectionRequestCC, snpps);
-            SendMessage(signallingMessage);
+            //var snpps = new List<SubnetworkPointPool> {snppA, snppB};
+            //var signallingMessage = new SignallingMessage(SignallingMessageOperation.ConnectionRequestCC, snpps);
+            //SendMessage(signallingMessage);
         }
 
         public void LinkConnectionRequest() {

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms.VisualStyles;
 
 namespace NetworkUtilities {
+    [Serializable]
     public class NetworkAddress {
         private const char Separator = '.';
         private readonly string _value;
