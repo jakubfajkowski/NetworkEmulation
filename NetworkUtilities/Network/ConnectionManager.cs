@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using NetworkUtilities.Log;
 using NetworkUtilities.Serialization;
 
-namespace NetworkUtilities {
+namespace NetworkUtilities.Network {
     public abstract class ConnectionManager : LogObject {
         protected readonly Dictionary<int, TcpClient> NodesTcpClients;
         private UdpClient _connectionUdpClient;

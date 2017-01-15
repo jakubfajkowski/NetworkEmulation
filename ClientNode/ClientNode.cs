@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading;
 using NetworkUtilities;
 using NetworkUtilities.Element;
+using NetworkUtilities.Network;
 
 namespace ClientNode {
     public class ClientNode : Node {

@@ -46,7 +46,7 @@
     <Compile Include="AtmCell.cs" />
     <Compile Include="CableCloudMessage.cs" />
     <Compile Include="ClientTableRow.cs" />
-    <Compile Include="ConnectionManager.cs" />
+    <Compile Include="Network\ConnectionManager.cs" />
     <Compile Include="ControlPlane\CallingPartyCallController.cs" />
     <Compile Include="ControlPlane\ConnectionController.cs" />
     <Compile Include="ControlPlane\ControlPlaneElement.cs" />
@@ -67,9 +67,10 @@
     </Compile>
     <Compile Include="Log\LogObject.cs" />
     <Compile Include="NetworkAddress.cs" />
+    <Compile Include="Network\ConnectionComponent.cs" />
     <Compile Include="Serialization\ISerializable.cs" />
     <Compile Include="Link.cs" />
-    <Compile Include="Node.cs" />
+    <Compile Include="Network\Node.cs" />
     <Compile Include="Element\ClientNodeModel.cs" />
     <Compile Include="Element\NetworkNodeModel.cs" />
     <Compile Include="Element\NodeModel.cs" />
@@ -84,6 +85,7 @@
       <DependentUpon>LogForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
