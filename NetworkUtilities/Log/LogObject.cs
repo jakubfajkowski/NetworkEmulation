@@ -2,10 +2,10 @@
     public class LogObject {
         public delegate void MessageHandler(object sender, string state);
 
-        public event MessageHandler OnUpdateState;
+        public event MessageHandler UpdateState;
 
-        protected void UpdateState(string state) {
-            OnUpdateState?.Invoke(this, state);
+        protected void OnUpdateState(string state) {
+            UpdateState?.Invoke(this, state);
         }
     }
 }

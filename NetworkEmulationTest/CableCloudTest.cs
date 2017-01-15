@@ -46,7 +46,7 @@ namespace NetworkEmulationTest {
         [TestMethod]
         public void CableCloudPassMessageTest() {
             var cableCloud = new CableCloud();
-            cableCloud.OnUpdateState += (sender, state) => Console.WriteLine(state);
+            cableCloud.UpdateState += (sender, state) => Console.WriteLine(state);
             var port1 = 10001;
             var port2 = 10002;
             var port3 = 10003;

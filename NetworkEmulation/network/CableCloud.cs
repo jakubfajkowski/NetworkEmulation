@@ -19,7 +19,7 @@ namespace NetworkEmulation.Network {
             return new Task(() => {
                 while (true) {
                     var cableCloudMessage = (CableCloudMessage) RecieveObject(nodeTcpClient.GetStream());
-                    UpdateState("Node [" + inputPort + "] from ATM port: " + cableCloudMessage.PortNumber + " - " +
+                    OnUpdateState("Node [" + inputPort + "] from ATM port: " + cableCloudMessage.PortNumber + " - " +
                                 cableCloudMessage.Data.Length + " bytes recieved.");
                     var input = new SocketNodePortPair(cableCloudMessage.PortNumber, inputPort);
 
@@ -32,13 +32,13 @@ namespace NetworkEmulation.Network {
                         PassCableCloudMessage(cableCloudMessage, output.SocketPortNumber);
                     }
                     catch (KeyNotFoundException) {
-                        UpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " +
+                        OnUpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " +
                                     cableCloudMessage.PortNumber +
                                     " - no avaliable link.");
                     }
                     catch (Exception) {
                         if (output != null) NodesTcpClients.Remove(output.SocketPortNumber);
-                        UpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " +
+                        OnUpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " +
                                     cableCloudMessage.PortNumber +
                                     " - could not connect.");
                     }
@@ -54,7 +54,7 @@ namespace NetworkEmulation.Network {
             var tcpClient = NodesTcpClients[outputPort];
 
             SendObject(cableCloudMessage, tcpClient.GetStream());
-            UpdateState("Node [" + outputPort + "] to   ATM port: " + cableCloudMessage.PortNumber + " - " +
+            OnUpdateState("Node [" + outputPort + "] to   ATM port: " + cableCloudMessage.PortNumber + " - " +
                         cableCloudMessage.Data.Length + " bytes sent.");
         }
 

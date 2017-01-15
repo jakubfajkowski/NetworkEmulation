@@ -21,7 +21,7 @@ namespace ClientNode {
             textBoxEventLog.TextChanged += textBox_enableAutoscroll;
             textBoxReceived.TextChanged += textBox_enableAutoscroll;
 
-            _client.OnUpdateState += UpdateState;
+            _client.UpdateState += UpdateState;
             _client.OnMessageRecieved += MessageRecieved;
             _client.OnNewClientTableRow += AddClientToComboBox;
 

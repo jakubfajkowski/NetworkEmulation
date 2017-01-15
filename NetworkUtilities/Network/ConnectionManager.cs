@@ -43,11 +43,11 @@ namespace NetworkUtilities.Network {
             try {
                 nodeTcpClient.Connect(IPAddress.Loopback, port);
                 NodesTcpClients.Add(port, nodeTcpClient);
-                UpdateState("Connected to Node on TCP port: " + port);
+                OnUpdateState("Connected to Node on TCP port: " + port);
                 Listen(nodeTcpClient, port).Start();
             }
             catch (SocketException e) {
-                UpdateState(e.Message);
+                OnUpdateState(e.Message);
             }
         }
 
@@ -63,7 +63,7 @@ namespace NetworkUtilities.Network {
         }
 
         public void Dispose() {
-            UpdateState("Shutting down.");
+            OnUpdateState("Shutting down.");
             _connectionUdpClient.Close();
         }
     }

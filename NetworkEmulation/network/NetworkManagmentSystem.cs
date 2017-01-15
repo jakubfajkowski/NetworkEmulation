@@ -73,7 +73,7 @@ namespace NetworkEmulation.Network {
             SendMessageToNetworkNode(
                 "CreateConnection " + inVpi + " " + inVci + " " + inPortNumber + " " + outVpi + " " + outVci + " " +
                 outPortNumber, nodeUdpPort);
-            UpdateState(" Message to " + nodeUdpPort + ": " + "CreateConnection inVpi:" + inVpi + ", inVci: " + inVci +
+            OnUpdateState(" Message to " + nodeUdpPort + ": " + "CreateConnection inVpi:" + inVpi + ", inVci: " + inVci +
                         ", inPort: " +
                         inPortNumber + ", outVpi: " + outVpi + ", outVci: " + outVci + ", outPort: " +
                         outPortNumber);
@@ -90,7 +90,7 @@ namespace NetworkEmulation.Network {
                         case "networkNodeStart":
                             try {
                                 _keepAliveDictionary.Add(int.Parse(message[1]), DateTime.Now);
-                                UpdateState("Network node " + message[1] + " is online.");
+                                OnUpdateState("Network node " + message[1] + " is online.");
                             }
                             catch (SystemException e) {
                             }
@@ -116,7 +116,7 @@ namespace NetworkEmulation.Network {
                     foreach (var node in _keepAliveDictionary)
                         if ((DateTime.Now - node.Value).TotalMilliseconds > MaxTimeNotReceivingKeepAliveMessage) {
                             _keepAliveDictionary.Remove(node.Key);
-                            UpdateState("Network node " + node.Key + " is offline.");
+                            OnUpdateState("Network node " + node.Key + " is offline.");
                         }
                 }
                 catch (InvalidOperationException e) {
@@ -176,7 +176,7 @@ namespace NetworkEmulation.Network {
 
         public void Dispose() {
             _listenUdpClient.Close();
-            UpdateState("Network Managment System shutting down.");
+            OnUpdateState("Network Managment System shutting down.");
         }
     }
 }
