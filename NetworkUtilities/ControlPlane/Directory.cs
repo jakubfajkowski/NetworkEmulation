@@ -5,38 +5,47 @@ namespace NetworkUtilities.ControlPlane {
     internal class Directory : ControlPlaneElement {
         private readonly Dictionary<string[], NetworkAddress[]> clientAdderssDictionary =
             new Dictionary<string[], NetworkAddress[]>();
+        private readonly Dictionary<string[], NetworkAddress[]> snppDictionary =
+            new Dictionary<string[], NetworkAddress[]>();
 
-        private void SendDirectoryResponseAddress(SignallingMessage message) {
+        private void SendDirectoryAddressResponse(SignallingMessage message) {
             var clientAddress = clientAdderssDictionary[(string[])message.Payload];
             var directioryResponse = message;
-            directioryResponse.Operation = SignallingMessageOperation.DirectoryResponseAddress;
+            directioryResponse.Operation = SignallingMessageOperation.DirectoryAddressResponse;
             directioryResponse.Payload = clientAddress;
             SendMessage(directioryResponse);
         }
 
-        private void SendDirectoryResponseName(SignallingMessage message) {
+        private void SendDirectoryNameResponse(SignallingMessage message) {
             var clientName = clientAdderssDictionary.FirstOrDefault(x => x.Value == (NetworkAddress[])message.Payload).Key;
             var directioryResponse = message;
-            directioryResponse.Operation = SignallingMessageOperation.DirectoryResponseName;
+            directioryResponse.Operation = SignallingMessageOperation.DirectoryNameResponse;
             directioryResponse.Payload = clientName;
             SendMessage(directioryResponse);
         }
 
-        private void SendDirectoryResponseSNPP(SignallingMessage message) {
-            //???
+        private void SendDirectorySNPPResponse(SignallingMessage message) {
+            var snpp = snppDictionary[(string[])message.Payload];
+            var directioryResponse = message;
+            directioryResponse.Operation = SignallingMessageOperation.DirectorySnppResponse;
+            directioryResponse.Payload = snpp;
+            SendMessage(directioryResponse);
         }
 
         public void UpdateDierctory() {
+            //TO DO
         }
 
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
-                case SignallingMessageOperation.DirectoryRequest:
-                    if (message.Payload is string[]) {
-                        SendDirectoryResponseAddress(message);
-                    } else if (message.Payload is NetworkAddress[]) {
-                        SendDirectoryResponseName(message);
-                    }
+                case SignallingMessageOperation.DirectoryAddressRequest:
+                    SendDirectoryAddressResponse(message);
+                    break;
+                case SignallingMessageOperation.DirectoryNameRequest:
+                    SendDirectoryNameResponse(message);
+                    break;
+                case SignallingMessageOperation.DirectorySnppRequest:
+                    SendDirectoryNameResponse(message);
                     break;
             }
         }

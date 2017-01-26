@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 namespace NetworkUtilities.ControlPlane {
     class NetworkCallController : ControlPlaneElement
     {
-        private bool callConfirmed { get; set; }
-        //private readonly Queue<NetworkAddress[]> _networkAddresseses = new Queue<NetworkAddress[]>();
         private readonly Dictionary<UniqueId, NetworkAddress[]> _networkAddressDictionary = new Dictionary<UniqueId, NetworkAddress[]>();
+        private readonly Dictionary<UniqueId, string[]> _nameDictionary = new Dictionary<UniqueId, string[]>();
+        private readonly Dictionary<UniqueId, NetworkAddress[]> _snppDictionary = new Dictionary<UniqueId, NetworkAddress[]>();
+        private readonly Dictionary<UniqueId, bool> _waitingForConfirmation = new Dictionary<UniqueId, bool>();
 
-
-        private void SendDirectoryRequest(SignallingMessage message) {
+        private void SendDirectoryAddressRequest(SignallingMessage message) {
             var directioryRequest = message;
-            directioryRequest.Operation = SignallingMessageOperation.DirectoryRequest;
+            directioryRequest.Operation = SignallingMessageOperation.DirectoryAddressRequest;
             directioryRequest.Payload = (string[]) message.Payload;
+            //callCoordination.DestinationAddress = Directory address??
             SendMessage(directioryRequest);
         }
 
@@ -30,24 +31,37 @@ namespace NetworkUtilities.ControlPlane {
 
         private void SendConnectionRequest(SignallingMessage message) {
             var connectionRequest = message;
+            var snpp = _snppDictionary[message.SessionId];
             connectionRequest.Operation = SignallingMessageOperation.ConnectionRequest;
-            connectionRequest.Payload = (NetworkAddress[])message.Payload;
-            connectionRequest.DestinationAddress = _networkAddressDictionary[message.SessionId][1].GetRootFromBeginning(2);
+            connectionRequest.Payload = snpp;
+            connectionRequest.DestinationAddress = _networkAddressDictionary[message.SessionId][1].GetRootFromBeginning(1);
             SendMessage(connectionRequest);
         }
 
         private void SendCallAccept(SignallingMessage message) {
             var callAccept = message;
+            var clientNames = _nameDictionary[message.SessionId];
             callAccept.Operation = SignallingMessageOperation.CallAccept;
-            callAccept.Payload = message.Payload;
+            callAccept.Payload = clientNames;
             callAccept.DestinationAddress = _networkAddressDictionary[message.SessionId][1];
             SendMessage(callAccept);
         }
 
-        private void SendCallConfirmation(SignallingMessage message) {
+        private void SendCallConfirmationToNCC(SignallingMessage message) {
             var callConfirmation = message;
+            var clientAddresses = _networkAddressDictionary[message.SessionId];
             callConfirmation.Operation = SignallingMessageOperation.CallConfirmation;
-            callConfirmation.Payload = message.Payload;
+            callConfirmation.Payload = clientAddresses;
+            callConfirmation.DestinationAddress = _networkAddressDictionary[message.SessionId][0].GetRootFromBeginning(0);
+            SendMessage(callConfirmation);
+        }
+
+        private void SendCallConfirmationToCPCC(SignallingMessage message) {
+            var callConfirmation = message;
+            var clientNames = _nameDictionary[message.SessionId];
+            callConfirmation.Operation = SignallingMessageOperation.CallConfirmation;
+            callConfirmation.Payload = clientNames;
+            callConfirmation.DestinationAddress = _networkAddressDictionary[message.SessionId][0];
             SendMessage(callConfirmation);
         }
 
@@ -55,7 +69,7 @@ namespace NetworkUtilities.ControlPlane {
             var callCoordinationResponse = message;
             callCoordinationResponse.Operation = SignallingMessageOperation.CallCoordinationResponse;
             callCoordinationResponse.Payload = (bool)true;
-            callCoordinationResponse.DestinationAddress =_networkAddressDictionary[message.SessionId][0].GetParentsAddress();
+            callCoordinationResponse.DestinationAddress =_networkAddressDictionary[message.SessionId][0].GetRootFromBeginning(0);
             SendMessage(callCoordinationResponse);
         }
 
@@ -79,8 +93,12 @@ namespace NetworkUtilities.ControlPlane {
             switch (message.Operation)
             {
                 case SignallingMessageOperation.CallRequest:
+                    var clientNames = (string[]) message.Payload;
+                    _nameDictionary.Add(message.SessionId, clientNames);
+                    _waitingForConfirmation[message.SessionId] = false;
+
                     SendCallRequestResponse(message);
-                    SendDirectoryRequest(message);
+                    SendDirectoryAddressRequest(message);
                     break;
                 case SignallingMessageOperation.CallTeardown:
                     SendCallTeardownResponse(message);
@@ -92,10 +110,11 @@ namespace NetworkUtilities.ControlPlane {
                 case SignallingMessageOperation.CallTeardownResponse:
 
                     break;
-                case SignallingMessageOperation.CallAcceptResponse:
-
+                case SignallingMessageOperation.DirectorySnppResponse:
+                    var snpp = (NetworkAddress[]) message.Payload;
+                    _snppDictionary.Add(message.SessionId, snpp);
                     break;
-                case SignallingMessageOperation.DirectoryResponseAddress:
+                case SignallingMessageOperation.DirectoryAddressResponse:
                     var networkAdress = (NetworkAddress[]) message.Payload;
                     _networkAddressDictionary.Add(message.SessionId, networkAdress);
 
@@ -105,13 +124,15 @@ namespace NetworkUtilities.ControlPlane {
                     else {
                         SendCallCoordination(message);
                     }
-
                     break;
-                case SignallingMessageOperation.DirectoryResponseName:
+                case SignallingMessageOperation.DirectoryNameResponse:
                     var clientName = (string[])message.Payload;
-
+                    _nameDictionary.Add(message.SessionId, clientName);
                     break;
                 case SignallingMessageOperation.CallCoordinationResponse:
+                    
+                    break;
+                case SignallingMessageOperation.CallAcceptResponse:
 
                     break;
                 case SignallingMessageOperation.ConnectionRequestResponse:
@@ -119,9 +140,20 @@ namespace NetworkUtilities.ControlPlane {
                     break;
                 case SignallingMessageOperation.CallConfirmation:
                     if ((bool) message.Payload) {
-                        SendConnectionRequest(message);
+                        if (!_waitingForConfirmation[message.SessionId]) {
+                            var address = _networkAddressDictionary[message.SessionId];
+                            if (address[0].GetId(0) == address[1].GetId(0)) {
+                                SendConnectionRequest(message);
+                                _waitingForConfirmation[message.SessionId] = true;
+                            }
+                            else {
+                                SendCallConfirmationToNCC(message);
+                            }
+                        }
+                        else {
+                            SendCallConfirmationToCPCC(message);
+                        }
                     }
-                    
                     break;
             }
         }
