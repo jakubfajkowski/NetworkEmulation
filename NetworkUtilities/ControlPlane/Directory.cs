@@ -62,7 +62,7 @@ namespace NetworkUtilities.ControlPlane {
                     SendDirectoryNameResponse(message);
                     break;
                 case SignallingMessageOperation.DirectorySnppRequest:
-                    SendDirectoryNameResponse(message);
+                    SendDirectorySnppResponse(message);
                     break;
             }
         }

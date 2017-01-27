@@ -21,6 +21,14 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(directioryRequest);
         }
 
+        private void SendDirectorySnppRequest(SignallingMessage message) {
+            var directioryRequest = message;
+            directioryRequest.Operation = SignallingMessageOperation.DirectorySnppRequest;
+            directioryRequest.Payload = (string[])message.Payload;
+            //callCoordination.DestinationAddress = Directory address??
+            SendMessage(directioryRequest);
+        }
+
         private void SendCallCoordination(SignallingMessage message) {
             var callCoordination = message;
             callCoordination.Operation = SignallingMessageOperation.CallCoordination;
@@ -98,6 +106,7 @@ namespace NetworkUtilities.ControlPlane {
                     _waitingForConfirmation[message.SessionId] = false;
 
                     SendCallRequestResponse(message);
+                    SendDirectorySnppRequest(message);
                     SendDirectoryAddressRequest(message);
                     break;
                 case SignallingMessageOperation.CallTeardown:
