@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Linq;
+using System.Xml;
+using System.Xml.Schema;
 using System.Xml.Serialization;
+using XmlSerializer = NetworkUtilities.Serialization.XmlSerializer;
 
 namespace NetworkUtilities {
-    [XmlRoot]
     [Serializable]
-    public class NetworkAddress {
+    public class NetworkAddress : IXmlSerializable {
         private const char Separator = '.';
-        private readonly string _value;
+        private string _value;
 
         public int Levels => _value.Split(Separator).Length;
 
@@ -67,5 +69,23 @@ namespace NetworkUtilities {
         public override int GetHashCode() {
             return _value.GetHashCode();
         }
+
+        #region MyRegion
+
+        public XmlSchema GetSchema() {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader) {
+            reader.ReadStartElement(nameof(Link));
+            _value = XmlSerializer.Deserialize<string>(reader);
+            reader.ReadEndElement();
+        }
+
+        public void WriteXml(XmlWriter writer) {
+            XmlSerializer.Serialize(writer, _value);
+        }
+
+        #endregion
     }
 }
