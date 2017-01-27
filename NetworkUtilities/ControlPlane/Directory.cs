@@ -3,13 +3,17 @@ using System.Linq;
 
 namespace NetworkUtilities.ControlPlane {
     internal class Directory : ControlPlaneElement {
-        private readonly Dictionary<string[], NetworkAddress[]> clientAdderssDictionary =
-            new Dictionary<string[], NetworkAddress[]>();
-        private readonly Dictionary<string[], NetworkAddress[]> snppDictionary =
-            new Dictionary<string[], NetworkAddress[]>();
+        private readonly Dictionary<string, NetworkAddress> _clientAdderssDictionary = new Dictionary<string, NetworkAddress>();
+        private readonly Dictionary<string, NetworkAddress> _snppDictionary = new Dictionary<string, NetworkAddress>();
 
         private void SendDirectoryAddressResponse(SignallingMessage message) {
-            var clientAddress = clientAdderssDictionary[(string[])message.Payload];
+            var clientNames = (string[]) message.Payload;
+
+            var clientAddressA = _clientAdderssDictionary[clientNames[0]];
+            var clientAddressZ = _clientAdderssDictionary[clientNames[1]];
+
+            NetworkAddress[] clientAddress = {clientAddressA, clientAddressZ};
+
             var directioryResponse = message;
             directioryResponse.Operation = SignallingMessageOperation.DirectoryAddressResponse;
             directioryResponse.Payload = clientAddress;
@@ -17,23 +21,36 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void SendDirectoryNameResponse(SignallingMessage message) {
-            var clientName = clientAdderssDictionary.FirstOrDefault(x => x.Value == (NetworkAddress[])message.Payload).Key;
+            var clientAddress = (NetworkAddress[])message.Payload;
+
+            var clientNameA = _clientAdderssDictionary.FirstOrDefault(x => x.Value == clientAddress[0]).Key;
+            var clientNameZ = _clientAdderssDictionary.FirstOrDefault(x => x.Value == clientAddress[1]).Key;
+
+            string[] clientName = {clientNameA, clientNameZ};
+
             var directioryResponse = message;
             directioryResponse.Operation = SignallingMessageOperation.DirectoryNameResponse;
             directioryResponse.Payload = clientName;
             SendMessage(directioryResponse);
         }
 
-        private void SendDirectorySNPPResponse(SignallingMessage message) {
-            var snpp = snppDictionary[(string[])message.Payload];
+        private void SendDirectorySnppResponse(SignallingMessage message) {
+            var clientNames = (string[])message.Payload;
+
+            var snmpA = _snppDictionary[clientNames[0]];
+            var snmpZ = _snppDictionary[clientNames[1]];
+
+            NetworkAddress[] snpp = { snmpA, snmpZ };
+
             var directioryResponse = message;
             directioryResponse.Operation = SignallingMessageOperation.DirectorySnppResponse;
             directioryResponse.Payload = snpp;
             SendMessage(directioryResponse);
         }
 
-        public void UpdateDierctory() {
-            //TO DO
+        public void UpdateDierctory(string clientName, NetworkAddress clientAddress, NetworkAddress snpp) {
+            _clientAdderssDictionary.Add(clientName, clientAddress);
+            _snppDictionary.Add(clientName, snpp);
         }
 
         public override void ReceiveMessage(SignallingMessage message) {
