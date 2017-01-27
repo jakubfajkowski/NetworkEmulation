@@ -33,13 +33,13 @@ namespace NetworkEmulation.Network {
 
             _initializableNodes = initializableNodes;
 
-            foreach (var initializableNode in _initializableNodes.OfType<NetworkNodePictureBox>()) {
+            foreach (var initializableNode in _initializableNodes.OfType<NetworkNode>()) {
                 initializableNode.DoubleClick += InitializableNodeOnDoubleClick;
                 initializableNode.Parameters.MaxAtmCellsNumberInCableCloudMessage =
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
             }
 
-            foreach (var initializableNode in _initializableNodes.OfType<ClientNodePictureBox>())
+            foreach (var initializableNode in _initializableNodes.OfType<ClientNode>())
                 initializableNode.Parameters.MaxAtmCellsNumberInCableCloudMessage =
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
 
@@ -78,7 +78,7 @@ namespace NetworkEmulation.Network {
         }
 
         private void InitializableNodeOnDoubleClick(object sender, EventArgs eventArgs) {
-            var networkNodePictureBox = sender as NetworkNodePictureBox;
+            var networkNodePictureBox = sender as NetworkNode;
             var nodeUdpPort = networkNodePictureBox.Parameters.NetworkManagmentSystemDataPort;
             var cableCloudDataPort = networkNodePictureBox.CableCloudDataPort;
 
@@ -138,7 +138,7 @@ namespace NetworkEmulation.Network {
         }
 
         private bool NetworkNodesOnline() {
-            return _networkManagmentSystem.AreOnline(_initializableNodes.OfType<NetworkNodePictureBox>().ToList());
+            return _networkManagmentSystem.AreOnline(_initializableNodes.OfType<NetworkNode>().ToList());
         }
 
         public void Run() {

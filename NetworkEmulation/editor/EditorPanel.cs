@@ -61,13 +61,13 @@ namespace NetworkEmulation.Editor {
         protected override void OnMouseClick(MouseEventArgs e) {
             switch (Mode) {
                 case Mode.AddClientNode:
-                    var clientNodePictureBox = new ClientNodePictureBox();
+                    var clientNodePictureBox = new ClientNode();
                     _currentNodePictureBox = clientNodePictureBox;
                     new ClientNodeForm(clientNodePictureBox).ShowDialog(this);
                     break;
 
                 case Mode.AddNetworkNode:
-                    var networkNodePictureBox = new NetworkNodePictureBox();
+                    var networkNodePictureBox = new NetworkNode();
                     _currentNodePictureBox = networkNodePictureBox;
                     new NetworkNodeForm(networkNodePictureBox).ShowDialog(this);
                     break;
@@ -110,7 +110,7 @@ namespace NetworkEmulation.Editor {
             var graphics = e.Graphics;
             foreach (var insertedLink in AddedLinks) insertedLink.DrawLink(graphics);
             foreach (var addedNodePictureBox in AddedNodePictureBoxes) {
-                var clientNodePictureBox = addedNodePictureBox as ClientNodePictureBox;
+                var clientNodePictureBox = addedNodePictureBox as ClientNode;
 
                 if (clientNodePictureBox == null) continue;
                 using (var myFont = new Font("Arial", 8)) {
@@ -152,18 +152,18 @@ namespace NetworkEmulation.Editor {
         }
 
         public void ReadXml(XmlReader reader) {
-            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNodePictureBox>));
-            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNodePictureBox>));
+            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNode>));
+            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNode>));
             var linkSerializer = new XmlSerializer(typeof(List<Link>));
 
             reader.ReadStartElement(nameof(EditorPanel));
             var clientNodePictureBoxes =
-                clientNodePictureBoxSerializer.Deserialize(reader) as List<ClientNodePictureBox>;
+                clientNodePictureBoxSerializer.Deserialize(reader) as List<ClientNode>;
             if (clientNodePictureBoxes != null)
                 foreach (var clientNodePictureBox in clientNodePictureBoxes) Add(clientNodePictureBox);
 
             var networkNodePictureBoxes =
-                networkNodePictureBoxSerializer.Deserialize(reader) as List<NetworkNodePictureBox>;
+                networkNodePictureBoxSerializer.Deserialize(reader) as List<NetworkNode>;
             if (networkNodePictureBoxes != null)
                 foreach (var networkNodePictureBox in networkNodePictureBoxes) Add(networkNodePictureBox);
 
@@ -175,14 +175,14 @@ namespace NetworkEmulation.Editor {
         }
 
         public void WriteXml(XmlWriter writer) {
-            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNodePictureBox>));
-            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNodePictureBox>));
+            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNode>));
+            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNode>));
             var linkSerializer = new XmlSerializer(typeof(List<Link>));
 
             clientNodePictureBoxSerializer.Serialize(writer,
-                AddedNodePictureBoxes.OfType<ClientNodePictureBox>().ToList());
+                AddedNodePictureBoxes.OfType<ClientNode>().ToList());
             networkNodePictureBoxSerializer.Serialize(writer,
-                AddedNodePictureBoxes.OfType<NetworkNodePictureBox>().ToList());
+                AddedNodePictureBoxes.OfType<NetworkNode>().ToList());
             linkSerializer.Serialize(writer, AddedLinks);
         }
 

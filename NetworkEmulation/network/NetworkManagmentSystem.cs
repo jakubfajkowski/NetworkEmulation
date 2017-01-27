@@ -120,7 +120,7 @@ namespace NetworkEmulation.Network {
             }
         }
 
-        public bool AreOnline(List<NetworkNodePictureBox> networkNodePictureBoxes) {
+        public bool AreOnline(List<NetworkNode> networkNodePictureBoxes) {
             var areOnline = true;
 
             foreach (var networkNodePictureBox in networkNodePictureBoxes) {

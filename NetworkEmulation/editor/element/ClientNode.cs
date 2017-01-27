@@ -6,52 +6,51 @@ using NetworkUtilities.Element;
 using NetworkUtilities.Serialization;
 
 namespace NetworkEmulation.Editor.Element {
-    public class NetworkNodePictureBox : NodePictureBox {
-        public NetworkNodePictureBox() {
-            Image = Resources.NetworkNodeNotSelected;
-            Parameters = new NetworkNodeModel();
-            Parameters.NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort();
+    public class ClientNode : NodePictureBox {
+        public ClientNode() {
+            Image = Resources.ClientNodeNotSelected;
+            Parameters = new ClientNodeModel();
+            CableCloudDataPort = PortRandomizer.RandomFreePort();
             Parameters.CableCloudDataPort = CableCloudDataPort;
         }
 
-        public NetworkNodeModel Parameters { get; set; }
+        public ClientNodeModel Parameters { get; set; }
 
         public override Process Initialize() {
             var process = new Process {
                 StartInfo = {
 #if DEBUG
-                    FileName = "..\\..\\..\\NetworkNode\\bin\\Debug\\NetworkNode.exe",
+                    FileName = "..\\..\\..\\ClientNode\\bin\\Debug\\ClientNode.exe",
 #else
-                    FileName = "..\\..\\..\\NetworkNode\\bin\\Release\\NetworkNode.exe",
+                    FileName = "..\\..\\..\\ClientNode\\bin\\Release\\ClientNode.exe",
                     #endif
                     Arguments = XmlSerializer.Serialize(Parameters),
-                    WindowStyle = ProcessWindowStyle.Minimized
+                    UseShellExecute = false
                 }
             };
-
             return process;
         }
 
         public override void MarkAsSelected() {
-            Image = Resources.NetworkNodeSelected;
+            Image = Resources.ClientNodeSelected;
         }
 
         public override void MarkAsDeselected() {
-            Image = Resources.NetworkNodeNotSelected;
+            Image = Resources.ClientNodeNotSelected;
         }
 
         public override void MarkAsOnline() {
-            Image = Resources.NetworkNodeOnline;
+            Image = Resources.ClientNodeOnline;
         }
 
         public override void MarkAsOffline() {
-            Image = Resources.NetworkNodeOffline;
+            Image = Resources.ClientNodeOffline;
         }
 
         public override void ReadXml(XmlReader reader) {
             base.ReadXml(reader);
-            reader.ReadStartElement(nameof(NetworkNodePictureBox));
-            Parameters = XmlSerializer.Deserialize<NetworkNodeModel>(reader);
+            reader.ReadStartElement(nameof(ClientNode));
+            Parameters = XmlSerializer.Deserialize<ClientNodeModel>(reader);
             reader.ReadEndElement();
         }
 

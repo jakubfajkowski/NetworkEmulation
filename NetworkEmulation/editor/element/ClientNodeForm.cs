@@ -7,7 +7,7 @@ namespace NetworkEmulation.Editor.Element {
     public partial class ClientNodeForm : Form {
         private readonly ClientNodeModel _parameters;
 
-        public ClientNodeForm(ClientNodePictureBox clientNodePictureBox) {
+        public ClientNodeForm(ClientNode clientNodePictureBox) {
             InitializeComponent();
             _parameters = clientNodePictureBox.Parameters;
 

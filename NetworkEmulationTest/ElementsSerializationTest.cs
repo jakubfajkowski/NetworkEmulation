@@ -23,7 +23,7 @@ namespace NetworkEmulationTest {
 
         [TestMethod]
         public void SerializeClientNodePictureBox() {
-            var clientNodePictureBox = new ClientNodePictureBox {
+            var clientNodePictureBox = new NetworkEmulation.Editor.Element.ClientNode {
                 Parameters = new ClientNodeModel {
                     ClientName = "Janusz",
                     ClientTable =
@@ -36,13 +36,13 @@ namespace NetworkEmulationTest {
 
             var serialized = XmlSerializer.Serialize(clientNodePictureBox);
 
-            var deserialized = new ClientNodePictureBox();
+            var deserialized = new NetworkEmulation.Editor.Element.ClientNode();
             XmlSerializer.Deserialize(deserialized, serialized);
         }
 
         [TestMethod]
         public void SerializeNetworkNodePictureBox() {
-            var networkNodePictureBox = new NetworkNodePictureBox {
+            var networkNodePictureBox = new NetworkEmulation.Editor.Element.NetworkNode {
                 Parameters = new NetworkNodeModel {
                     CableCloudListeningPort = 10000,
                     IpAddress = "localhost",
@@ -53,7 +53,7 @@ namespace NetworkEmulationTest {
 
             var serialized = XmlSerializer.Serialize(networkNodePictureBox);
 
-            var deserialized = new NetworkNodePictureBox();
+            var deserialized = new NetworkEmulation.Editor.Element.NetworkNode();
             XmlSerializer.Deserialize(deserialized, serialized);
         }
 
