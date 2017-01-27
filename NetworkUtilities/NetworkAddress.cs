@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Linq;
-using System.Windows.Forms.VisualStyles;
+using System.Xml.Serialization;
 
 namespace NetworkUtilities {
+    [XmlRoot]
     [Serializable]
     public class NetworkAddress {
         private const char Separator = '.';
         private readonly string _value;
-        public int Levels { get; private set; }
+
+        public int Levels => _value.Split(Separator).Length;
 
         public NetworkAddress(string value) {
             _value = value;
-            Levels = _value.Split(Separator).Length;
         }
 
         public NetworkAddress Append(int number) {
