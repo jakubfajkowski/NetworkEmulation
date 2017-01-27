@@ -75,20 +75,6 @@ namespace NetworkEmulationTest {
         }
 
         [TestMethod]
-        public void SerializeConnection() {
-            var connection = new Connection {
-                Parameters = new ConnectionModel {
-                    LinksIds = new List<UniqueId>(new[] {UniqueId.Generate(), UniqueId.Generate(), UniqueId.Generate()})
-                }
-            };
-
-            var serialized = XmlSerializer.Serialize(connection);
-
-            var deserialized = new Connection();
-            XmlSerializer.Deserialize(deserialized, serialized);
-        }
-
-        [TestMethod]
         public void UniqueIdTest() {
             var expected = UniqueId.Generate();
             var serialized = XmlSerializer.Serialize(expected);
