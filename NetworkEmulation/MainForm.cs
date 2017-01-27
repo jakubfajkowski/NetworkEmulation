@@ -81,11 +81,6 @@ namespace NetworkEmulation {
             editorPanel.Mode = Mode.AddLink;
         }
 
-        private void connectionToolStripMenuItem_Click(object sender, EventArgs e) {
-            editorPanel.Cursor = Cursors.Cross;
-            editorPanel.Mode = Mode.AddConnection;
-        }
-
         private void moveToolStripMenuItem_Click(object sender, EventArgs e) {
             editorPanel.Cursor = Cursors.Hand;
             editorPanel.Mode = Mode.Move;
@@ -112,8 +107,7 @@ namespace NetworkEmulation {
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e) {
-            _simulation = new Simulation(editorPanel._addedNodePictureBoxes, editorPanel._addedLinks,
-                editorPanel._addedConnections);
+            _simulation = new Simulation(editorPanel.AddedNodePictureBoxes, editorPanel.AddedLinks);
             MessageBox.Show("Simulation running.");
             SwitchRunStop();
         }

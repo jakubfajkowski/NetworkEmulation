@@ -59,13 +59,6 @@
     <Compile Include="Editor\Element\ClientNodeForm.Designer.cs">
       <DependentUpon>ClientNodeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editor\Element\Connection.cs" />
-    <Compile Include="Editor\Element\ConnectionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Editor\Element\ConnectionForm.Designer.cs">
-      <DependentUpon>ConnectionForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Editor\Element\LinkForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,7 +84,6 @@
     <Compile Include="Editor\Element\Link.Designer.cs">
       <DependentUpon>Link.cs</DependentUpon>
     </Compile>
-    <Compile Include="Network\Element\ConnectionModel.cs" />
     <Compile Include="Network\Element\LinkModel.cs" />
     <Compile Include="Network\NodeConnectionInformation.cs" />
     <Compile Include="Network\Simulation.cs" />
@@ -120,9 +112,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editor\Element\ClientNodeForm.resx">
       <DependentUpon>ClientNodeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Editor\Element\ConnectionForm.resx">
-      <DependentUpon>ConnectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editor\Element\LinkForm.resx">
       <DependentUpon>LinkForm.cs</DependentUpon>

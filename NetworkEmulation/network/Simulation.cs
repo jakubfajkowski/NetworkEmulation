@@ -12,8 +12,6 @@ using NetworkUtilities.Log;
 namespace NetworkEmulation.Network {
     public class Simulation {
         private readonly CableCloud _cableCloud;
-        private readonly List<Connection> _connections;
-
 
         private readonly List<NodePictureBox> _initializableNodes;
         private readonly List<Link> _links;
@@ -23,7 +21,7 @@ namespace NetworkEmulation.Network {
         private bool _cableCloudLogFormShown;
         private bool _networkManagmentSystemLogFormShown;
 
-        public Simulation(List<NodePictureBox> initializableNodes, List<Link> links, List<Connection> connections) {
+        public Simulation(List<NodePictureBox> initializableNodes, List<Link> links) {
             //TODO Zmienić metodę pokazywania logu
             _cableCloud = new CableCloud(Settings.Default.CableCloudUdpListenerPortNumber);
             CableCloudLogForm = new LogForm(_cableCloud);
@@ -46,7 +44,6 @@ namespace NetworkEmulation.Network {
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
 
             _links = links;
-            _connections = connections;
 
             _processes = new Dictionary<int, Process>();
         }
@@ -87,21 +84,15 @@ namespace NetworkEmulation.Network {
 
             if (_networkManagmentSystem.IsOnline(nodeUdpPort)) {
                 MarkAsOffline(networkNodePictureBox);
-                MarkAsOffline(_connections.FindAll(connection => connection.Parameters.NodeConnectionInformations.Count(
-                                                                     information =>
-                                                                             information.NodeUdpPort == nodeUdpPort) ==
-                                                                 1).OfType<IMarkable>().ToList());
+                //TODO Mark links as offline
+
                 KillProcess(cableCloudDataPort);
             }
             else {
                 MarkAsOnline(networkNodePictureBox);
-                MarkAsOnline(_connections.FindAll(connection => connection.Parameters.NodeConnectionInformations.Count(
-                                                                    information =>
-                                                                            information.NodeUdpPort == nodeUdpPort) == 1)
-                    .OfType<IMarkable>()
-                    .ToList());
+                //TODO Mark links as online
+
                 StartProcess(cableCloudDataPort);
-                InitializeNetworkManagmentSystem(networkNodePictureBox);
             }
         }
 
@@ -138,23 +129,7 @@ namespace NetworkEmulation.Network {
         private void InitializeNetworkManagmentSystem() {
             WaitForNetworkNodesOnline();
             MarkAsOnline(_initializableNodes.OfType<IMarkable>().ToList());
-            MarkAsOnline(_connections.OfType<IMarkable>().ToList());
-
-            foreach (var connection in _connections)
-                _networkManagmentSystem.SendConnectionToNetworkNodeAgent(connection);
-        }
-
-        private void InitializeNetworkManagmentSystem(NetworkNodePictureBox networkNodePictureBox) {
-            WaitForNetworkNodesOnline();
-            var nodeConnectionInformations = new List<NodeConnectionInformation>();
-            var nodeUdpPort = networkNodePictureBox.Parameters.NetworkManagmentSystemDataPort;
-
-            foreach (var connection in _connections)
-                nodeConnectionInformations.AddRange(connection.Parameters.NodeConnectionInformations.FindAll(
-                    information => information.NodeUdpPort == nodeUdpPort));
-
-            foreach (var nodeConnectionInformation in nodeConnectionInformations)
-                _networkManagmentSystem.SendConnectionToNetworkNodeAgent(nodeConnectionInformation);
+            //TODO Mark links as online
         }
 
         private void WaitForNetworkNodesOnline() {
@@ -197,7 +172,6 @@ namespace NetworkEmulation.Network {
         public void Stop() {
             MarkAsDeselected(_initializableNodes.OfType<IMarkable>().ToList());
             MarkAsDeselected(_links.OfType<IMarkable>().ToList());
-            MarkAsSelected(_connections.OfType<IMarkable>().ToList());
 
             _cableCloud.Dispose();
             _networkManagmentSystem.Dispose();

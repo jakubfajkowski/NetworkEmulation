@@ -8,12 +8,12 @@ using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
     class HierarchicalPathComputationServer : PathComputationServer {
-        private readonly ConnectionController connectionController;
-        private readonly RoutingController routingController;
+        private readonly ConnectionController _connectionController;
+        private readonly RoutingController _routingController;
 
         public HierarchicalPathComputationServer(int port) : base(port) {
-            connectionController = new ConnectionController();
-            routingController = new RoutingController();
+            _connectionController = new ConnectionController();
+            _routingController = new RoutingController();
         }
     }
 }

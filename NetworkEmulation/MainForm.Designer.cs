@@ -34,7 +34,6 @@ namespace NetworkEmulation {
             this.clientNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.linkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.connectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cursorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,21 +74,21 @@ namespace NetworkEmulation {
             // newProjectMenuItem
             // 
             this.newProjectMenuItem.Name = "newProjectMenuItem";
-            this.newProjectMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newProjectMenuItem.Size = new System.Drawing.Size(149, 22);
             this.newProjectMenuItem.Text = "New Project...";
             this.newProjectMenuItem.Click += new System.EventHandler(this.newProjectMenuItem_Click);
             // 
             // saveProjectMenuItem
             // 
             this.saveProjectMenuItem.Name = "saveProjectMenuItem";
-            this.saveProjectMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveProjectMenuItem.Size = new System.Drawing.Size(149, 22);
             this.saveProjectMenuItem.Text = "Save Project...";
             this.saveProjectMenuItem.Click += new System.EventHandler(this.saveProjectMenuItem_Click);
             // 
             // loadProjectMenuItem
             // 
             this.loadProjectMenuItem.Name = "loadProjectMenuItem";
-            this.loadProjectMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadProjectMenuItem.Size = new System.Drawing.Size(149, 22);
             this.loadProjectMenuItem.Text = "Load Project...";
             this.loadProjectMenuItem.Click += new System.EventHandler(this.loadProjectMenuItem_Click);
             // 
@@ -98,8 +97,7 @@ namespace NetworkEmulation {
             this.elementsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clientNodeToolStripMenuItem,
             this.networkNodeToolStripMenuItem,
-            this.linkToolStripMenuItem,
-            this.connectionToolStripMenuItem});
+            this.linkToolStripMenuItem});
             this.elementsToolStripMenuItem.Name = "elementsToolStripMenuItem";
             this.elementsToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.elementsToolStripMenuItem.Text = "Elements";
@@ -124,13 +122,6 @@ namespace NetworkEmulation {
             this.linkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.linkToolStripMenuItem.Text = "Link";
             this.linkToolStripMenuItem.Click += new System.EventHandler(this.linkToolStripMenuItem_Click);
-            // 
-            // connectionToolStripMenuItem
-            // 
-            this.connectionToolStripMenuItem.Name = "connectionToolStripMenuItem";
-            this.connectionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.connectionToolStripMenuItem.Text = "Connection";
-            this.connectionToolStripMenuItem.Click += new System.EventHandler(this.connectionToolStripMenuItem_Click);
             // 
             // cursorToolStripMenuItem
             // 
@@ -243,7 +234,6 @@ namespace NetworkEmulation {
         private System.Windows.Forms.ToolStripMenuItem clientNodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem networkNodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem linkToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem connectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cursorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;

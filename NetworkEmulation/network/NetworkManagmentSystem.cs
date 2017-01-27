@@ -62,11 +62,6 @@ namespace NetworkEmulation.Network {
                 information.OutPortNumber);
         }
 
-        public void SendConnectionToNetworkNodeAgent(Connection connection) {
-            foreach (var information in connection.Parameters.NodeConnectionInformations)
-                SendConnectionToNetworkNodeAgent(information);
-        }
-
         // Wpis w tablicy pola komutacyjnego
         public void SendConnectionToNetworkNodeAgent(int nodeUdpPort, int inVpi, int inVci, int inPortNumber, int outVpi,
             int outVci, int outPortNumber) {
