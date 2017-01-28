@@ -8,6 +8,7 @@ namespace NetworkUtilities.ControlPlane {
     [Serializable]
     public class SignallingMessage {
         public SignallingMessageOperation Operation { get; set; }
+        public SignallingMessageDestinationControlPlaneElement DestinationControlPlaneElement { get; set; }
         public UniqueId SessionId { get; private set; }
         public NetworkAddress DestinationAddress { get; set; }
         public Object Payload { get; set; }
@@ -16,5 +17,7 @@ namespace NetworkUtilities.ControlPlane {
         public SignallingMessage() {
             SessionId = UniqueId.Generate();
         }
+
+
     }
 }
