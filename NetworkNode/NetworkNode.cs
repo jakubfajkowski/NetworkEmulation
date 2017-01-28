@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using NetworkUtilities;
+using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Element;
 using NetworkUtilities.Network;
 
@@ -15,7 +16,8 @@ namespace NetworkNode {
         public NetworkNodeAgent NetworkNodeAgent;
 
         public NetworkNode(NetworkNodeModel parameters)
-            : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort) {
+            : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort,
+                                         parameters.PathComputationServerListeningPort, parameters.PathComputationServerDataPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemListeningPort;
             NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkManagmentSystemDataPort, this);
@@ -97,6 +99,11 @@ namespace NetworkNode {
             Send(cableCloudMessage);
             Console.WriteLine("[" + DateTime.Now + "] Message sent on port: " + cableCloudMessage.PortNumber);
             Console.WriteLine("[" + DateTime.Now + "] Sent " + ExtractAtmCells(cableCloudMessage).Count + " atmcells");
+        }
+
+        protected override void Receive(SignallingMessage signallingMessage) {
+            //TODO Signalling message handling implementation!
+            throw new NotImplementedException();
         }
     }
 }

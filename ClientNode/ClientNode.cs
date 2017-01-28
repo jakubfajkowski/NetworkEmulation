@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading;
 using NetworkUtilities;
+using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Element;
 using NetworkUtilities.Network;
 
@@ -10,7 +11,8 @@ namespace ClientNode {
         public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
 
         public ClientNode(ClientNodeModel parameters)
-            : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort) {
+            : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort,
+                                         parameters.PathComputationServerListeningPort, parameters.PathComputationServerDataPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             ClientName = parameters.ClientName;
         }
@@ -86,6 +88,11 @@ namespace ClientNode {
         protected override void Receive(CableCloudMessage cableCloudMessage) {
             MessageReceived(ToString(cableCloudMessage));
             OnUpdateState("Received: " + ExtractAtmCells(cableCloudMessage).Count + " ATMCells.");
+        }
+
+        protected override void Receive(SignallingMessage signallingMessage) {
+            //TODO Signalling message handling implementation!
+            throw new System.NotImplementedException();
         }
     }
 }
