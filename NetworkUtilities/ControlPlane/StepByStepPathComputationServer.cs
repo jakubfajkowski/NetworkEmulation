@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
-    class StepByStepPathComputationServer : PathComputationServer {
+    public class StepByStepPathComputationServer : PathComputationServer {
         private readonly ConnectionController _connectionController;
         private readonly NetworkCallController _networkCallController;
         private readonly RoutingController _routingController;

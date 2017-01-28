@@ -26,6 +26,10 @@ namespace NetworkUtilities.ControlPlane {
             _signallingLinkDictionary = new Dictionary<NetworkAddress, int>();
         }
 
+        public void Initialize() {
+            _controlPlaneConnectionComponent.Initialize();
+        }
+
         protected override void HandleReceivedObject(object receivedObject, int inputPort) {
             var signallingMessage = (SignallingMessage) receivedObject;
 

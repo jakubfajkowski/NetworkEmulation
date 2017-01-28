@@ -25,11 +25,9 @@ namespace NetworkUtilities.Network {
             _ipAddress = IPAddress.Parse(connectionManagerIpAddress);
             _connectionManagerListeningPort = connectionManagerListeningPort;
             DataTransferPort = dataTransferPort;
-
-            Initialize();
         }
 
-        private void Initialize() {
+        public void Initialize() {
             _connectionManagerTcpListener = CreateTcpListener(_ipAddress, DataTransferPort);
             ListenForConnectRequest(_connectionManagerTcpListener);
             EstabilishConnection();
