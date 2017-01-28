@@ -78,11 +78,11 @@
     <Compile Include="Editor\ClippedPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Editor\Element\Link.cs">
+    <Compile Include="Editor\Element\LinkView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Editor\Element\Link.Designer.cs">
-      <DependentUpon>Link.cs</DependentUpon>
+    <Compile Include="Editor\Element\LinkView.Designer.cs">
+      <DependentUpon>LinkView.cs</DependentUpon>
     </Compile>
     <Compile Include="Network\Element\LinkModel.cs" />
     <Compile Include="Network\NodeConnectionInformation.cs" />

@@ -11,9 +11,21 @@ namespace NetworkUtilities.ControlPlane {
         private readonly ConnectionController _connectionController;
         private readonly RoutingController _routingController;
 
-        public HierarchicalPathComputationServer(NetworkAddress networkAddress, int port) : base(networkAddress, port) {
+        public HierarchicalPathComputationServer(NetworkAddress networkAddress, 
+                                                 string ipAddress,
+                                                 int port,
+                                                 int pathComputationServerListeningPort, 
+                                                 int pathComputationServerDataPort) : base(networkAddress, 
+                                                                                           ipAddress, 
+                                                                                           port,
+                                                                                           pathComputationServerListeningPort,
+                                                                                           pathComputationServerDataPort) {
             _connectionController = new ConnectionController(networkAddress);
             _routingController = new RoutingController(networkAddress);
+        }
+
+        protected override void Receive(SignallingMessage signallingMessage) {
+            throw new NotImplementedException();
         }
     }
 }

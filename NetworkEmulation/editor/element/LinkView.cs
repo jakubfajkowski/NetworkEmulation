@@ -7,20 +7,20 @@ using NetworkUtilities.Serialization;
 using UniqueId = NetworkUtilities.UniqueId;
 
 namespace NetworkEmulation.Editor.Element {
-    public partial class Link : Control, IMarkable, ISerializable {
+    public partial class LinkView : Control, IMarkable, ISerializable {
         private static readonly Pen SelectedPen = new Pen(Color.Black, 5);
         private static readonly Pen DeselectedPen = new Pen(Color.Black, 1);
         private static readonly Pen OnlinePen = new Pen(Color.Green, 5);
         private static readonly Pen OfflinePen = new Pen(Color.Red, 5);
         private Pen _pen = DeselectedPen;
 
-        public Link() {
+        public LinkView() {
             InitializeComponent();
             Id = UniqueId.Generate();
             Parameters = new LinkModel();
         }
 
-        public Link(ref NodeView beginNodeView, ref NodeView endNodeView) : this() {
+        public LinkView(ref NodeView beginNodeView, ref NodeView endNodeView) : this() {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
 
             SetAttachmentNodeViews(ref beginNodeView, ref endNodeView);
@@ -87,7 +87,7 @@ namespace NetworkEmulation.Editor.Element {
         public void ReadXml(XmlReader reader) {
             reader.MoveToContent();
             Id = new UniqueId(reader.GetAttribute("Id"));
-            reader.ReadStartElement(nameof(Link));
+            reader.ReadStartElement(nameof(LinkView));
             Parameters = XmlSerializer.Deserialize<LinkModel>(reader);
             reader.ReadEndElement();
         }

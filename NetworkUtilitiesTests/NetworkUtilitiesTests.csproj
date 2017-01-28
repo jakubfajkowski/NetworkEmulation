@@ -58,6 +58,7 @@
     <Compile Include="BinarySerializerTest.cs" />
     <Compile Include="ControlPlaneTest.cs" />
     <Compile Include="NetworkAddressTest.cs" />
+    <Compile Include="PathComputationServerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

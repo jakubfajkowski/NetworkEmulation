@@ -2,7 +2,7 @@
 
 namespace NetworkUtilities.ControlPlane {
     public abstract class ControlPlaneElement {
-        public NetworkAddress SourceAddress { get; private set; }
+        public NetworkAddress SourceAddress { get; }
 
         public delegate void MessageToSendHandler(object sender, SignallingMessage message);
 
