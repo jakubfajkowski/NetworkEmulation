@@ -24,24 +24,24 @@ namespace NetworkUtilities.GraphAlgorithm
 
         public void load(List<SubnetworkPointPool> subnetworkPointPools, List<Link> links )
         {
-            SubnetworkPointPools = new SubnetworkPointPool[int.Parse(getDataFromLine(textFile[0], 1))];
-            if (SubnetworkPointPools.Length == 0) throw new Exception("Zerowa liczba wierzchołków!");
-            for (int i = 0; i < SubnetworkPointPools.Length; i++)
-            {
-                SubnetworkPointPools[i] = new SubnetworkPointPool(i+1);
-            }
+            //SubnetworkPointPools = new SubnetworkPointPool[int.Parse(getDataFromLine(textFile[0], 1))];
+            //if (SubnetworkPointPools.Length == 0) throw new Exception("Zerowa liczba wierzchołków!");
+            //for (int i = 0; i < SubnetworkPointPools.Length; i++)
+            //{
+            //    SubnetworkPointPools[i] = new SubnetworkPointPool(i+1);
+            //}
 
-            _links = new Link[int.Parse(getDataFromLine(textFile[1], 1))];
-            if (_links.Length == 0) throw new Exception("Zerowa liczba krawędzi!");
-            for (int i = 0; i < _links.Length; i++)
-            {
-                int edge_id = int.Parse(getDataFromLine(textFile[2 + i], 0));
-                int begin_id = int.Parse(getDataFromLine(textFile[2 + i], 1));
-                int end_id = int.Parse(getDataFromLine(textFile[2 + i], 2));
+            //_links = new Link[int.Parse(getDataFromLine(textFile[1], 1))];
+            //if (_links.Length == 0) throw new Exception("Zerowa liczba krawędzi!");
+            //for (int i = 0; i < _links.Length; i++)
+            //{
+            //    int edge_id = int.Parse(getDataFromLine(textFile[2 + i], 0));
+            //    int begin_id = int.Parse(getDataFromLine(textFile[2 + i], 1));
+            //    int end_id = int.Parse(getDataFromLine(textFile[2 + i], 2));
 
-                _links[i] = new Link(edge_id, SubnetworkPointPools[begin_id - 1], SubnetworkPointPools[end_id - 1]);
-                _links[i].Begin.AddEdgeOut(_links[i]);
-            }
+            //    _links[i] = new Link(edge_id, SubnetworkPointPools[begin_id - 1], SubnetworkPointPools[end_id - 1]);
+            //    _links[i].Begin.AddEdgeOut(_links[i]);
+            //}
         }
 
         //public void randomizeEdgesWeights()

@@ -34,7 +34,7 @@ namespace NetworkUtilitiesTests {
                         textFile.Add(line);
                     }
                 }
-                graph.load(textFile);
+                //graph.load(textFile);
             }
         }
 
