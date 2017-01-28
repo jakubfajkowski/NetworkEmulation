@@ -19,7 +19,7 @@ namespace NetworkUtilities.ControlPlane {
 
             PathComputationServerListeningPort = pathComputationServerListeningPort;
             OutputPort = pathComputationServerDataPort;
-            _controlPlaneConnectionComponent = new ConnectionComponent(ipAddress, pathComputationServerListeningPort, networkAddress, OutputPort);
+            _controlPlaneConnectionComponent = new ConnectionComponent(networkAddress, OutputPort, ipAddress, pathComputationServerListeningPort);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
 
             NetworkAddress = networkAddress;

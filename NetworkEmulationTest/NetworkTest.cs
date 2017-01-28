@@ -33,6 +33,7 @@ namespace NetworkEmulationTest {
             Thread.Sleep(1000);
 
             var clientNodeA = new ClientNode.ClientNode(new ClientNodeModel {
+                NetworkAddress = new NetworkAddress("1.1"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "A",
                 ClientTable = new List<ClientTableRow>(new[] {new ClientTableRow("B", portA, 1, 1)}),
@@ -44,6 +45,7 @@ namespace NetworkEmulationTest {
             clientNodeA.UpdateState += (sender, state) => Console.WriteLine(state);
 
             var clientNodeB = new ClientNode.ClientNode(new ClientNodeModel {
+                NetworkAddress = new NetworkAddress("2.2"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "B",
                 CableCloudListeningPort = 10000,
@@ -54,6 +56,7 @@ namespace NetworkEmulationTest {
             clientNodeB.UpdateState += (sender, state) => Console.WriteLine(state);
 
             var networkNode1 = new NetworkNode.NetworkNode(new NetworkNodeModel {
+                NetworkAddress = new NetworkAddress("1.2"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
@@ -64,6 +67,7 @@ namespace NetworkEmulationTest {
             });
 
             var networkNode2 = new NetworkNode.NetworkNode(new NetworkNodeModel {
+                NetworkAddress = new NetworkAddress("2.1"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,

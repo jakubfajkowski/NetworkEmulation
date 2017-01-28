@@ -21,7 +21,7 @@ namespace NetworkUtilities.Network {
         public bool Online { get; private set; }
         private readonly NetworkAddressSocketPortPair _handshakeMessage;
 
-        public ConnectionComponent(string connectionManagerIpAddress, int connectionManagerListeningPort, NetworkAddress networkAddress, int dataTransferPort) {
+        public ConnectionComponent(NetworkAddress networkAddress, int dataTransferPort, string connectionManagerIpAddress, int connectionManagerListeningPort) {
             _ipAddress = IPAddress.Parse(connectionManagerIpAddress);
             _connectionManagerListeningPort = connectionManagerListeningPort;
             _handshakeMessage = new NetworkAddressSocketPortPair(networkAddress, dataTransferPort);
@@ -56,7 +56,7 @@ namespace NetworkUtilities.Network {
 
         private void ListenForMessages() {
             while (Online) {
-                var cableCloudMessage = (CableCloudMessage) ReceiveObject();
+                var cableCloudMessage = ReceiveObject();
                 OnObjectReceived(cableCloudMessage);
             }
         }
