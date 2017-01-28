@@ -41,6 +41,7 @@ namespace NetworkUtilitiesTests {
 
             ncc1.OnMessageToSend += PassMessage;
             ncc2.OnMessageToSend += PassMessage;
+            cc.OnMessageToSend += PassMessage;
             cpccA.OnMessageToSend += PassMessage;
             cpccB.OnMessageToSend += PassMessage;
             directory.OnMessageToSend += PassMessage;

@@ -20,7 +20,8 @@ namespace NetworkUtilities.ControlPlane {
             SignallingMessage callRequest = new SignallingMessage() {
                 Operation = SignallingMessageOperation.CallRequest,
                 Payload = callRequestMessage,
-                DestinationAddress = nccAddress
+                DestinationAddress = nccAddress,
+                DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController
             };
             SendMessage(callRequest);
         }
@@ -30,7 +31,8 @@ namespace NetworkUtilities.ControlPlane {
             SignallingMessage callTeardown = new SignallingMessage() {
                 Operation = SignallingMessageOperation.CallTeardown,
                 Payload = clientNames,
-                DestinationAddress = NccAddress
+                DestinationAddress = NccAddress,
+                DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController
             };
             SendMessage(callTeardown);
         }
@@ -40,6 +42,8 @@ namespace NetworkUtilities.ControlPlane {
             callConfirmation.Operation = SignallingMessageOperation.CallConfirmation;
             callConfirmation.Payload = confirmation;
             callConfirmation.DestinationAddress = message.SourceAddress;
+            callConfirmation.DestinationControlPlaneElement =
+                SignallingMessageDestinationControlPlaneElement.NetworkCallController;
             SendMessage(callConfirmation);
         }
 
