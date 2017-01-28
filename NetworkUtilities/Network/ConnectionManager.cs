@@ -8,19 +8,19 @@ using NetworkUtilities.Serialization;
 
 namespace NetworkUtilities.Network {
     public abstract class ConnectionManager : LogObject {
-        private readonly int _listeningPort;
+        public int ListeningPort { get; }
         private readonly Dictionary<NetworkAddress, TcpClient> _nodesTcpClients;
         private UdpClient _connectionUdpClient;
 
         protected ConnectionManager(int listeningPort) {
             _nodesTcpClients = new Dictionary<NetworkAddress, TcpClient>();
-            _listeningPort = listeningPort;
+            ListeningPort = listeningPort;
         }
 
         public bool Online { get; private set; }
 
         public virtual void Initialize() {
-            var ipEndPoint = new IPEndPoint(IPAddress.Any, _listeningPort);
+            var ipEndPoint = new IPEndPoint(IPAddress.Any, ListeningPort);
             _connectionUdpClient = new UdpClient(ipEndPoint);
 
             ListenForConnectionRequests();

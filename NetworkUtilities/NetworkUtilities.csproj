@@ -57,6 +57,12 @@
     <Compile Include="GraphAlgorithm\PriorityQueue\Heap.cs" />
     <Compile Include="GraphAlgorithm\PriorityQueue\Queue.cs" />
     <Compile Include="GraphAlgorithm\SubnetworkPointPool.cs" />
+    <Compile Include="Log\PathComputationServerLogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Log\PathComputationServerLogForm.Designer.cs">
+      <DependentUpon>PathComputationServerLogForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="NetworkAddressSocketPortPair.cs" />
     <Compile Include="Network\ConnectionManager.cs" />
     <Compile Include="ControlPlane\CallingPartyCallController.cs" />
@@ -91,6 +97,9 @@
     <Compile Include="Serialization\XmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Log\PathComputationServerLogForm.resx">
+      <DependentUpon>PathComputationServerLogForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Log\LogForm.resx">
       <DependentUpon>LogForm.cs</DependentUpon>
     </EmbeddedResource>

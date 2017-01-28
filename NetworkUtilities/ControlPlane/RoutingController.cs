@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,16 +11,19 @@ namespace NetworkUtilities.ControlPlane {
     class RoutingController : ControlPlaneElement {
         private List<Link> _linkList = new List<Link>();
 
-        public RoutingController(NetworkAddress networkAddress) : base(networkAddress) {}
+        public RoutingController(NetworkAddress networkAddress) : base(networkAddress) {
+        }
 
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
                 case SignallingMessageOperation.RouteTableQuery:
-                    var snpps = message.Payload as List<SubnetworkPointPool>;
-                    if (snpps != null) Route(snpps[0], snpps[1]);
+                    var list = message.Payload as object[];
+                    var snpps = list[0] as SubnetworkPointPool[];
+                    var capacity = (int) list[1];
+                    if (snpps != null) HandleRouteTableQuery(snpps[0], snpps[1], capacity, message);
                     break;
                 case SignallingMessageOperation.LocalTopology:
-                    _linkList.Add((Link)message.Payload);
+                    _linkList.Add((Link) message.Payload);
                     break;
                 case SignallingMessageOperation.NetworkTopology:
 
@@ -37,8 +41,18 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(networkTopology);
         }
 
-        private void Route(SubnetworkPointPool snppA, SubnetworkPointPool snppB) {
-
+        private SubnetworkPointPool[] Route(SubnetworkPointPool snppStart, SubnetworkPointPool snppEnd, int capacity) {
+            var preparedList = _linkList.Where(link => link.Capacity >= capacity).ToArray();
+            var graph = new Graph();
+            graph.Load(preparedList);
+            var paths = Floyd.runAlgorithm(graph, snppStart, snppEnd);
+            return paths[0].SubnetworkPointPools;
+        }
+        private void HandleRouteTableQuery(SubnetworkPointPool snppStart, SubnetworkPointPool snppEnd, int capacity, SignallingMessage message) {
+           
+            message.Operation = SignallingMessageOperation.RouteTableQueryResponse;
+            message.Payload =Route(snppStart,snppEnd,capacity);
+            SendMessage(message);
         }
     }
 }

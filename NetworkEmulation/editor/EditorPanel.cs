@@ -110,14 +110,20 @@ namespace NetworkEmulation.Editor {
             var graphics = e.Graphics;
             foreach (var insertedLink in AddedLinks) insertedLink.DrawLink(graphics);
             foreach (var addedNodeView in AddedNodeViews) {
+                var centerPoint = addedNodeView.CenterPoint();
+                DrawTextLine(graphics, centerPoint, addedNodeView.NetworkAddress.ToString());
+
                 var clientNodeView = addedNodeView as ClientNodeView;
 
                 if (clientNodeView == null) continue;
-                using (var myFont = new Font("Arial", 8)) {
-                    var centerPoint = clientNodeView.CenterPoint();
-                    var namePoint = new Point(centerPoint.X - 12, centerPoint.Y + 32);
-                    graphics.DrawString(clientNodeView.Parameters.ClientName, myFont, Brushes.Black, namePoint);
-                }
+                DrawTextLine(graphics, new Point(centerPoint.X, centerPoint.Y + 10), clientNodeView.Parameters.ClientName);
+            }
+        }
+
+        private void DrawTextLine(Graphics g, Point centerPoint, string text) {
+            using (var myFont = new Font("Arial", 8)) {
+                var namePoint = new Point(centerPoint.X - 3*text.Length, centerPoint.Y + 32);
+                g.DrawString(text, myFont, Brushes.Black, namePoint);
             }
         }
 

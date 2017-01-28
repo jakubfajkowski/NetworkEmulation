@@ -20,8 +20,9 @@ namespace NetworkUtilitiesTests {
             generateGraph(500);
 
 
-            run("D:\\Projects\\_Visual Studio\\NetworkEmulation\\NetworkUtilitiesTests\\bin\\Release\\graf_input.txt",1);
+            run("D:\\Projects\\_Visual Studio\\NetworkEmulation\\NetworkUtilitiesTests\\bin\\Release\\graf_input.txt", 1);
         }
+
         static private void initialize(string path) {
             graph = new Graph();
             using (StreamReader streamReader = new StreamReader(path)) {
@@ -34,7 +35,7 @@ namespace NetworkUtilitiesTests {
                         textFile.Add(line);
                     }
                 }
-                //graph.load(textFile);
+                graph.LoadDeprecated(textFile);
             }
         }
 
@@ -44,7 +45,7 @@ namespace NetworkUtilitiesTests {
 
             testTimeStopwatch.Start();
             for (int i = 0; i < numberOfTests; i++) {
-                //Console.WriteLine("Algorytm Dijkstry:");
+                Console.WriteLine("Algorytm Dijkstry:");
                 algorithmStopwatch.Restart();
                 Dijkstra.runAlgorithm(graph); //printPaths(Dijkstra.runAlgorithm(graph));
                 algorithmStopwatch.Stop();
@@ -82,7 +83,7 @@ namespace NetworkUtilitiesTests {
                 //Console.WriteLine("Algorytm Floyda od do:");
                 //graph.randomizeEdgesWeights();
                 //algorithmStopwatch.Restart();
-                //printPaths(Floyd.runAlgorithm(graph, graph.SubnetworkPointPools[4], graph.SubnetworkPointPools[3]));
+                printPaths(Floyd.runAlgorithm(graph, graph.SubnetworkPointPools[4], graph.SubnetworkPointPools[3]));
                 //algorithmStopwatch.Stop();
                 //averageTimeFloyd += algorithmStopwatch.ElapsedTicks;
             }
@@ -146,7 +147,7 @@ namespace NetworkUtilitiesTests {
             using (StreamWriter file =
                 new StreamWriter("graf_input.txt")) {
                 file.WriteLine("WEZLY = {0}", n);
-                file.WriteLine("LACZA = {0}", n * (n - 1));
+                file.WriteLine("LACZA = {0}", n*(n - 1));
                 int id = 1;
                 for (int i = 0; i < n; i++)
                     for (int j = 0; j < n; j++)

@@ -16,11 +16,11 @@ namespace NetworkUtilities.ControlPlane {
                                                  string ipAddress,
                                                  int listeningPort,
                                                  int pathComputationServerListeningPort,
-                                                 int pathComputationServerDataPort) : base(networkAddress,
+                                                 int outputPort) : base(networkAddress,
                                                                                            ipAddress,
                                                                                            listeningPort,
                                                                                            pathComputationServerListeningPort,
-                                                                                           pathComputationServerDataPort) {
+                                                                                           outputPort) {
             _connectionController = new ConnectionController(networkAddress);
             _networkCallController = new NetworkCallController(networkAddress);
             _routingController = new RoutingController(networkAddress);
