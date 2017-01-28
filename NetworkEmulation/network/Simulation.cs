@@ -30,7 +30,6 @@ namespace NetworkEmulation.Network {
             //TODO Zmienić metodę pokazywania logu
             _cableCloud = new CableCloud(Settings.Default.CableCloudUdpListenerPortNumber);
             PreapareCableCloudLogForm();
-            _cableCloud.Initialize();
 
             _networkManagmentSystem = new NetworkManagmentSystem();
             PrepareNetworkManagmentSystemLogForm();
@@ -41,6 +40,11 @@ namespace NetworkEmulation.Network {
             GetNetworkComponentsFromTree(networkHierarchy);
 
             PreparePathComputationServerMultipleLogForm();
+
+            foreach (var pathComputationServer in _pathComputationServers) {
+                pathComputationServer.StartListening();
+            }
+
             foreach (var pathComputationServer in _pathComputationServers) {
                 pathComputationServer.Initialize();
             }
@@ -68,10 +72,29 @@ namespace NetworkEmulation.Network {
         }
 
         private void PutNetworkComponentInSuitableList(TreeNode treeNode) {
-            foreach (TreeNode tn in treeNode.Nodes) {
-                if (tn.Tag is PathComputationServer) _pathComputationServers.Add((PathComputationServer)tn.Tag);
-                if (tn.Tag is NodeView) _initializableNodes.Add((NodeView)tn.Tag);
+            object component = treeNode.Tag;
 
+            if (component is PathComputationServer) _pathComputationServers.Add((PathComputationServer) component);
+            if (component is NodeView) {
+                var pcs = treeNode.Parent.Tag as PathComputationServer;
+                var node = (NodeView) component;
+
+                if (node is ClientNodeView) {
+                    var parameters = ((ClientNodeView) node).Parameters;
+                    parameters.PathComputationServerDataPort = PortRandomizer.RandomFreePort();
+                    parameters.PathComputationServerListeningPort = pcs.ListeningPort;
+                }
+
+                if (node is NetworkNodeView) {
+                    var parameters = ((NetworkNodeView)node).Parameters;
+                    parameters.PathComputationServerDataPort = PortRandomizer.RandomFreePort();
+                    parameters.PathComputationServerListeningPort = pcs.ListeningPort;
+                }
+
+                _initializableNodes.Add(node);
+            }
+
+            foreach (TreeNode tn in treeNode.Nodes) {
                 PutNetworkComponentInSuitableList(tn);
             }
         }

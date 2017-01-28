@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
@@ -19,16 +20,30 @@ namespace NetworkUtilitiesTests {
             var hpcs2Port = PortRandomizer.RandomFreePort();
 
             var sspcs1 = new StepByStepPathComputationServer(sspcs1Address, "127.0.0.1", 10001, 10002, sspcs1Port);
+            sspcs1.UpdateState += OnUpdateState;
+            sspcs1.StartListening();
             var sspcs2 = new StepByStepPathComputationServer(sspcs2Address, "127.0.0.1", 10002, 10001, sspcs2Port);
+            sspcs2.UpdateState += OnUpdateState;
+            sspcs2.StartListening();
 
             sspcs1.Initialize();
             sspcs2.Initialize();
 
             var hpcs1 = new StepByStepPathComputationServer(hpcs1Address, "127.0.0.1", 10003, 10001, hpcs1Port);
+            hpcs1.UpdateState += OnUpdateState;
+            hpcs1.StartListening();
             var hpcs2 = new StepByStepPathComputationServer(hpcs2Address, "127.0.0.1", 10004, 10001, hpcs2Port);
+            hpcs2.UpdateState += OnUpdateState;
+            hpcs2.StartListening();
 
             hpcs1.Initialize();
             hpcs2.Initialize();
+
+            Thread.Sleep(5000);
+        }
+
+        private void OnUpdateState(object sender, string state) {
+            Console.WriteLine(state);
         }
     }
 }

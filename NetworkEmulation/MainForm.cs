@@ -42,10 +42,10 @@ namespace NetworkEmulation {
         private void AddTopTwoSubnetworks() {
             AddSubnetworkNode();
             networkHierarchyTreeView.Nodes[0].Tag = new StepByStepPathComputationServer(new NetworkAddress(1),
-                "127.0.0.1", 20000, 20001, 20002);
+                "127.0.0.1", 20000, 20001, PortRandomizer.RandomFreePort());
             AddSubnetworkNode();
             networkHierarchyTreeView.Nodes[1].Tag = new StepByStepPathComputationServer(new NetworkAddress(2),
-                "127.0.0.1", 20001, 20000, 20003);
+                "127.0.0.1", 20001, 20000, PortRandomizer.RandomFreePort());
         }
 
         private void editorPanel_ControlAdded(object sender, ControlEventArgs e) {

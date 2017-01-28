@@ -31,7 +31,6 @@ namespace NetworkEmulationTest {
         [TestMethod]
         public void CableCloudBindEndpointTest() {
             var cableCloud = new CableCloud(10000);
-            cableCloud.Initialize();
             var port = 10001;
 
             var listenerTask = StartTcpListener(port, Listen);
@@ -48,7 +47,6 @@ namespace NetworkEmulationTest {
         public void CableCloudPassMessageTest() {
             var cableCloud = new CableCloud(10000);
             cableCloud.UpdateState += (sender, state) => Console.WriteLine(state);
-            cableCloud.Initialize();
 
             var port1 = 10001;
             var port2 = 10002;
