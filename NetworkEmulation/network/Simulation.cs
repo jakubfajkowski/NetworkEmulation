@@ -13,7 +13,7 @@ namespace NetworkEmulation.Network {
     public class Simulation {
         private readonly CableCloud _cableCloud;
 
-        private readonly List<NodePictureBox> _initializableNodes;
+        private readonly List<NodeView> _initializableNodes;
         private readonly List<Link> _links;
         private readonly NetworkManagmentSystem _networkManagmentSystem;
 
@@ -21,7 +21,7 @@ namespace NetworkEmulation.Network {
         private bool _cableCloudLogFormShown;
         private bool _networkManagmentSystemLogFormShown;
 
-        public Simulation(List<NodePictureBox> initializableNodes, List<Link> links) {
+        public Simulation(List<NodeView> initializableNodes, List<Link> links) {
             //TODO Zmienić metodę pokazywania logu
             _cableCloud = new CableCloud(Settings.Default.CableCloudUdpListenerPortNumber);
             CableCloudLogForm = new LogForm(_cableCloud);
@@ -33,13 +33,13 @@ namespace NetworkEmulation.Network {
 
             _initializableNodes = initializableNodes;
 
-            foreach (var initializableNode in _initializableNodes.OfType<NetworkNode>()) {
+            foreach (var initializableNode in _initializableNodes.OfType<NetworkNodeView>()) {
                 initializableNode.DoubleClick += InitializableNodeOnDoubleClick;
                 initializableNode.Parameters.MaxAtmCellsNumberInCableCloudMessage =
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
             }
 
-            foreach (var initializableNode in _initializableNodes.OfType<ClientNode>())
+            foreach (var initializableNode in _initializableNodes.OfType<ClientNodeView>())
                 initializableNode.Parameters.MaxAtmCellsNumberInCableCloudMessage =
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
 
@@ -78,18 +78,18 @@ namespace NetworkEmulation.Network {
         }
 
         private void InitializableNodeOnDoubleClick(object sender, EventArgs eventArgs) {
-            var networkNodePictureBox = sender as NetworkNode;
-            var nodeUdpPort = networkNodePictureBox.Parameters.NetworkManagmentSystemDataPort;
-            var cableCloudDataPort = networkNodePictureBox.CableCloudDataPort;
+            var networkNodeView = sender as NetworkNodeView;
+            var nodeUdpPort = networkNodeView.Parameters.NetworkManagmentSystemDataPort;
+            var cableCloudDataPort = networkNodeView.CableCloudDataPort;
 
             if (_networkManagmentSystem.IsOnline(nodeUdpPort)) {
-                MarkAsOffline(networkNodePictureBox);
+                MarkAsOffline(networkNodeView);
                 //TODO Mark links as offline
 
                 KillProcess(cableCloudDataPort);
             }
             else {
-                MarkAsOnline(networkNodePictureBox);
+                MarkAsOnline(networkNodeView);
                 //TODO Mark links as online
 
                 StartProcess(cableCloudDataPort);
@@ -138,7 +138,7 @@ namespace NetworkEmulation.Network {
         }
 
         private bool NetworkNodesOnline() {
-            return _networkManagmentSystem.AreOnline(_initializableNodes.OfType<NetworkNode>().ToList());
+            return _networkManagmentSystem.AreOnline(_initializableNodes.OfType<NetworkNodeView>().ToList());
         }
 
         public void Run() {

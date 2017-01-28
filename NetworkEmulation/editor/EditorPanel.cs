@@ -19,7 +19,7 @@ namespace NetworkEmulation.Editor {
 
     [Serializable]
     public partial class EditorPanel : UserControl, IXmlSerializable {
-        private NodePictureBox _currentNodePictureBox;
+        private NodeView _selectedNodeView;
 
         private Mode _mode = Mode.Move;
 
@@ -28,16 +28,16 @@ namespace NetworkEmulation.Editor {
         }
         
         public List<Link> AddedLinks { get; } = new List<Link>();
-        public List<NodePictureBox> AddedNodePictureBoxes { get; } = new List<NodePictureBox>();
+        public List<NodeView> AddedNodeViews { get; } = new List<NodeView>();
 
-        private NodePictureBox CurrentNodePictureBox {
-            get { return _currentNodePictureBox; }
+        private NodeView SelectedNodeView {
+            get { return _selectedNodeView; }
             set {
-                Deselect(_currentNodePictureBox);
+                Deselect(_selectedNodeView);
 
-                _currentNodePictureBox = value;
+                _selectedNodeView = value;
 
-                Select(_currentNodePictureBox);
+                Select(_selectedNodeView);
             }
         }
 
@@ -45,8 +45,8 @@ namespace NetworkEmulation.Editor {
             private get { return _mode; }
             set {
                 _mode = value;
-                Deselect(_currentNodePictureBox);
-                _currentNodePictureBox = null;
+                Deselect(_selectedNodeView);
+                _selectedNodeView = null;
             }
         }
 
@@ -61,37 +61,37 @@ namespace NetworkEmulation.Editor {
         protected override void OnMouseClick(MouseEventArgs e) {
             switch (Mode) {
                 case Mode.AddClientNode:
-                    var clientNodePictureBox = new ClientNode();
-                    _currentNodePictureBox = clientNodePictureBox;
-                    new ClientNodeForm(clientNodePictureBox).ShowDialog(this);
+                    var clientNodeView = new ClientNodeView();
+                    _selectedNodeView = clientNodeView;
+                    new ClientNodeForm(clientNodeView).ShowDialog(this);
                     break;
 
                 case Mode.AddNetworkNode:
-                    var networkNodePictureBox = new NetworkNode();
-                    _currentNodePictureBox = networkNodePictureBox;
-                    new NetworkNodeForm(networkNodePictureBox).ShowDialog(this);
+                    var networkNodeView = new NetworkNodeView();
+                    _selectedNodeView = networkNodeView;
+                    new NetworkNodeForm(networkNodeView).ShowDialog(this);
                     break;
 
                 default:
                     return;
             }
 
-            Add(_currentNodePictureBox);
-            _currentNodePictureBox.Location = e.Location;
+            Add(_selectedNodeView);
+            _selectedNodeView.Location = e.Location;
         }
 
-        private void nodePictureBox_OnClick(object sender, EventArgs e) {
+        private void nodeView_OnClick(object sender, EventArgs e) {
             switch (Mode) {
                 case Mode.AddLink:
-                    if (CurrentNodePictureBox == null) {
-                        CurrentNodePictureBox = sender as NodePictureBox;
+                    if (SelectedNodeView == null) {
+                        SelectedNodeView = sender as NodeView;
                     }
                     else {
-                        var link = CreateLink(CurrentNodePictureBox, sender as NodePictureBox);
+                        var link = CreateLink(SelectedNodeView, sender as NodeView);
                         new LinkForm(link).ShowDialog(this);
                         Add(link);
                         link.MarkAsDeselected();
-                        CurrentNodePictureBox = null;
+                        SelectedNodeView = null;
                     }
                     break;
 
@@ -109,29 +109,29 @@ namespace NetworkEmulation.Editor {
 
             var graphics = e.Graphics;
             foreach (var insertedLink in AddedLinks) insertedLink.DrawLink(graphics);
-            foreach (var addedNodePictureBox in AddedNodePictureBoxes) {
-                var clientNodePictureBox = addedNodePictureBox as ClientNode;
+            foreach (var addedNodeView in AddedNodeViews) {
+                var clientNodeView = addedNodeView as ClientNodeView;
 
-                if (clientNodePictureBox == null) continue;
+                if (clientNodeView == null) continue;
                 using (var myFont = new Font("Arial", 8)) {
-                    var centerPoint = clientNodePictureBox.CenterPoint();
+                    var centerPoint = clientNodeView.CenterPoint();
                     var namePoint = new Point(centerPoint.X - 12, centerPoint.Y + 32);
-                    graphics.DrawString(clientNodePictureBox.Parameters.ClientName, myFont, Brushes.Black, namePoint);
+                    graphics.DrawString(clientNodeView.Parameters.ClientName, myFont, Brushes.Black, namePoint);
                 }
             }
         }
 
-        private void Add(NodePictureBox nodePictureBox) {
-            nodePictureBox.Click += nodePictureBox_OnClick;
-            Controls.Add(nodePictureBox);
-            AddedNodePictureBoxes.Add(nodePictureBox);
+        private void Add(NodeView nodeView) {
+            nodeView.Click += nodeView_OnClick;
+            Controls.Add(nodeView);
+            AddedNodeViews.Add(nodeView);
 
-            Deselect(nodePictureBox);
+            Deselect(nodeView);
         }
 
-        private void DeleteNodePictureBox(NodePictureBox nodePictureBox) {
-            Controls.Remove(nodePictureBox);
-            AddedNodePictureBoxes.Remove(nodePictureBox);
+        private void DeleteNodeView(NodeView nodeView) {
+            Controls.Remove(nodeView);
+            AddedNodeViews.Remove(nodeView);
         }
 
         private void Add(Link link) {
@@ -141,8 +141,8 @@ namespace NetworkEmulation.Editor {
             Deselect(link);
         }
 
-        private Link CreateLink(NodePictureBox beginNodePictureBox, NodePictureBox endNodePictureBox) {
-            return new Link(ref beginNodePictureBox, ref endNodePictureBox);
+        private Link CreateLink(NodeView beginNodeView, NodeView endNodeView) {
+            return new Link(ref beginNodeView, ref endNodeView);
         }
 
         public void Clear() {
@@ -151,12 +151,12 @@ namespace NetworkEmulation.Editor {
             }
             AddedLinks.Clear();
 
-            foreach (var nodePictureBox in AddedNodePictureBoxes) {
-                nodePictureBox.Dispose();
+            foreach (var nodeView in AddedNodeViews) {
+                nodeView.Dispose();
             }
-            AddedNodePictureBoxes.Clear();
+            AddedNodeViews.Clear();
 
-            Mode = Mode.Move;
+            _selectedNodeView = null;
             Refresh();
         }
 
@@ -167,20 +167,20 @@ namespace NetworkEmulation.Editor {
         }
 
         public void ReadXml(XmlReader reader) {
-            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNode>));
-            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNode>));
+            var clientNodeViewSerializer = new XmlSerializer(typeof(List<ClientNodeView>));
+            var networkNodeViewSerializer = new XmlSerializer(typeof(List<NetworkNodeView>));
             var linkSerializer = new XmlSerializer(typeof(List<Link>));
 
             reader.ReadStartElement(nameof(EditorPanel));
-            var clientNodePictureBoxes =
-                clientNodePictureBoxSerializer.Deserialize(reader) as List<ClientNode>;
-            if (clientNodePictureBoxes != null)
-                foreach (var clientNodePictureBox in clientNodePictureBoxes) Add(clientNodePictureBox);
+            var clientNodeViews =
+                clientNodeViewSerializer.Deserialize(reader) as List<ClientNodeView>;
+            if (clientNodeViews != null)
+                foreach (var clientNodeView in clientNodeViews) Add(clientNodeView);
 
-            var networkNodePictureBoxes =
-                networkNodePictureBoxSerializer.Deserialize(reader) as List<NetworkNode>;
-            if (networkNodePictureBoxes != null)
-                foreach (var networkNodePictureBox in networkNodePictureBoxes) Add(networkNodePictureBox);
+            var networkNodeViews =
+                networkNodeViewSerializer.Deserialize(reader) as List<NetworkNodeView>;
+            if (networkNodeViews != null)
+                foreach (var networkNodeView in networkNodeViews) Add(networkNodeView);
 
             foreach (var link in linkSerializer.Deserialize(reader) as List<Link>) {
                 RestoreReferences(link);
@@ -190,25 +190,25 @@ namespace NetworkEmulation.Editor {
         }
 
         public void WriteXml(XmlWriter writer) {
-            var clientNodePictureBoxSerializer = new XmlSerializer(typeof(List<ClientNode>));
-            var networkNodePictureBoxSerializer = new XmlSerializer(typeof(List<NetworkNode>));
+            var clientNodeViewSerializer = new XmlSerializer(typeof(List<ClientNodeView>));
+            var networkNodeViewSerializer = new XmlSerializer(typeof(List<NetworkNodeView>));
             var linkSerializer = new XmlSerializer(typeof(List<Link>));
 
-            clientNodePictureBoxSerializer.Serialize(writer,
-                AddedNodePictureBoxes.OfType<ClientNode>().ToList());
-            networkNodePictureBoxSerializer.Serialize(writer,
-                AddedNodePictureBoxes.OfType<NetworkNode>().ToList());
+            clientNodeViewSerializer.Serialize(writer,
+                AddedNodeViews.OfType<ClientNodeView>().ToList());
+            networkNodeViewSerializer.Serialize(writer,
+                AddedNodeViews.OfType<NetworkNodeView>().ToList());
             linkSerializer.Serialize(writer, AddedLinks);
         }
 
         private void RestoreReferences(Link link) {
-            var beginNodePictureBoxId = link.Parameters.BeginNodePictureBoxId;
-            var endNodePictureBoxId = link.Parameters.EndNodePictureBoxId;
+            var beginNodeViewId = link.Parameters.BeginNodeViewId;
+            var endNodeViewId = link.Parameters.EndNodeViewId;
 
-            var beginNodePictureBox = AddedNodePictureBoxes.Find(box => box.Id.Equals(beginNodePictureBoxId));
-            var endNodePictureBox = AddedNodePictureBoxes.Find(box => box.Id.Equals(endNodePictureBoxId));
+            var beginNodeView = AddedNodeViews.Find(box => box.Id.Equals(beginNodeViewId));
+            var endNodeView = AddedNodeViews.Find(box => box.Id.Equals(endNodeViewId));
 
-            link.SetAttachmentNodePictureBoxes(ref beginNodePictureBox, ref endNodePictureBox);
+            link.SetAttachmentNodeViews(ref beginNodeView, ref endNodeView);
         }
 
         #endregion

@@ -26,45 +26,86 @@ namespace NetworkEmulation {
         }
 
         private void newProjectMenuItem_Click(object sender, EventArgs e) {
+            NewProject();
+        }
+
+        private void NewProject() {
             editorPanel.Clear();
             networkHierarchyTreeView.Nodes.Clear();
             parametersListView.Items.Clear();
         }
 
         private void editorPanel_ControlAdded(object sender, ControlEventArgs e) {
-            if (e.Control is ClientNode) {
-                var clientNode = (ClientNode) e.Control;
-                AddToNetworkHierarchyTreeView(clientNode);
+            if (e.Control is ClientNodeView) {
+                var clientNode = (ClientNodeView) e.Control;
+
+                if (clientNode.Parameters.NetworkAddress == null)
+                    AddToNetworkHierarchyTreeView(clientNode);
+                else
+                    RestoreToNetworkHierarchyTreeView(clientNode.Parameters.NetworkAddress, clientNode);
             }
 
-            if (e.Control is NetworkNode) {
-                var networkNode = (NetworkNode) e.Control;
-                AddToNetworkHierarchyTreeView(networkNode);
+            if (e.Control is NetworkNodeView) {
+                var networkNode = (NetworkNodeView) e.Control;
+
+                if (networkNode.Parameters.NetworkAddress == null)
+                    AddToNetworkHierarchyTreeView(networkNode);
+                else
+                    RestoreToNetworkHierarchyTreeView(networkNode.Parameters.NetworkAddress, networkNode);
             }
         }
 
-        private void AddToNetworkHierarchyTreeView(ClientNode node) {
+        private void AddToNetworkHierarchyTreeView(ClientNodeView node) {
             var treeNode = new TreeNode {
                 Tag = node
             };
 
-            var address = AddNodeToNetworkHierachryTreeView(treeNode);
+            var address = AddToTreeView(treeNode);
             node.Parameters.NetworkAddress = address;
             treeNode.Text = address.ToString();
         }
 
 
-        private void AddToNetworkHierarchyTreeView(NetworkNode node) {
+        private void AddToNetworkHierarchyTreeView(NetworkNodeView node) {
             var treeNode = new TreeNode {
                 Tag = node
             };
 
-            var address = AddNodeToNetworkHierachryTreeView(treeNode);
+            var address = AddToTreeView(treeNode);
             node.Parameters.NetworkAddress = address;
             treeNode.Text = address.ToString();
         }
 
-        private NetworkAddress AddNodeToNetworkHierachryTreeView(TreeNode treeNode) {
+        private void RestoreToNetworkHierarchyTreeView(NetworkAddress address, NodeView node) {
+            var nodes = networkHierarchyTreeView.Nodes;
+            TreeNode parent = null;
+            var parentAddress = new NetworkAddress(address.GetId(0));
+
+            for (int i = 0; i < address.Levels - 1; i++) {
+                var id = address.GetId(i);
+
+                if (nodes.Count < id) {
+                    while (nodes.Count < id) {
+                        var subnetworkNode = new TreeNode();
+                        nodes.Add(subnetworkNode);
+                        subnetworkNode.Text = parentAddress.ToString();
+                        parentAddress.Append(subnetworkNode.Index + 1);
+                    }
+                }
+
+                parent = nodes[id - 1];
+                nodes = parent.Nodes;
+                parentAddress = parentAddress.Append(parent.Index);
+            }
+
+            var treeNode = new TreeNode {
+                Tag = node
+            };
+            treeNode.Text = address.ToString();
+            parent.Nodes.Add(treeNode);
+        }
+
+        private NetworkAddress AddToTreeView(TreeNode treeNode) {
             NetworkAddress nodeAddress;
             var selectedNode = networkHierarchyTreeView.SelectedNode;
 
@@ -83,6 +124,12 @@ namespace NetworkEmulation {
             }
 
             return nodeAddress;
+        }
+
+        private void networkHierarchyTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
+            if (e.Node.Tag != null) {
+                networkHierarchyTreeView.SelectedNode = e.Node.Parent;
+            }
         }
 
         private void saveProjectMenuItem_Click(object sender, EventArgs e) {
@@ -106,7 +153,7 @@ namespace NetworkEmulation {
                 using (var openFileDialogStream = openFileDialog.OpenFile()) {
                     var streamReader = new StreamReader(openFileDialogStream);
 
-                    editorPanel.Clear();
+                    NewProject();
                     XmlSerializer.Deserialize(editorPanel, streamReader.ReadToEnd());
                 }
         }
@@ -124,6 +171,27 @@ namespace NetworkEmulation {
         private void linkToolStripMenuItem_Click(object sender, EventArgs e) {
             editorPanel.Cursor = Cursors.SizeAll;
             editorPanel.Mode = Mode.AddLink;
+        }
+
+        private void subnetworkToolStripMenuItem_Click(object sender, EventArgs e) {
+            var subnetworkNode = new TreeNode();
+
+            if (networkHierarchyTreeView.SelectedNode != null) {
+                networkHierarchyTreeView.SelectedNode.Nodes.Add(subnetworkNode);
+                var parentAddress = networkHierarchyTreeView.SelectedNode.Text;
+                var childIndex = networkHierarchyTreeView.SelectedNode.Nodes.IndexOf(subnetworkNode) + 1;
+                var childAddress = new NetworkAddress(parentAddress).Append(childIndex);
+                subnetworkNode.Text = childAddress.ToString();
+            }
+            else {
+                networkHierarchyTreeView.Nodes.Add(subnetworkNode);
+                var childIndex = networkHierarchyTreeView.Nodes.IndexOf(subnetworkNode) + 1;
+                var childAddress = new NetworkAddress(childIndex);
+                subnetworkNode.Text = childAddress.ToString();
+            }
+
+
+            
         }
 
         private void moveToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -152,7 +220,7 @@ namespace NetworkEmulation {
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e) {
-            _simulation = new Simulation(editorPanel.AddedNodePictureBoxes, editorPanel.AddedLinks);
+            _simulation = new Simulation(editorPanel.AddedNodeViews, editorPanel.AddedLinks);
             MessageBox.Show("Simulation running.");
             SwitchRunStop();
         }

@@ -89,7 +89,7 @@
     <Compile Include="Network\Simulation.cs" />
     <Compile Include="SerializableDictionary.cs" />
     <Compile Include="Network\SocketNodePortPair.cs" />
-    <Compile Include="Editor\Element\ClientNode.cs">
+    <Compile Include="Editor\Element\ClientNodeView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MainForm.cs">
@@ -99,10 +99,10 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Network\NetworkManagmentSystem.cs" />
-    <Compile Include="Editor\Element\NetworkNode.cs">
+    <Compile Include="Editor\Element\NetworkNodeView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Editor\Element\Node.cs">
+    <Compile Include="Editor\Element\NodeView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />

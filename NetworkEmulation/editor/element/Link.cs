@@ -20,14 +20,14 @@ namespace NetworkEmulation.Editor.Element {
             Parameters = new LinkModel();
         }
 
-        public Link(ref NodePictureBox beginNodePictureBox, ref NodePictureBox endNodePictureBox) : this() {
+        public Link(ref NodeView beginNodeView, ref NodeView endNodeView) : this() {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
 
-            SetAttachmentNodePictureBoxes(ref beginNodePictureBox, ref endNodePictureBox);
+            SetAttachmentNodeViews(ref beginNodeView, ref endNodeView);
         }
 
-        public NodePictureBox BeginNodePictureBox { get; private set; }
-        public NodePictureBox EndNodePictureBox { get; private set; }
+        public NodeView BeginNodeView { get; private set; }
+        public NodeView EndNodeView { get; private set; }
 
         public LinkModel Parameters { get; set; }
 
@@ -49,16 +49,16 @@ namespace NetworkEmulation.Editor.Element {
 
         public UniqueId Id { get; private set; }
 
-        public void SetAttachmentNodePictureBoxes(ref NodePictureBox beginNodePictureBox,
-            ref NodePictureBox endNodePictureBox) {
-            BeginNodePictureBox = beginNodePictureBox;
-            EndNodePictureBox = endNodePictureBox;
+        public void SetAttachmentNodeViews(ref NodeView beginNodeView,
+            ref NodeView endNodeView) {
+            BeginNodeView = beginNodeView;
+            EndNodeView = endNodeView;
 
-            Parameters.BeginNodePictureBoxId = BeginNodePictureBox.Id;
-            Parameters.EndNodePictureBoxId = EndNodePictureBox.Id;
+            Parameters.BeginNodeViewId = BeginNodeView.Id;
+            Parameters.EndNodeViewId = EndNodeView.Id;
 
-            BeginNodePictureBox.OnNodeMoving += sender => Parent.Refresh();
-            EndNodePictureBox.OnNodeMoving += sender => Parent.Refresh();
+            BeginNodeView.OnNodeMoving += sender => Parent.Refresh();
+            EndNodeView.OnNodeMoving += sender => Parent.Refresh();
         }
 
         private void ChangeStyle(Pen pen) {
@@ -67,15 +67,15 @@ namespace NetworkEmulation.Editor.Element {
         }
 
         public void DrawLink(Graphics graphics) {
-            var beginPoint = BeginNodePictureBox.CenterPoint();
-            var endPoint = EndNodePictureBox.CenterPoint();
+            var beginPoint = BeginNodeView.CenterPoint();
+            var endPoint = EndNodeView.CenterPoint();
 
             graphics.DrawLine(_pen, beginPoint, endPoint);
         }
 
-        public bool IsBetween(NodePictureBox beginNodePictureBox, NodePictureBox endNodePictureBox) {
-            return BeginNodePictureBox.Equals(beginNodePictureBox) && EndNodePictureBox.Equals(endNodePictureBox) ||
-                   BeginNodePictureBox.Equals(endNodePictureBox) && EndNodePictureBox.Equals(beginNodePictureBox);
+        public bool IsBetween(NodeView beginNodeView, NodeView endNodeView) {
+            return BeginNodeView.Equals(beginNodeView) && EndNodeView.Equals(endNodeView) ||
+                   BeginNodeView.Equals(endNodeView) && EndNodeView.Equals(beginNodeView);
         }
 
         #region IXmlSerializable

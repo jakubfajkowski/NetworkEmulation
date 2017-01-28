@@ -120,11 +120,11 @@ namespace NetworkEmulation.Network {
             }
         }
 
-        public bool AreOnline(List<NetworkNode> networkNodePictureBoxes) {
+        public bool AreOnline(List<NetworkNodeView> networkNodeViews) {
             var areOnline = true;
 
-            foreach (var networkNodePictureBox in networkNodePictureBoxes) {
-                var nodeUdpPort = networkNodePictureBox.Parameters.NetworkManagmentSystemDataPort;
+            foreach (var networkNodeView in networkNodeViews) {
+                var nodeUdpPort = networkNodeView.Parameters.NetworkManagmentSystemDataPort;
 
                 if (!IsOnline(nodeUdpPort)) {
                     areOnline = false;

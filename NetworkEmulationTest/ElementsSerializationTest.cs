@@ -23,7 +23,7 @@ namespace NetworkEmulationTest {
 
         [TestMethod]
         public void SerializeClientNodePictureBox() {
-            var clientNodePictureBox = new NetworkEmulation.Editor.Element.ClientNode {
+            var clientNodePictureBox = new NetworkEmulation.Editor.Element.ClientNodeView {
                 Parameters = new ClientNodeModel {
                     ClientName = "Janusz",
                     ClientTable =
@@ -36,13 +36,13 @@ namespace NetworkEmulationTest {
 
             var serialized = XmlSerializer.Serialize(clientNodePictureBox);
 
-            var deserialized = new NetworkEmulation.Editor.Element.ClientNode();
+            var deserialized = new NetworkEmulation.Editor.Element.ClientNodeView();
             XmlSerializer.Deserialize(deserialized, serialized);
         }
 
         [TestMethod]
         public void SerializeNetworkNodePictureBox() {
-            var networkNodePictureBox = new NetworkEmulation.Editor.Element.NetworkNode {
+            var networkNodePictureBox = new NetworkEmulation.Editor.Element.NetworkNodeView {
                 Parameters = new NetworkNodeModel {
                     CableCloudListeningPort = 10000,
                     IpAddress = "localhost",
@@ -53,7 +53,7 @@ namespace NetworkEmulationTest {
 
             var serialized = XmlSerializer.Serialize(networkNodePictureBox);
 
-            var deserialized = new NetworkEmulation.Editor.Element.NetworkNode();
+            var deserialized = new NetworkEmulation.Editor.Element.NetworkNodeView();
             XmlSerializer.Deserialize(deserialized, serialized);
         }
 
@@ -61,8 +61,8 @@ namespace NetworkEmulationTest {
         public void SerializeLink() {
             var link = new Link {
                 Parameters = new LinkModel {
-                    BeginNodePictureBoxId = UniqueId.Generate(),
-                    EndNodePictureBoxId = UniqueId.Generate(),
+                    BeginNodeViewId = UniqueId.Generate(),
+                    EndNodeViewId = UniqueId.Generate(),
                     InputNodePortPair = new SocketNodePortPair(3, 4),
                     OutputNodePortPair = new SocketNodePortPair(5, 6)
                 }
