@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NetworkUtilities.ControlPlane {
-    class CallingPartyCallController : ControlPlaneElement
+    public class CallingPartyCallController : ControlPlaneElement
     {
         public bool callConfirmed { get; set; }
-        public NetworkAddress nccAddress { get; set; }
+        public NetworkAddress NccAddress { get; private set; }
 
-        private void SendCallRequest(string clientA, string clientZ) {
+        public void SendCallRequest(string clientA, string clientZ, NetworkAddress nccAddress) {
+            NccAddress = nccAddress;
             string[] clientNames = { clientA, clientZ };
             SignallingMessage callRequest = new SignallingMessage() {
                 Operation = SignallingMessageOperation.CallRequest,
@@ -20,12 +21,12 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callRequest);
         }
 
-        private void SendCallTeardown(string clientA, string clientZ) {
+        public void SendCallTeardown(string clientA, string clientZ) {
             string[] clientNames = { clientA, clientZ };
             SignallingMessage callTeardown = new SignallingMessage() {
                 Operation = SignallingMessageOperation.CallTeardown,
                 Payload = clientNames,
-                DestinationAddress = nccAddress
+                DestinationAddress = NccAddress
             };
             SendMessage(callTeardown);
         }
@@ -34,7 +35,7 @@ namespace NetworkUtilities.ControlPlane {
             var callConfirmation = message;
             callConfirmation.Operation = SignallingMessageOperation.CallConfirmation;
             callConfirmation.Payload = confirmation;
-            callConfirmation.DestinationAddress = nccAddress;
+            callConfirmation.DestinationAddress = NccAddress;
             SendMessage(callConfirmation);
         }
 
@@ -42,7 +43,7 @@ namespace NetworkUtilities.ControlPlane {
             var callAcceptResponse = message;
             callAcceptResponse.Operation = SignallingMessageOperation.CallAcceptResponse;
             callAcceptResponse.Payload = (bool) true;
-            callAcceptResponse.DestinationAddress = nccAddress;
+            callAcceptResponse.DestinationAddress = NccAddress;
             SendMessage(callAcceptResponse);
         }
 
@@ -50,7 +51,7 @@ namespace NetworkUtilities.ControlPlane {
             var callTeardownResponse = message;
             callTeardownResponse.Operation = SignallingMessageOperation.CallTeardownResponse;
             callTeardownResponse.Payload = (bool) true;
-            callTeardownResponse.DestinationAddress = nccAddress;
+            callTeardownResponse.DestinationAddress = NccAddress;
             SendMessage(callTeardownResponse);
         }
 

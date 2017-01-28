@@ -68,7 +68,10 @@ namespace NetworkUtilities {
         }
 
         public override bool Equals(object obj) {
-            return _value.Equals(obj);
+            if (!(obj is NetworkAddress)) return false;
+
+            var other = (NetworkAddress) obj;
+            return _value.Equals(other._value);
         }
 
         public override int GetHashCode() {

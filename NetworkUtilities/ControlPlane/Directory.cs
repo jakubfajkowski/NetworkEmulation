@@ -2,7 +2,9 @@
 using System.Linq;
 
 namespace NetworkUtilities.ControlPlane {
-    internal class Directory : ControlPlaneElement {
+    public class Directory : ControlPlaneElement {
+        public static readonly NetworkAddress Address = new NetworkAddress("0");
+
         private readonly Dictionary<string, NetworkAddress> _clientAdderssDictionary = new Dictionary<string, NetworkAddress>();
         private readonly Dictionary<string, NetworkAddress> _snppDictionary = new Dictionary<string, NetworkAddress>();
 
