@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -8,6 +9,7 @@ using NetworkEmulation.Editor.Element;
 using NetworkEmulation.Network;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
+using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Log;
 using NetworkUtilities.Serialization;
 
@@ -17,6 +19,7 @@ namespace NetworkEmulation {
 
         public MainForm() {
             InitializeComponent();
+            NewProject();
         }
 
         private static Cursor CursorImage(Bitmap b) {
@@ -32,7 +35,17 @@ namespace NetworkEmulation {
         private void NewProject() {
             editorPanel.Clear();
             networkHierarchyTreeView.Nodes.Clear();
+            AddTopTwoSubnetworks();
             parametersListView.Items.Clear();
+        }
+
+        private void AddTopTwoSubnetworks() {
+            AddSubnetworkNode();
+            networkHierarchyTreeView.Nodes[0].Tag = new StepByStepPathComputationServer(new NetworkAddress(1),
+                "127.0.0.1", 20000, 20001, 20002);
+            AddSubnetworkNode();
+            networkHierarchyTreeView.Nodes[1].Tag = new StepByStepPathComputationServer(new NetworkAddress(2),
+                "127.0.0.1", 20001, 20000, 20003);
         }
 
         private void editorPanel_ControlAdded(object sender, ControlEventArgs e) {
@@ -66,7 +79,6 @@ namespace NetworkEmulation {
             treeNode.Text = address.ToString();
         }
 
-
         private void AddToNetworkHierarchyTreeView(NetworkNodeView node) {
             var treeNode = new TreeNode {
                 Tag = node
@@ -81,7 +93,7 @@ namespace NetworkEmulation {
         private void RestoreToNetworkHierarchyTreeView(NetworkAddress address, NodeView node) {
             var nodes = networkHierarchyTreeView.Nodes;
             TreeNode parent = null;
-            var parentAddress = new NetworkAddress(address.GetId(0));
+            var currentAddress = new NetworkAddress(address.GetId(0));
 
             for (int i = 0; i < address.Levels - 1; i++) {
                 var id = address.GetId(i);
@@ -90,14 +102,17 @@ namespace NetworkEmulation {
                     while (nodes.Count < id) {
                         var subnetworkNode = new TreeNode();
                         nodes.Add(subnetworkNode);
-                        subnetworkNode.Text = parentAddress.ToString();
-                        parentAddress.Append(subnetworkNode.Index + 1);
+                        currentAddress = currentAddress.GetParentsAddress().Append(nodes.Count);
+                        subnetworkNode.Text = currentAddress.ToString();
+                        var parentPathComputationServer = (PathComputationServer) subnetworkNode.Parent.Tag;
+                        subnetworkNode.Tag = new HierarchicalPathComputationServer(currentAddress,
+                            "127.0.0.1", PortRandomizer.RandomFreePort(), parentPathComputationServer.ListeningPort, PortRandomizer.RandomFreePort());
                     }
                 }
 
                 parent = nodes[id - 1];
                 nodes = parent.Nodes;
-                parentAddress = parentAddress.Append(parent.Index);
+                currentAddress = currentAddress.Append(parent.Index + 1);
             }
 
             var treeNode = new TreeNode {
@@ -129,7 +144,12 @@ namespace NetworkEmulation {
         }
 
         private void networkHierarchyTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
-            if (e.Node.Tag != null) {
+            if (e.Node == null) {
+                networkHierarchyTreeView.SelectedNode = networkHierarchyTreeView.TopNode;
+                return;
+            }
+
+            if (e.Node.Tag is NodeView) {
                 networkHierarchyTreeView.SelectedNode = e.Node.Parent;
             }
         }
@@ -176,6 +196,10 @@ namespace NetworkEmulation {
         }
 
         private void subnetworkToolStripMenuItem_Click(object sender, EventArgs e) {
+            AddSubnetworkNode();
+        }
+
+        private void AddSubnetworkNode() {
             var subnetworkNode = new TreeNode();
 
             if (networkHierarchyTreeView.SelectedNode != null) {
@@ -191,9 +215,6 @@ namespace NetworkEmulation {
                 var childAddress = new NetworkAddress(childIndex);
                 subnetworkNode.Text = childAddress.ToString();
             }
-
-
-            
         }
 
         private void moveToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -222,7 +243,7 @@ namespace NetworkEmulation {
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e) {
-            _simulation = new Simulation(editorPanel.AddedNodeViews, editorPanel.AddedLinks);
+            _simulation = new Simulation(networkHierarchyTreeView.Nodes, editorPanel.AddedLinks);
             MessageBox.Show("Simulation running.");
             SwitchRunStop();
         }

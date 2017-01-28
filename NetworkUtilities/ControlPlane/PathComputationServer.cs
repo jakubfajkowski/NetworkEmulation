@@ -4,10 +4,10 @@ using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
     public abstract class PathComputationServer : ConnectionManager {
-        private readonly NetworkAddress _networkAddress;
+        public NetworkAddress NetworkAddress { get; }
         private readonly Dictionary<NetworkAddress, NetworkAddress> _signallingLinkDictionary;
 
-        public int PathComputationServerDataPort { get; protected set; }
+        public int OutputPort { get; protected set; }
         protected int PathComputationServerListeningPort;
         private readonly ConnectionComponent _controlPlaneConnectionComponent;
 
@@ -18,11 +18,11 @@ namespace NetworkUtilities.ControlPlane {
                                         int pathComputationServerDataPort) : base(listeningPort) {
 
             PathComputationServerListeningPort = pathComputationServerListeningPort;
-            PathComputationServerDataPort = pathComputationServerDataPort;
-            _controlPlaneConnectionComponent = new ConnectionComponent(ipAddress, pathComputationServerListeningPort, networkAddress, pathComputationServerDataPort);
+            OutputPort = pathComputationServerDataPort;
+            _controlPlaneConnectionComponent = new ConnectionComponent(ipAddress, pathComputationServerListeningPort, networkAddress, OutputPort);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
 
-            _networkAddress = networkAddress;
+            NetworkAddress = networkAddress;
             _signallingLinkDictionary = new Dictionary<NetworkAddress, NetworkAddress>();
         }
 
@@ -37,7 +37,7 @@ namespace NetworkUtilities.ControlPlane {
             OnUpdateState("Received from [" + signallingMessage.SourceAddress + "]: Element" + signallingMessage.DestinationControlPlaneElement +
                           "Operation" + signallingMessage.Operation + ".");
 
-            if (signallingMessage.DestinationAddress.Equals(_networkAddress)) {
+            if (signallingMessage.DestinationAddress.Equals(NetworkAddress)) {
                 Receive(signallingMessage);
             }
             else {
