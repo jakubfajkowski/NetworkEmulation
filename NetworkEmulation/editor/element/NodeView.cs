@@ -8,12 +8,12 @@ using NetworkUtilities.Serialization;
 using UniqueId = NetworkUtilities.UniqueId;
 
 namespace NetworkEmulation.Editor.Element {
-    public abstract class NodePictureBox : ClippedPictureBox, IMarkable, IInitializable, ISerializable {
+    public abstract class NodeView : ClippedPictureBox, IMarkable, IInitializable, ISerializable {
         public delegate void NodeMovingHandler(object sender);
 
         private Point _anchor;
 
-        protected NodePictureBox() {
+        protected NodeView() {
             Id = UniqueId.Generate();
             CableCloudDataPort = PortRandomizer.RandomFreePort();
         }

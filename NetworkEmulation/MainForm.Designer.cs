@@ -51,6 +51,7 @@ namespace NetworkEmulation {
             this.networkHierarchyTreeView = new System.Windows.Forms.TreeView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.parametersListView = new System.Windows.Forms.ListView();
+            this.subnetworkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -115,7 +116,8 @@ namespace NetworkEmulation {
             this.elementsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clientNodeToolStripMenuItem,
             this.networkNodeToolStripMenuItem,
-            this.linkToolStripMenuItem});
+            this.linkToolStripMenuItem,
+            this.subnetworkToolStripMenuItem});
             this.elementsToolStripMenuItem.Name = "elementsToolStripMenuItem";
             this.elementsToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.elementsToolStripMenuItem.Text = "Elements";
@@ -287,6 +289,7 @@ namespace NetworkEmulation {
             this.networkHierarchyTreeView.Name = "networkHierarchyTreeView";
             this.networkHierarchyTreeView.Size = new System.Drawing.Size(216, 286);
             this.networkHierarchyTreeView.TabIndex = 1;
+            this.networkHierarchyTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.networkHierarchyTreeView_AfterSelect);
             // 
             // groupBox2
             // 
@@ -308,6 +311,13 @@ namespace NetworkEmulation {
             this.parametersListView.TabIndex = 1;
             this.parametersListView.UseCompatibleStateImageBehavior = false;
             this.parametersListView.View = System.Windows.Forms.View.List;
+            // 
+            // subnetworkToolStripMenuItem
+            // 
+            this.subnetworkToolStripMenuItem.Name = "subnetworkToolStripMenuItem";
+            this.subnetworkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.subnetworkToolStripMenuItem.Text = "Subnetwork";
+            this.subnetworkToolStripMenuItem.Click += new System.EventHandler(this.subnetworkToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -367,6 +377,7 @@ namespace NetworkEmulation {
         private System.Windows.Forms.ListView parametersListView;
         private System.Windows.Forms.GroupBox workspaceGroupBox;
         private EditorPanel editorPanel;
+        private System.Windows.Forms.ToolStripMenuItem subnetworkToolStripMenuItem;
     }
 }
 

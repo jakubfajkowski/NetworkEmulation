@@ -7,9 +7,9 @@ namespace NetworkEmulation.Editor.Element {
     public partial class NetworkNodeForm : Form {
         private readonly NetworkNodeModel _parameters;
 
-        public NetworkNodeForm(NetworkNode networkNodePictureBox) {
+        public NetworkNodeForm(NetworkNodeView networkNodeView) {
             InitializeComponent();
-            _parameters = networkNodePictureBox.Parameters;
+            _parameters = networkNodeView.Parameters;
 
             textBoxIpAddress.Text = Settings.Default.IpAddress;
             textBoxCloudPort.Text = Settings.Default.CableCloudUdpListenerPortNumber.ToString();

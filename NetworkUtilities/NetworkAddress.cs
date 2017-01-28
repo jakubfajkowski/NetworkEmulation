@@ -82,7 +82,7 @@ namespace NetworkUtilities {
         }
 
         public void ReadXml(XmlReader reader) {
-            reader.ReadStartElement(nameof(Link));
+            reader.ReadStartElement(nameof(NetworkAddress));
             _value = XmlSerializer.Deserialize<string>(reader);
             reader.ReadEndElement();
         }

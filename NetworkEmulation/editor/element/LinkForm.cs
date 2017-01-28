@@ -27,8 +27,8 @@ namespace NetworkEmulation.Editor.Element {
             var inputNodePort = int.Parse(comboBoxInputPort.Text);
             var outputNodePort = int.Parse(comboBoxOutputPort.Text);
 
-            var inputSocketPort = _link.BeginNodePictureBox.CableCloudDataPort;
-            var outputSocketPort = _link.EndNodePictureBox.CableCloudDataPort;
+            var inputSocketPort = _link.BeginNodeView.CableCloudDataPort;
+            var outputSocketPort = _link.EndNodeView.CableCloudDataPort;
 
             _link.Parameters.InputNodePortPair = new SocketNodePortPair(inputNodePort, inputSocketPort);
             _link.Parameters.OutputNodePortPair = new SocketNodePortPair(outputNodePort, outputSocketPort);

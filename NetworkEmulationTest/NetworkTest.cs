@@ -102,7 +102,7 @@ namespace NetworkEmulationTest {
 
         [TestMethod]
         public void InitializeClientNodeTest() {
-            var clientNodePB = new NetworkEmulation.Editor.Element.ClientNode {
+            var clientNodePB = new NetworkEmulation.Editor.Element.ClientNodeView {
                 Parameters = new ClientNodeModel {
                     ClientName = "Janusz",
                     ClientTable =
@@ -117,7 +117,7 @@ namespace NetworkEmulationTest {
 
         [TestMethod]
         public void InitializeNetworkNodeTest() {
-            var networkNodePictureBox = new NetworkEmulation.Editor.Element.NetworkNode {
+            var networkNodePictureBox = new NetworkEmulation.Editor.Element.NetworkNodeView {
                 Parameters = new NetworkNodeModel {
                     NumberOfPorts = 8,
                     CableCloudListeningPort = 10000,
