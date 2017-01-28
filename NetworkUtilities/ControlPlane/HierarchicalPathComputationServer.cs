@@ -11,9 +11,9 @@ namespace NetworkUtilities.ControlPlane {
         private readonly ConnectionController _connectionController;
         private readonly RoutingController _routingController;
 
-        public HierarchicalPathComputationServer(int port) : base(port) {
-            _connectionController = new ConnectionController();
-            _routingController = new RoutingController();
+        public HierarchicalPathComputationServer(NetworkAddress networkAddress, int port) : base(networkAddress, port) {
+            _connectionController = new ConnectionController(networkAddress);
+            _routingController = new RoutingController(networkAddress);
         }
     }
 }

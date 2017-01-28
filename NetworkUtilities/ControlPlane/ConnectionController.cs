@@ -16,6 +16,8 @@ namespace NetworkUtilities.ControlPlane {
         private Queue<SubnetworkPointPool> _snpPools;
 
 
+        public ConnectionController(NetworkAddress networkAddress) : base(networkAddress) {}
+
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
                 case SignallingMessageOperation.ConnectionRequest:

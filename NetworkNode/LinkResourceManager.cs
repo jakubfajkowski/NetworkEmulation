@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
 
 namespace NetworkNode
@@ -16,7 +17,7 @@ namespace NetworkNode
         private Dictionary<int, double> freeCapacityDictionary;
         private Random random;
 
-        public LinkResourceManager(CommutationTable commutationTable, int numberOfPorts, int capacity)
+        public LinkResourceManager(NetworkAddress networkAddress, CommutationTable commutationTable, int numberOfPorts, int capacity) : base(networkAddress)
         {
             random = new Random();
             this.commutationTable = commutationTable;

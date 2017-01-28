@@ -18,7 +18,5 @@ namespace NetworkUtilities.ControlPlane {
         public SignallingMessage() {
             SessionId = UniqueId.Generate();
         }
-
-
     }
 }

@@ -9,6 +9,8 @@ namespace NetworkUtilities.ControlPlane {
     class RoutingController : ControlPlaneElement {
         private List<Link> _list;
 
+        public RoutingController(NetworkAddress networkAddress) : base(networkAddress) {}
+
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
                 case SignallingMessageOperation.RouteTableQuery:

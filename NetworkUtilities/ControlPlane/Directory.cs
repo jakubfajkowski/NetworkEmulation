@@ -8,6 +8,8 @@ namespace NetworkUtilities.ControlPlane {
         private readonly Dictionary<string, NetworkAddress> _clientAdderssDictionary = new Dictionary<string, NetworkAddress>();
         private readonly Dictionary<string, NetworkAddress> _snppDictionary = new Dictionary<string, NetworkAddress>();
 
+        public Directory(NetworkAddress networkAddress) : base(networkAddress) {}
+
         private void SendDirectoryAddressResponse(SignallingMessage message) {
             var clientNames = (string[]) message.Payload;
 
@@ -47,7 +49,7 @@ namespace NetworkUtilities.ControlPlane {
             var directioryResponse = message;
             directioryResponse.Operation = SignallingMessageOperation.DirectorySnppResponse;
             directioryResponse.Payload = snpp;
-            directioryResponse.DestinationAddress = 
+            directioryResponse.DestinationAddress = message.SourceAddress;
             SendMessage(directioryResponse);
         }
 

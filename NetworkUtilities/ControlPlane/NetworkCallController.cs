@@ -12,7 +12,9 @@ namespace NetworkUtilities.ControlPlane {
         private readonly Dictionary<UniqueId, string[]> _nameDictionary = new Dictionary<UniqueId, string[]>();
         private readonly Dictionary<UniqueId, NetworkAddress[]> _snppDictionary = new Dictionary<UniqueId, NetworkAddress[]>();
         private readonly Dictionary<UniqueId, bool> _waitingForConfirmation = new Dictionary<UniqueId, bool>();
-        
+
+
+        public NetworkCallController(NetworkAddress networkAddress) : base(networkAddress) {}
 
         private void SendDirectoryAddressRequest(SignallingMessage message) {
             var directioryRequest = message;

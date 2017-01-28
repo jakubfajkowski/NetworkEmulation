@@ -12,10 +12,10 @@ namespace NetworkUtilities.ControlPlane {
         private readonly NetworkCallController _networkCallController;
         private readonly RoutingController _routingController;
 
-        public StepByStepPathComputationServer(int port) : base(port) {
-            _connectionController = new ConnectionController();
-            _networkCallController = new NetworkCallController();
-            _routingController = new RoutingController();
+        public StepByStepPathComputationServer(NetworkAddress networkAddress, int port) : base(networkAddress, port) {
+            _connectionController = new ConnectionController(networkAddress);
+            _networkCallController = new NetworkCallController(networkAddress);
+            _routingController = new RoutingController(networkAddress);
         }
     }
 }

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 namespace NetworkUtilities.ControlPlane {
     public class CallingPartyCallController : ControlPlaneElement
     {
+        public CallingPartyCallController(NetworkAddress networkAddress) : base(networkAddress) {
+        }
+
         public bool callConfirmed { get; set; }
         public NetworkAddress NccAddress { get; private set; }
 
