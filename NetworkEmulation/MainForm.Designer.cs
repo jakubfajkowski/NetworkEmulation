@@ -43,8 +43,24 @@ namespace NetworkEmulation {
             this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cableCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkManagmentSystemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.networkHierarchyTreeView = new System.Windows.Forms.TreeView();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.parametersListView = new System.Windows.Forms.ListView();
             this.editorPanel = new NetworkEmulation.Editor.EditorPanel();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -105,21 +121,21 @@ namespace NetworkEmulation {
             // clientNodeToolStripMenuItem
             // 
             this.clientNodeToolStripMenuItem.Name = "clientNodeToolStripMenuItem";
-            this.clientNodeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clientNodeToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.clientNodeToolStripMenuItem.Text = "Client Node";
             this.clientNodeToolStripMenuItem.Click += new System.EventHandler(this.clientNodeToolStripMenuItem_Click);
             // 
             // networkNodeToolStripMenuItem
             // 
             this.networkNodeToolStripMenuItem.Name = "networkNodeToolStripMenuItem";
-            this.networkNodeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.networkNodeToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.networkNodeToolStripMenuItem.Text = "Network Node";
             this.networkNodeToolStripMenuItem.Click += new System.EventHandler(this.networkNodeToolStripMenuItem_Click);
             // 
             // linkToolStripMenuItem
             // 
             this.linkToolStripMenuItem.Name = "linkToolStripMenuItem";
-            this.linkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.linkToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.linkToolStripMenuItem.Text = "Link";
             this.linkToolStripMenuItem.Click += new System.EventHandler(this.linkToolStripMenuItem_Click);
             // 
@@ -135,7 +151,7 @@ namespace NetworkEmulation {
             // moveToolStripMenuItem
             // 
             this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
-            this.moveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.moveToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.moveToolStripMenuItem.Text = "Move";
             this.moveToolStripMenuItem.Click += new System.EventHandler(this.moveToolStripMenuItem_Click);
             // 
@@ -143,7 +159,7 @@ namespace NetworkEmulation {
             // 
             this.deleteToolStripMenuItem.Enabled = false;
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -159,7 +175,7 @@ namespace NetworkEmulation {
             // runToolStripMenuItem
             // 
             this.runToolStripMenuItem.Name = "runToolStripMenuItem";
-            this.runToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.runToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.runToolStripMenuItem.Text = "Run";
             this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
             // 
@@ -167,7 +183,7 @@ namespace NetworkEmulation {
             // 
             this.stopToolStripMenuItem.Enabled = false;
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
@@ -194,22 +210,98 @@ namespace NetworkEmulation {
             this.networkManagmentSystemToolStripMenuItem.Text = "Network Managment System";
             this.networkManagmentSystemToolStripMenuItem.Click += new System.EventHandler(this.networkManagmentSystemToolStripMenuItem_Click);
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.editorPanel);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
+            this.splitContainer1.Size = new System.Drawing.Size(784, 537);
+            this.splitContainer1.SplitterDistance = 558;
+            this.splitContainer1.TabIndex = 1;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.groupBox1);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.groupBox2);
+            this.splitContainer2.Size = new System.Drawing.Size(222, 537);
+            this.splitContainer2.SplitterDistance = 305;
+            this.splitContainer2.TabIndex = 0;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.networkHierarchyTreeView);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(222, 305);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Network Hierarchy";
+            // 
+            // networkHierarchyTreeView
+            // 
+            this.networkHierarchyTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.networkHierarchyTreeView.Location = new System.Drawing.Point(3, 16);
+            this.networkHierarchyTreeView.Name = "networkHierarchyTreeView";
+            this.networkHierarchyTreeView.Size = new System.Drawing.Size(216, 286);
+            this.networkHierarchyTreeView.TabIndex = 1;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.parametersListView);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.Location = new System.Drawing.Point(0, 0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(222, 228);
+            this.groupBox2.TabIndex = 0;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Parameters";
+            // 
+            // parametersListView
+            // 
+            this.parametersListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.parametersListView.Location = new System.Drawing.Point(3, 16);
+            this.parametersListView.Name = "parametersListView";
+            this.parametersListView.Size = new System.Drawing.Size(216, 209);
+            this.parametersListView.TabIndex = 1;
+            this.parametersListView.UseCompatibleStateImageBehavior = false;
+            this.parametersListView.View = System.Windows.Forms.View.List;
+            // 
             // editorPanel
             // 
             this.editorPanel.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.editorPanel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.editorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.editorPanel.Location = new System.Drawing.Point(0, 24);
+            this.editorPanel.Location = new System.Drawing.Point(0, 0);
             this.editorPanel.Name = "editorPanel";
-            this.editorPanel.Size = new System.Drawing.Size(784, 537);
-            this.editorPanel.TabIndex = 1;
+            this.editorPanel.Size = new System.Drawing.Size(558, 537);
+            this.editorPanel.TabIndex = 2;
+            this.editorPanel.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.editorPanel_ControlAdded);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.Controls.Add(this.editorPanel);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.DoubleBuffered = true;
             this.MainMenuStrip = this.menuStrip1;
@@ -218,6 +310,16 @@ namespace NetworkEmulation {
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -243,7 +345,13 @@ namespace NetworkEmulation {
         private System.Windows.Forms.ToolStripMenuItem simulationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
+        private System.Windows.Forms.SplitContainer splitContainer1;
         private EditorPanel editorPanel;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TreeView networkHierarchyTreeView;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.ListView parametersListView;
     }
 }
 

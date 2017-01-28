@@ -16,6 +16,9 @@ namespace NetworkUtilities {
         public NetworkAddress(string value) {
             _value = value;
         }
+        public NetworkAddress(int number) {
+            _value = number.ToString();
+        }
 
         public NetworkAddress Append(int number) {
             var value = _value + Separator + number;

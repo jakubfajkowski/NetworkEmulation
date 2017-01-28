@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using NetworkEmulation.Editor;
+using NetworkEmulation.Editor.Element;
 using NetworkEmulation.Network;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
@@ -38,6 +39,61 @@ namespace NetworkEmulation {
             Controls.Add(editorPanel);
 
             return editorPanel;
+        }
+
+
+        private void editorPanel_ControlAdded(object sender, ControlEventArgs e) {
+            if (e.Control is ClientNode) {
+                var clientNode = (ClientNode) e.Control;
+                AddToNetworkHierarchyTreeView(clientNode);
+            }
+
+            if (e.Control is NetworkNode) {
+                var networkNode = (NetworkNode) e.Control;
+                AddToNetworkHierarchyTreeView(networkNode);
+            }
+        }
+
+        private void AddToNetworkHierarchyTreeView(ClientNode node) {
+            var treeNode = new TreeNode {
+                Tag = node
+            };
+
+            var address = AddNodeToNetworkHierachryTreeView(treeNode);
+            node.Parameters.NetworkAddress = address;
+            treeNode.Text = address.ToString();
+        }
+
+
+        private void AddToNetworkHierarchyTreeView(NetworkNode node) {
+            var treeNode = new TreeNode {
+                Tag = node
+            };
+
+            var address = AddNodeToNetworkHierachryTreeView(treeNode);
+            node.Parameters.NetworkAddress = address;
+            treeNode.Text = address.ToString();
+        }
+
+        private NetworkAddress AddNodeToNetworkHierachryTreeView(TreeNode treeNode) {
+            NetworkAddress nodeAddress;
+            var selectedNode = networkHierarchyTreeView.SelectedNode;
+
+            if (selectedNode != null) {
+                selectedNode.Nodes.Add(treeNode);
+
+                var parentAddress = new NetworkAddress(selectedNode.Text);
+                var childrenIndex = selectedNode.Nodes.IndexOf(treeNode) + 1;
+                nodeAddress = parentAddress.Append(childrenIndex);
+            }
+            else {
+                networkHierarchyTreeView.Nodes.Add(treeNode);
+
+                var childrenIndex = networkHierarchyTreeView.Nodes.IndexOf(treeNode) + 1;
+                nodeAddress = new NetworkAddress(childrenIndex);
+            }
+
+            return nodeAddress;
         }
 
         private void saveProjectMenuItem_Click(object sender, EventArgs e) {
