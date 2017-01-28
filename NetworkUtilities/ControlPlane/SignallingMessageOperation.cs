@@ -25,8 +25,12 @@
         RouteTableQueryResponse,        // RC       -> CC
         SetLabels,                      // LRM(NN)  -> CC(NN)
         GetLabelsFromLRM,               // CC(HPCS) -> CC(NN)
+        ConnectionConfirmation,         // CC       -> CC
+        //RC operations 
+        NetworkTopology,                // RC -> RC
         //LRM operations
-        GetLabels
+        GetLabels,
+        LocalTopology                   // LRM -> RC
         
     }
 }

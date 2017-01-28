@@ -53,7 +53,7 @@ namespace NetworkUtilities.ControlPlane {
             var snpp = _snppDictionary[message.SessionId];
             connectionRequest.Operation = SignallingMessageOperation.ConnectionRequest;
             connectionRequest.Payload = snpp;
-            connectionRequest.DestinationAddress = _networkAddressDictionary[message.SessionId][1].GetRootFromBeginning(2);
+            connectionRequest.DestinationAddress = _networkAddressDictionary[message.SessionId][1].GetRootFromBeginning(1);
             SendMessage(connectionRequest);
         }
 
@@ -88,7 +88,7 @@ namespace NetworkUtilities.ControlPlane {
             var callCoordinationResponse = message;
             callCoordinationResponse.Operation = SignallingMessageOperation.CallCoordinationResponse;
             callCoordinationResponse.Payload = (bool)true;
-            callCoordinationResponse.DestinationAddress =_networkAddressDictionary[message.SessionId][0].GetRootFromBeginning(1);
+            callCoordinationResponse.DestinationAddress = message.SourceAddress;
             SendMessage(callCoordinationResponse);
         }
 
@@ -96,7 +96,7 @@ namespace NetworkUtilities.ControlPlane {
             var callRequestResponse = message;
             callRequestResponse.Operation = SignallingMessageOperation.CallRequestResponse;
             callRequestResponse.Payload = (bool) true;
-            callRequestResponse.DestinationAddress = _networkAddressDictionary[message.SessionId][0];
+            callRequestResponse.DestinationAddress = message.SourceAddress;
             SendMessage(callRequestResponse);
         }
 
@@ -104,6 +104,7 @@ namespace NetworkUtilities.ControlPlane {
             var callTeardownResponse = message;
             callTeardownResponse.Operation = SignallingMessageOperation.CallTeardownResponse;
             callTeardownResponse.Payload = (bool)true;
+            callTeardownResponse.DestinationAddress = message.SourceAddress;
             SendMessage(callTeardownResponse);
         }
 
@@ -127,7 +128,7 @@ namespace NetworkUtilities.ControlPlane {
                     var networkAddress = (NetworkAddress[]) message.Payload;
                     _networkAddressDictionary.Add(message.SessionId, networkAddress);
                     SendDirectoryNameRequest(message);
-                   // SendCallCoordinationResponse(message);
+                    //SendCallCoordinationResponse(message);
                     break;
                 case SignallingMessageOperation.CallTeardownResponse:
 
