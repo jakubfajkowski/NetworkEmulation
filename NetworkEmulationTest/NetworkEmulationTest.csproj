@@ -57,7 +57,7 @@
   <ItemGroup>
     <Compile Include="CableCloudTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SocketNodePortPairTest.cs" />
+    <Compile Include="NetworkAddressNodePortPairTest.cs" />
     <Compile Include="NetworkTest.cs" />
     <Compile Include="ElementsSerializationTest.cs" />
   </ItemGroup>

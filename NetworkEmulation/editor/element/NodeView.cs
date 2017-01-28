@@ -19,6 +19,7 @@ namespace NetworkEmulation.Editor.Element {
         }
 
         public int CableCloudDataPort { get; protected set; }
+        public NetworkAddress NetworkAddress { get; set; }
 
         public new Point Location {
             get { return base.Location; }

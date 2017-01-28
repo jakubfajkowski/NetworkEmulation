@@ -25,6 +25,8 @@ namespace NetworkEmulationTest {
 
             var cableCloud = new CableCloud(10000);
             cableCloud.UpdateState += (sender, state) => Console.WriteLine(state);
+            cableCloud.Initialize();
+
             var nms = new NetworkManagmentSystem();
             nms.UpdateState += (sender, state) => Console.WriteLine(state);
 
@@ -73,12 +75,12 @@ namespace NetworkEmulationTest {
 
             Thread.Sleep(5000);
 
-            var socketNodePortPair1 = new SocketNodePortPair(portA, clientNodeA.CableCloudDataPort);
-            var socketNodePortPair2 = new SocketNodePortPair(port1, networkNode1.CableCloudDataPort);
-            var socketNodePortPair3 = new SocketNodePortPair(port2, networkNode1.CableCloudDataPort);
-            var socketNodePortPair4 = new SocketNodePortPair(port3, networkNode2.CableCloudDataPort);
-            var socketNodePortPair5 = new SocketNodePortPair(port4, networkNode2.CableCloudDataPort);
-            var socketNodePortPair6 = new SocketNodePortPair(portB, clientNodeB.CableCloudDataPort);
+            var socketNodePortPair1 = new NetworkAddressNodePortPair(clientNodeA.NetworkAddress, portA);
+            var socketNodePortPair2 = new NetworkAddressNodePortPair(networkNode1.NetworkAddress, port1);
+            var socketNodePortPair3 = new NetworkAddressNodePortPair(networkNode1.NetworkAddress, port2);
+            var socketNodePortPair4 = new NetworkAddressNodePortPair(networkNode2.NetworkAddress, port3);
+            var socketNodePortPair5 = new NetworkAddressNodePortPair(networkNode2.NetworkAddress, port4);
+            var socketNodePortPair6 = new NetworkAddressNodePortPair(clientNodeB.NetworkAddress, portB);
 
             cableCloud.AddLink(socketNodePortPair1, socketNodePortPair2);
             cableCloud.AddLink(socketNodePortPair3, socketNodePortPair4);

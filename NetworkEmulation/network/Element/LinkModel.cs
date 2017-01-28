@@ -2,8 +2,8 @@
 
 namespace NetworkEmulation.Network.Element {
     public class LinkModel {
-        public SocketNodePortPair InputNodePortPair { get; set; }
-        public SocketNodePortPair OutputNodePortPair { get; set; }
+        public NetworkAddressNodePortPair InputNodePortPair { get; set; }
+        public NetworkAddressNodePortPair OutputNodePortPair { get; set; }
         public UniqueId BeginNodeViewId { get; set; }
         public UniqueId EndNodeViewId { get; set; }
     }

@@ -27,11 +27,11 @@ namespace NetworkEmulation.Editor.Element {
             var inputNodePort = int.Parse(comboBoxInputPort.Text);
             var outputNodePort = int.Parse(comboBoxOutputPort.Text);
 
-            var inputSocketPort = _link.BeginNodeView.CableCloudDataPort;
-            var outputSocketPort = _link.EndNodeView.CableCloudDataPort;
+            var inputNetworkAddress = _link.BeginNodeView.NetworkAddress;
+            var outputNetworkAddress = _link.EndNodeView.NetworkAddress;
 
-            _link.Parameters.InputNodePortPair = new SocketNodePortPair(inputNodePort, inputSocketPort);
-            _link.Parameters.OutputNodePortPair = new SocketNodePortPair(outputNodePort, outputSocketPort);
+            _link.Parameters.InputNodePortPair = new NetworkAddressNodePortPair(inputNetworkAddress, inputNodePort);
+            _link.Parameters.OutputNodePortPair = new NetworkAddressNodePortPair(outputNetworkAddress, outputNodePort);
 
             Close();
         }

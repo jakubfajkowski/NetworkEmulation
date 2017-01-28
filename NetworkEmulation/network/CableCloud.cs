@@ -6,50 +6,50 @@ using NetworkUtilities.Network;
 
 namespace NetworkEmulation.Network {
     public class CableCloud : ConnectionManager {
-        private readonly Dictionary<SocketNodePortPair, SocketNodePortPair> _linkDictionary;
+        private readonly Dictionary<NetworkAddressNodePortPair, NetworkAddressNodePortPair> _linkDictionary;
 
-        public CableCloud(int port) : base(port) {
-            _linkDictionary = new Dictionary<SocketNodePortPair, SocketNodePortPair>();
+        public CableCloud(int listeningPort) : base(listeningPort) {
+            _linkDictionary = new Dictionary<NetworkAddressNodePortPair, NetworkAddressNodePortPair>();
         }
 
-        protected override void HandleReceivedObject(object receivedObject, int inputPort) {
+        protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {
             var cableCloudMessage = (CableCloudMessage) receivedObject;
-            OnUpdateState("Node [" + inputPort + "] from ATM port: " + cableCloudMessage.PortNumber + " - " +
+            OnUpdateState("Node [" + networkAddress + "] from ATM port: " + cableCloudMessage.PortNumber + " - " +
                         cableCloudMessage.Data.Length + " bytes received.");
 
-            var input = new SocketNodePortPair(cableCloudMessage.PortNumber, inputPort);
-            SocketNodePortPair output = null;
+            var input = new NetworkAddressNodePortPair(networkAddress, cableCloudMessage.PortNumber);
+            NetworkAddressNodePortPair output = null;
 
             try {
                 output = LookUpLinkDictionary(input);
                 cableCloudMessage.PortNumber = output.NodePortNumber;
 
-                PassCableCloudMessage(cableCloudMessage, output.SocketPortNumber);
+                PassCableCloudMessage(cableCloudMessage, output.NetworkAddress);
             }
             catch (KeyNotFoundException) {
-                OnUpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " +
+                OnUpdateState("Node [" + input.NetworkAddress + "] to ATM port: " +
                             cableCloudMessage.PortNumber +
                             " - no avaliable link.");
             }
             catch (Exception) {
-                if (output != null) DisconnectClient(output.SocketPortNumber);
-                OnUpdateState("Node [" + input.SocketPortNumber + "] to ATM port: " +
+                if (output != null) DisconnectClient(output.NetworkAddress);
+                OnUpdateState("Node [" + input.NetworkAddress + "] to ATM port: " +
                             cableCloudMessage.PortNumber +
                             " - could not connect.");
             }
         }
 
-        private SocketNodePortPair LookUpLinkDictionary(SocketNodePortPair input) {
+        private NetworkAddressNodePortPair LookUpLinkDictionary(NetworkAddressNodePortPair input) {
             return _linkDictionary[input];
         }
 
-        private void PassCableCloudMessage(CableCloudMessage cableCloudMessage, int outputPort) {
-            SendObject(cableCloudMessage, outputPort);
-            OnUpdateState("Node [" + outputPort + "] to   ATM port: " + cableCloudMessage.PortNumber + " - " +
+        private void PassCableCloudMessage(CableCloudMessage cableCloudMessage, NetworkAddress outputNetworkAddress) {
+            SendObject(cableCloudMessage, outputNetworkAddress);
+            OnUpdateState("Node [" + outputNetworkAddress + "] to   ATM port: " + cableCloudMessage.PortNumber + " - " +
                         cableCloudMessage.Data.Length + " bytes sent.");
         }
 
-        public void AddLink(SocketNodePortPair key, SocketNodePortPair value) {
+        public void AddLink(NetworkAddressNodePortPair key, NetworkAddressNodePortPair value) {
             _linkDictionary.Add(key, value);
         }
 
@@ -60,7 +60,7 @@ namespace NetworkEmulation.Network {
             _linkDictionary.Add(key, value);
         }
 
-        public void RemoveLink(SocketNodePortPair key) {
+        public void RemoveLink(NetworkAddressNodePortPair key) {
             _linkDictionary.Remove(key);
         }
     }

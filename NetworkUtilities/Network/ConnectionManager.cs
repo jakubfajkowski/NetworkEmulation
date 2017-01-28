@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -9,19 +8,19 @@ using NetworkUtilities.Serialization;
 
 namespace NetworkUtilities.Network {
     public abstract class ConnectionManager : LogObject {
-        private readonly Dictionary<int, TcpClient> _nodesTcpClients;
+        private readonly int _listeningPort;
+        private readonly Dictionary<NetworkAddress, TcpClient> _nodesTcpClients;
         private UdpClient _connectionUdpClient;
 
-        protected ConnectionManager(int port) {
-            _nodesTcpClients = new Dictionary<int, TcpClient>();
-
-            Start(port);
+        protected ConnectionManager(int listeningPort) {
+            _nodesTcpClients = new Dictionary<NetworkAddress, TcpClient>();
+            _listeningPort = listeningPort;
         }
 
         public bool Online { get; private set; }
 
-        private void Start(int port) {
-            var ipEndPoint = new IPEndPoint(IPAddress.Any, port);
+        public virtual void Initialize() {
+            var ipEndPoint = new IPEndPoint(IPAddress.Any, _listeningPort);
             _connectionUdpClient = new UdpClient(ipEndPoint);
 
             ListenForConnectionRequests();
@@ -34,47 +33,50 @@ namespace NetworkUtilities.Network {
                     Online = true;
                     while (Online) {
                         var receivedData = await _connectionUdpClient.ReceiveAsync();
-                        EstabilishNodeConnection((int) BinarySerializer.Deserialize(receivedData.Buffer));
+                        EstabilishNodeConnection((NetworkAddressSocketPortPair) BinarySerializer.Deserialize(receivedData.Buffer));
                     }
                 }
             });
         }
 
-        private void EstabilishNodeConnection(int port) {
+        private void EstabilishNodeConnection(NetworkAddressSocketPortPair initializationMessage) {
             var nodeTcpClient = new TcpClient();
 
+            var port = initializationMessage.SocketPort;
+            var networkAddress = initializationMessage.NetworkAddress;
+
             try {
-                ConnectWithClient(nodeTcpClient, port);
-                OnUpdateState("Connected to Node on TCP port: " + port);
-                Listen(nodeTcpClient, port).Start();
+                ConnectWithClient(nodeTcpClient, port, networkAddress);
+                OnUpdateState($"Connected to Node {networkAddress} on TCP port: {port}");
+                Listen(nodeTcpClient, networkAddress).Start();
             }
             catch (SocketException e) {
                 OnUpdateState(e.Message);
             }
         }
 
-        private void ConnectWithClient(TcpClient nodeTcpClient, int port) {
+        private void ConnectWithClient(TcpClient nodeTcpClient, int port, NetworkAddress networkAddress) {
             nodeTcpClient.Connect(IPAddress.Loopback, port);
-            _nodesTcpClients.Add(port, nodeTcpClient);
+            _nodesTcpClients.Add(networkAddress, nodeTcpClient);
         }
 
-        protected void DisconnectClient(int port) {
-            _nodesTcpClients.Remove(port);
+        protected void DisconnectClient(NetworkAddress networkAddress) {
+            _nodesTcpClients.Remove(networkAddress);
         }
 
-        private Task Listen(TcpClient nodeTcpClient, int inputPort) {
+        private Task Listen(TcpClient nodeTcpClient, NetworkAddress inputNetworkAddress) {
             return new Task(() => {
                 while (Online) {
                     var receivedObject = ReceiveObject(nodeTcpClient.GetStream());
-                    HandleReceivedObject(receivedObject, inputPort);
+                    HandleReceivedObject(receivedObject, inputNetworkAddress);
                 }
             });
         }
 
-        protected abstract void HandleReceivedObject(object receivedObject, int inputPort);
+        protected abstract void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress);
 
-        protected void SendObject(object objectToSend, int outputPort) {
-            var tcpClient = _nodesTcpClients[outputPort];
+        protected void SendObject(object objectToSend, NetworkAddress outputNetworkAddress) {
+            var tcpClient = _nodesTcpClients[outputNetworkAddress];
             var networkStream = tcpClient.GetStream();
 
             BinarySerializer.SerializeToStream(objectToSend, networkStream);

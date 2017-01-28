@@ -26,6 +26,7 @@ namespace NetworkEmulation.Network {
             _cableCloud = new CableCloud(Settings.Default.CableCloudUdpListenerPortNumber);
             CableCloudLogForm = new LogForm(_cableCloud);
             PreapareCableCloudLogForm();
+            _cableCloud.Initialize();
 
             _networkManagmentSystem = new NetworkManagmentSystem();
             NetworkManagmentSystemLogForm = new LogForm(_networkManagmentSystem);

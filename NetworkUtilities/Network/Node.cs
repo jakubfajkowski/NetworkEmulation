@@ -5,7 +5,7 @@ using NetworkUtilities.Serialization;
 
 namespace NetworkUtilities.Network {
     public abstract class Node : LogObject {
-        protected NetworkAddress NodeNetworkAddress;
+        public NetworkAddress NetworkAddress { get; private set; }
 
         public int CableCloudDataPort { get; protected set; }
         protected int CableCloudListeningPort;
@@ -20,17 +20,20 @@ namespace NetworkUtilities.Network {
         public bool Online => _dataPlaneConnectionComponent.Online && _controlPlaneConnectionComponent.Online;
    
 
-        protected Node(string ipAddress, int cableCloudListeningPort, int cableCloudDataPort, 
+        protected Node(NetworkAddress networkAddress, string ipAddress, int cableCloudListeningPort, int cableCloudDataPort, 
                                          int pathComputationServerListeningPort, int pathComputationServerDataPort) {
+
+            NetworkAddress = networkAddress;
+
             CableCloudListeningPort = cableCloudListeningPort;
             CableCloudDataPort = cableCloudDataPort;
-            _dataPlaneConnectionComponent = new ConnectionComponent(ipAddress, cableCloudListeningPort, cableCloudDataPort);
+            _dataPlaneConnectionComponent = new ConnectionComponent(ipAddress, cableCloudListeningPort, NetworkAddress, cableCloudDataPort);
             _dataPlaneConnectionComponent.ObjectReceived += OnCableCloudMessageReceived;
             _dataPlaneConnectionComponent.Initialize();
 
             PathComputationServerListeningPort = pathComputationServerListeningPort;
             PathComputationServerDataPort = pathComputationServerDataPort;
-            _controlPlaneConnectionComponent = new ConnectionComponent(ipAddress, pathComputationServerListeningPort, pathComputationServerDataPort);
+            _controlPlaneConnectionComponent = new ConnectionComponent(ipAddress, pathComputationServerListeningPort, NetworkAddress, pathComputationServerDataPort);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
             _controlPlaneConnectionComponent.Initialize();
         }

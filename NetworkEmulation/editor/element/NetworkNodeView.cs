@@ -54,6 +54,8 @@ namespace NetworkEmulation.Editor.Element {
             base.ReadXml(reader);
             reader.ReadStartElement(nameof(NetworkNodeView));
             Parameters = XmlSerializer.Deserialize<NetworkNodeModel>(reader);
+            CableCloudDataPort = Parameters.CableCloudDataPort;
+            NetworkAddress = Parameters.NetworkAddress;
             reader.ReadEndElement();
         }
 

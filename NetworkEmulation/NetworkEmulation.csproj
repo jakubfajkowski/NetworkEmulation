@@ -88,7 +88,7 @@
     <Compile Include="Network\NodeConnectionInformation.cs" />
     <Compile Include="Network\Simulation.cs" />
     <Compile Include="SerializableDictionary.cs" />
-    <Compile Include="Network\SocketNodePortPair.cs" />
+    <Compile Include="Network\NetworkAddressNodePortPair.cs" />
     <Compile Include="Editor\Element\ClientNodeView.cs">
       <SubType>Component</SubType>
     </Compile>

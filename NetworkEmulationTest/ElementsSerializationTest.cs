@@ -63,8 +63,8 @@ namespace NetworkEmulationTest {
                 Parameters = new LinkModel {
                     BeginNodeViewId = UniqueId.Generate(),
                     EndNodeViewId = UniqueId.Generate(),
-                    InputNodePortPair = new SocketNodePortPair(3, 4),
-                    OutputNodePortPair = new SocketNodePortPair(5, 6)
+                    InputNodePortPair = new NetworkAddressNodePortPair(new NetworkAddress(4), 3),
+                    OutputNodePortPair = new NetworkAddressNodePortPair(new NetworkAddress(6), 5)
                 }
             };
 

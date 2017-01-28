@@ -31,6 +31,7 @@ namespace NetworkEmulationTest {
         [TestMethod]
         public void CableCloudBindEndpointTest() {
             var cableCloud = new CableCloud(10000);
+            cableCloud.Initialize();
             var port = 10001;
 
             var listenerTask = StartTcpListener(port, Listen);
@@ -47,13 +48,19 @@ namespace NetworkEmulationTest {
         public void CableCloudPassMessageTest() {
             var cableCloud = new CableCloud(10000);
             cableCloud.UpdateState += (sender, state) => Console.WriteLine(state);
+            cableCloud.Initialize();
+
             var port1 = 10001;
             var port2 = 10002;
             var port3 = 10003;
 
-            var output = new SocketNodePortPair(1, port1);
-            var input1 = new SocketNodePortPair(1, port2);
-            var input2 = new SocketNodePortPair(1, port3);
+            var address1 = new NetworkAddress(1);
+            var address2 = new NetworkAddress(2);
+            var address3 = new NetworkAddress(3);
+
+            var output = new NetworkAddressNodePortPair(address1, 1);
+            var input1 = new NetworkAddressNodePortPair(address2, 1);
+            var input2 = new NetworkAddressNodePortPair(address3, 1);
 
             cableCloud.AddLink(input1, output);
             cableCloud.AddLink(input2, output);
@@ -78,8 +85,9 @@ namespace NetworkEmulationTest {
             return new CableCloudMessage(1, atmCells);
         }
 
-        private SocketNodePortPair RandomSocketNodePortPair() {
-            return new SocketNodePortPair(_random.Next(), _random.Next());
+        private NetworkAddressNodePortPair RandomNetworkAddressNodePortPair() {
+            var networkAddress = new NetworkAddress(_random.Next());
+            return new NetworkAddressNodePortPair(networkAddress, _random.Next());
         }
 
         private void ConnectToCableCloud(int port) {

@@ -5,7 +5,7 @@ using NetworkUtilities.Network;
 namespace NetworkUtilities.ControlPlane {
     public abstract class PathComputationServer : ConnectionManager {
         private readonly NetworkAddress _networkAddress;
-        private readonly Dictionary<NetworkAddress, int> _signallingLinkDictionary;
+        private readonly Dictionary<NetworkAddress, NetworkAddress> _signallingLinkDictionary;
 
         public int PathComputationServerDataPort { get; protected set; }
         protected int PathComputationServerListeningPort;
@@ -13,24 +13,25 @@ namespace NetworkUtilities.ControlPlane {
 
         protected PathComputationServer(NetworkAddress networkAddress, 
                                         string ipAddress, 
-                                        int port, 
+                                        int listeningPort, 
                                         int pathComputationServerListeningPort, 
-                                        int pathComputationServerDataPort) : base(port) {
+                                        int pathComputationServerDataPort) : base(listeningPort) {
 
             PathComputationServerListeningPort = pathComputationServerListeningPort;
             PathComputationServerDataPort = pathComputationServerDataPort;
-            _controlPlaneConnectionComponent = new ConnectionComponent(ipAddress, pathComputationServerListeningPort, pathComputationServerDataPort);
+            _controlPlaneConnectionComponent = new ConnectionComponent(ipAddress, pathComputationServerListeningPort, networkAddress, pathComputationServerDataPort);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
 
             _networkAddress = networkAddress;
-            _signallingLinkDictionary = new Dictionary<NetworkAddress, int>();
+            _signallingLinkDictionary = new Dictionary<NetworkAddress, NetworkAddress>();
         }
 
-        public void Initialize() {
+        public override void Initialize() {
+            base.Initialize();
             _controlPlaneConnectionComponent.Initialize();
         }
 
-        protected override void HandleReceivedObject(object receivedObject, int inputPort) {
+        protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {
             var signallingMessage = (SignallingMessage) receivedObject;
 
             OnUpdateState("Received from [" + signallingMessage.SourceAddress + "]: Element" + signallingMessage.DestinationControlPlaneElement +
@@ -40,7 +41,7 @@ namespace NetworkUtilities.ControlPlane {
                 Receive(signallingMessage);
             }
             else {
-                int output = -1;
+                NetworkAddress output = null;
 
                 try {
                     output = _signallingLinkDictionary[signallingMessage.DestinationAddress];
@@ -51,20 +52,20 @@ namespace NetworkUtilities.ControlPlane {
                     OnUpdateState("Error sending to [" + signallingMessage.DestinationAddress + "]: There is no such record.");
                 }
                 catch (Exception) {
-                    if (output != -1) DisconnectClient(output);
+                    if (output != null) DisconnectClient(output);
                     OnUpdateState("Error sending to [" + signallingMessage.DestinationAddress + "]: Could not connect.");
                 }
             }
         }
 
-        private void PassSignallingMessage(SignallingMessage signallingMessage, int outputPort) {
-            SendObject(signallingMessage, outputPort);
+        private void PassSignallingMessage(SignallingMessage signallingMessage, NetworkAddress outputNetworkAddress) {
+            SendObject(signallingMessage, outputNetworkAddress);
             OnUpdateState("Sent to [" + signallingMessage.DestinationAddress + "]: Element" + signallingMessage.DestinationControlPlaneElement +
                           "Operation" + signallingMessage.Operation + ".");
         }
 
-        public void AddSignallingLink(NetworkAddress networkAddress, int socketPort) {
-            _signallingLinkDictionary.Add(networkAddress, socketPort);
+        public void AddSignallingLink(NetworkAddress inputNetworkAddress, NetworkAddress outputNetworkAddress) {
+            _signallingLinkDictionary.Add(inputNetworkAddress, outputNetworkAddress);
         }
 
         private void OnSignallingMessageReceived(object sender, object receivedObject) {

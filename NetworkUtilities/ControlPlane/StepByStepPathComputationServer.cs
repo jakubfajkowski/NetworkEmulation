@@ -14,11 +14,11 @@ namespace NetworkUtilities.ControlPlane {
 
         public StepByStepPathComputationServer(NetworkAddress networkAddress,
                                                  string ipAddress,
-                                                 int port,
+                                                 int listeningPort,
                                                  int pathComputationServerListeningPort,
                                                  int pathComputationServerDataPort) : base(networkAddress,
                                                                                            ipAddress,
-                                                                                           port,
+                                                                                           listeningPort,
                                                                                            pathComputationServerListeningPort,
                                                                                            pathComputationServerDataPort) {
             _connectionController = new ConnectionController(networkAddress);

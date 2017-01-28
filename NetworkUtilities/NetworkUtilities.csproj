@@ -48,6 +48,7 @@
     <Compile Include="ClientTableRow.cs" />
     <Compile Include="ControlPlane\PathComputationServer.cs" />
     <Compile Include="ControlPlane\SignallingMessageDestinationControlPlaneElement.cs" />
+    <Compile Include="NetworkAddressSocketPortPair.cs" />
     <Compile Include="Network\ConnectionManager.cs" />
     <Compile Include="ControlPlane\CallingPartyCallController.cs" />
     <Compile Include="ControlPlane\ConnectionController.cs" />

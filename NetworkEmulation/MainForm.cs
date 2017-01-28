@@ -62,6 +62,7 @@ namespace NetworkEmulation {
 
             var address = AddToTreeView(treeNode);
             node.Parameters.NetworkAddress = address;
+            node.NetworkAddress = address;
             treeNode.Text = address.ToString();
         }
 
@@ -73,6 +74,7 @@ namespace NetworkEmulation {
 
             var address = AddToTreeView(treeNode);
             node.Parameters.NetworkAddress = address;
+            node.NetworkAddress = address;
             treeNode.Text = address.ToString();
         }
 

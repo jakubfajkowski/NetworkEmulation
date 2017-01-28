@@ -11,7 +11,7 @@ namespace ClientNode {
         public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
 
         public ClientNode(ClientNodeModel parameters)
-            : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort,
+            : base(parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort,
                                          parameters.PathComputationServerListeningPort, parameters.PathComputationServerDataPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             ClientName = parameters.ClientName;

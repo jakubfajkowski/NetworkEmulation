@@ -16,7 +16,7 @@ namespace NetworkNode {
         public NetworkNodeAgent NetworkNodeAgent;
 
         public NetworkNode(NetworkNodeModel parameters)
-            : base(parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort,
+            : base(parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort,
                                          parameters.PathComputationServerListeningPort, parameters.PathComputationServerDataPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemListeningPort;

@@ -19,16 +19,16 @@ namespace NetworkUtilities.Network {
         private readonly IPAddress _ipAddress;
 
         public bool Online { get; private set; }
-        public int DataTransferPort { get; }
+        private readonly NetworkAddressSocketPortPair _handshakeMessage;
 
-        public ConnectionComponent(string connectionManagerIpAddress, int connectionManagerListeningPort, int dataTransferPort) {
+        public ConnectionComponent(string connectionManagerIpAddress, int connectionManagerListeningPort, NetworkAddress networkAddress, int dataTransferPort) {
             _ipAddress = IPAddress.Parse(connectionManagerIpAddress);
             _connectionManagerListeningPort = connectionManagerListeningPort;
-            DataTransferPort = dataTransferPort;
+            _handshakeMessage = new NetworkAddressSocketPortPair(networkAddress, dataTransferPort);
         }
 
         public void Initialize() {
-            _connectionManagerTcpListener = CreateTcpListener(_ipAddress, DataTransferPort);
+            _connectionManagerTcpListener = CreateTcpListener(_ipAddress, _handshakeMessage.SocketPort);
             ListenForConnectRequest(_connectionManagerTcpListener);
             EstabilishConnection();
         }
@@ -39,7 +39,7 @@ namespace NetworkUtilities.Network {
                 tcpListener = new TcpListener(ipAddress, port);
             }
             catch (Exception e) {
-                OnUpdateState($"Can't connect to port {DataTransferPort}!");
+                OnUpdateState($"Can't connect to port {_handshakeMessage}!");
             }
 
             return tcpListener;
@@ -76,7 +76,7 @@ namespace NetworkUtilities.Network {
 
         private void SendHandshakeMessage(IPEndPoint ipEndPoint) {
             var udpClient = new UdpClient();
-            var bytesToSend = BinarySerializer.Serialize(DataTransferPort);
+            var bytesToSend = BinarySerializer.Serialize(_handshakeMessage);
             udpClient.Send(bytesToSend, bytesToSend.Length, ipEndPoint);
         }
 
