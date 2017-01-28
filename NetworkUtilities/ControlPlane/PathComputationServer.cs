@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
@@ -26,8 +27,7 @@ namespace NetworkUtilities.ControlPlane {
             _signallingLinkDictionary = new Dictionary<NetworkAddress, NetworkAddress>();
         }
 
-        public override void Initialize() {
-            base.Initialize();
+        public void Initialize() {
             _controlPlaneConnectionComponent.Initialize();
         }
 

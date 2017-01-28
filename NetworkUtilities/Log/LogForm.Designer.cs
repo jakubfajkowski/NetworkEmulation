@@ -44,9 +44,7 @@
             this.Controls.Add(this.logRichTextBox);
             this.Name = "LogForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LogForm_FormClosing);
-            this.Shown += new System.EventHandler(this.LogForm_Shown);
             this.ResumeLayout(false);
-
         }
 
         #endregion

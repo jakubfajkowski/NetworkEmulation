@@ -19,7 +19,7 @@ namespace NetworkUtilities.Network {
 
         public bool Online { get; private set; }
 
-        public virtual void Initialize() {
+        public void StartListening() {
             var ipEndPoint = new IPEndPoint(IPAddress.Any, ListeningPort);
             _connectionUdpClient = new UdpClient(ipEndPoint);
 
@@ -47,7 +47,7 @@ namespace NetworkUtilities.Network {
 
             try {
                 ConnectWithClient(nodeTcpClient, port, networkAddress);
-                OnUpdateState($"Connected to Node {networkAddress} on TCP port: {port}");
+                OnUpdateState($"Connected to {networkAddress} on TCP port: {port}");
                 Listen(nodeTcpClient, networkAddress).Start();
             }
             catch (SocketException e) {

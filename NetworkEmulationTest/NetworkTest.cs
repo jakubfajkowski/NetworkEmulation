@@ -25,7 +25,6 @@ namespace NetworkEmulationTest {
 
             var cableCloud = new CableCloud(10000);
             cableCloud.UpdateState += (sender, state) => Console.WriteLine(state);
-            cableCloud.Initialize();
 
             var nms = new NetworkManagmentSystem();
             nms.UpdateState += (sender, state) => Console.WriteLine(state);

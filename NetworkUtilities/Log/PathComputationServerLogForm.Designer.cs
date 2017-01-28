@@ -56,7 +56,6 @@
             this.Name = "PathComputationServerLogForm";
             this.Text = "Path Computation Server Log";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LogForm_FormClosing);
-            this.Shown += new System.EventHandler(this.LogForm_Shown);
             this.ResumeLayout(false);
 
         }

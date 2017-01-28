@@ -9,6 +9,7 @@ namespace NetworkUtilities.Log {
         public LogForm(LogObject logObject) {
             InitializeComponent();
             _logObject = logObject;
+            _logObject.UpdateState += (s, state) => BeginInvoke(new Action(() => UpdateState(s, state)));
         }
 
         private void UpdateState(object sender, string state) {
@@ -16,14 +17,8 @@ namespace NetworkUtilities.Log {
         }
 
         private string CreateLogLine(string text) {
-            return $"[{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}] {text}\n";
-        }
-
-        private void LogForm_Shown(object sender, EventArgs e) {
-            if (!_bound) {
-                _logObject.UpdateState += (s, state) => BeginInvoke(new Action(() => UpdateState(s, state)));
-                _bound = true;
-            }
+            var datetime = DateTime.Now;
+            return $"[{datetime}.{datetime.Millisecond}] {text}\n";
         }
 
         private void LogForm_FormClosing(object sender, FormClosingEventArgs e) {

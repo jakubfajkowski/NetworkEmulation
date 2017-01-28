@@ -13,6 +13,13 @@ namespace NetworkUtilities.Log {
             InitializeComponent();
             _pathComputationServers = pathComputationServers;
             _logDictionary = new Dictionary<NetworkAddress, string>();
+
+
+            foreach (var pathComputationServer in _pathComputationServers) {
+                pathComputationServer.UpdateState += (s, state) => BeginInvoke(new Action(() => UpdateState(s, state)));
+                comboBox.Items.Add(pathComputationServer.NetworkAddress);
+                _logDictionary.Add(pathComputationServer.NetworkAddress, "");
+            }
         }
 
         private void UpdateState(object sender, string state) {
@@ -27,18 +34,8 @@ namespace NetworkUtilities.Log {
         }
 
         private string CreateLogLine(string text) {
-            return $"[{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}] {text}\n";
-        }
-
-        private void LogForm_Shown(object sender, EventArgs e) {
-            if (!_bound) {
-                foreach (var pathComputationServer in _pathComputationServers) {
-                    pathComputationServer.UpdateState += (s, state) => BeginInvoke(new Action(() => UpdateState(s, state)));
-                    comboBox.Items.Add(pathComputationServer.NetworkAddress);
-                    _logDictionary.Add(pathComputationServer.NetworkAddress, "");
-                }
-                _bound = true;
-            }
+            var datetime = DateTime.Now;
+            return $"[{datetime}.{datetime.Millisecond}] {text}\n";
         }
 
         private void LogForm_FormClosing(object sender, FormClosingEventArgs e) {
