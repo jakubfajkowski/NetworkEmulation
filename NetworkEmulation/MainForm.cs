@@ -26,21 +26,10 @@ namespace NetworkEmulation {
         }
 
         private void newProjectMenuItem_Click(object sender, EventArgs e) {
-            CreateNewEditorPanel();
+            editorPanel.Clear();
             networkHierarchyTreeView.Nodes.Clear();
             parametersListView.Items.Clear();
         }
-
-        private void CreateNewEditorPanel() {
-            workspaceGroupBox.Controls.Remove(editorPanel);
-            var newEditorPanel = new EditorPanel();
-            newEditorPanel.Dock = DockStyle.Fill;
-            newEditorPanel.Location = editorPanel.Location;
-            newEditorPanel.Size = editorPanel.Size;
-            editorPanel = newEditorPanel;
-            workspaceGroupBox.Controls.Add(editorPanel);
-        }
-
 
         private void editorPanel_ControlAdded(object sender, ControlEventArgs e) {
             if (e.Control is ClientNode) {
@@ -117,7 +106,7 @@ namespace NetworkEmulation {
                 using (var openFileDialogStream = openFileDialog.OpenFile()) {
                     var streamReader = new StreamReader(openFileDialogStream);
 
-                    CreateNewEditorPanel();
+                    editorPanel.Clear();
                     XmlSerializer.Deserialize(editorPanel, streamReader.ReadToEnd());
                 }
         }

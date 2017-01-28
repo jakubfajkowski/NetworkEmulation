@@ -145,6 +145,21 @@ namespace NetworkEmulation.Editor {
             return new Link(ref beginNodePictureBox, ref endNodePictureBox);
         }
 
+        public void Clear() {
+            foreach (var link in AddedLinks) {
+                link.Dispose();
+            }
+            AddedLinks.Clear();
+
+            foreach (var nodePictureBox in AddedNodePictureBoxes) {
+                nodePictureBox.Dispose();
+            }
+            AddedNodePictureBoxes.Clear();
+
+            Mode = Mode.Move;
+            Refresh();
+        }
+
         #region IXmlSerializable
 
         public XmlSchema GetSchema() {
