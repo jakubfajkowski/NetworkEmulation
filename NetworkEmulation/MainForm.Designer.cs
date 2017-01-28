@@ -249,6 +249,7 @@ namespace NetworkEmulation {
             this.editorPanel.Name = "editorPanel";
             this.editorPanel.Size = new System.Drawing.Size(552, 518);
             this.editorPanel.TabIndex = 3;
+            this.editorPanel.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.editorPanel_ControlAdded);
             // 
             // splitContainer2
             // 
