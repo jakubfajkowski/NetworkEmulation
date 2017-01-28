@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkUtilities.ControlPlane {
     public class Directory : ControlPlaneElement {
         public static readonly NetworkAddress Address = new NetworkAddress("0");
 
         private readonly Dictionary<string, NetworkAddress> _clientAdderssDictionary = new Dictionary<string, NetworkAddress>();
-        private readonly Dictionary<string, NetworkAddress> _snppDictionary = new Dictionary<string, NetworkAddress>();
+        private readonly Dictionary<string, SubnetworkPointPool> _snppDictionary = new Dictionary<string, SubnetworkPointPool>();
 
         public Directory(NetworkAddress networkAddress) : base(networkAddress) {}
 
@@ -46,7 +47,7 @@ namespace NetworkUtilities.ControlPlane {
             var snmpA = _snppDictionary[clientNames[0]];
             var snmpZ = _snppDictionary[clientNames[1]];
 
-            NetworkAddress[] snpp = { snmpA, snmpZ };
+            SubnetworkPointPool[] snpp = { snmpA, snmpZ };
 
             var directioryResponse = message;
             directioryResponse.Operation = SignallingMessageOperation.DirectorySnppResponse;
@@ -55,7 +56,7 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(directioryResponse);
         }
 
-        public void UpdateDierctory(string clientName, NetworkAddress clientAddress, NetworkAddress snpp) {
+        public void UpdateDierctory(string clientName, NetworkAddress clientAddress, SubnetworkPointPool snpp) {
             _clientAdderssDictionary.Add(clientName, clientAddress);
             _snppDictionary.Add(clientName, snpp);
         }

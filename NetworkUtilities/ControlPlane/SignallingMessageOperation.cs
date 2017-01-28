@@ -26,6 +26,7 @@
         SetLabels,                      // LRM(NN)  -> CC(NN)
         GetLabelsFromLRM,               // CC(HPCS) -> CC(NN)
         ConnectionConfirmation,         // CC       -> CC
+        PeerCoordination,
         //RC operations 
         NetworkTopology,                // RC -> RC
         //LRM operations

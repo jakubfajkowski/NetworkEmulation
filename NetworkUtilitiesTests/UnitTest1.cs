@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NetworkUtilities;
+using NetworkUtilities.ControlPlane;
 using NetworkUtilities.GraphAlgorithm;
 using Path = NetworkUtilities.GraphAlgorithm.Path;
 
@@ -22,6 +26,48 @@ namespace NetworkUtilitiesTests {
 
             run("D:\\Projects\\_Visual Studio\\NetworkEmulation\\NetworkUtilitiesTests\\bin\\Release\\graf_input.txt", 1);
         }
+
+        [TestMethod]
+        public void TestRouteTableQuery () {
+            var snpps = new List<SubnetworkPointPool> {
+                new SubnetworkPointPool() {NetworkSnppAddress = new NetworkAddress("1.2.1"), Id = 1},
+                new SubnetworkPointPool() {NetworkSnppAddress = new NetworkAddress("1.2.2"), Id = 2},
+                new SubnetworkPointPool() {NetworkSnppAddress = new NetworkAddress("1.2.3"), Id = 3},
+                new SubnetworkPointPool() {NetworkSnppAddress = new NetworkAddress("1.2.4"), Id = 4},
+                new SubnetworkPointPool() {NetworkSnppAddress = new NetworkAddress("1.2.5"), Id = 5}
+            };
+
+            var links = new Link[8];
+            links[0]= new Link(5, snpps[0],snpps[1]);
+            links[1]= new Link(4, snpps[0],snpps[2]);
+            links[2]= new Link(20, snpps[2],snpps[1]);
+            links[3]= new Link(10, snpps[0],snpps[3]);
+            links[4]= new Link(15, snpps[4],snpps[1]);
+            links[5]= new Link(15, snpps[3],snpps[4]);
+            links[6]= new Link(20, snpps[3],snpps[2]);
+            links[7]= new Link(20, snpps[2],snpps[4]);
+
+            graph= new Graph();
+            graph.Load(links);
+
+            var rcAddress = new NetworkAddress("1");
+            var routingController = new RoutingController(rcAddress);
+            routingController._linkList = links.ToList();
+
+            var sm = new SignallingMessage {
+                DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.RoutingController,
+                Operation = SignallingMessageOperation.RouteTableQuery,
+                DestinationAddress = rcAddress,
+                Payload = new object[] {new[] {snpps[0], snpps[2]}, 4},
+                SourceAddress = new NetworkAddress("2")
+                };
+
+            routingController.ReceiveMessage(sm);
+        
+
+        }
+
+        
 
         static private void initialize(string path) {
             graph = new Graph();

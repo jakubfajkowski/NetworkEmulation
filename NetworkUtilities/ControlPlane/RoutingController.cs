@@ -8,8 +8,8 @@ using NetworkUtilities.Element;
 using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkUtilities.ControlPlane {
-    class RoutingController : ControlPlaneElement {
-        private List<Link> _linkList = new List<Link>();
+    public class RoutingController : ControlPlaneElement {
+        public List<Link> _linkList = new List<Link>();
 
         public RoutingController(NetworkAddress networkAddress) : base(networkAddress) {
         }
@@ -49,7 +49,7 @@ namespace NetworkUtilities.ControlPlane {
             return paths[0].SubnetworkPointPools;
         }
         private void HandleRouteTableQuery(SubnetworkPointPool snppStart, SubnetworkPointPool snppEnd, int capacity, SignallingMessage message) {
-           
+            
             message.Operation = SignallingMessageOperation.RouteTableQueryResponse;
             message.Payload =Route(snppStart,snppEnd,capacity);
             SendMessage(message);

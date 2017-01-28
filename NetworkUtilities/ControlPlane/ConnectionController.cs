@@ -22,6 +22,15 @@ namespace NetworkUtilities.ControlPlane {
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
                 case SignallingMessageOperation.ConnectionRequest:
+                    if (message.DestinationAddress.Equals("1") || message.DestinationAddress.Equals("2")) {
+                        SendPeerCoordination(message);
+                    }
+                    else {
+                        message.Operation = SignallingMessageOperation.RouteTableQuery;
+                        SendMessage(message);
+                    }
+                    break;
+                case SignallingMessageOperation.PeerCoordination:
                     message.Operation = SignallingMessageOperation.RouteTableQuery;
                     SendMessage(message);
                     break;
@@ -41,6 +50,18 @@ namespace NetworkUtilities.ControlPlane {
                     SendConnectionConfirmation(message);
                     break;
             }
+        }
+
+        private void SendPeerCoordination(SignallingMessage message) {
+            var peerCoordination = message;
+            peerCoordination.Operation = SignallingMessageOperation.ConnectionConfirmation;
+            if (message.SourceAddress.Equals(new NetworkAddress("1"))) {
+                peerCoordination.DestinationAddress = new NetworkAddress("2");
+            }
+            else {
+                peerCoordination.DestinationAddress = new NetworkAddress("1");
+            }
+            SendMessage(peerCoordination);
         }
 
         private void HandleConnectionRequestResponse(SignallingMessage msg) {
