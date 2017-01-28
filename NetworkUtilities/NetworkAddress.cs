@@ -47,7 +47,7 @@ namespace NetworkUtilities {
 
         public NetworkAddress GetParentsAddress() {
             var ids = _value.Split(Separator);
-            var value = string.Join(Separator.ToString(), ids.Take(ids.Length - 2));
+            var value = string.Join(Separator.ToString(), ids.Take(ids.Length - 1));
             return new NetworkAddress(value);
         }
 

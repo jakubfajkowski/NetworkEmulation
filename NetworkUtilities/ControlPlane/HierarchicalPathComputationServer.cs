@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
-    class HierarchicalPathComputationServer : PathComputationServer {
+    public class HierarchicalPathComputationServer : PathComputationServer {
         private readonly ConnectionController _connectionController;
         private readonly RoutingController _routingController;
 
@@ -15,11 +15,11 @@ namespace NetworkUtilities.ControlPlane {
                                                  string ipAddress,
                                                  int listeningPort,
                                                  int pathComputationServerListeningPort, 
-                                                 int pathComputationServerDataPort) : base(networkAddress, 
+                                                 int outputPort) : base(networkAddress, 
                                                                                            ipAddress, 
                                                                                            listeningPort,
                                                                                            pathComputationServerListeningPort,
-                                                                                           pathComputationServerDataPort) {
+                                                                                           outputPort) {
             _connectionController = new ConnectionController(networkAddress);
             _routingController = new RoutingController(networkAddress);
         }

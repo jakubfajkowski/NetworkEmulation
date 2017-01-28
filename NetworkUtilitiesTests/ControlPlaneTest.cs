@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
+using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkUtilitiesTests {
     [TestClass]
@@ -19,12 +20,12 @@ namespace NetworkUtilitiesTests {
             var cpccAAddress = new NetworkAddress("1.1");
             CallingPartyCallController cpccA = new CallingPartyCallController(cpccAAddress);
             _controlPlaneElements.Add(cpccAAddress, cpccA);
-            directory.UpdateDierctory("Abacki", cpccAAddress, new NetworkAddress("1.1.1"));
+            directory.UpdateDierctory("Abacki", cpccAAddress, new SubnetworkPointPool(1));
 
             var cpccBAddress = new NetworkAddress("2.2");
             CallingPartyCallController cpccB = new CallingPartyCallController(cpccBAddress);
             _controlPlaneElements.Add(cpccBAddress, cpccB);
-            directory.UpdateDierctory("Babacki", cpccBAddress, new NetworkAddress("2.2.2"));
+            directory.UpdateDierctory("Babacki", cpccBAddress, new SubnetworkPointPool(2));
 
             var ncc1Address = new NetworkAddress("1");
             NetworkCallController ncc1 = new NetworkCallController(ncc1Address);
@@ -34,13 +35,17 @@ namespace NetworkUtilitiesTests {
             NetworkCallController ncc2 = new NetworkCallController(ncc2Address);
             _controlPlaneElements.Add(ncc2Address, ncc2);
 
+            var ccAddress = new NetworkAddress("0.1");
+            ConnectionController cc = new ConnectionController(ccAddress);
+            _controlPlaneElements.Add(ccAddress, cc);
+
             ncc1.OnMessageToSend += PassMessage;
             ncc2.OnMessageToSend += PassMessage;
             cpccA.OnMessageToSend += PassMessage;
             cpccB.OnMessageToSend += PassMessage;
             directory.OnMessageToSend += PassMessage;
 
-            cpccA.SendCallRequest("Abacki", "Babacki", ncc1Address);
+            cpccA.SendCallRequest("Abacki", "Babacki", ncc1Address, 20);
         }
 
         private void PassMessage(object sender, SignallingMessage message) {

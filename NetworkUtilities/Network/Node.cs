@@ -27,13 +27,13 @@ namespace NetworkUtilities.Network {
 
             CableCloudListeningPort = cableCloudListeningPort;
             CableCloudDataPort = cableCloudDataPort;
-            _dataPlaneConnectionComponent = new ConnectionComponent(ipAddress, cableCloudListeningPort, NetworkAddress, cableCloudDataPort);
+            _dataPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, cableCloudDataPort, ipAddress, cableCloudListeningPort);
             _dataPlaneConnectionComponent.ObjectReceived += OnCableCloudMessageReceived;
             _dataPlaneConnectionComponent.Initialize();
 
             PathComputationServerListeningPort = pathComputationServerListeningPort;
             PathComputationServerDataPort = pathComputationServerDataPort;
-            _controlPlaneConnectionComponent = new ConnectionComponent(ipAddress, pathComputationServerListeningPort, NetworkAddress, pathComputationServerDataPort);
+            _controlPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, pathComputationServerDataPort, ipAddress, pathComputationServerListeningPort);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
             _controlPlaneConnectionComponent.Initialize();
         }

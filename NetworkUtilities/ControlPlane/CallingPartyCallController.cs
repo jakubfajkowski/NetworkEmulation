@@ -13,12 +13,13 @@ namespace NetworkUtilities.ControlPlane {
         public bool callConfirmed { get; set; }
         public NetworkAddress NccAddress { get; private set; }
 
-        public void SendCallRequest(string clientA, string clientZ, NetworkAddress nccAddress) {
+        public void SendCallRequest(string clientA, string clientZ, NetworkAddress nccAddress, int capacity) {
             NccAddress = nccAddress;
-            string[] clientNames = { clientA, clientZ };
+            string[] clientNames = {clientA, clientZ};
+            object[] callRequestMessage = { clientNames, capacity };
             SignallingMessage callRequest = new SignallingMessage() {
                 Operation = SignallingMessageOperation.CallRequest,
-                Payload = clientNames,
+                Payload = callRequestMessage,
                 DestinationAddress = nccAddress
             };
             SendMessage(callRequest);
