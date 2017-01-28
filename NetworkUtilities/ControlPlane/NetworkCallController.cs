@@ -19,6 +19,7 @@ namespace NetworkUtilities.ControlPlane {
             directioryRequest.Operation = SignallingMessageOperation.DirectoryAddressRequest;
             directioryRequest.Payload = (string[]) message.Payload;
             directioryRequest.DestinationAddress = Directory.Address;
+            //directioryRequest.SourceAddress =
             SendMessage(directioryRequest);
         }
 
@@ -106,7 +107,7 @@ namespace NetworkUtilities.ControlPlane {
                     _nameDictionary.Add(message.SessionId, clientNames);
                     _waitingForConfirmation[message.SessionId] = false;
 
-                    SendCallRequestResponse(message);
+                    //SendCallRequestResponse(message);
                     SendDirectorySnppRequest(message);
                     SendDirectoryAddressRequest(message);
                     break;

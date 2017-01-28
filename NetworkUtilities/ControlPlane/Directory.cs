@@ -47,6 +47,7 @@ namespace NetworkUtilities.ControlPlane {
             var directioryResponse = message;
             directioryResponse.Operation = SignallingMessageOperation.DirectorySnppResponse;
             directioryResponse.Payload = snpp;
+            directioryResponse.DestinationAddress = 
             SendMessage(directioryResponse);
         }
 
