@@ -4,7 +4,7 @@ namespace NetworkUtilities.GraphAlgorithm
 {
     public class SubnetworkPointPool
     {
-        public NetworkAddress NetworkSnppAddress { get; private set; }
+        public NetworkAddress NetworkSnppAddress { get; set; }
         public int PortSnpp { get; private set; }
         public List<string> Snp { get; set; }
 
