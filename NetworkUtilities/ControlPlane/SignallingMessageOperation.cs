@@ -18,7 +18,8 @@
         CallCoordinationResponse,
         ConnectionRequest,              // CC(NCC)   -> CC
         ConnectionRequestResponse,      // CC       -> CC(NCC)
-        CallConfirmation,     
+        CallConfirmation,
+        CallConfirmationFromNCC,     
         //CC operations
         RouteTableQuery,                // CC       -> RC
         RouteTableQueryResponse,        // RC       -> CC
