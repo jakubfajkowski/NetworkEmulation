@@ -47,6 +47,15 @@
     <Compile Include="CableCloudMessage.cs" />
     <Compile Include="ClientTableRow.cs" />
     <Compile Include="ControlPlane\PathComputationServer.cs" />
+    <Compile Include="GraphAlgorithm\Dijkstra.cs" />
+    <Compile Include="GraphAlgorithm\Link.cs" />
+    <Compile Include="GraphAlgorithm\Floyd.cs" />
+    <Compile Include="GraphAlgorithm\Graph.cs" />
+    <Compile Include="GraphAlgorithm\Path.cs" />
+    <Compile Include="GraphAlgorithm\PriorityQueue\Element.cs" />
+    <Compile Include="GraphAlgorithm\PriorityQueue\Heap.cs" />
+    <Compile Include="GraphAlgorithm\PriorityQueue\Queue.cs" />
+    <Compile Include="GraphAlgorithm\SubnetworkPointPool.cs" />
     <Compile Include="Network\ConnectionManager.cs" />
     <Compile Include="ControlPlane\CallingPartyCallController.cs" />
     <Compile Include="ControlPlane\ConnectionController.cs" />
@@ -59,7 +68,6 @@
     <Compile Include="ControlPlane\SignallingMessageOperation.cs" />
     <Compile Include="ControlPlane\StepByStepPathComputationServer.cs" />
     <Compile Include="ControlPlane\SubnetworkPoint.cs" />
-    <Compile Include="ControlPlane\SubnetworkPointPool.cs" />
     <Compile Include="Log\LogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,7 +78,6 @@
     <Compile Include="NetworkAddress.cs" />
     <Compile Include="Network\ConnectionComponent.cs" />
     <Compile Include="Serialization\ISerializable.cs" />
-    <Compile Include="Link.cs" />
     <Compile Include="Network\Node.cs" />
     <Compile Include="Element\ClientNodeModel.cs" />
     <Compile Include="Element\NetworkNodeModel.cs" />
