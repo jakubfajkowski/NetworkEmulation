@@ -102,7 +102,7 @@
     <Compile Include="Editor\Element\NetworkNode.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Editor\NodePictureBox.cs">
+    <Compile Include="Editor\Element\Node.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />

@@ -7,7 +7,7 @@ using NetworkUtilities;
 using NetworkUtilities.Serialization;
 using UniqueId = NetworkUtilities.UniqueId;
 
-namespace NetworkEmulation.Editor {
+namespace NetworkEmulation.Editor.Element {
     public abstract class NodePictureBox : ClippedPictureBox, IMarkable, IInitializable, ISerializable {
         public delegate void NodeMovingHandler(object sender);
 
@@ -39,23 +39,6 @@ namespace NetworkEmulation.Editor {
         public abstract void MarkAsOffline();
 
 
-        public virtual XmlSchema GetSchema() {
-            return null;
-        }
-
-        public virtual void ReadXml(XmlReader reader) {
-            reader.MoveToContent();
-            var X = int.Parse(reader.GetAttribute("X"));
-            var Y = int.Parse(reader.GetAttribute("Y"));
-            Location = new Point(X, Y);
-            Id = new UniqueId(reader.GetAttribute("Id"));
-        }
-
-        public virtual void WriteXml(XmlWriter writer) {
-            writer.WriteAttributeString("X", Location.X.ToString());
-            writer.WriteAttributeString("Y", Location.Y.ToString());
-            writer.WriteAttributeString("Id", Id.ToString());
-        }
 
         public UniqueId Id { get; private set; }
 
@@ -85,5 +68,28 @@ namespace NetworkEmulation.Editor {
                 NodeMoving();
             }
         }
+
+        #region IXmlSerializable
+
+        public virtual XmlSchema GetSchema() {
+            return null;
+        }
+
+        public virtual void ReadXml(XmlReader reader) {
+            reader.MoveToContent();
+            var X = int.Parse(reader.GetAttribute("X"));
+            var Y = int.Parse(reader.GetAttribute("Y"));
+            Location = new Point(X, Y);
+            Id = new UniqueId(reader.GetAttribute("Id"));
+        }
+
+        public virtual void WriteXml(XmlWriter writer) {
+            writer.WriteAttributeString("X", Location.X.ToString());
+            writer.WriteAttributeString("Y", Location.Y.ToString());
+            writer.WriteAttributeString("Id", Id.ToString());
+        }
+
+        #endregion
+
     }
 }

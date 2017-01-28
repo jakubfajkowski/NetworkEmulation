@@ -48,6 +48,8 @@ namespace NetworkEmulation.Editor.Element {
             Image = Resources.NetworkNodeOffline;
         }
 
+        #region IXmlSerializable
+
         public override void ReadXml(XmlReader reader) {
             base.ReadXml(reader);
             reader.ReadStartElement(nameof(NetworkNode));
@@ -59,5 +61,7 @@ namespace NetworkEmulation.Editor.Element {
             base.WriteXml(writer);
             XmlSerializer.Serialize(writer, Parameters);
         }
+
+        #endregion
     }
 }

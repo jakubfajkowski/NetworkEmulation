@@ -44,17 +44,19 @@ namespace NetworkEmulation {
             this.cableCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkManagmentSystemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.workspaceGroupBox = new System.Windows.Forms.GroupBox();
+            this.editorPanel = new NetworkEmulation.Editor.EditorPanel();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.networkHierarchyTreeView = new System.Windows.Forms.TreeView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.parametersListView = new System.Windows.Forms.ListView();
-            this.editorPanel = new NetworkEmulation.Editor.EditorPanel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.workspaceGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -218,7 +220,7 @@ namespace NetworkEmulation {
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.editorPanel);
+            this.splitContainer1.Panel1.Controls.Add(this.workspaceGroupBox);
             // 
             // splitContainer1.Panel2
             // 
@@ -226,6 +228,27 @@ namespace NetworkEmulation {
             this.splitContainer1.Size = new System.Drawing.Size(784, 537);
             this.splitContainer1.SplitterDistance = 558;
             this.splitContainer1.TabIndex = 1;
+            // 
+            // workspaceGroupBox
+            // 
+            this.workspaceGroupBox.Controls.Add(this.editorPanel);
+            this.workspaceGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.workspaceGroupBox.Location = new System.Drawing.Point(0, 0);
+            this.workspaceGroupBox.Name = "workspaceGroupBox";
+            this.workspaceGroupBox.Size = new System.Drawing.Size(558, 537);
+            this.workspaceGroupBox.TabIndex = 0;
+            this.workspaceGroupBox.TabStop = false;
+            this.workspaceGroupBox.Text = "Workspace";
+            // 
+            // editorPanel
+            // 
+            this.editorPanel.BackColor = System.Drawing.SystemColors.Control;
+            this.editorPanel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.editorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.editorPanel.Location = new System.Drawing.Point(3, 16);
+            this.editorPanel.Name = "editorPanel";
+            this.editorPanel.Size = new System.Drawing.Size(552, 518);
+            this.editorPanel.TabIndex = 3;
             // 
             // splitContainer2
             // 
@@ -285,17 +308,6 @@ namespace NetworkEmulation {
             this.parametersListView.UseCompatibleStateImageBehavior = false;
             this.parametersListView.View = System.Windows.Forms.View.List;
             // 
-            // editorPanel
-            // 
-            this.editorPanel.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.editorPanel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.editorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.editorPanel.Location = new System.Drawing.Point(0, 0);
-            this.editorPanel.Name = "editorPanel";
-            this.editorPanel.Size = new System.Drawing.Size(558, 537);
-            this.editorPanel.TabIndex = 2;
-            this.editorPanel.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.editorPanel_ControlAdded);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -314,6 +326,7 @@ namespace NetworkEmulation {
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.workspaceGroupBox.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -346,12 +359,13 @@ namespace NetworkEmulation {
         private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private EditorPanel editorPanel;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TreeView networkHierarchyTreeView;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ListView parametersListView;
+        private System.Windows.Forms.GroupBox workspaceGroupBox;
+        private EditorPanel editorPanel;
     }
 }
 

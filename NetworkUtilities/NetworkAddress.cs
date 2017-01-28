@@ -13,6 +13,8 @@ namespace NetworkUtilities {
 
         public int Levels => _value.Split(Separator).Length;
 
+        private NetworkAddress() {}
+
         public NetworkAddress(string value) {
             _value = value;
         }
@@ -73,7 +75,7 @@ namespace NetworkUtilities {
             return _value.GetHashCode();
         }
 
-        #region MyRegion
+        #region IXmlSerializable
 
         public XmlSchema GetSchema() {
             return null;

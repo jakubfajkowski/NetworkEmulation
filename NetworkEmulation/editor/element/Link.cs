@@ -3,7 +3,6 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using NetworkEmulation.Network.Element;
-using NetworkUtilities;
 using NetworkUtilities.Serialization;
 using UniqueId = NetworkUtilities.UniqueId;
 
@@ -48,23 +47,6 @@ namespace NetworkEmulation.Editor.Element {
             ChangeStyle(OfflinePen);
         }
 
-        public XmlSchema GetSchema() {
-            return null;
-        }
-
-        public void ReadXml(XmlReader reader) {
-            reader.MoveToContent();
-            Id = new UniqueId(reader.GetAttribute("Id"));
-            reader.ReadStartElement(nameof(Link));
-            Parameters = XmlSerializer.Deserialize<LinkModel>(reader);
-            reader.ReadEndElement();
-        }
-
-        public void WriteXml(XmlWriter writer) {
-            writer.WriteAttributeString("Id", Id.ToString());
-            XmlSerializer.Serialize(writer, Parameters);
-        }
-
         public UniqueId Id { get; private set; }
 
         public void SetAttachmentNodePictureBoxes(ref NodePictureBox beginNodePictureBox,
@@ -92,8 +74,29 @@ namespace NetworkEmulation.Editor.Element {
         }
 
         public bool IsBetween(NodePictureBox beginNodePictureBox, NodePictureBox endNodePictureBox) {
-            return (BeginNodePictureBox.Equals(beginNodePictureBox) && EndNodePictureBox.Equals(endNodePictureBox)) ||
-                   (BeginNodePictureBox.Equals(endNodePictureBox) && EndNodePictureBox.Equals(beginNodePictureBox));
+            return BeginNodePictureBox.Equals(beginNodePictureBox) && EndNodePictureBox.Equals(endNodePictureBox) ||
+                   BeginNodePictureBox.Equals(endNodePictureBox) && EndNodePictureBox.Equals(beginNodePictureBox);
         }
+
+        #region IXmlSerializable
+
+        public XmlSchema GetSchema() {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader) {
+            reader.MoveToContent();
+            Id = new UniqueId(reader.GetAttribute("Id"));
+            reader.ReadStartElement(nameof(Link));
+            Parameters = XmlSerializer.Deserialize<LinkModel>(reader);
+            reader.ReadEndElement();
+        }
+
+        public void WriteXml(XmlWriter writer) {
+            writer.WriteAttributeString("Id", Id.ToString());
+            XmlSerializer.Serialize(writer, Parameters);
+        }
+
+        #endregion
     }
 }
