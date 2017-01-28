@@ -12,10 +12,22 @@ namespace NetworkUtilities.ControlPlane {
         private readonly NetworkCallController _networkCallController;
         private readonly RoutingController _routingController;
 
-        public StepByStepPathComputationServer(NetworkAddress networkAddress, int port) : base(networkAddress, port) {
+        public StepByStepPathComputationServer(NetworkAddress networkAddress,
+                                                 string ipAddress,
+                                                 int port,
+                                                 int pathComputationServerListeningPort,
+                                                 int pathComputationServerDataPort) : base(networkAddress,
+                                                                                           ipAddress,
+                                                                                           port,
+                                                                                           pathComputationServerListeningPort,
+                                                                                           pathComputationServerDataPort) {
             _connectionController = new ConnectionController(networkAddress);
             _networkCallController = new NetworkCallController(networkAddress);
             _routingController = new RoutingController(networkAddress);
+        }
+
+        protected override void Receive(SignallingMessage signallingMessage) {
+            throw new NotImplementedException();
         }
     }
 }

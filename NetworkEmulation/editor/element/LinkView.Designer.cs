@@ -1,5 +1,5 @@
 ﻿namespace NetworkEmulation.Editor.Element {
-    partial class Link {
+    partial class LinkView {
         /// <summary>
         /// Required designer variable.
         /// </summary>

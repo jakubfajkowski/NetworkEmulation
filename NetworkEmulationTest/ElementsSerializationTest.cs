@@ -59,7 +59,7 @@ namespace NetworkEmulationTest {
 
         [TestMethod]
         public void SerializeLink() {
-            var link = new Link {
+            var link = new LinkView {
                 Parameters = new LinkModel {
                     BeginNodeViewId = UniqueId.Generate(),
                     EndNodeViewId = UniqueId.Generate(),
@@ -70,7 +70,7 @@ namespace NetworkEmulationTest {
 
             var serialized = XmlSerializer.Serialize(link);
 
-            var deserialized = new Link();
+            var deserialized = new LinkView();
             XmlSerializer.Deserialize(deserialized, serialized);
         }
 

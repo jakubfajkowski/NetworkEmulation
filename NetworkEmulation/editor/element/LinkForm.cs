@@ -4,9 +4,9 @@ using NetworkEmulation.Network;
 
 namespace NetworkEmulation.Editor.Element {
     public partial class LinkForm : Form {
-        private readonly Link _link;
+        private readonly LinkView _link;
 
-        public LinkForm(Link link) {
+        public LinkForm(LinkView link) {
             InitializeComponent();
             _link = link;
             FillPortComboBoxes();

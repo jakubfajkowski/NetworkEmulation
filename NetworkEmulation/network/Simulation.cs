@@ -14,14 +14,14 @@ namespace NetworkEmulation.Network {
         private readonly CableCloud _cableCloud;
 
         private readonly List<NodeView> _initializableNodes;
-        private readonly List<Link> _links;
+        private readonly List<LinkView> _links;
         private readonly NetworkManagmentSystem _networkManagmentSystem;
 
         private readonly Dictionary<int, Process> _processes;
         private bool _cableCloudLogFormShown;
         private bool _networkManagmentSystemLogFormShown;
 
-        public Simulation(List<NodeView> initializableNodes, List<Link> links) {
+        public Simulation(List<NodeView> initializableNodes, List<LinkView> links) {
             //TODO Zmienić metodę pokazywania logu
             _cableCloud = new CableCloud(Settings.Default.CableCloudUdpListenerPortNumber);
             CableCloudLogForm = new LogForm(_cableCloud);

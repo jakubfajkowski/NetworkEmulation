@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Log;
 using NetworkUtilities.Serialization;
@@ -63,7 +57,7 @@ namespace NetworkUtilities.Network {
         protected abstract void Receive(SignallingMessage signallingMessage);
 
         protected void Send(SignallingMessage signallingMessage) {
-            _dataPlaneConnectionComponent.SendObject(signallingMessage);
+            _controlPlaneConnectionComponent.SendObject(signallingMessage);
         }
     }
 }
