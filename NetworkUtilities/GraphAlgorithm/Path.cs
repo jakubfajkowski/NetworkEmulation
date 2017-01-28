@@ -3,47 +3,36 @@
     public class Path
     {
         private SubnetworkPointPool[] _subnetworkPointPools;
+
         public SubnetworkPointPool[] SubnetworkPointPools
         {
             get
             {
-                SubnetworkPointPool[] existingSubnetworkPointPools = new SubnetworkPointPool[length];
-                for (int i = 0; i < length; i++)
+                SubnetworkPointPool[] existingSubnetworkPointPools = new SubnetworkPointPool[Length];
+                for (int i = 0; i < Length; i++)
                 {
-                    existingSubnetworkPointPools[i] = _subnetworkPointPools[length - 1 - i];
+                    existingSubnetworkPointPools[i] = _subnetworkPointPools[Length - 1 - i];
                 }
                 return existingSubnetworkPointPools;
             }
         }
- 
-        private double minWeight;
-        public double MinWeight
-        {
-            get { return minWeight; }
-        }
 
-        private double sumWeight;
-        public double SumWeight
-        {
-            get { return sumWeight; }
-        }
+        public double MinWeight { get; }
 
-        private int length;
-        public int Length
-        {
-            get { return length; }
-        }
+        public double SumWeight { get; }
+
+        public int Length { get; private set; }
 
         public void push(SubnetworkPointPool subnetworkPointPool)
         {
-            _subnetworkPointPools[length++] = subnetworkPointPool;
+            _subnetworkPointPools[Length++] = subnetworkPointPool;
         }
         public Path(int n)
         {
             _subnetworkPointPools = new SubnetworkPointPool[n];
-            length = 0;
-            sumWeight = 0;
-            minWeight = double.MaxValue;
+            Length = 0;
+            SumWeight = 0;
+            MinWeight = double.MaxValue;
         }
     }
 }
