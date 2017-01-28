@@ -6,18 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NetworkUtilities.ControlPlane {
-    class NetworkCallController : ControlPlaneElement
+    public class NetworkCallController : ControlPlaneElement
     {
         private readonly Dictionary<UniqueId, NetworkAddress[]> _networkAddressDictionary = new Dictionary<UniqueId, NetworkAddress[]>();
         private readonly Dictionary<UniqueId, string[]> _nameDictionary = new Dictionary<UniqueId, string[]>();
         private readonly Dictionary<UniqueId, NetworkAddress[]> _snppDictionary = new Dictionary<UniqueId, NetworkAddress[]>();
         private readonly Dictionary<UniqueId, bool> _waitingForConfirmation = new Dictionary<UniqueId, bool>();
+        
 
         private void SendDirectoryAddressRequest(SignallingMessage message) {
             var directioryRequest = message;
             directioryRequest.Operation = SignallingMessageOperation.DirectoryAddressRequest;
             directioryRequest.Payload = (string[]) message.Payload;
-            //callCoordination.DestinationAddress = Directory address??
+            directioryRequest.DestinationAddress = Directory.Address;
             SendMessage(directioryRequest);
         }
 
@@ -25,7 +26,7 @@ namespace NetworkUtilities.ControlPlane {
             var directioryRequest = message;
             directioryRequest.Operation = SignallingMessageOperation.DirectorySnppRequest;
             directioryRequest.Payload = (string[])message.Payload;
-            //callCoordination.DestinationAddress = Directory address??
+            directioryRequest.DestinationAddress = Directory.Address;
             SendMessage(directioryRequest);
         }
 
