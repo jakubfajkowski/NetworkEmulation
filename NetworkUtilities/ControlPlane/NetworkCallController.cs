@@ -19,9 +19,8 @@ namespace NetworkUtilities.ControlPlane {
         private void SendDirectoryAddressRequest(SignallingMessage message) {
             var directioryRequest = message;
             directioryRequest.Operation = SignallingMessageOperation.DirectoryAddressRequest;
-            directioryRequest.Payload = (string[]) message.Payload;
+            directioryRequest.Payload = _nameDictionary[message.SessionId];
             directioryRequest.DestinationAddress = Directory.Address;
-            //directioryRequest.SourceAddress =
             SendMessage(directioryRequest);
         }
 
@@ -33,11 +32,19 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(directioryRequest);
         }
 
+        private void SendDirectoryNameRequest(SignallingMessage message) {
+            var directioryRequest = message;
+            directioryRequest.Operation = SignallingMessageOperation.DirectoryNameRequest;
+            directioryRequest.Payload = (NetworkAddress[])message.Payload;
+            directioryRequest.DestinationAddress = Directory.Address;
+            SendMessage(directioryRequest);
+        }
+
         private void SendCallCoordination(SignallingMessage message) {
             var callCoordination = message;
             callCoordination.Operation = SignallingMessageOperation.CallCoordination;
             callCoordination.Payload = (NetworkAddress[]) message.Payload;
-            callCoordination.DestinationAddress = _networkAddressDictionary[message.SessionId][1].GetParentsAddress();
+            callCoordination.DestinationAddress = _networkAddressDictionary[message.SessionId][1].GetRootFromBeginning(1);
             SendMessage(callCoordination);
         }
 
@@ -62,9 +69,9 @@ namespace NetworkUtilities.ControlPlane {
         private void SendCallConfirmationToNCC(SignallingMessage message) {
             var callConfirmation = message;
             var clientAddresses = _networkAddressDictionary[message.SessionId];
-            callConfirmation.Operation = SignallingMessageOperation.CallConfirmation;
-            callConfirmation.Payload = clientAddresses;
-            callConfirmation.DestinationAddress = _networkAddressDictionary[message.SessionId][0].GetRootFromBeginning(0);
+            callConfirmation.Operation = SignallingMessageOperation.CallConfirmationFromNCC;
+            //callConfirmation.Payload = clientAddresses;
+            callConfirmation.DestinationAddress = _networkAddressDictionary[message.SessionId][0].GetRootFromBeginning(1);
             SendMessage(callConfirmation);
         }
 
@@ -72,7 +79,7 @@ namespace NetworkUtilities.ControlPlane {
             var callConfirmation = message;
             var clientNames = _nameDictionary[message.SessionId];
             callConfirmation.Operation = SignallingMessageOperation.CallConfirmation;
-            callConfirmation.Payload = clientNames;
+            //callConfirmation.Payload = clientNames;
             callConfirmation.DestinationAddress = _networkAddressDictionary[message.SessionId][0];
             SendMessage(callConfirmation);
         }
@@ -81,7 +88,7 @@ namespace NetworkUtilities.ControlPlane {
             var callCoordinationResponse = message;
             callCoordinationResponse.Operation = SignallingMessageOperation.CallCoordinationResponse;
             callCoordinationResponse.Payload = (bool)true;
-            callCoordinationResponse.DestinationAddress =_networkAddressDictionary[message.SessionId][0].GetRootFromBeginning(0);
+            callCoordinationResponse.DestinationAddress = message.SourceAddress;
             SendMessage(callCoordinationResponse);
         }
 
@@ -89,7 +96,7 @@ namespace NetworkUtilities.ControlPlane {
             var callRequestResponse = message;
             callRequestResponse.Operation = SignallingMessageOperation.CallRequestResponse;
             callRequestResponse.Payload = (bool) true;
-            callRequestResponse.DestinationAddress = _networkAddressDictionary[message.SessionId][0];
+            callRequestResponse.DestinationAddress = message.SourceAddress;
             SendMessage(callRequestResponse);
         }
 
@@ -97,6 +104,7 @@ namespace NetworkUtilities.ControlPlane {
             var callTeardownResponse = message;
             callTeardownResponse.Operation = SignallingMessageOperation.CallTeardownResponse;
             callTeardownResponse.Payload = (bool)true;
+            callTeardownResponse.DestinationAddress = message.SourceAddress;
             SendMessage(callTeardownResponse);
         }
 
@@ -111,14 +119,16 @@ namespace NetworkUtilities.ControlPlane {
 
                     //SendCallRequestResponse(message);
                     SendDirectorySnppRequest(message);
-                    SendDirectoryAddressRequest(message);
                     break;
                 case SignallingMessageOperation.CallTeardown:
                     SendCallTeardownResponse(message);
                     break;
                 case SignallingMessageOperation.CallCoordination:
-                    SendCallCoordinationResponse(message);
-                    SendCallAccept(message);
+                    _waitingForConfirmation.Add(message.SessionId, false);
+                    var networkAddress = (NetworkAddress[]) message.Payload;
+                    _networkAddressDictionary.Add(message.SessionId, networkAddress);
+                    SendDirectoryNameRequest(message);
+                    //SendCallCoordinationResponse(message);
                     break;
                 case SignallingMessageOperation.CallTeardownResponse:
 
@@ -126,6 +136,7 @@ namespace NetworkUtilities.ControlPlane {
                 case SignallingMessageOperation.DirectorySnppResponse:
                     var snpp = (NetworkAddress[]) message.Payload;
                     _snppDictionary.Add(message.SessionId, snpp);
+                    SendDirectoryAddressRequest(message);
                     break;
                 case SignallingMessageOperation.DirectoryAddressResponse:
                     var networkAdress = (NetworkAddress[]) message.Payload;
@@ -141,6 +152,7 @@ namespace NetworkUtilities.ControlPlane {
                 case SignallingMessageOperation.DirectoryNameResponse:
                     var clientName = (string[])message.Payload;
                     _nameDictionary.Add(message.SessionId, clientName);
+                    SendCallAccept(message);
                     break;
                 case SignallingMessageOperation.CallCoordinationResponse:
                     
@@ -152,20 +164,27 @@ namespace NetworkUtilities.ControlPlane {
 
                     break;
                 case SignallingMessageOperation.CallConfirmation:
-                    if ((bool) message.Payload) {
-                        if (!_waitingForConfirmation[message.SessionId]) {
-                            var address = _networkAddressDictionary[message.SessionId];
-                            if (address[0].GetId(0) == address[1].GetId(0)) {
-                                SendConnectionRequest(message);
-                                _waitingForConfirmation[message.SessionId] = true;
-                            }
-                            else {
-                                SendCallConfirmationToNCC(message);
-                            }
+                    if (!_waitingForConfirmation[message.SessionId]) {
+                        var address = _networkAddressDictionary[message.SessionId];
+                        if (address[0].GetId(0) == address[1].GetId(0)) {
+                            SendConnectionRequest(message);
+                            _waitingForConfirmation[message.SessionId] = true;
                         }
                         else {
-                            SendCallConfirmationToCPCC(message);
+                            SendCallConfirmationToNCC(message);
                         }
+                    }
+                    else {
+                        SendCallConfirmationToCPCC(message);
+                    }
+                    break;
+                case SignallingMessageOperation.CallConfirmationFromNCC:
+                    if (!_waitingForConfirmation[message.SessionId]) {
+                        SendConnectionRequest(message);
+                        _waitingForConfirmation[message.SessionId] = true;
+                    }
+                    else {
+                        SendCallConfirmationToCPCC(message);
                     }
                     break;
             }

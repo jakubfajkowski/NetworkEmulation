@@ -59,6 +59,7 @@
     <Compile Include="ControlPlaneTest.cs" />
     <Compile Include="NetworkAddressTest.cs" />
     <Compile Include="PathComputationServerTest.cs" />
+    <Compile Include="UnitTest1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

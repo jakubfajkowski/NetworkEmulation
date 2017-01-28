@@ -18,14 +18,19 @@
         CallCoordinationResponse,
         ConnectionRequest,              // CC(NCC)   -> CC
         ConnectionRequestResponse,      // CC       -> CC(NCC)
-        CallConfirmation,     
+        CallConfirmation,
+        CallConfirmationFromNCC,     
         //CC operations
         RouteTableQuery,                // CC       -> RC
         RouteTableQueryResponse,        // RC       -> CC
         SetLabels,                      // LRM(NN)  -> CC(NN)
         GetLabelsFromLRM,               // CC(HPCS) -> CC(NN)
+        ConnectionConfirmation,         // CC       -> CC
+        //RC operations 
+        NetworkTopology,                // RC -> RC
         //LRM operations
-        GetLabels
+        GetLabels,
+        LocalTopology                   // LRM -> RC
         
     }
 }

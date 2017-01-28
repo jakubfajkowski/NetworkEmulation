@@ -21,6 +21,7 @@ namespace NetworkUtilities.ControlPlane {
             var directioryResponse = message;
             directioryResponse.Operation = SignallingMessageOperation.DirectoryAddressResponse;
             directioryResponse.Payload = clientAddress;
+            directioryResponse.DestinationAddress = message.SourceAddress;
             SendMessage(directioryResponse);
         }
 
@@ -35,6 +36,7 @@ namespace NetworkUtilities.ControlPlane {
             var directioryResponse = message;
             directioryResponse.Operation = SignallingMessageOperation.DirectoryNameResponse;
             directioryResponse.Payload = clientName;
+            directioryResponse.DestinationAddress = message.SourceAddress;
             SendMessage(directioryResponse);
         }
 

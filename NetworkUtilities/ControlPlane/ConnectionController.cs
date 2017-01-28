@@ -21,7 +21,6 @@ namespace NetworkUtilities.ControlPlane {
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
                 case SignallingMessageOperation.ConnectionRequest:
-
                     message.Operation = SignallingMessageOperation.RouteTableQuery;
                     SendMessage(message);
                     break;
@@ -36,6 +35,9 @@ namespace NetworkUtilities.ControlPlane {
                     Debug.WriteLine("Received VPI: " + labels[0] + ", VCI: " + labels[1]);
                     break;
                 case SignallingMessageOperation.GetLabelsFromLRM:
+                    break;
+                case SignallingMessageOperation.ConnectionConfirmation:
+                    SendConnectionConfirmation(message);
                     break;
             }
         }
@@ -53,6 +55,14 @@ namespace NetworkUtilities.ControlPlane {
                 msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
                 SendMessage(msg);
             }
+        }
+
+        private void SendConnectionConfirmation(SignallingMessage message) {
+            var connectionConfirmation = message;
+            connectionConfirmation.Operation = SignallingMessageOperation.ConnectionConfirmation;
+            connectionConfirmation.Payload = (bool) true;
+            connectionConfirmation.DestinationAddress = message.SourceAddress;
+            SendMessage(connectionConfirmation);
         }
 
         public void SendGetLabelsMessage() {
