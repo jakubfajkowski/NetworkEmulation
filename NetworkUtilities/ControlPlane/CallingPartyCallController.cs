@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 namespace NetworkUtilities.ControlPlane {
     public class CallingPartyCallController : ControlPlaneElement
     {
+        public CallingPartyCallController(NetworkAddress networkAddress) : base(networkAddress) {
+        }
+
         public bool callConfirmed { get; set; }
         public NetworkAddress NccAddress { get; private set; }
 
@@ -35,7 +38,7 @@ namespace NetworkUtilities.ControlPlane {
             var callConfirmation = message;
             callConfirmation.Operation = SignallingMessageOperation.CallConfirmation;
             callConfirmation.Payload = confirmation;
-            callConfirmation.DestinationAddress = NccAddress;
+            callConfirmation.DestinationAddress = message.SourceAddress;
             SendMessage(callConfirmation);
         }
 
@@ -43,7 +46,7 @@ namespace NetworkUtilities.ControlPlane {
             var callAcceptResponse = message;
             callAcceptResponse.Operation = SignallingMessageOperation.CallAcceptResponse;
             callAcceptResponse.Payload = (bool) true;
-            callAcceptResponse.DestinationAddress = NccAddress;
+            callAcceptResponse.DestinationAddress = message.SourceAddress;
             SendMessage(callAcceptResponse);
         }
 
@@ -61,7 +64,8 @@ namespace NetworkUtilities.ControlPlane {
             switch (message.Operation)
             {
                 case SignallingMessageOperation.CallAccept:
-                    SendCallAcceptResponse(message);
+                    //SendCallAcceptResponse(message);
+                    callConfirmed = false;
                     SendCallConfirmation(message, callConfirmed);
                     break;
                 case SignallingMessageOperation.CallTeardown:

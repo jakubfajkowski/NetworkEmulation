@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Threading.Tasks;
 using NetworkEmulation.Editor.Element;
 using NetworkUtilities;
 using NetworkUtilities.Network;
@@ -55,7 +53,7 @@ namespace NetworkEmulation.Network {
             _linkDictionary.Add(key, value);
         }
 
-        public void AddLink(Link link) {
+        public void AddLink(LinkView link) {
             var key = link.Parameters.InputNodePortPair;
             var value = link.Parameters.OutputNodePortPair;
 

@@ -1,18 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace NetworkUtilities.ControlPlane {
     public abstract class ControlPlaneElement {
+        public NetworkAddress SourceAddress { get; }
+
         public delegate void MessageToSendHandler(object sender, SignallingMessage message);
 
         private readonly List<UniqueId> _currentlyHandledSessions = new List<UniqueId>();
 
         public event MessageToSendHandler OnMessageToSend;
 
+        protected ControlPlaneElement(NetworkAddress networkAddress) {
+            SourceAddress = networkAddress;
+        }
+
         protected void SendMessage(SignallingMessage message) {
+            message.SourceAddress = SourceAddress;
             OnMessageToSend?.Invoke(this, message);
         }
 

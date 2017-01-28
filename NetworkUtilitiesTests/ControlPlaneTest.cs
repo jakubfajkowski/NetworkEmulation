@@ -13,26 +13,34 @@ namespace NetworkUtilitiesTests {
         [TestMethod]
         public void TestMessageTransfer() {
 
-            Directory directory = new Directory();
+            Directory directory = new Directory(Directory.Address);
             _controlPlaneElements.Add(Directory.Address, directory);
 
-            CallingPartyCallController cpccA = new CallingPartyCallController();
-            _controlPlaneElements.Add(new NetworkAddress("1.1"), cpccA);
-            directory.UpdateDierctory("Abacki", new NetworkAddress("1.1"), new NetworkAddress("1.1.1"));
+            var cpccAAddress = new NetworkAddress("1.1");
+            CallingPartyCallController cpccA = new CallingPartyCallController(cpccAAddress);
+            _controlPlaneElements.Add(cpccAAddress, cpccA);
+            directory.UpdateDierctory("Abacki", cpccAAddress, new NetworkAddress("1.1.1"));
 
-            CallingPartyCallController cpccB = new CallingPartyCallController();
-            _controlPlaneElements.Add(new NetworkAddress("1.2"), cpccB);
-            directory.UpdateDierctory("Babacki", new NetworkAddress("1.2"), new NetworkAddress("1.2.2"));
+            var cpccBAddress = new NetworkAddress("2.2");
+            CallingPartyCallController cpccB = new CallingPartyCallController(cpccBAddress);
+            _controlPlaneElements.Add(cpccBAddress, cpccB);
+            directory.UpdateDierctory("Babacki", cpccBAddress, new NetworkAddress("2.2.2"));
 
-            NetworkCallController ncc = new NetworkCallController();
-            _controlPlaneElements.Add(new NetworkAddress("1"), ncc);
+            var ncc1Address = new NetworkAddress("1");
+            NetworkCallController ncc1 = new NetworkCallController(ncc1Address);
+            _controlPlaneElements.Add(ncc1Address, ncc1);
 
-            ncc.OnMessageToSend += PassMessage;
+            var ncc2Address = new NetworkAddress("2");
+            NetworkCallController ncc2 = new NetworkCallController(ncc2Address);
+            _controlPlaneElements.Add(ncc2Address, ncc2);
+
+            ncc1.OnMessageToSend += PassMessage;
+            ncc2.OnMessageToSend += PassMessage;
             cpccA.OnMessageToSend += PassMessage;
             cpccB.OnMessageToSend += PassMessage;
             directory.OnMessageToSend += PassMessage;
 
-            cpccA.SendCallRequest("Abacki", "Babacki", new NetworkAddress("1"));
+            cpccA.SendCallRequest("Abacki", "Babacki", ncc1Address);
         }
 
         private void PassMessage(object sender, SignallingMessage message) {

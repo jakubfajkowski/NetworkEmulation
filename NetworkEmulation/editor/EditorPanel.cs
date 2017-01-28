@@ -27,7 +27,7 @@ namespace NetworkEmulation.Editor {
             InitializeComponent();
         }
         
-        public List<Link> AddedLinks { get; } = new List<Link>();
+        public List<LinkView> AddedLinks { get; } = new List<LinkView>();
         public List<NodeView> AddedNodeViews { get; } = new List<NodeView>();
 
         private NodeView SelectedNodeView {
@@ -134,15 +134,15 @@ namespace NetworkEmulation.Editor {
             AddedNodeViews.Remove(nodeView);
         }
 
-        private void Add(Link link) {
+        private void Add(LinkView link) {
             Controls.Add(link);
             AddedLinks.Add(link);
 
             Deselect(link);
         }
 
-        private Link CreateLink(NodeView beginNodeView, NodeView endNodeView) {
-            return new Link(ref beginNodeView, ref endNodeView);
+        private LinkView CreateLink(NodeView beginNodeView, NodeView endNodeView) {
+            return new LinkView(ref beginNodeView, ref endNodeView);
         }
 
         public void Clear() {
@@ -169,7 +169,7 @@ namespace NetworkEmulation.Editor {
         public void ReadXml(XmlReader reader) {
             var clientNodeViewSerializer = new XmlSerializer(typeof(List<ClientNodeView>));
             var networkNodeViewSerializer = new XmlSerializer(typeof(List<NetworkNodeView>));
-            var linkSerializer = new XmlSerializer(typeof(List<Link>));
+            var linkSerializer = new XmlSerializer(typeof(List<LinkView>));
 
             reader.ReadStartElement(nameof(EditorPanel));
             var clientNodeViews =
@@ -182,7 +182,7 @@ namespace NetworkEmulation.Editor {
             if (networkNodeViews != null)
                 foreach (var networkNodeView in networkNodeViews) Add(networkNodeView);
 
-            foreach (var link in linkSerializer.Deserialize(reader) as List<Link>) {
+            foreach (var link in linkSerializer.Deserialize(reader) as List<LinkView>) {
                 RestoreReferences(link);
                 Add(link);
             }
@@ -192,7 +192,7 @@ namespace NetworkEmulation.Editor {
         public void WriteXml(XmlWriter writer) {
             var clientNodeViewSerializer = new XmlSerializer(typeof(List<ClientNodeView>));
             var networkNodeViewSerializer = new XmlSerializer(typeof(List<NetworkNodeView>));
-            var linkSerializer = new XmlSerializer(typeof(List<Link>));
+            var linkSerializer = new XmlSerializer(typeof(List<LinkView>));
 
             clientNodeViewSerializer.Serialize(writer,
                 AddedNodeViews.OfType<ClientNodeView>().ToList());
@@ -201,7 +201,7 @@ namespace NetworkEmulation.Editor {
             linkSerializer.Serialize(writer, AddedLinks);
         }
 
-        private void RestoreReferences(Link link) {
+        private void RestoreReferences(LinkView link) {
             var beginNodeViewId = link.Parameters.BeginNodeViewId;
             var endNodeViewId = link.Parameters.EndNodeViewId;
 

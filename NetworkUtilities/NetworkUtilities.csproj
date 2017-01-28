@@ -47,6 +47,7 @@
     <Compile Include="CableCloudMessage.cs" />
     <Compile Include="ClientTableRow.cs" />
     <Compile Include="ControlPlane\PathComputationServer.cs" />
+    <Compile Include="ControlPlane\SignallingMessageDestinationControlPlaneElement.cs" />
     <Compile Include="GraphAlgorithm\Dijkstra.cs" />
     <Compile Include="GraphAlgorithm\Link.cs" />
     <Compile Include="GraphAlgorithm\Floyd.cs" />

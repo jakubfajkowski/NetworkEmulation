@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Log;
 using NetworkUtilities.Serialization;
@@ -32,11 +26,13 @@ namespace NetworkUtilities.Network {
             CableCloudDataPort = cableCloudDataPort;
             _dataPlaneConnectionComponent = new ConnectionComponent(ipAddress, cableCloudListeningPort, cableCloudDataPort);
             _dataPlaneConnectionComponent.ObjectReceived += OnCableCloudMessageReceived;
+            _dataPlaneConnectionComponent.Initialize();
 
             PathComputationServerListeningPort = pathComputationServerListeningPort;
             PathComputationServerDataPort = pathComputationServerDataPort;
             _controlPlaneConnectionComponent = new ConnectionComponent(ipAddress, pathComputationServerListeningPort, pathComputationServerDataPort);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
+            _controlPlaneConnectionComponent.Initialize();
         }
 
         private void OnCableCloudMessageReceived(object sender, object receivedObject) {
@@ -63,7 +59,7 @@ namespace NetworkUtilities.Network {
         protected abstract void Receive(SignallingMessage signallingMessage);
 
         protected void Send(SignallingMessage signallingMessage) {
-            _dataPlaneConnectionComponent.SendObject(signallingMessage);
+            _controlPlaneConnectionComponent.SendObject(signallingMessage);
         }
     }
 }

@@ -7,7 +7,9 @@ using NetworkUtilities.Element;
 
 namespace NetworkUtilities.ControlPlane {
     class RoutingController : ControlPlaneElement {
-        private List<Link> _list;
+        private List<Link> _linkList = new List<Link>();
+
+        public RoutingController(NetworkAddress networkAddress) : base(networkAddress) {}
 
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
@@ -15,14 +17,27 @@ namespace NetworkUtilities.ControlPlane {
                     var snpps = message.Payload as List<SubnetworkPointPool>;
                     if (snpps != null) Route(snpps[0], snpps[1]);
                     break;
+                case SignallingMessageOperation.LocalTopology:
+                    _linkList.Add((Link)message.Payload);
+                    break;
+                case SignallingMessageOperation.NetworkTopology:
+
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
+        private void SendNetworkTopology(SignallingMessage message) {
+            var networkTopology = message;
+            networkTopology.Operation = SignallingMessageOperation.NetworkTopology;
+            networkTopology.Payload = _linkList;
+            //networkTopology.DestinationAddress = ???
+            SendMessage(networkTopology);
+        }
+
         private void Route(SubnetworkPointPool snppA, SubnetworkPointPool snppB) {
+
         }
     }
 }
-
-//
