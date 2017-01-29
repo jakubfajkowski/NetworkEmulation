@@ -39,11 +39,12 @@ namespace NetworkUtilitiesTests {
             ConnectionController cc = new ConnectionController(ccAddress);
             _controlPlaneElements.Add(ccAddress, cc);
 
-            ncc1.MessageToSend += PassMessage;
-            ncc2.MessageToSend += PassMessage;
-            cpccA.MessageToSend += PassMessage;
-            cpccB.MessageToSend += PassMessage;
-            directory.MessageToSend += PassMessage;
+            ncc1.OnMessageToSend += PassMessage;
+            ncc2.OnMessageToSend += PassMessage;
+            cc.OnMessageToSend += PassMessage;
+            cpccA.OnMessageToSend += PassMessage;
+            cpccB.OnMessageToSend += PassMessage;
+            directory.OnMessageToSend += PassMessage;
 
             cpccA.SendCallRequest("Abacki", "Babacki", ncc1Address, 20);
         }

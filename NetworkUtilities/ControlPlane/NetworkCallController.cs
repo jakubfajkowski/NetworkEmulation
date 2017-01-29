@@ -4,10 +4,14 @@ using NetworkUtilities.GraphAlgorithm;
 namespace NetworkUtilities.ControlPlane {
     public class NetworkCallController : ControlPlaneElement
     {
-        private readonly Dictionary<UniqueId, NetworkAddress[]> _networkAddressDictionary = new Dictionary<UniqueId, NetworkAddress[]>();
-        private readonly Dictionary<UniqueId, string[]> _nameDictionary = new Dictionary<UniqueId, string[]>();
-        private readonly Dictionary<UniqueId, int> _capacityDictionary = new Dictionary<UniqueId, int>();
-        private readonly Dictionary<UniqueId, SubnetworkPointPool[]> _snppDictionary = new Dictionary<UniqueId, SubnetworkPointPool[]>();
+        private readonly Dictionary<UniqueId, NetworkAddress[]> _networkAddressDictionary = 
+            new Dictionary<UniqueId, NetworkAddress[]>();
+        private readonly Dictionary<UniqueId, string[]> _nameDictionary = 
+            new Dictionary<UniqueId, string[]>();
+        private readonly Dictionary<UniqueId, int> _capacityDictionary = 
+            new Dictionary<UniqueId, int>();
+        private readonly Dictionary<UniqueId, SubnetworkPointPool[]> _snppDictionary = 
+            new Dictionary<UniqueId, SubnetworkPointPool[]>();
 
 
         public NetworkCallController(NetworkAddress networkAddress) : base(networkAddress) {}
@@ -17,6 +21,7 @@ namespace NetworkUtilities.ControlPlane {
             directioryRequest.Operation = SignallingMessageOperation.DirectoryAddressRequest;
             directioryRequest.Payload = _nameDictionary[message.SessionId];
             directioryRequest.DestinationAddress = Address;
+            directioryRequest.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.Directory;
             SendMessage(directioryRequest);
         }
 
@@ -25,6 +30,7 @@ namespace NetworkUtilities.ControlPlane {
             directioryRequest.Operation = SignallingMessageOperation.DirectorySnppRequest;
             directioryRequest.Payload = _nameDictionary[message.SessionId];
             directioryRequest.DestinationAddress = Address;
+            directioryRequest.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.Directory;
             SendMessage(directioryRequest);
         }
 
@@ -33,6 +39,7 @@ namespace NetworkUtilities.ControlPlane {
             directioryRequest.Operation = SignallingMessageOperation.DirectoryNameRequest;
             directioryRequest.Payload = (NetworkAddress[])message.Payload;
             directioryRequest.DestinationAddress = Address;
+            directioryRequest.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.Directory;
             SendMessage(directioryRequest);
         }
 
@@ -41,17 +48,21 @@ namespace NetworkUtilities.ControlPlane {
             callCoordination.Operation = SignallingMessageOperation.CallCoordination;
             callCoordination.Payload = (NetworkAddress[]) message.Payload;
             callCoordination.DestinationAddress = _networkAddressDictionary[message.SessionId][1].GetRootFromBeginning(1);
+            callCoordination.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
             SendMessage(callCoordination);
         }
 
         private void SendConnectionRequest(SignallingMessage message) {
             var connectionRequest = message;
             var snpp = _snppDictionary[message.SessionId];
+            var capacity = _capacityDictionary[message.SessionId];
+
+            object[] connectionRequestMessage = {snpp, capacity};
             connectionRequest.Operation = SignallingMessageOperation.ConnectionRequest;
-            connectionRequest.Payload = snpp;
-            //connectionRequest.DestinationAddress = _networkAddressDictionary[message.SessionId][1].GetRootFromBeginning(1);
-            //sztucznie ustawiany na potrzeby testu ;)
-            connectionRequest.DestinationAddress = new NetworkAddress("0.1");
+            connectionRequest.Payload = connectionRequestMessage;
+            connectionRequest.DestinationAddress = _networkAddressDictionary[message.SessionId][1].GetRootFromBeginning(1);
+            //connectionRequest.DestinationAddress = new NetworkAddress("0.1");
+            connectionRequest.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
             SendMessage(connectionRequest);
         }
 
@@ -61,6 +72,7 @@ namespace NetworkUtilities.ControlPlane {
             callAccept.Operation = SignallingMessageOperation.CallAccept;
             callAccept.Payload = clientNames;
             callAccept.DestinationAddress = _networkAddressDictionary[message.SessionId][1];
+            callAccept.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.CallingPartyCallController;
             SendMessage(callAccept);
         }
 
@@ -68,6 +80,7 @@ namespace NetworkUtilities.ControlPlane {
             var callConfirmation = message;
             callConfirmation.Operation = SignallingMessageOperation.CallConfirmationFromNCC;
             callConfirmation.DestinationAddress = _networkAddressDictionary[message.SessionId][0].GetRootFromBeginning(1);
+            callConfirmation.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
             SendMessage(callConfirmation);
         }
 
@@ -75,6 +88,7 @@ namespace NetworkUtilities.ControlPlane {
             var callConfirmation = message;
             callConfirmation.Operation = SignallingMessageOperation.CallConfirmation;
             callConfirmation.DestinationAddress = _networkAddressDictionary[message.SessionId][0];
+            callConfirmation.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.CallingPartyCallController;
             SendMessage(callConfirmation);
         }
 

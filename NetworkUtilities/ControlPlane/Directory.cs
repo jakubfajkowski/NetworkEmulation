@@ -21,6 +21,7 @@ namespace NetworkUtilities.ControlPlane {
             directioryResponse.Operation = SignallingMessageOperation.DirectoryAddressResponse;
             directioryResponse.Payload = clientAddress;
             directioryResponse.DestinationAddress = message.SourceAddress;
+            directioryResponse.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
             SendMessage(directioryResponse);
         }
 
@@ -36,6 +37,7 @@ namespace NetworkUtilities.ControlPlane {
             directioryResponse.Operation = SignallingMessageOperation.DirectoryNameResponse;
             directioryResponse.Payload = clientName;
             directioryResponse.DestinationAddress = message.SourceAddress;
+            directioryResponse.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
             SendMessage(directioryResponse);
         }
 
@@ -51,6 +53,7 @@ namespace NetworkUtilities.ControlPlane {
             directioryResponse.Operation = SignallingMessageOperation.DirectorySnppResponse;
             directioryResponse.Payload = snpp;
             directioryResponse.DestinationAddress = message.SourceAddress;
+            directioryResponse.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
             SendMessage(directioryResponse);
         }
 
