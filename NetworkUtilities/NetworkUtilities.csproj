@@ -50,6 +50,7 @@
     <Compile Include="ControlPlane\PathComputationServer.cs" />
     <Compile Include="ControlPlane\Policy.cs" />
     <Compile Include="ControlPlane\SignallingMessageDestinationControlPlaneElement.cs" />
+    <Compile Include="Element\LinkModel.cs" />
     <Compile Include="GraphAlgorithm\Dijkstra.cs" />
     <Compile Include="GraphAlgorithm\Link.cs" />
     <Compile Include="GraphAlgorithm\Floyd.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Log\PathComputationServerLogForm.Designer.cs">
       <DependentUpon>PathComputationServerLogForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NetworkAddressNodePortPair.cs" />
     <Compile Include="NetworkAddressSocketPortPair.cs" />
     <Compile Include="Network\ConnectionManager.cs" />
     <Compile Include="ControlPlane\CallingPartyCallController.cs" />

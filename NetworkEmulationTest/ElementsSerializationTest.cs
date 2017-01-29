@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.Editor.Element;
 using NetworkEmulation.Network;
-using NetworkEmulation.Network.Element;
 using NetworkUtilities;
 using NetworkUtilities.Element;
 using NetworkUtilities.Serialization;

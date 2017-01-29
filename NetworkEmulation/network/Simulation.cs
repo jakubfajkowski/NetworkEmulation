@@ -43,9 +43,8 @@ namespace NetworkEmulation.Network {
             PreparePathComputationServerMultipleLogForm();
 
             foreach (var pathComputationServer in _pathComputationServers) pathComputationServer.StartListening();
-            Thread.Sleep(100);
+
             foreach (var pathComputationServer in _pathComputationServers) pathComputationServer.Initialize();
-            Thread.Sleep(100);
 
 
             foreach (var initializableNode in _initializableNodes.OfType<NetworkNodeView>()) {
@@ -54,9 +53,10 @@ namespace NetworkEmulation.Network {
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
             }
 
-            foreach (var initializableNode in _initializableNodes.OfType<ClientNodeView>())
+            foreach (var initializableNode in _initializableNodes.OfType<ClientNodeView>()) {
                 initializableNode.Parameters.MaxAtmCellsNumberInCableCloudMessage =
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
+            }
 
             _links = links;
 

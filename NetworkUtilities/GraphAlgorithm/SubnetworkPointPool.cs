@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NetworkUtilities.GraphAlgorithm {
+    [Serializable]
     public class SubnetworkPointPool {
         public SubnetworkPointPool() {
             Id = 0;

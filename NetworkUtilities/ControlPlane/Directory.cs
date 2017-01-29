@@ -64,8 +64,8 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(directioryResponse);
         }
 
-        public static void UpdateDirectory(string clientName, NetworkAddress clientAddress, SubnetworkPointPool snpp) {
-            _clientAdderssDictionary.Add(clientName, clientAddress);
+        public static void UpdateDirectory(string clientName, SubnetworkPointPool snpp) {
+            _clientAdderssDictionary.Add(clientName, snpp.NetworkSnppAddress.GetParentsAddress());
             _snppDictionary.Add(clientName, snpp);
         }
 

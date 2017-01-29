@@ -84,10 +84,8 @@
     <Compile Include="Editor\Element\LinkView.Designer.cs">
       <DependentUpon>LinkView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Network\Element\LinkModel.cs" />
     <Compile Include="Network\NodeConnectionInformation.cs" />
     <Compile Include="Network\Simulation.cs" />
-    <Compile Include="Network\NetworkAddressNodePortPair.cs" />
     <Compile Include="Editor\Element\ClientNodeView.cs">
       <SubType>Component</SubType>
     </Compile>

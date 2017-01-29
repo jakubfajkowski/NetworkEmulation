@@ -17,7 +17,7 @@ namespace NetworkUtilities.ControlPlane {
 
         protected void SendMessage(SignallingMessage message) {
             message.SourceAddress = Address;
-            OnUpdateState(message.ToString());
+
             MessageToSend?.Invoke(this, message);
         }
 

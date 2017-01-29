@@ -11,15 +11,22 @@ namespace NetworkUtilities.ControlPlane {
         public NameServer(int listeningPort) : base(listeningPort) {
             _directory = new Directory(Address);
             _directory.UpdateState += (sender, state) => OnUpdateState(state);
-            _directory.MessageToSend += (sender, message) => Send(message, message.DestinationAddress);
+            _directory.MessageToSend += OnMessageToSend;
 
             _policy = new Policy(Address);
             _policy.UpdateState += (sender, state) => OnUpdateState(state);
-            _policy.MessageToSend += (sender, message) => Send(message, message.DestinationAddress);
+            _policy.MessageToSend += OnMessageToSend;
+        }
+
+        private void OnMessageToSend(object sender, SignallingMessage message) {
+            Send(message, message.DestinationAddress);
+            OnUpdateState("Sent " + message);
         }
 
         protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {
-            Receive((SignallingMessage) receivedObject);
+            var message = (SignallingMessage) receivedObject;
+            Receive(message);
+            OnUpdateState("Received " + message);
         }
 
         private void Receive(SignallingMessage message) {
