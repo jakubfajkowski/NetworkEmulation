@@ -1,19 +1,21 @@
 ﻿namespace NetworkUtilities.ControlPlane {
     public class CallingPartyCallController : ControlPlaneElement {
-        public CallingPartyCallController(NetworkAddress networkAddress) : base(networkAddress) {
+        public CallingPartyCallController(NetworkAddress networkAddress)
+            : base(networkAddress) {
+
+            _nccAddress = networkAddress.GetRootFromBeginning(1);
         }
 
-        public bool CallConfirmed { get; set; }
-        public NetworkAddress NccAddress { get; private set; }
+        private bool _callConfirmed;
+        private readonly NetworkAddress _nccAddress;
 
-        public void SendCallRequest(string clientA, string clientZ, NetworkAddress nccAddress, int capacity) {
-            NccAddress = nccAddress;
+        public void SendCallRequest(string clientA, string clientZ, int capacity) {
             string[] clientNames = {clientA, clientZ};
             object[] callRequestMessage = {clientNames, capacity};
             var callRequest = new SignallingMessage {
                 Operation = SignallingMessageOperation.CallRequest,
                 Payload = callRequestMessage,
-                DestinationAddress = nccAddress,
+                DestinationAddress = _nccAddress,
                 DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController
             };
             SendMessage(callRequest);
@@ -24,7 +26,7 @@
             var callTeardown = new SignallingMessage {
                 Operation = SignallingMessageOperation.CallTeardown,
                 Payload = clientNames,
-                DestinationAddress = NccAddress,
+                DestinationAddress = _nccAddress,
                 DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController
             };
             SendMessage(callTeardown);
@@ -52,7 +54,7 @@
             var callTeardownResponse = message;
             callTeardownResponse.Operation = SignallingMessageOperation.CallTeardownResponse;
             callTeardownResponse.Payload = true;
-            callTeardownResponse.DestinationAddress = NccAddress;
+            callTeardownResponse.DestinationAddress = _nccAddress;
             SendMessage(callTeardownResponse);
         }
 
@@ -62,8 +64,8 @@
             switch (message.Operation) {
                 case SignallingMessageOperation.CallAccept:
                     //SendCallAcceptResponse(message);
-                    CallConfirmed = true;
-                    SendCallConfirmation(message, CallConfirmed);
+                    _callConfirmed = false;
+                    SendCallConfirmation(message, _callConfirmed);
                     break;
                 case SignallingMessageOperation.CallTeardown:
                     SendCallTeardownResponse(message);

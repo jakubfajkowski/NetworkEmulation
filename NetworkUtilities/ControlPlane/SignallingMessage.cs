@@ -14,5 +14,9 @@ namespace NetworkUtilities.ControlPlane {
         public NetworkAddress DestinationAddress { get; set; }
         public NetworkAddress SourceAddress { get; set; }
         public object Payload { get; set; }
+
+        public override string ToString() {
+            return $"signalling message from: {SourceAddress} to: {DestinationAddress} - {DestinationControlPlaneElement} {Operation}";
+        }
     }
 }

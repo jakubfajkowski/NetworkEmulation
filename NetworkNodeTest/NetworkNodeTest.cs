@@ -29,6 +29,7 @@ namespace NetworkNodeTest {
                 XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeModel));
 
             var networkNode = new NetworkNode.NetworkNode(parameters);
+            networkNode.Initialize();
         }
 
         [TestMethod]
@@ -42,6 +43,7 @@ namespace NetworkNodeTest {
             };
             var nms = new NetworkManagmentSystem();
             var networkNode = new NetworkNode.NetworkNode(networkNodeSerializableParameters);
+            networkNode.Initialize();
             Thread.Sleep(10000);
         }
 

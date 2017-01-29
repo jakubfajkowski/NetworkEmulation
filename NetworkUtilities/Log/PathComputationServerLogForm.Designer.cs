@@ -30,6 +30,7 @@
             // logRichTextBox
             // 
             this.logRichTextBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.logRichTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.logRichTextBox.Location = new System.Drawing.Point(0, 44);
             this.logRichTextBox.Name = "logRichTextBox";
             this.logRichTextBox.ReadOnly = true;

@@ -40,10 +40,10 @@ namespace NetworkEmulation {
 
         private void AddTopTwoSubnetworks() {
             AddSubnetworkNode();
-            networkHierarchyTreeView.Nodes[0].Tag = new StepByStepPathComputationServer(new NetworkAddress(1),
+            networkHierarchyTreeView.Nodes[0].Tag = new StepByStepPathComputationServer(new NetworkAddress(1), NameServer.Address,
                 "127.0.0.1", 20000, 20001, Settings.Default.NameServerListeningPort);
             AddSubnetworkNode();
-            networkHierarchyTreeView.Nodes[1].Tag = new StepByStepPathComputationServer(new NetworkAddress(2),
+            networkHierarchyTreeView.Nodes[1].Tag = new StepByStepPathComputationServer(new NetworkAddress(2), NameServer.Address,
                 "127.0.0.1", 20001, 20000, Settings.Default.NameServerListeningPort);
         }
 

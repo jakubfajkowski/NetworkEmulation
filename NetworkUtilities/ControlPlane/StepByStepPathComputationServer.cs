@@ -8,19 +8,37 @@ namespace NetworkUtilities.ControlPlane {
         private readonly NetworkCallController _networkCallController;
         private readonly RoutingController _routingController;
 
-        public StepByStepPathComputationServer(NetworkAddress networkAddress,
+        public StepByStepPathComputationServer(
+            NetworkAddress networkAddress, 
+            NetworkAddress peerPathComputationServerNetworkAddress,
             string ipAddress,
             int listeningPort,
             int pathComputationServerListeningPort,
-            int nameServerListeningPort) : base(networkAddress,
-            ipAddress,
-            listeningPort,
-            pathComputationServerListeningPort) {
-            _connectionController = new ConnectionController(networkAddress);
-            _networkCallController = new NetworkCallController(networkAddress);
-            _routingController = new RoutingController(networkAddress);
+            int nameServerListeningPort) : base(
+                                                networkAddress,
+                                                peerPathComputationServerNetworkAddress,
+                                                ipAddress,
+                                                listeningPort,
+                                                pathComputationServerListeningPort) {
 
-            _nameServerConnectionComponent = new ConnectionComponent(networkAddress, ipAddress, nameServerListeningPort);
+            _connectionController = new ConnectionController(networkAddress);
+            _connectionController.UpdateState += (sender, state) => OnUpdateState(state);
+            _connectionController.MessageToSend +=
+                (sender, message) => SendSignallingMessage(message, message.DestinationAddress);
+
+            _networkCallController = new NetworkCallController(networkAddress);
+            _networkCallController.UpdateState += (sender, state) => OnUpdateState(state);
+            _networkCallController.MessageToSend +=
+                (sender, message) => SendSignallingMessage(message, message.DestinationAddress);
+
+            _routingController = new RoutingController(networkAddress);
+            _routingController.UpdateState += (sender, state) => OnUpdateState(state);
+            _routingController.MessageToSend +=
+                (sender, message) => SendSignallingMessage(message, message.DestinationAddress);
+
+            _nameServerConnectionComponent = new ConnectionComponent(networkAddress, NameServer.Address, ipAddress, nameServerListeningPort);
+            _nameServerConnectionComponent.ConnectionEstablished +=
+                (sender, args) => AddConnection(args.NetworkAddress, args.TcpClient);
             _nameServerConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
         }
 

@@ -8,6 +8,9 @@ using NetworkUtilities.Network;
 
 namespace NetworkNode {
     public class NetworkNode : Node {
+        private ConnectionController _connectionController;
+        private LinkResourceManager _linkResourceManager;
+
         private Thread _networkNodeThread;
 
         private bool _timeToQuit;
@@ -17,14 +20,24 @@ namespace NetworkNode {
 
         public NetworkNode(NetworkNodeModel parameters)
             : base(
-                parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort,
+                parameters.NetworkAddress, parameters.NetworkAddress.GetParentsAddress(), parameters.IpAddress, parameters.CableCloudListeningPort,
                 parameters.PathComputationServerListeningPort) {
+
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemListeningPort;
             NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkManagmentSystemDataPort, this);
-            Console.WriteLine("Network Node \nNMS port: " + parameters.NetworkManagmentSystemDataPort);
+            OnUpdateState("Network Node \nNMS port: " + parameters.NetworkManagmentSystemDataPort);
             CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts);
+            CommutationMatrix.UpdateState += (sender, state) => OnUpdateState(state);
             NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
+
+            _connectionController = new ConnectionController(parameters.NetworkAddress);
+            _connectionController.UpdateState += (sender, state) => OnUpdateState(state);
+            _connectionController.MessageToSend += (sender, message) => Send(message);
+
+            //_linkResourceManager = new LinkResourceManager(parameters.NetworkAddress);
+            //_policy.UpdateState += (sender, state) => OnUpdateState(state);
+            //_policy.MessageToSend += (sender, message) => Send(message, message.DestinationAddress);
 
             StartThread();
         }
@@ -55,7 +68,7 @@ namespace NetworkNode {
                     if (port.GetAtmCellNumber() != 0 &&
                         (DateTime.Now - port.GetLastAddTime()).TotalMilliseconds > MinLastAddTime ||
                         port.GetAtmCellNumber() > CableCloudMessage.MaxAtmCellsNumber) {
-                        // Console.WriteLine("Różnica czasu: " + (DateTime.Now - port.GetLastAddTime()).TotalMilliseconds + "   if max: " + (port.GetAtmCellNumber() > CableCloudMessage.MaxAtmCellsNumber));
+                        // OnUpdateState("Różnica czasu: " + (DateTime.Now - port.GetLastAddTime()).TotalMilliseconds + "   if max: " + (port.GetAtmCellNumber() > CableCloudMessage.MaxAtmCellsNumber));
                         var atmCells = new List<AtmCell>();
 
                         var atmCellNumberInPort = port.GetAtmCellNumber();
@@ -68,7 +81,7 @@ namespace NetworkNode {
                         for (var i = 0; i < atmCellNumberInMessage; i++)
                             atmCells.Add(port.GetAtmCell());
 
-                        //Console.WriteLine(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
+                        //OnUpdateState(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
                         //                 message.PortNumber + " Liczba ATMCell: " + message.AtmCells.Count
                         //                + " Port: " + port.GetPortNumber());
                         var message = new CableCloudMessage(port.GetPortNumber(), atmCells);
@@ -85,22 +98,22 @@ namespace NetworkNode {
         }
 
         public void ReceiveCableCloudMessage(CableCloudMessage cableCloudMessage) {
-            Console.WriteLine("[" + DateTime.Now + "] Message received on port: " + cableCloudMessage.PortNumber);
-            Console.WriteLine("[" + DateTime.Now + "] Received " + ExtractAtmCells(cableCloudMessage).Count +
+            OnUpdateState("[" + DateTime.Now + "] Message received on port: " + cableCloudMessage.PortNumber);
+            OnUpdateState("[" + DateTime.Now + "] Received " + cableCloudMessage.ExtractAtmCells().Count +
                               " atmcells");
 
             /* foreach (var cell in ExtractAtmCells(cableCloudMessage))
                  CommutationMatrix.AddAtmCellToInputPort(cell, cableCloudMessage.PortNumber);
                  */
 
-            SendCableCloudMessage(CommutationMatrix.CommuteAllCells(ExtractAtmCells(cableCloudMessage),
+            SendCableCloudMessage(CommutationMatrix.CommuteAllCells(cableCloudMessage.ExtractAtmCells(),
                 cableCloudMessage.PortNumber));
         }
 
         private void SendCableCloudMessage(CableCloudMessage cableCloudMessage) {
             Send(cableCloudMessage);
-            Console.WriteLine("[" + DateTime.Now + "] Message sent on port: " + cableCloudMessage.PortNumber);
-            Console.WriteLine("[" + DateTime.Now + "] Sent " + ExtractAtmCells(cableCloudMessage).Count + " atmcells");
+            OnUpdateState("[" + DateTime.Now + "] Message sent on port: " + cableCloudMessage.PortNumber);
+            OnUpdateState("[" + DateTime.Now + "] Sent " + cableCloudMessage.ExtractAtmCells().Count + " atmcells");
         }
 
         protected override void Receive(SignallingMessage signallingMessage) {

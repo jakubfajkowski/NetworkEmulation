@@ -6,16 +6,18 @@ using NetworkUtilities.Log;
 using NetworkUtilities.Serialization;
 
 namespace NetworkUtilities.Network {
-    internal class ConnectionComponent : LogObject {
+    public class ConnectionComponent : LogObject {
         private readonly int _connectionManagerListeningPort;
+        private readonly NetworkAddress _connectionManagerNetworkAddress;
         private readonly NetworkAddressSocketPortPair _handshakeMessage;
         private readonly IPAddress _ipAddress;
 
         private TcpListener _connectionManagerTcpListener;
-        private TcpClient _connectionObjectTcpClient;
+        private TcpClient _tcpClient;
 
-        public ConnectionComponent(NetworkAddress networkAddress, string connectionManagerIpAddress,
+        public ConnectionComponent(NetworkAddress networkAddress, NetworkAddress connectionManagerNetworkAddress, string connectionManagerIpAddress,
             int connectionManagerListeningPort) {
+            _connectionManagerNetworkAddress = connectionManagerNetworkAddress;
             _ipAddress = IPAddress.Parse(connectionManagerIpAddress);
             _connectionManagerListeningPort = connectionManagerListeningPort;
             _handshakeMessage = new NetworkAddressSocketPortPair(networkAddress, PortRandomizer.RandomFreePort());
@@ -23,6 +25,7 @@ namespace NetworkUtilities.Network {
 
         public bool Online { get; private set; }
         public event ObjectHandler ObjectReceived;
+        public event ConnectionHandler ConnectionEstablished;
 
         public void Initialize() {
             _connectionManagerTcpListener = CreateTcpListener(_ipAddress, _handshakeMessage.SocketPort);
@@ -36,35 +39,13 @@ namespace NetworkUtilities.Network {
                 tcpListener = new TcpListener(ipAddress, port);
             }
             catch (Exception e) {
-                OnUpdateState($"Can't connect to port {_handshakeMessage}!");
+                if (_connectionManagerNetworkAddress != null)
+                    OnUpdateState($"Sent connection request to {_connectionManagerNetworkAddress} - rejected");
+                else
+                    OnUpdateState($"Sent connection request to cable cloud - rejected");
             }
 
             return tcpListener;
-        }
-
-        private void ListenForConnectRequest(TcpListener tcpListener) {
-            tcpListener.Start();
-            Task.Run(async () => {
-                _connectionObjectTcpClient = await tcpListener.AcceptTcpClientAsync();
-                Online = true;
-                ListenForMessages();
-            });
-        }
-
-        private void ListenForMessages() {
-            while (Online) {
-                var cableCloudMessage = ReceiveObject();
-                OnObjectReceived(cableCloudMessage);
-            }
-        }
-
-        protected virtual void OnObjectReceived(object receivedObject) {
-            ObjectReceived?.Invoke(this, receivedObject);
-        }
-
-        private object ReceiveObject() {
-            var networkStream = _connectionObjectTcpClient.GetStream();
-            return BinarySerializer.DeserializeFromStream(networkStream);
         }
 
         private void EstabilishConnection() {
@@ -78,12 +59,58 @@ namespace NetworkUtilities.Network {
             udpClient.Send(bytesToSend, bytesToSend.Length, ipEndPoint);
         }
 
+        private void ListenForConnectRequest(TcpListener tcpListener) {
+            tcpListener.Start();
+            Task.Run(async () => {
+                _tcpClient = await tcpListener.AcceptTcpClientAsync();
+                Online = true;
 
-        public void SendObject(object objectToSend) {
-            var networkStream = _connectionObjectTcpClient.GetStream();
+                if (_connectionManagerNetworkAddress != null)
+                    OnUpdateState($"Sent connection request to {_connectionManagerNetworkAddress} - accepted");
+                else
+                    OnUpdateState($"Sent connection request to cable cloud - accepted");
+                OnConnectionEstablished();
+                ListenForMessages();
+            });
+        }
+
+        private void ListenForMessages() {
+            while (Online) {
+                var receivedObject = Receive();
+                OnObjectReceived(receivedObject);
+            }
+        }
+
+        private object Receive() {
+            var networkStream = _tcpClient.GetStream();
+            return BinarySerializer.DeserializeFromStream(networkStream);
+        }
+
+        protected virtual void OnObjectReceived(object receivedObject) {
+            ObjectReceived?.Invoke(this, receivedObject);
+        }
+
+        private void OnConnectionEstablished() {
+            ConnectionEstablished?.Invoke(this, new ConnectionHandlerArgs(_connectionManagerNetworkAddress, _tcpClient));
+        }
+
+        public void Send(object objectToSend) {
+            var networkStream = _tcpClient.GetStream();
             BinarySerializer.SerializeToStream(objectToSend, networkStream);
         }
 
-        internal delegate void ObjectHandler(object sender, object receivedObject);
+        public delegate void ObjectHandler(object sender, object receivedObject);
+    }
+
+    public delegate void ConnectionHandler(object sender, ConnectionHandlerArgs args);
+
+    public class ConnectionHandlerArgs {
+        public NetworkAddress NetworkAddress { get; }
+        public TcpClient TcpClient { get; }
+
+        public ConnectionHandlerArgs(NetworkAddress networkAddress, TcpClient tcpClient) {
+            NetworkAddress = networkAddress;
+            TcpClient = tcpClient;
+        }
     }
 }
