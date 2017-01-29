@@ -8,7 +8,6 @@ using NetworkUtilities.Serialization;
 
 namespace NetworkUtilities.Network {
     public abstract class ConnectionManager : LogObject {
-        public int ListeningPort { get; }
         private readonly Dictionary<NetworkAddress, TcpClient> _nodesTcpClients;
         private UdpClient _connectionUdpClient;
 
@@ -16,6 +15,8 @@ namespace NetworkUtilities.Network {
             _nodesTcpClients = new Dictionary<NetworkAddress, TcpClient>();
             ListeningPort = listeningPort;
         }
+
+        public int ListeningPort { get; }
 
         public bool Online { get; private set; }
 
@@ -33,7 +34,8 @@ namespace NetworkUtilities.Network {
                     Online = true;
                     while (Online) {
                         var receivedData = await _connectionUdpClient.ReceiveAsync();
-                        EstabilishNodeConnection((NetworkAddressSocketPortPair) BinarySerializer.Deserialize(receivedData.Buffer));
+                        EstabilishNodeConnection(
+                            (NetworkAddressSocketPortPair) BinarySerializer.Deserialize(receivedData.Buffer));
                     }
                 }
             });

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.Editor.Element;
@@ -101,7 +99,7 @@ namespace NetworkEmulationTest {
 
         [TestMethod]
         public void InitializeClientNodeTest() {
-            var clientNodePB = new NetworkEmulation.Editor.Element.ClientNodeView {
+            var clientNodePB = new ClientNodeView {
                 Parameters = new ClientNodeModel {
                     ClientName = "Janusz",
                     CableCloudListeningPort = 10000,
@@ -113,7 +111,7 @@ namespace NetworkEmulationTest {
 
         [TestMethod]
         public void InitializeNetworkNodeTest() {
-            var networkNodePictureBox = new NetworkEmulation.Editor.Element.NetworkNodeView {
+            var networkNodePictureBox = new NetworkNodeView {
                 Parameters = new NetworkNodeModel {
                     NumberOfPorts = 8,
                     CableCloudListeningPort = 10000,

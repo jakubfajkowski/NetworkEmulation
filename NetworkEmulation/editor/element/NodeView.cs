@@ -24,7 +24,7 @@ namespace NetworkEmulation.Editor.Element {
         public new Point Location {
             get { return base.Location; }
             set {
-                var imageCenter = new Size(Image.Size.Width/2, Image.Size.Height/2);
+                var imageCenter = new Size(Image.Size.Width / 2, Image.Size.Height / 2);
                 base.Location = value - imageCenter;
             }
         }
@@ -40,7 +40,6 @@ namespace NetworkEmulation.Editor.Element {
         public abstract void MarkAsOffline();
 
 
-
         public UniqueId Id { get; private set; }
 
         public event NodeMovingHandler OnNodeMoving;
@@ -50,7 +49,7 @@ namespace NetworkEmulation.Editor.Element {
         }
 
         public Point CenterPoint() {
-            var imageCenter = new Size(Image.Size.Width/2, Image.Size.Height/2);
+            var imageCenter = new Size(Image.Size.Width / 2, Image.Size.Height / 2);
             return Location + imageCenter;
         }
 
@@ -91,6 +90,5 @@ namespace NetworkEmulation.Editor.Element {
         }
 
         #endregion
-
     }
 }

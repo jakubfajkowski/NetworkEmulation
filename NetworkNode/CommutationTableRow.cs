@@ -20,8 +20,8 @@
             Wywoływana przy wyszukiwaniu wyjściowych VPI i VCI */
 
         public bool CheckInIdentifiers(int inVpi, int inVci, int inPortNumber) {
-            return (inPortNumber == _inPortNumber) && (inVpi == _inVpi) &&
-                   ((inVci == _inVci) || (_inVci == -1));
+            return inPortNumber == _inPortNumber && inVpi == _inVpi &&
+                   (inVci == _inVci || _inVci == -1);
         }
 
         /* Metoda sprawdzająca czy podane VPI i VCI pasują do danego wpisu
@@ -29,8 +29,8 @@
 
         public bool CheckAllIdentifiers(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci,
             int outPortNumber) {
-            if ((_inVci == inVci) && (_inVpi == inVpi) && (_inPortNumber == inPortNumber) &&
-                (_outVci == outVci) && (_outVpi == outVpi) && (_outPortNumber == outPortNumber))
+            if (_inVci == inVci && _inVpi == inVpi && _inPortNumber == inPortNumber &&
+                _outVci == outVci && _outVpi == outVpi && _outPortNumber == outPortNumber)
                 return true;
             return false;
         }
@@ -54,12 +54,12 @@
             if (other == null)
                 return false;
 
-            return (_inPortNumber == other._inPortNumber) &&
-                   (_inVci == other._inVci) &&
-                   (_inVpi == other._inVpi) &&
-                   (_outPortNumber == other._outPortNumber) &&
-                   (_outVci == other._outVci) &&
-                   (_outVpi == other._outVpi);
+            return _inPortNumber == other._inPortNumber &&
+                   _inVci == other._inVci &&
+                   _inVpi == other._inVpi &&
+                   _outPortNumber == other._outPortNumber &&
+                   _outVci == other._outVci &&
+                   _outVpi == other._outVpi;
         }
 
         public override int GetHashCode() {

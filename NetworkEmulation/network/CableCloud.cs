@@ -15,7 +15,7 @@ namespace NetworkEmulation.Network {
         protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {
             var cableCloudMessage = (CableCloudMessage) receivedObject;
             OnUpdateState("Node [" + networkAddress + "] from ATM port: " + cableCloudMessage.PortNumber + " - " +
-                        cableCloudMessage.Data.Length + " bytes received.");
+                          cableCloudMessage.Data.Length + " bytes received.");
 
             var input = new NetworkAddressNodePortPair(networkAddress, cableCloudMessage.PortNumber);
             NetworkAddressNodePortPair output = null;
@@ -28,14 +28,14 @@ namespace NetworkEmulation.Network {
             }
             catch (KeyNotFoundException) {
                 OnUpdateState("Node [" + input.NetworkAddress + "] to ATM port: " +
-                            cableCloudMessage.PortNumber +
-                            " - no avaliable link.");
+                              cableCloudMessage.PortNumber +
+                              " - no avaliable link.");
             }
             catch (Exception) {
                 if (output != null) DisconnectClient(output.NetworkAddress);
                 OnUpdateState("Node [" + input.NetworkAddress + "] to ATM port: " +
-                            cableCloudMessage.PortNumber +
-                            " - could not connect.");
+                              cableCloudMessage.PortNumber +
+                              " - could not connect.");
             }
         }
 
@@ -46,7 +46,7 @@ namespace NetworkEmulation.Network {
         private void PassCableCloudMessage(CableCloudMessage cableCloudMessage, NetworkAddress outputNetworkAddress) {
             SendObject(cableCloudMessage, outputNetworkAddress);
             OnUpdateState("Node [" + outputNetworkAddress + "] to   ATM port: " + cableCloudMessage.PortNumber + " - " +
-                        cableCloudMessage.Data.Length + " bytes sent.");
+                          cableCloudMessage.Data.Length + " bytes sent.");
         }
 
         public void AddLink(NetworkAddressNodePortPair key, NetworkAddressNodePortPair value) {

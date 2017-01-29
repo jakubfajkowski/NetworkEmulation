@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using NetworkUtilities.Element;
-using System.Net.Sockets;
-using System.Net;
-using System.Text;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkUtilities.ControlPlane {
     public class ConnectionController : ControlPlaneElement {
         private readonly int _networkNodeAgentUdpPort;
-        private int _udpPortLrm;
-        private int _udpPortRc;
-        private Dictionary<string, int> _udpPortsCc;
-        private Queue<SubnetworkPointPool> _snpPools;
+
         private readonly Dictionary<UniqueId, NetworkAddress[]> _snppDictionary =
             new Dictionary<UniqueId, NetworkAddress[]>();
 
-        public ConnectionController(NetworkAddress networkAddress) : base(networkAddress) {}
+        private Queue<SubnetworkPointPool> _snpPools;
+        private int _udpPortLrm;
+        private int _udpPortRc;
+        private Dictionary<string, int> _udpPortsCc;
+
+        public ConnectionController(NetworkAddress networkAddress) : base(networkAddress) {
+        }
 
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
@@ -26,17 +28,12 @@ namespace NetworkUtilities.ControlPlane {
                     var snpp = (SubnetworkPointPool[]) obj[0];
                     var snppAddressA = snpp[0].NetworkSnppAddress;
                     var snppAddressB = snpp[1].NetworkSnppAddress;
-                    NetworkAddress[] snppAddress = { snppAddressA, snppAddressB };
+                    NetworkAddress[] snppAddress = {snppAddressA, snppAddressB};
                     _snppDictionary.Add(message.SessionId, snppAddress);
 
-                    if (message.SourceAddress.Equals(new NetworkAddress("1")) || 
-                        message.SourceAddress.Equals(new NetworkAddress("2"))) {
-
-                        SendPeerCoordination(message);
-                    }
-                    else {
-                        SendRouteTableQuery(message);
-                    }
+                    if (message.SourceAddress.Equals(new NetworkAddress("1")) ||
+                        message.SourceAddress.Equals(new NetworkAddress("2"))) SendPeerCoordination(message);
+                    else SendRouteTableQuery(message);
                     break;
                 case SignallingMessageOperation.PeerCoordination:
                     SendRouteTableQuery(message);
@@ -54,13 +51,9 @@ namespace NetworkUtilities.ControlPlane {
                 case SignallingMessageOperation.GetLabelsFromLRM:
                     break;
                 case SignallingMessageOperation.ConnectionConfirmation:
-                    if (message.DestinationAddress.Levels > 2) {
-                        SendConnectionConfirmation(message);
-                    }
-                    else {
-                        SendConnectionConfirmationToNCC(message);
-                    }
-                    
+                    if (message.DestinationAddress.Levels > 2) SendConnectionConfirmation(message);
+                    else SendConnectionConfirmationToNCC(message);
+
                     break;
             }
         }
@@ -84,7 +77,8 @@ namespace NetworkUtilities.ControlPlane {
             peerCoordination.Operation = SignallingMessageOperation.ConnectionConfirmation;
             if (message.SourceAddress.Equals(new NetworkAddress("1"))) {
                 peerCoordination.DestinationAddress = new NetworkAddress("2");
-                peerCoordination.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
+                peerCoordination.DestinationControlPlaneElement =
+                    SignallingMessageDestinationControlPlaneElement.ConnectionController;
             }
             else {
                 peerCoordination.DestinationAddress = new NetworkAddress("1");
@@ -110,16 +104,18 @@ namespace NetworkUtilities.ControlPlane {
         private void SendConnectionConfirmation(SignallingMessage message) {
             var connectionConfirmation = message;
             connectionConfirmation.Operation = SignallingMessageOperation.ConnectionConfirmation;
-            connectionConfirmation.Payload = (bool) true;
-            connectionConfirmation.DestinationAddress = SourceAddress.GetParentsAddress();
-            connectionConfirmation.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
+            connectionConfirmation.Payload = true;
+            connectionConfirmation.DestinationAddress = Address.GetParentsAddress();
+            connectionConfirmation.DestinationControlPlaneElement =
+                SignallingMessageDestinationControlPlaneElement.ConnectionController;
             SendMessage(connectionConfirmation);
         }
 
         private void SendConnectionConfirmationToNCC(SignallingMessage message) {
             message.Operation = SignallingMessageOperation.ConnectionConfirmation;
             message.DestinationAddress = _snppDictionary[message.SessionId][0].GetRootFromBeginning(1);
-            message.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
+            message.DestinationControlPlaneElement =
+                SignallingMessageDestinationControlPlaneElement.NetworkCallController;
         }
 
         public void SendGetLabelsMessage() {

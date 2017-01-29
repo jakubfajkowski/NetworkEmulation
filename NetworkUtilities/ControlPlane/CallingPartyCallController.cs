@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NetworkUtilities.ControlPlane {
-    public class CallingPartyCallController : ControlPlaneElement
-    {
+﻿namespace NetworkUtilities.ControlPlane {
+    public class CallingPartyCallController : ControlPlaneElement {
         public CallingPartyCallController(NetworkAddress networkAddress) : base(networkAddress) {
         }
 
@@ -16,8 +9,8 @@ namespace NetworkUtilities.ControlPlane {
         public void SendCallRequest(string clientA, string clientZ, NetworkAddress nccAddress, int capacity) {
             NccAddress = nccAddress;
             string[] clientNames = {clientA, clientZ};
-            object[] callRequestMessage = { clientNames, capacity };
-            SignallingMessage callRequest = new SignallingMessage() {
+            object[] callRequestMessage = {clientNames, capacity};
+            var callRequest = new SignallingMessage {
                 Operation = SignallingMessageOperation.CallRequest,
                 Payload = callRequestMessage,
                 DestinationAddress = nccAddress,
@@ -27,8 +20,8 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         public void SendCallTeardown(string clientA, string clientZ) {
-            string[] clientNames = { clientA, clientZ };
-            SignallingMessage callTeardown = new SignallingMessage() {
+            string[] clientNames = {clientA, clientZ};
+            var callTeardown = new SignallingMessage {
                 Operation = SignallingMessageOperation.CallTeardown,
                 Payload = clientNames,
                 DestinationAddress = NccAddress,
@@ -50,7 +43,7 @@ namespace NetworkUtilities.ControlPlane {
         private void SendCallAcceptResponse(SignallingMessage message) {
             var callAcceptResponse = message;
             callAcceptResponse.Operation = SignallingMessageOperation.CallAcceptResponse;
-            callAcceptResponse.Payload = (bool) true;
+            callAcceptResponse.Payload = true;
             callAcceptResponse.DestinationAddress = message.SourceAddress;
             SendMessage(callAcceptResponse);
         }
@@ -58,7 +51,7 @@ namespace NetworkUtilities.ControlPlane {
         private void SendCallTeardownResponse(SignallingMessage message) {
             var callTeardownResponse = message;
             callTeardownResponse.Operation = SignallingMessageOperation.CallTeardownResponse;
-            callTeardownResponse.Payload = (bool) true;
+            callTeardownResponse.Payload = true;
             callTeardownResponse.DestinationAddress = NccAddress;
             SendMessage(callTeardownResponse);
         }
@@ -66,8 +59,7 @@ namespace NetworkUtilities.ControlPlane {
         public override void ReceiveMessage(SignallingMessage message) {
             base.ReceiveMessage(message);
 
-            switch (message.Operation)
-            {
+            switch (message.Operation) {
                 case SignallingMessageOperation.CallAccept:
                     //SendCallAcceptResponse(message);
                     callConfirmed = false;

@@ -2,17 +2,17 @@
 
 namespace NetworkUtilities.ControlPlane {
     public abstract class ControlPlaneElement {
-        public NetworkAddress Address { get; }
-
         public delegate void MessageToSendHandler(object sender, SignallingMessage message);
 
         private readonly List<UniqueId> _currentlyHandledSessions = new List<UniqueId>();
 
-        public event MessageToSendHandler MessageToSend;
-
         protected ControlPlaneElement(NetworkAddress networkAddress) {
             Address = networkAddress;
         }
+
+        public NetworkAddress Address { get; }
+
+        public event MessageToSendHandler MessageToSend;
 
         protected void SendMessage(SignallingMessage message) {
             message.SourceAddress = Address;
@@ -34,9 +34,7 @@ namespace NetworkUtilities.ControlPlane {
         public virtual void ReceiveMessage(SignallingMessage message) {
             var sessionId = message.SessionId;
 
-            if (!IsCurrentlyHandled(sessionId)) {
-                StartSession(sessionId);
-            }
+            if (!IsCurrentlyHandled(sessionId)) StartSession(sessionId);
         }
     }
 }

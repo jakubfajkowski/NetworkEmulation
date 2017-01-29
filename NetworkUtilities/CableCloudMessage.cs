@@ -17,6 +17,10 @@ namespace NetworkUtilities {
             Data = BinarySerializer.Serialize(Fill(atmCells));
         }
 
+        public byte[] Data { get; private set; }
+
+        public int PortNumber { get; set; }
+
 
         private static List<AtmCell> Fill(List<AtmCell> atmCells) {
             var result = new List<AtmCell>(atmCells);
@@ -25,9 +29,5 @@ namespace NetworkUtilities {
 
             return result;
         }
-
-        public byte[] Data { get; private set; }
-
-        public int PortNumber { get; set; }
     }
 }

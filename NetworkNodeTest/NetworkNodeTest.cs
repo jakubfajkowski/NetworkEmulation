@@ -4,8 +4,6 @@ using NetworkEmulation.Network;
 using NetworkUtilities;
 using NetworkUtilities.Element;
 using NetworkUtilities.Serialization;
-using NetworkNode;
-using NetworkUtilities.ControlPlane;
 
 namespace NetworkNodeTest {
     [TestClass]
@@ -48,8 +46,7 @@ namespace NetworkNodeTest {
         }
 
         [TestMethod]
-        public void LRMandCCConnectionTest()
-        {
+        public void LRMandCCConnectionTest() {
             //CC NIE MA PARAMETRÓW!!!!!!!!!!!!!!!!!!!!!!!!
 
             //var LRM = new LinkResourceManager(new CommutationTable(),3,300);
@@ -64,7 +61,5 @@ namespace NetworkNodeTest {
             //CC.MessageToSend += (sender, message) => LRM2.ReceiveMessage(message);
             //CC.SendGetLabelsMessage();
         }
-
-
     }
 }

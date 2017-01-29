@@ -26,7 +26,7 @@
 
         // Sprawdza czy dane połączenie ma punkty końcowe w węzłach node1 i node2
         public bool CheckNodes(int node1, int node2) {
-            return (node1 == Node1InputPort) && (node2 == Node2InputPort);
+            return node1 == Node1InputPort && node2 == Node2InputPort;
         }
     }
 }

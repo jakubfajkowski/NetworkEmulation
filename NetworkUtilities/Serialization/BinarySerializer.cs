@@ -1,8 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace NetworkUtilities.Serialization {
     public static class BinarySerializer {
@@ -18,13 +15,14 @@ namespace NetworkUtilities.Serialization {
                 return memoryStream.ToArray();
             }
         }
+
         public static object DeserializeFromStream(Stream stream) {
             return new BinaryFormatter().Deserialize(stream);
         }
 
         public static object Deserialize(byte[] serializedObject) {
             using (var memoryStream = new MemoryStream(serializedObject)) {
-                    return new BinaryFormatter().Deserialize(memoryStream);
+                return new BinaryFormatter().Deserialize(memoryStream);
             }
         }
 

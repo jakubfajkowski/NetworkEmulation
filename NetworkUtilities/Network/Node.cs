@@ -5,23 +5,14 @@ using NetworkUtilities.Serialization;
 
 namespace NetworkUtilities.Network {
     public abstract class Node : LogObject {
-        public NetworkAddress NetworkAddress { get; }
-
-        public int CableCloudDataPort { get; protected set; }
-        protected int CableCloudListeningPort;
-        private readonly ConnectionComponent _dataPlaneConnectionComponent;
-
-        public int PathComputationServerDataPort { get; protected set; }
-        protected int PathComputationServerListeningPort;
         private readonly ConnectionComponent _controlPlaneConnectionComponent;
+        private readonly ConnectionComponent _dataPlaneConnectionComponent;
+        protected int CableCloudListeningPort;
+        protected int PathComputationServerListeningPort;
 
 
-
-        public bool Online => _dataPlaneConnectionComponent.Online && _controlPlaneConnectionComponent.Online;
-   
-
-        protected Node(NetworkAddress networkAddress, string ipAddress, int cableCloudListeningPort, int pathComputationServerListeningPort) {
-
+        protected Node(NetworkAddress networkAddress, string ipAddress, int cableCloudListeningPort,
+            int pathComputationServerListeningPort) {
             NetworkAddress = networkAddress;
 
             CableCloudListeningPort = cableCloudListeningPort;
@@ -30,10 +21,20 @@ namespace NetworkUtilities.Network {
             _dataPlaneConnectionComponent.Initialize();
 
             PathComputationServerListeningPort = pathComputationServerListeningPort;
-            _controlPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, ipAddress, pathComputationServerListeningPort);
+            _controlPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, ipAddress,
+                pathComputationServerListeningPort);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
             _controlPlaneConnectionComponent.Initialize();
         }
+
+        public NetworkAddress NetworkAddress { get; }
+
+        public int CableCloudDataPort { get; protected set; }
+
+        public int PathComputationServerDataPort { get; protected set; }
+
+
+        public bool Online => _dataPlaneConnectionComponent.Online && _controlPlaneConnectionComponent.Online;
 
         private void OnCableCloudMessageReceived(object sender, object receivedObject) {
             var cableCloudMessage = (CableCloudMessage) receivedObject;
@@ -52,7 +53,7 @@ namespace NetworkUtilities.Network {
         }
 
         private void OnSignallingMessageReceived(object sender, object receivedObject) {
-            var signallingMessage = (SignallingMessage)receivedObject;
+            var signallingMessage = (SignallingMessage) receivedObject;
             Receive(signallingMessage);
         }
 

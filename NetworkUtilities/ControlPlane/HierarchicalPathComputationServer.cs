@@ -3,13 +3,13 @@
         private readonly ConnectionController _connectionController;
         private readonly RoutingController _routingController;
 
-        public HierarchicalPathComputationServer(NetworkAddress networkAddress, 
-                                                 string ipAddress,
-                                                 int listeningPort,
-                                                 int pathComputationServerListeningPort) : base(networkAddress, 
-                                                                                           ipAddress, 
-                                                                                           listeningPort,
-                                                                                           pathComputationServerListeningPort) {
+        public HierarchicalPathComputationServer(NetworkAddress networkAddress,
+            string ipAddress,
+            int listeningPort,
+            int pathComputationServerListeningPort) : base(networkAddress,
+            ipAddress,
+            listeningPort,
+            pathComputationServerListeningPort) {
             _connectionController = new ConnectionController(networkAddress);
             _routingController = new RoutingController(networkAddress);
         }

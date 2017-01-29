@@ -69,9 +69,9 @@ namespace NetworkEmulation.Network {
                 "CreateConnection " + inVpi + " " + inVci + " " + inPortNumber + " " + outVpi + " " + outVci + " " +
                 outPortNumber, nodeUdpPort);
             OnUpdateState(" Message to " + nodeUdpPort + ": " + "CreateConnection inVpi:" + inVpi + ", inVci: " + inVci +
-                        ", inPort: " +
-                        inPortNumber + ", outVpi: " + outVpi + ", outVci: " + outVci + ", outPort: " +
-                        outPortNumber);
+                          ", inPort: " +
+                          inPortNumber + ", outVpi: " + outVpi + ", outVci: " + outVci + ", outPort: " +
+                          outPortNumber);
         }
 
         /* Wątek obsługujący keep alive*/

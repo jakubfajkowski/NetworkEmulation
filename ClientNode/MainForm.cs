@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using NetworkUtilities;
 using NetworkUtilities.Element;
 using NetworkUtilities.Serialization;
 
@@ -28,9 +27,7 @@ namespace ClientNode {
 
         private void textBox_enableAutoscroll(object sender, EventArgs e) {
             var textBox = sender as TextBox;
-            if (textBox == null) {
-                return;
-            }
+            if (textBox == null) return;
 
             textBox.SelectionLength = textBox.Text.Length;
             textBox.ScrollToCaret();

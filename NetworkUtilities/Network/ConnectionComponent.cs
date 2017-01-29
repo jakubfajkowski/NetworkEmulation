@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -10,22 +7,22 @@ using NetworkUtilities.Serialization;
 
 namespace NetworkUtilities.Network {
     internal class ConnectionComponent : LogObject {
-        internal delegate void ObjectHandler(object sender, object receivedObject);
-        public event ObjectHandler ObjectReceived;
+        private readonly int _connectionManagerListeningPort;
+        private readonly NetworkAddressSocketPortPair _handshakeMessage;
+        private readonly IPAddress _ipAddress;
 
         private TcpListener _connectionManagerTcpListener;
         private TcpClient _connectionObjectTcpClient;
-        private readonly int _connectionManagerListeningPort;
-        private readonly IPAddress _ipAddress;
 
-        public bool Online { get; private set; }
-        private readonly NetworkAddressSocketPortPair _handshakeMessage;
-
-        public ConnectionComponent(NetworkAddress networkAddress, string connectionManagerIpAddress, int connectionManagerListeningPort) {
+        public ConnectionComponent(NetworkAddress networkAddress, string connectionManagerIpAddress,
+            int connectionManagerListeningPort) {
             _ipAddress = IPAddress.Parse(connectionManagerIpAddress);
             _connectionManagerListeningPort = connectionManagerListeningPort;
             _handshakeMessage = new NetworkAddressSocketPortPair(networkAddress, PortRandomizer.RandomFreePort());
         }
+
+        public bool Online { get; private set; }
+        public event ObjectHandler ObjectReceived;
 
         public void Initialize() {
             _connectionManagerTcpListener = CreateTcpListener(_ipAddress, _handshakeMessage.SocketPort);
@@ -60,6 +57,7 @@ namespace NetworkUtilities.Network {
                 OnObjectReceived(cableCloudMessage);
             }
         }
+
         protected virtual void OnObjectReceived(object receivedObject) {
             ObjectReceived?.Invoke(this, receivedObject);
         }
@@ -85,5 +83,7 @@ namespace NetworkUtilities.Network {
             var networkStream = _connectionObjectTcpClient.GetStream();
             BinarySerializer.SerializeToStream(objectToSend, networkStream);
         }
+
+        internal delegate void ObjectHandler(object sender, object receivedObject);
     }
 }

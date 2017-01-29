@@ -4,7 +4,8 @@ using NetworkUtilities;
 namespace NetworkEmulation.Network {
     [XmlRoot]
     public class NetworkAddressNodePortPair {
-        private NetworkAddressNodePortPair() {}
+        private NetworkAddressNodePortPair() {
+        }
 
         public NetworkAddressNodePortPair(NetworkAddress networkAddress, int nodePortNumber) {
             NodePortNumber = nodePortNumber;

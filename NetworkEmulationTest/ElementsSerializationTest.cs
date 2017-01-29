@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.Editor.Element;
 using NetworkEmulation.Network;
 using NetworkEmulation.Network.Element;
@@ -23,7 +22,7 @@ namespace NetworkEmulationTest {
 
         [TestMethod]
         public void SerializeClientNodePictureBox() {
-            var clientNodePictureBox = new NetworkEmulation.Editor.Element.ClientNodeView {
+            var clientNodePictureBox = new ClientNodeView {
                 Parameters = new ClientNodeModel {
                     ClientName = "Janusz",
                     CableCloudListeningPort = 10000,
@@ -33,13 +32,13 @@ namespace NetworkEmulationTest {
 
             var serialized = XmlSerializer.Serialize(clientNodePictureBox);
 
-            var deserialized = new NetworkEmulation.Editor.Element.ClientNodeView();
+            var deserialized = new ClientNodeView();
             XmlSerializer.Deserialize(deserialized, serialized);
         }
 
         [TestMethod]
         public void SerializeNetworkNodePictureBox() {
-            var networkNodePictureBox = new NetworkEmulation.Editor.Element.NetworkNodeView {
+            var networkNodePictureBox = new NetworkNodeView {
                 Parameters = new NetworkNodeModel {
                     CableCloudListeningPort = 10000,
                     IpAddress = "localhost",
@@ -50,7 +49,7 @@ namespace NetworkEmulationTest {
 
             var serialized = XmlSerializer.Serialize(networkNodePictureBox);
 
-            var deserialized = new NetworkEmulation.Editor.Element.NetworkNodeView();
+            var deserialized = new NetworkNodeView();
             XmlSerializer.Deserialize(deserialized, serialized);
         }
 

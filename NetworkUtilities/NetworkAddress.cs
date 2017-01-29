@@ -11,16 +11,18 @@ namespace NetworkUtilities {
         private const char Separator = '.';
         private string _value;
 
-        public int Levels => _value.Split(Separator).Length;
-
-        private NetworkAddress() {}
+        private NetworkAddress() {
+        }
 
         public NetworkAddress(string value) {
             _value = value;
         }
+
         public NetworkAddress(int number) {
             _value = number.ToString();
         }
+
+        public int Levels => _value.Split(Separator).Length;
 
         public NetworkAddress Append(int number) {
             var value = _value + Separator + number;

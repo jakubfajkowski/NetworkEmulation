@@ -1,10 +1,6 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NetworkUtilities.Element;
 using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkUtilities.ControlPlane {
@@ -48,10 +44,11 @@ namespace NetworkUtilities.ControlPlane {
             var paths = Floyd.runAlgorithm(graph, snppStart, snppEnd);
             return paths[0].SubnetworkPointPools;
         }
-        private void HandleRouteTableQuery(SubnetworkPointPool snppStart, SubnetworkPointPool snppEnd, int capacity, SignallingMessage message) {
-            
+
+        private void HandleRouteTableQuery(SubnetworkPointPool snppStart, SubnetworkPointPool snppEnd, int capacity,
+            SignallingMessage message) {
             message.Operation = SignallingMessageOperation.RouteTableQueryResponse;
-            message.Payload =Route(snppStart,snppEnd,capacity);
+            message.Payload = Route(snppStart, snppEnd, capacity);
             SendMessage(message);
         }
     }

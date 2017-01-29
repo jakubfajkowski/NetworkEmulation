@@ -2,7 +2,7 @@
     public enum SignallingMessageOperation {
         //CPCC operations
         CallRequest,
-        CallRequestResponse,            // CC       -> NCC
+        CallRequestResponse, // CC       -> NCC
         CallAccept,
         CallAcceptResponse,
         CallTeardown,
@@ -16,24 +16,23 @@
         DirectorySnppResponse,
         CallCoordination,
         CallCoordinationResponse,
-        ConnectionRequest,              // CC(NCC)   -> CC
-        ConnectionRequestResponse,      // CC       -> CC(NCC)
+        ConnectionRequest, // CC(NCC)   -> CC
+        ConnectionRequestResponse, // CC       -> CC(NCC)
         CallConfirmation,
-        CallConfirmationFromNCC,     
+        CallConfirmationFromNCC,
         //CC operations
-        RouteTableQuery,                // CC       -> RC
-        RouteTableQueryResponse,        // RC       -> CC
-        SetLabels,                      // LRM(NN)  -> CC(NN)
-        GetLabelsFromLRM,               // CC(HPCS) -> CC(NN)
-        ConnectionConfirmation,         // CC       -> CC
+        RouteTableQuery, // CC       -> RC
+        RouteTableQueryResponse, // RC       -> CC
+        SetLabels, // LRM(NN)  -> CC(NN)
+        GetLabelsFromLRM, // CC(HPCS) -> CC(NN)
+        ConnectionConfirmation, // CC       -> CC
         PeerCoordination,
         LinkConnectionRequest,
         ConnectionConfirmationToNCC,
         //RC operations 
-        NetworkTopology,                // RC -> RC
+        NetworkTopology, // RC -> RC
         //LRM operations
         GetLabels,
-        LocalTopology                   // LRM -> RC
-        
+        LocalTopology // LRM -> RC
     }
 }

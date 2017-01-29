@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -95,10 +94,10 @@ namespace NetworkEmulation {
             TreeNode parent = null;
             var currentAddress = new NetworkAddress(address.GetId(0));
 
-            for (int i = 0; i < address.Levels - 1; i++) {
+            for (var i = 0; i < address.Levels - 1; i++) {
                 var id = address.GetId(i);
 
-                if (nodes.Count < id) {
+                if (nodes.Count < id)
                     while (nodes.Count < id) {
                         var subnetworkNode = new TreeNode();
                         nodes.Add(subnetworkNode);
@@ -108,7 +107,6 @@ namespace NetworkEmulation {
                         subnetworkNode.Tag = new HierarchicalPathComputationServer(currentAddress,
                             "127.0.0.1", PortRandomizer.RandomFreePort(), parentPathComputationServer.ListeningPort);
                     }
-                }
 
                 parent = nodes[id - 1];
                 nodes = parent.Nodes;
@@ -149,9 +147,7 @@ namespace NetworkEmulation {
                 return;
             }
 
-            if (e.Node.Tag is NodeView) {
-                networkHierarchyTreeView.SelectedNode = e.Node.Parent;
-            }
+            if (e.Node.Tag is NodeView) networkHierarchyTreeView.SelectedNode = e.Node.Parent;
         }
 
         private void saveProjectMenuItem_Click(object sender, EventArgs e) {

@@ -1,5 +1,4 @@
-﻿using System;
-using NetworkUtilities.Network;
+﻿using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
     public class NameServer : ConnectionManager {

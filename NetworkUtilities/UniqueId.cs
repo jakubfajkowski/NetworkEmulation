@@ -26,7 +26,7 @@ namespace NetworkUtilities {
         }
 
         public override bool Equals(object obj) {
-            if ((obj == null) || (obj.GetType() != typeof(UniqueId))) return false;
+            if (obj == null || obj.GetType() != typeof(UniqueId)) return false;
             return Value.Equals(obj.ToString());
         }
 

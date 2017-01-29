@@ -5,8 +5,8 @@ using NetworkUtilities.ControlPlane;
 
 namespace NetworkUtilities.Log {
     public partial class PathComputationServerLogForm : Form {
-        private readonly List<PathComputationServer> _pathComputationServers;
         private readonly Dictionary<NetworkAddress, string> _logDictionary;
+        private readonly List<PathComputationServer> _pathComputationServers;
         private bool _bound;
 
         public PathComputationServerLogForm(List<PathComputationServer> pathComputationServers) {
@@ -23,7 +23,7 @@ namespace NetworkUtilities.Log {
         }
 
         private void UpdateState(object sender, string state) {
-            var pathComputationServer = (PathComputationServer)sender;
+            var pathComputationServer = (PathComputationServer) sender;
             var logLine = CreateLogLine(state);
 
             if (new NetworkAddress(comboBox.Text).Equals(pathComputationServer.NetworkAddress))

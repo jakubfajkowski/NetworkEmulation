@@ -19,14 +19,13 @@ namespace NetworkEmulation.Editor {
 
     [Serializable]
     public partial class EditorPanel : UserControl, IXmlSerializable {
-        private NodeView _selectedNodeView;
-
         private Mode _mode = Mode.Move;
+        private NodeView _selectedNodeView;
 
         public EditorPanel() {
             InitializeComponent();
         }
-        
+
         public List<LinkView> AddedLinks { get; } = new List<LinkView>();
         public List<NodeView> AddedNodeViews { get; } = new List<NodeView>();
 
@@ -116,13 +115,14 @@ namespace NetworkEmulation.Editor {
                 var clientNodeView = addedNodeView as ClientNodeView;
 
                 if (clientNodeView == null) continue;
-                DrawTextLine(graphics, new Point(centerPoint.X, centerPoint.Y + 10), clientNodeView.Parameters.ClientName);
+                DrawTextLine(graphics, new Point(centerPoint.X, centerPoint.Y + 10),
+                    clientNodeView.Parameters.ClientName);
             }
         }
 
         private void DrawTextLine(Graphics g, Point centerPoint, string text) {
             using (var myFont = new Font("Arial", 8)) {
-                var namePoint = new Point(centerPoint.X - 3*text.Length, centerPoint.Y + 32);
+                var namePoint = new Point(centerPoint.X - 3 * text.Length, centerPoint.Y + 32);
                 g.DrawString(text, myFont, Brushes.Black, namePoint);
             }
         }
@@ -152,14 +152,10 @@ namespace NetworkEmulation.Editor {
         }
 
         public void Clear() {
-            foreach (var link in AddedLinks) {
-                link.Dispose();
-            }
+            foreach (var link in AddedLinks) link.Dispose();
             AddedLinks.Clear();
 
-            foreach (var nodeView in AddedNodeViews) {
-                nodeView.Dispose();
-            }
+            foreach (var nodeView in AddedNodeViews) nodeView.Dispose();
             AddedNodeViews.Clear();
 
             _selectedNodeView = null;

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using NetworkUtilities;
-using System;
 
 namespace NetworkNode {
     public class CommutationMatrix {
@@ -75,21 +75,18 @@ namespace NetworkNode {
                 }
         }
 
-        public CableCloudMessage CommuteAllCells(List<AtmCell> cells, int inputPortNumber)
-        {
+        public CableCloudMessage CommuteAllCells(List<AtmCell> cells, int inputPortNumber) {
             var row = _commutationTable.FindRow(cells[0].Vpi, cells[0].Vci, inputPortNumber);
-            if (row == null)
-            {
+            if (row == null) {
                 Console.WriteLine("Nie znaleziono wpisu w tablicy!!!!!!!!!!!");
                 return null;
             }
-            foreach (var cell in cells)
-            {
+            foreach (var cell in cells) {
                 cell.Vpi = row.GetOutVpi();
                 if (row.GetOutVci() != -1)
                     cell.Vci = row.GetOutVci();
             }
-            return new CableCloudMessage(row.GetOutPort(), cells);          
+            return new CableCloudMessage(row.GetOutPort(), cells);
         }
 
         /* Metoda zmieniająca VPI, VCI na podstawie tabeli */

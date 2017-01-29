@@ -14,12 +14,12 @@ using NetworkUtilities.Log;
 namespace NetworkEmulation.Network {
     public class Simulation {
         private readonly CableCloud _cableCloud;
-        private readonly NetworkManagmentSystem _networkManagmentSystem;
-        private readonly NameServer _nameServer;
-        private readonly List<PathComputationServer> _pathComputationServers;
 
         private readonly List<NodeView> _initializableNodes;
         private readonly List<LinkView> _links;
+        private readonly NameServer _nameServer;
+        private readonly NetworkManagmentSystem _networkManagmentSystem;
+        private readonly List<PathComputationServer> _pathComputationServers;
 
         private readonly Dictionary<int, Process> _processes;
 
@@ -42,13 +42,9 @@ namespace NetworkEmulation.Network {
 
             PreparePathComputationServerMultipleLogForm();
 
-            foreach (var pathComputationServer in _pathComputationServers) {
-                pathComputationServer.StartListening();
-            }
+            foreach (var pathComputationServer in _pathComputationServers) pathComputationServer.StartListening();
 
-            foreach (var pathComputationServer in _pathComputationServers) {
-                pathComputationServer.Initialize();
-            }
+            foreach (var pathComputationServer in _pathComputationServers) pathComputationServer.Initialize();
 
 
             foreach (var initializableNode in _initializableNodes.OfType<NetworkNodeView>()) {
@@ -68,14 +64,19 @@ namespace NetworkEmulation.Network {
             Run();
         }
 
+        public bool Running { get; private set; }
+
+        public LogForm CableCloudLogForm { get; private set; }
+        public LogForm NetworkManagmentSystemLogForm { get; private set; }
+        public LogForm NameServerLogForm { get; private set; }
+        public PathComputationServerLogForm PathComputationServerLogForm { get; private set; }
+
         private void GetNetworkComponentsFromTree(TreeNodeCollection nodes) {
-            foreach (TreeNode n in nodes) {
-                PutNetworkComponentInSuitableList(n);
-            }
+            foreach (TreeNode n in nodes) PutNetworkComponentInSuitableList(n);
         }
 
         private void PutNetworkComponentInSuitableList(TreeNode treeNode) {
-            object component = treeNode.Tag;
+            var component = treeNode.Tag;
 
             if (component is PathComputationServer) _pathComputationServers.Add((PathComputationServer) component);
             if (component is NodeView) {
@@ -88,24 +89,15 @@ namespace NetworkEmulation.Network {
                 }
 
                 if (node is NetworkNodeView) {
-                    var parameters = ((NetworkNodeView)node).Parameters;
+                    var parameters = ((NetworkNodeView) node).Parameters;
                     parameters.PathComputationServerListeningPort = pcs.ListeningPort;
                 }
 
                 _initializableNodes.Add(node);
             }
 
-            foreach (TreeNode tn in treeNode.Nodes) {
-                PutNetworkComponentInSuitableList(tn);
-            }
+            foreach (TreeNode tn in treeNode.Nodes) PutNetworkComponentInSuitableList(tn);
         }
-
-        public bool Running { get; private set; }
-
-        public LogForm CableCloudLogForm { get; private set; }
-        public LogForm NetworkManagmentSystemLogForm { get; private set; }
-        public LogForm NameServerLogForm { get; private set; }
-        public PathComputationServerLogForm PathComputationServerLogForm { get; private set; }
 
         private void PreapareCableCloudLogForm() {
             CableCloudLogForm = new LogForm(_cableCloud);
@@ -229,10 +221,8 @@ namespace NetworkEmulation.Network {
             _cableCloud.Dispose();
             _networkManagmentSystem.Dispose();
 
-            foreach (var pathComputationServer in _pathComputationServers) {
-                pathComputationServer.Dispose();
-            }
-            
+            foreach (var pathComputationServer in _pathComputationServers) pathComputationServer.Dispose();
+
             KillProcesses();
 
             Running = false;

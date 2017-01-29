@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
     public abstract class PathComputationServer : ConnectionManager {
-        public NetworkAddress NetworkAddress { get; }
+        private readonly ConnectionComponent _controlPlaneConnectionComponent;
         private readonly Dictionary<NetworkAddress, NetworkAddress> _signallingLinkDictionary;
 
         protected int PathComputationServerListeningPort;
-        private readonly ConnectionComponent _controlPlaneConnectionComponent;
 
-        protected PathComputationServer(NetworkAddress networkAddress, 
-                                        string ipAddress, 
-                                        int listeningPort, 
-                                        int pathComputationServerListeningPort) : base(listeningPort) {
-
+        protected PathComputationServer(NetworkAddress networkAddress,
+            string ipAddress,
+            int listeningPort,
+            int pathComputationServerListeningPort) : base(listeningPort) {
             PathComputationServerListeningPort = pathComputationServerListeningPort;
-            _controlPlaneConnectionComponent = new ConnectionComponent(networkAddress, ipAddress, pathComputationServerListeningPort);
+            _controlPlaneConnectionComponent = new ConnectionComponent(networkAddress, ipAddress,
+                pathComputationServerListeningPort);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
 
             NetworkAddress = networkAddress;
             _signallingLinkDictionary = new Dictionary<NetworkAddress, NetworkAddress>();
         }
+
+        public NetworkAddress NetworkAddress { get; }
 
         public virtual void Initialize() {
             _controlPlaneConnectionComponent.Initialize();
@@ -31,7 +31,8 @@ namespace NetworkUtilities.ControlPlane {
         protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {
             var signallingMessage = (SignallingMessage) receivedObject;
 
-            OnUpdateState("Received from [" + signallingMessage.SourceAddress + "]: Element" + signallingMessage.DestinationControlPlaneElement +
+            OnUpdateState("Received from [" + signallingMessage.SourceAddress + "]: Element" +
+                          signallingMessage.DestinationControlPlaneElement +
                           "Operation" + signallingMessage.Operation + ".");
 
             if (signallingMessage.DestinationAddress.Equals(NetworkAddress)) {
@@ -46,7 +47,8 @@ namespace NetworkUtilities.ControlPlane {
                     PassSignallingMessage(signallingMessage, output);
                 }
                 catch (KeyNotFoundException) {
-                    OnUpdateState("Error sending to [" + signallingMessage.DestinationAddress + "]: There is no such record.");
+                    OnUpdateState("Error sending to [" + signallingMessage.DestinationAddress +
+                                  "]: There is no such record.");
                 }
                 catch (Exception) {
                     if (output != null) DisconnectClient(output);
@@ -57,7 +59,8 @@ namespace NetworkUtilities.ControlPlane {
 
         private void PassSignallingMessage(SignallingMessage signallingMessage, NetworkAddress outputNetworkAddress) {
             SendObject(signallingMessage, outputNetworkAddress);
-            OnUpdateState("Sent to [" + signallingMessage.DestinationAddress + "]: Element" + signallingMessage.DestinationControlPlaneElement +
+            OnUpdateState("Sent to [" + signallingMessage.DestinationAddress + "]: Element" +
+                          signallingMessage.DestinationControlPlaneElement +
                           "Operation" + signallingMessage.Operation + ".");
         }
 

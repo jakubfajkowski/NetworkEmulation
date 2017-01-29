@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
 
 namespace NetworkUtilitiesTests {
@@ -13,7 +12,7 @@ namespace NetworkUtilitiesTests {
             var n4 = new NetworkAddress("1.1");
 
             Assert.AreEqual(n1, n2);
-            Assert.AreNotEqual(n1,n3);
+            Assert.AreNotEqual(n1, n3);
             Assert.AreNotEqual(n1, n4);
         }
     }
