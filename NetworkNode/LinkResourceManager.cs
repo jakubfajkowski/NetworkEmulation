@@ -12,6 +12,9 @@ namespace NetworkNode {
         private readonly CommutationTable _commutationTable;
         private readonly Dictionary<int, double> _freeCapacityDictionary;
         private readonly Random _random;
+        private List<SubnetworkPoint> _subnetworkPoints = new List<SubnetworkPoint>();
+        private SubnetworkPointPool _subnetworkPointPool;
+
 
         public LinkResourceManager(NetworkAddress networkAddress, CommutationTable commutationTable, int numberOfPorts,
             int capacity) : base(networkAddress) {
@@ -57,14 +60,18 @@ namespace NetworkNode {
             }
         }
 
+        
 
         public event CommutationTableRecordHandler OnClientTableRowAdded;
         public event CommutationTableRecordHandler OnClientTableRowDeleted;
 
         private void HandleLinkConnectionRequest(SignallingMessage message) {
             message.Operation = SignallingMessageOperation.SNPNegotiation;
-            
-        }
+             var snpps=  message.Payload as SubnetworkPointPool[];
+            message.DestinationAddress = snpps[1].NetworkAddress;
+            message.Payload = SubnetworkPoint.GenerateRandom(message.DemandedCapacity);
+            SendMessage(message);
+            }
         private void SendLabels(int[] labels) {
             //SendMessage(new SignallingMessage(SignallingMessageOperation.SetLabels, labels));
         }

@@ -34,6 +34,8 @@
         //RC operations 
         NetworkTopology, // RC -> RC
         //LRM operations
+        SNPNegotiation,
+        SNPRelease,
         GetLabels,
         LocalTopology // LRM -> RC
     }

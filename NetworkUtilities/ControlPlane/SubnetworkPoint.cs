@@ -21,5 +21,30 @@ namespace NetworkUtilities.ControlPlane {
 
             return new SubnetworkPoint(vpi, vci, capacity);
         }
+
+        protected bool Equals(SubnetworkPoint other) {
+            return Vpi == other.Vpi && Vci == other.Vci;
+        }
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((SubnetworkPoint) obj);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                return (Vpi*397) ^ Vci;
+            }
+        }
+
+        public static bool operator ==(SubnetworkPoint left, SubnetworkPoint right) {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(SubnetworkPoint left, SubnetworkPoint right) {
+            return !Equals(left, right);
+        }
     }
 }
