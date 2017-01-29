@@ -9,13 +9,17 @@ using NetworkUtilities.Network;
 namespace ClientNode {
     public class ClientNode : Node {
         public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
+        private CallingPartyCallController _callingPartyCallController;
 
         public ClientNode(ClientNodeModel parameters)
             : base(
                 parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort,
                 parameters.PathComputationServerListeningPort) {
+
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             ClientName = parameters.ClientName;
+
+            _callingPartyCallController = new CallingPartyCallController(parameters.NetworkAddress);
         }
 
         public string ClientName { get; private set; }

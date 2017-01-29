@@ -45,11 +45,11 @@ namespace NetworkUtilities.GraphAlgorithm {
         }
 
         public void AddEdgeOut(Link link) {
-            var tmp_links = new Link[LinksOut.Length + 1];
+            var tmpLinks = new Link[LinksOut.Length + 1];
             for (var i = 0; i < LinksOut.Length; i++)
-                tmp_links[i] = LinksOut[i];
-            tmp_links[LinksOut.Length] = link;
-            LinksOut = tmp_links;
+                tmpLinks[i] = LinksOut[i];
+            tmpLinks[LinksOut.Length] = link;
+            LinksOut = tmpLinks;
         }
     }
 }

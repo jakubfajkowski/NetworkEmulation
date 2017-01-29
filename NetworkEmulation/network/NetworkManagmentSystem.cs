@@ -40,7 +40,7 @@ namespace NetworkEmulation.Network {
             _messageThread = new Thread(RunThread);
             _messageThread.Start();
 
-            var checkKeepAliveTableThread = new Thread(checkKeepAliveTable);
+            var checkKeepAliveTableThread = new Thread(CheckKeepAliveTable);
             checkKeepAliveTableThread.Start();
         }
 
@@ -105,7 +105,7 @@ namespace NetworkEmulation.Network {
                 }
         }
 
-        private void checkKeepAliveTable() {
+        private void CheckKeepAliveTable() {
             while (true) {
                 try {
                     foreach (var node in _keepAliveDictionary)

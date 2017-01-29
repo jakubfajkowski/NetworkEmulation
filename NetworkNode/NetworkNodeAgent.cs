@@ -40,7 +40,7 @@ namespace NetworkNode {
             _ipEndpoint = new IPEndPoint(IPAddress.Loopback, NmsPort);
         }
 
-        public void startThread() {
+        public void StartThread() {
             // Wiadomość, że węzeł wstał
             SendToNms(Encoding.UTF8.GetBytes("networkNodeStart " + ListenUdpPort));
             _timeToQuit = false;
@@ -48,7 +48,7 @@ namespace NetworkNode {
             keepAliveThread.Start();
         }
 
-        public void shutdown() {
+        public void Shutdown() {
             _timeToQuit = true;
         }
 

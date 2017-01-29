@@ -8,7 +8,7 @@ namespace NetworkUtilities.GraphAlgorithm {
         public Link[] Links { get; set; }
 
 
-        private string getDataFromLine(string s, int n) {
+        private string GetDataFromLine(string s, int n) {
             string[] stringSeparator = {" = ", " "};
 
             return s.Split(stringSeparator, StringSplitOptions.None)[n];
@@ -28,19 +28,19 @@ namespace NetworkUtilities.GraphAlgorithm {
         }
 
         public void LoadDeprecated(List<string> textFile) {
-            SubnetworkPointPools = new SubnetworkPointPool[int.Parse(getDataFromLine(textFile[0], 1))];
+            SubnetworkPointPools = new SubnetworkPointPool[int.Parse(GetDataFromLine(textFile[0], 1))];
             if (SubnetworkPointPools.Length == 0) throw new Exception("Zerowa liczba wierzchołków!");
             for (var i = 0; i < SubnetworkPointPools.Length; i++)
                 SubnetworkPointPools[i] = new SubnetworkPointPool(i + 1);
 
-            Links = new Link[int.Parse(getDataFromLine(textFile[1], 1))];
+            Links = new Link[int.Parse(GetDataFromLine(textFile[1], 1))];
             if (Links.Length == 0) throw new Exception("Zerowa liczba krawędzi!");
             for (var i = 0; i < Links.Length; i++) {
-                var edge_id = int.Parse(getDataFromLine(textFile[2 + i], 0));
-                var begin_id = int.Parse(getDataFromLine(textFile[2 + i], 1));
-                var end_id = int.Parse(getDataFromLine(textFile[2 + i], 2));
+                var edgeId = int.Parse(GetDataFromLine(textFile[2 + i], 0));
+                var beginId = int.Parse(GetDataFromLine(textFile[2 + i], 1));
+                var endId = int.Parse(GetDataFromLine(textFile[2 + i], 2));
 
-                Links[i] = new Link(edge_id, SubnetworkPointPools[begin_id - 1], SubnetworkPointPools[end_id - 1]);
+                Links[i] = new Link(edgeId, SubnetworkPointPools[beginId - 1], SubnetworkPointPools[endId - 1]);
                 Links[i].Begin.AddEdgeOut(Links[i]);
             }
         }

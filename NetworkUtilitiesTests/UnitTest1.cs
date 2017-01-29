@@ -12,18 +12,18 @@ using Path = NetworkUtilities.GraphAlgorithm.Path;
 namespace NetworkUtilitiesTests {
     [TestClass]
     public class UnitTest1 {
-        private static Graph graph;
-        private static long averageTimeDijkstra;
-        private static long averageTimeFloyd;
-        private static long testTime;
+        private static Graph _graph;
+        private static long _averageTimeDijkstra;
+        private static long _averageTimeFloyd;
+        private static long _testTime;
 
 
         [TestMethod]
         public void TestMethod1() {
-            generateGraph(500);
+            GenerateGraph(500);
 
 
-            run("D:\\Projects\\_Visual Studio\\NetworkEmulation\\NetworkUtilitiesTests\\bin\\Release\\graf_input.txt", 1);
+            Run("D:\\Projects\\_Visual Studio\\NetworkEmulation\\NetworkUtilitiesTests\\bin\\Release\\graf_input.txt", 1);
         }
 
         [TestMethod]
@@ -46,12 +46,12 @@ namespace NetworkUtilitiesTests {
             links[6] = new Link(20, snpps[3], snpps[2]);
             links[7] = new Link(20, snpps[2], snpps[4]);
 
-            graph = new Graph();
-            graph.Load(links);
+            _graph = new Graph();
+            _graph.Load(links);
 
             var rcAddress = new NetworkAddress("1");
             var routingController = new RoutingController(rcAddress);
-            routingController._linkList = links.ToList();
+            routingController.LinkList = links.ToList();
 
             var sm = new SignallingMessage {
                 DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.RoutingController,
@@ -65,8 +65,8 @@ namespace NetworkUtilitiesTests {
         }
 
 
-        private static void initialize(string path) {
-            graph = new Graph();
+        private static void Initialize(string path) {
+            _graph = new Graph();
             using (var streamReader = new StreamReader(path)) {
                 var textFile = new List<string>();
 
@@ -75,11 +75,11 @@ namespace NetworkUtilitiesTests {
 
                     if (!line.Contains("#") && line != "") textFile.Add(line);
                 }
-                graph.LoadDeprecated(textFile);
+                _graph.LoadDeprecated(textFile);
             }
         }
 
-        private static void findShortestPaths(int numberOfTests) {
+        private static void FindShortestPaths(int numberOfTests) {
             var testTimeStopwatch = new Stopwatch();
             var algorithmStopwatch = new Stopwatch();
 
@@ -87,9 +87,9 @@ namespace NetworkUtilitiesTests {
             for (var i = 0; i < numberOfTests; i++) {
                 Console.WriteLine("Algorytm Dijkstry:");
                 algorithmStopwatch.Restart();
-                Dijkstra.runAlgorithm(graph); //printPaths(Dijkstra.runAlgorithm(graph));
+                Dijkstra.RunAlgorithm(_graph); //printPaths(Dijkstra.runAlgorithm(graph));
                 algorithmStopwatch.Stop();
-                averageTimeDijkstra += algorithmStopwatch.ElapsedTicks;
+                _averageTimeDijkstra += algorithmStopwatch.ElapsedTicks;
 
 
                 //Console.WriteLine("Algorytm Dijkstry od:");
@@ -109,9 +109,9 @@ namespace NetworkUtilitiesTests {
 
                 //Console.WriteLine("Algorytm Floyda:");
                 algorithmStopwatch.Restart();
-                Floyd.runAlgorithm(graph); //printPaths(Floyd.runAlgorithm(graph));
+                Floyd.RunAlgorithm(_graph); //printPaths(Floyd.runAlgorithm(graph));
                 algorithmStopwatch.Stop();
-                averageTimeFloyd += algorithmStopwatch.ElapsedTicks;
+                _averageTimeFloyd += algorithmStopwatch.ElapsedTicks;
 
                 //Console.WriteLine("Algorytm Floyda od:");
                 //graph.randomizeEdgesWeights();
@@ -123,17 +123,17 @@ namespace NetworkUtilitiesTests {
                 //Console.WriteLine("Algorytm Floyda od do:");
                 //graph.randomizeEdgesWeights();
                 //algorithmStopwatch.Restart();
-                printPaths(Floyd.runAlgorithm(graph, graph.SubnetworkPointPools[4], graph.SubnetworkPointPools[3]));
+                PrintPaths(Floyd.RunAlgorithm(_graph, _graph.SubnetworkPointPools[4], _graph.SubnetworkPointPools[3]));
                 //algorithmStopwatch.Stop();
                 //averageTimeFloyd += algorithmStopwatch.ElapsedTicks;
             }
-            averageTimeDijkstra /= numberOfTests;
-            averageTimeFloyd /= numberOfTests;
+            _averageTimeDijkstra /= numberOfTests;
+            _averageTimeFloyd /= numberOfTests;
             testTimeStopwatch.Stop();
-            testTime = testTimeStopwatch.ElapsedTicks;
+            _testTime = testTimeStopwatch.ElapsedTicks;
         }
 
-        private static void printPaths(Path[] paths) {
+        private static void PrintPaths(Path[] paths) {
             foreach (var p in paths)
                 if (p != null) {
                     foreach (var v in p.SubnetworkPointPools) Console.Write(v.Id + " ");
@@ -149,7 +149,7 @@ namespace NetworkUtilitiesTests {
                 }
         }
 
-        private static void printPaths(Path[,] paths) {
+        private static void PrintPaths(Path[,] paths) {
             foreach (var p in paths)
                 if (p != null) {
                     foreach (var v in p.SubnetworkPointPools) Console.Write(v.Id + " ");
@@ -165,19 +165,19 @@ namespace NetworkUtilitiesTests {
                 }
         }
 
-        private static void printResults() {
-            Console.WriteLine("Średni czas dla algorytmu Dijkstry: " + new TimeSpan(averageTimeDijkstra));
-            Console.WriteLine("Średni czas dla algorytmu Floyda: " + new TimeSpan(averageTimeFloyd));
-            Console.WriteLine("Całkowity czas trwania testu: " + new TimeSpan(testTime));
+        private static void PrintResults() {
+            Console.WriteLine("Średni czas dla algorytmu Dijkstry: " + new TimeSpan(_averageTimeDijkstra));
+            Console.WriteLine("Średni czas dla algorytmu Floyda: " + new TimeSpan(_averageTimeFloyd));
+            Console.WriteLine("Całkowity czas trwania testu: " + new TimeSpan(_testTime));
         }
 
-        public static void run(string path, int numberOfTests) {
-            initialize(path);
-            findShortestPaths(numberOfTests);
-            printResults();
+        public static void Run(string path, int numberOfTests) {
+            Initialize(path);
+            FindShortestPaths(numberOfTests);
+            PrintResults();
         }
 
-        public static void generateGraph(int n) {
+        public static void GenerateGraph(int n) {
             using (var file =
                 new StreamWriter("graf_input.txt")) {
                 file.WriteLine("WEZLY = {0}", n);

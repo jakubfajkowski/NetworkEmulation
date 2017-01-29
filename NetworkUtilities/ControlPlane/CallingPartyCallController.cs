@@ -3,7 +3,7 @@
         public CallingPartyCallController(NetworkAddress networkAddress) : base(networkAddress) {
         }
 
-        public bool callConfirmed { get; set; }
+        public bool CallConfirmed { get; set; }
         public NetworkAddress NccAddress { get; private set; }
 
         public void SendCallRequest(string clientA, string clientZ, NetworkAddress nccAddress, int capacity) {
@@ -62,8 +62,8 @@
             switch (message.Operation) {
                 case SignallingMessageOperation.CallAccept:
                     //SendCallAcceptResponse(message);
-                    callConfirmed = false;
-                    SendCallConfirmation(message, callConfirmed);
+                    CallConfirmed = false;
+                    SendCallConfirmation(message, CallConfirmed);
                     break;
                 case SignallingMessageOperation.CallTeardown:
                     SendCallTeardownResponse(message);

@@ -2,45 +2,45 @@
 
 namespace NetworkUtilities.GraphAlgorithm {
     public static class Floyd {
-        private const double infinity = double.MaxValue;
-        private static Graph graph;
-        private static double[,] weights;
-        private static SubnetworkPointPool[,] prev;
+        private const double Infinity = double.MaxValue;
+        private static Graph _graph;
+        private static double[,] _weights;
+        private static SubnetworkPointPool[,] _prev;
 
 
-        private static void initialize() {
-            weights = new double[graph.SubnetworkPointPools.Length, graph.SubnetworkPointPools.Length];
-            prev = new SubnetworkPointPool[graph.SubnetworkPointPools.Length, graph.SubnetworkPointPools.Length];
+        private static void Initialize() {
+            _weights = new double[_graph.SubnetworkPointPools.Length, _graph.SubnetworkPointPools.Length];
+            _prev = new SubnetworkPointPool[_graph.SubnetworkPointPools.Length, _graph.SubnetworkPointPools.Length];
 
-            for (var i = 0; i < graph.SubnetworkPointPools.Length; i++)
-            for (var j = 0; j < graph.SubnetworkPointPools.Length; j++) {
-                weights[i, j] = infinity;
-                if (i == j) weights[i, j] = 0;
+            for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++)
+            for (var j = 0; j < _graph.SubnetworkPointPools.Length; j++) {
+                _weights[i, j] = Infinity;
+                if (i == j) _weights[i, j] = 0;
 
-                prev[i, j] = null;
+                _prev[i, j] = null;
             }
 
-            for (var i = 0; i < graph.Links.Length; i++) {
-                var n = graph.Links[i].Begin.Id - 1;
-                var m = graph.Links[i].End.Id - 1;
+            for (var i = 0; i < _graph.Links.Length; i++) {
+                var n = _graph.Links[i].Begin.Id - 1;
+                var m = _graph.Links[i].End.Id - 1;
 
-                weights[n, m] = graph.Links[i].Weight;
-                prev[n, m] = graph.Links[i].Begin;
+                _weights[n, m] = _graph.Links[i].Weight;
+                _prev[n, m] = _graph.Links[i].Begin;
             }
         }
 
-        private static void algorithmLogic() {
-            var len = graph.SubnetworkPointPools.Length;
+        private static void AlgorithmLogic() {
+            var len = _graph.SubnetworkPointPools.Length;
             for (var k = 0; k < len; k++)
             for (var i = 0; i < len; i++)
             for (var j = 0; j < len; j++)
-                if (weights[i, k] + weights[k, j] < weights[i, j]) {
-                    weights[i, j] = weights[i, k] + weights[k, j];
-                    prev[i, j] = prev[k, j];
+                if (_weights[i, k] + _weights[k, j] < _weights[i, j]) {
+                    _weights[i, j] = _weights[i, k] + _weights[k, j];
+                    _prev[i, j] = _prev[k, j];
                 }
 
             for (var i = 0; i < len; i++)
-                if (weights[i, i] < 0)
+                if (_weights[i, i] < 0)
                     throw new ArgumentException("Cykle ujemne");
             //print(weights);
             //Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
@@ -78,63 +78,63 @@ namespace NetworkUtilities.GraphAlgorithm {
         //    }
         //}
 
-        public static Path[] runAlgorithm(Graph graph_, SubnetworkPointPool begin) {
-            graph = graph_;
-            var shortestPaths = new Path[graph.SubnetworkPointPools.Length];
+        public static Path[] RunAlgorithm(Graph graph_, SubnetworkPointPool begin) {
+            _graph = graph_;
+            var shortestPaths = new Path[_graph.SubnetworkPointPools.Length];
 
-            initialize();
+            Initialize();
 
-            algorithmLogic();
+            AlgorithmLogic();
 
-            var len = graph.SubnetworkPointPools.Length;
+            var len = _graph.SubnetworkPointPools.Length;
             for (var i = 0; i < len; i++)
-                shortestPaths[i] = generatePath(begin, graph.SubnetworkPointPools[i]);
+                shortestPaths[i] = GeneratePath(begin, _graph.SubnetworkPointPools[i]);
             return shortestPaths;
         }
 
-        public static Path[,] runAlgorithm(Graph graph_) {
-            graph = graph_;
-            var shortestPaths = new Path[graph.SubnetworkPointPools.Length, graph.SubnetworkPointPools.Length];
+        public static Path[,] RunAlgorithm(Graph graph_) {
+            _graph = graph_;
+            var shortestPaths = new Path[_graph.SubnetworkPointPools.Length, _graph.SubnetworkPointPools.Length];
 
 
-            initialize();
+            Initialize();
 
-            algorithmLogic();
+            AlgorithmLogic();
 
-            var len = graph.SubnetworkPointPools.Length;
+            var len = _graph.SubnetworkPointPools.Length;
             for (var i = 0; i < len; i++)
             for (var j = 0; j < len; j++)
-                shortestPaths[i, j] = generatePath(graph.SubnetworkPointPools[i], graph.SubnetworkPointPools[j]);
+                shortestPaths[i, j] = GeneratePath(_graph.SubnetworkPointPools[i], _graph.SubnetworkPointPools[j]);
             return shortestPaths;
         }
 
 
-        public static Path[] runAlgorithm(Graph graph_, SubnetworkPointPool begin, SubnetworkPointPool end) {
-            graph = graph_;
-            var shortestPaths = new Path[graph.SubnetworkPointPools.Length];
+        public static Path[] RunAlgorithm(Graph graph_, SubnetworkPointPool begin, SubnetworkPointPool end) {
+            _graph = graph_;
+            var shortestPaths = new Path[_graph.SubnetworkPointPools.Length];
 
-            initialize();
+            Initialize();
 
-            algorithmLogic();
+            AlgorithmLogic();
 
-            var len = graph.SubnetworkPointPools.Length;
+            var len = _graph.SubnetworkPointPools.Length;
 
-            shortestPaths[0] = generatePath(begin, end);
+            shortestPaths[0] = GeneratePath(begin, end);
             return shortestPaths;
         }
 
 
-        private static Path generatePath(SubnetworkPointPool begin, SubnetworkPointPool end) {
-            var path = new Path(graph.SubnetworkPointPools.Length);
+        private static Path GeneratePath(SubnetworkPointPool begin, SubnetworkPointPool end) {
+            var path = new Path(_graph.SubnetworkPointPools.Length);
             var currentSubnetworkPointPool = end;
 
             while (currentSubnetworkPointPool != begin) {
                 if (currentSubnetworkPointPool == null)
                     return null;
-                path.push(currentSubnetworkPointPool);
-                currentSubnetworkPointPool = prev[begin.Id - 1, currentSubnetworkPointPool.Id - 1];
+                path.Push(currentSubnetworkPointPool);
+                currentSubnetworkPointPool = _prev[begin.Id - 1, currentSubnetworkPointPool.Id - 1];
             }
-            path.push(begin);
+            path.Push(begin);
 
             return path;
         }

@@ -3,23 +3,23 @@ using NetworkUtilities.GraphAlgorithm.PriorityQueue;
 
 namespace NetworkUtilities.GraphAlgorithm {
     public static class Dijkstra {
-        private const double infinity = double.MaxValue;
-        private static Graph graph;
+        private const double Infinity = double.MaxValue;
+        private static Graph _graph;
 
-        public static Path[] runAlgorithm(Graph graph_, SubnetworkPointPool begin) {
-            graph = graph_;
-            var widestPaths = new Path[graph.SubnetworkPointPools.Length];
+        public static Path[] RunAlgorithm(Graph graph_, SubnetworkPointPool begin) {
+            _graph = graph_;
+            var widestPaths = new Path[_graph.SubnetworkPointPools.Length];
             var verticesHeap = new Heap<SubnetworkPointPool>();
 
-            initialize(begin);
-            verticesHeap.initialise(graph.SubnetworkPointPools.Length);
-            for (var i = 0; i < graph.SubnetworkPointPools.Length; i++)
-                verticesHeap.insertElement(
-                    new Element<SubnetworkPointPool>(graph.SubnetworkPointPools[i].CumulatedWeight,
-                        graph.SubnetworkPointPools[i]));
+            Initialize(begin);
+            verticesHeap.Initialise(_graph.SubnetworkPointPools.Length);
+            for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++)
+                verticesHeap.InsertElement(
+                    new Element<SubnetworkPointPool>(_graph.SubnetworkPointPools[i].CumulatedWeight,
+                        _graph.SubnetworkPointPools[i]));
 
             while (verticesHeap.NumberOfElements != 0) {
-                var currentSubnetworkPointPool = verticesHeap.deleteMax().Data;
+                var currentSubnetworkPointPool = verticesHeap.DeleteMax().Data;
                 if (currentSubnetworkPointPool.CumulatedWeight == 0)
                     break;
 
@@ -34,30 +34,30 @@ namespace NetworkUtilities.GraphAlgorithm {
                         neighbor.Prev = currentSubnetworkPointPool;
                     }
                 }
-                sortHeap(ref verticesHeap);
+                SortHeap(ref verticesHeap);
             }
 
-            for (var i = 0; i < graph.SubnetworkPointPools.Length; i++)
-                widestPaths[i] = generatePath(begin, graph.SubnetworkPointPools[i]);
+            for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++)
+                widestPaths[i] = GeneratePath(begin, _graph.SubnetworkPointPools[i]);
 
             return widestPaths;
         }
 
 
-        public static Path[] runAlgorithm(Graph graph_, SubnetworkPointPool begin, SubnetworkPointPool end) {
-            graph = graph_;
-            var widestPath = new Path[graph.SubnetworkPointPools.Length];
+        public static Path[] RunAlgorithm(Graph graph_, SubnetworkPointPool begin, SubnetworkPointPool end) {
+            _graph = graph_;
+            var widestPath = new Path[_graph.SubnetworkPointPools.Length];
             var verticesHeap = new Heap<SubnetworkPointPool>();
 
-            initialize(begin);
-            verticesHeap.initialise(graph.SubnetworkPointPools.Length);
-            for (var i = 0; i < graph.SubnetworkPointPools.Length; i++)
-                verticesHeap.insertElement(
-                    new Element<SubnetworkPointPool>(graph.SubnetworkPointPools[i].CumulatedWeight,
-                        graph.SubnetworkPointPools[i]));
+            Initialize(begin);
+            verticesHeap.Initialise(_graph.SubnetworkPointPools.Length);
+            for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++)
+                verticesHeap.InsertElement(
+                    new Element<SubnetworkPointPool>(_graph.SubnetworkPointPools[i].CumulatedWeight,
+                        _graph.SubnetworkPointPools[i]));
 
             while (verticesHeap.NumberOfElements != 0) {
-                var currentSubnetworkPointPool = verticesHeap.deleteMax().Data;
+                var currentSubnetworkPointPool = verticesHeap.DeleteMax().Data;
                 if (currentSubnetworkPointPool.CumulatedWeight == 0)
                     break;
 
@@ -76,33 +76,33 @@ namespace NetworkUtilities.GraphAlgorithm {
                 }
 
 
-                sortHeap(ref verticesHeap);
+                SortHeap(ref verticesHeap);
             }
 
 
-            widestPath[0] = generatePath(begin, end);
+            widestPath[0] = GeneratePath(begin, end);
 
 
             return widestPath;
         }
 
-        public static Path[,] runAlgorithm(Graph graph_) {
-            graph = graph_;
-            var widestPaths = new Path[graph.SubnetworkPointPools.Length, graph.SubnetworkPointPools.Length];
+        public static Path[,] RunAlgorithm(Graph graph_) {
+            _graph = graph_;
+            var widestPaths = new Path[_graph.SubnetworkPointPools.Length, _graph.SubnetworkPointPools.Length];
             var verticesHeap = new Heap<SubnetworkPointPool>();
 
 
-            for (var b = 0; b < graph.SubnetworkPointPools.Length; b++) {
-                var begin = graph.SubnetworkPointPools[b];
-                initialize(begin);
-                verticesHeap.initialise(graph.SubnetworkPointPools.Length);
-                for (var i = 0; i < graph.SubnetworkPointPools.Length; i++)
-                    verticesHeap.insertElement(
-                        new Element<SubnetworkPointPool>(graph.SubnetworkPointPools[i].CumulatedWeight,
-                            graph.SubnetworkPointPools[i]));
+            for (var b = 0; b < _graph.SubnetworkPointPools.Length; b++) {
+                var begin = _graph.SubnetworkPointPools[b];
+                Initialize(begin);
+                verticesHeap.Initialise(_graph.SubnetworkPointPools.Length);
+                for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++)
+                    verticesHeap.InsertElement(
+                        new Element<SubnetworkPointPool>(_graph.SubnetworkPointPools[i].CumulatedWeight,
+                            _graph.SubnetworkPointPools[i]));
 
                 while (verticesHeap.NumberOfElements != 0) {
-                    var currentSubnetworkPointPool = verticesHeap.deleteMax().Data;
+                    var currentSubnetworkPointPool = verticesHeap.DeleteMax().Data;
                     if (currentSubnetworkPointPool.CumulatedWeight == 0)
                         break;
 
@@ -121,51 +121,51 @@ namespace NetworkUtilities.GraphAlgorithm {
                     }
 
 
-                    sortHeap(ref verticesHeap);
+                    SortHeap(ref verticesHeap);
                 }
 
-                for (var i = 0; i < graph.SubnetworkPointPools.Length; i++)
-                    widestPaths[b, i] = generatePath(begin, graph.SubnetworkPointPools[i]);
+                for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++)
+                    widestPaths[b, i] = GeneratePath(begin, _graph.SubnetworkPointPools[i]);
             }
             return widestPaths;
         }
 
 
-        private static void initialize(SubnetworkPointPool begin) {
-            for (var i = 0; i < graph.SubnetworkPointPools.Length; i++) {
-                graph.SubnetworkPointPools[i].CumulatedWeight = 0;
-                graph.SubnetworkPointPools[i].Prev = null;
+        private static void Initialize(SubnetworkPointPool begin) {
+            for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++) {
+                _graph.SubnetworkPointPools[i].CumulatedWeight = 0;
+                _graph.SubnetworkPointPools[i].Prev = null;
             }
 
-            graph.SubnetworkPointPools[begin.Id - 1].CumulatedWeight = infinity;
+            _graph.SubnetworkPointPools[begin.Id - 1].CumulatedWeight = Infinity;
 
             begin.Prev = begin;
         }
 
-        private static void sortHeap(ref Heap<SubnetworkPointPool> heap) {
+        private static void SortHeap(ref Heap<SubnetworkPointPool> heap) {
             var updatedKeys = new Element<SubnetworkPointPool>[heap.NumberOfElements];
             for (var i = 0; i < updatedKeys.Length; i++)
-                updatedKeys[i] = updateKey(heap.deleteMax());
+                updatedKeys[i] = UpdateKey(heap.DeleteMax());
             for (var i = 0; i < updatedKeys.Length; i++)
-                heap.insertElement(updatedKeys[i]);
+                heap.InsertElement(updatedKeys[i]);
         }
 
-        private static Element<SubnetworkPointPool> updateKey(Element<SubnetworkPointPool> element) {
+        private static Element<SubnetworkPointPool> UpdateKey(Element<SubnetworkPointPool> element) {
             element.Key = element.Data.CumulatedWeight;
             return element;
         }
 
-        private static Path generatePath(SubnetworkPointPool begin, SubnetworkPointPool end) {
-            var path = new Path(graph.SubnetworkPointPools.Length);
+        private static Path GeneratePath(SubnetworkPointPool begin, SubnetworkPointPool end) {
+            var path = new Path(_graph.SubnetworkPointPools.Length);
             var currentSubnetworkPointPool = end;
 
             while (currentSubnetworkPointPool != begin) {
                 if (currentSubnetworkPointPool == null)
                     return null;
-                path.push(currentSubnetworkPointPool);
+                path.Push(currentSubnetworkPointPool);
                 currentSubnetworkPointPool = currentSubnetworkPointPool.Prev;
             }
-            path.push(begin);
+            path.Push(begin);
 
             return path;
         }

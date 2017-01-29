@@ -32,7 +32,7 @@ namespace NetworkNodeTest {
         }
 
         [TestMethod]
-        public void NMSKeepAlive() {
+        public void NmsKeepAlive() {
             var networkNodeSerializableParameters = new NetworkNodeModel {
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
@@ -46,7 +46,7 @@ namespace NetworkNodeTest {
         }
 
         [TestMethod]
-        public void LRMandCCConnectionTest() {
+        public void LrMandCcConnectionTest() {
             //CC NIE MA PARAMETRÓW!!!!!!!!!!!!!!!!!!!!!!!!
 
             //var LRM = new LinkResourceManager(new CommutationTable(),3,300);

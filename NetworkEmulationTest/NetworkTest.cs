@@ -99,14 +99,14 @@ namespace NetworkEmulationTest {
 
         [TestMethod]
         public void InitializeClientNodeTest() {
-            var clientNodePB = new ClientNodeView {
+            var clientNodePb = new ClientNodeView {
                 Parameters = new ClientNodeModel {
                     ClientName = "Janusz",
                     CableCloudListeningPort = 10000,
                     IpAddress = "127.0.0.1"
                 }
             };
-            clientNodePB.Initialize().Start();
+            clientNodePb.Initialize().Start();
         }
 
         [TestMethod]

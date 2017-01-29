@@ -5,7 +5,7 @@ using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkUtilities.ControlPlane {
     public class RoutingController : ControlPlaneElement {
-        public List<Link> _linkList = new List<Link>();
+        public List<Link> LinkList = new List<Link>();
 
         public RoutingController(NetworkAddress networkAddress) : base(networkAddress) {
         }
@@ -19,7 +19,7 @@ namespace NetworkUtilities.ControlPlane {
                     if (snpps != null) HandleRouteTableQuery(snpps[0], snpps[1], capacity, message);
                     break;
                 case SignallingMessageOperation.LocalTopology:
-                    _linkList.Add((Link) message.Payload);
+                    LinkList.Add((Link) message.Payload);
                     break;
                 case SignallingMessageOperation.NetworkTopology:
 
@@ -32,16 +32,16 @@ namespace NetworkUtilities.ControlPlane {
         private void SendNetworkTopology(SignallingMessage message) {
             var networkTopology = message;
             networkTopology.Operation = SignallingMessageOperation.NetworkTopology;
-            networkTopology.Payload = _linkList;
+            networkTopology.Payload = LinkList;
             //networkTopology.DestinationAddress = ???
             SendMessage(networkTopology);
         }
 
         private SubnetworkPointPool[] Route(SubnetworkPointPool snppStart, SubnetworkPointPool snppEnd, int capacity) {
-            var preparedList = _linkList.Where(link => link.Capacity >= capacity).ToArray();
+            var preparedList = LinkList.Where(link => link.Capacity >= capacity).ToArray();
             var graph = new Graph();
             graph.Load(preparedList);
-            var paths = Floyd.runAlgorithm(graph, snppStart, snppEnd);
+            var paths = Floyd.RunAlgorithm(graph, snppStart, snppEnd);
             return paths[0].SubnetworkPointPools;
         }
 

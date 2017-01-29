@@ -24,7 +24,7 @@
 
         public int Length { get; private set; }
 
-        public void push(SubnetworkPointPool subnetworkPointPool) {
+        public void Push(SubnetworkPointPool subnetworkPointPool) {
             _subnetworkPointPools[Length++] = subnetworkPointPool;
         }
     }

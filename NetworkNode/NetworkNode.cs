@@ -26,24 +26,24 @@ namespace NetworkNode {
             CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts);
             NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
 
-            startThread();
+            StartThread();
         }
 
         // Czas po jakim komórki ATM zostaną spakowane w CCM
         public static int MinLastAddTime { private get; set; } = 100;
 
-        public void startThread() {
+        public void StartThread() {
             //_timeToQuit = false;
             _networkNodeThread = new Thread(RunThread);
             _networkNodeThread.Start();
-            CommutationMatrix.startThread();
-            NetworkNodeAgent.startThread();
+            CommutationMatrix.StartThread();
+            NetworkNodeAgent.StartThread();
         }
 
-        public void shutdown() {
+        public void Shutdown() {
             //_timeToQuit = true;
-            CommutationMatrix.shutdown();
-            NetworkNodeAgent.shutdown();
+            CommutationMatrix.Shutdown();
+            NetworkNodeAgent.Shutdown();
         }
 
         /* Wątek pobierający komórki ATM z portów wyjściowych pola komutacyjnego i wysyłający je do chmury kablowej */

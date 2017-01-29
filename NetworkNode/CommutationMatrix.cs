@@ -28,13 +28,13 @@ namespace NetworkNode {
             }
         }
 
-        public void startThread() {
+        public void StartThread() {
             _timeToQuit = false;
             _matrixThread = new Thread(RunThread);
             _matrixThread.Start();
         }
 
-        public void shutdown() {
+        public void Shutdown() {
             _timeToQuit = true;
             lock (_matrixThread) {
                 Monitor.Pulse(_matrixThread);
