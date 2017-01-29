@@ -9,6 +9,7 @@ namespace NetworkUtilities.ControlPlane {
             policyResponse.Operation = SignallingMessageOperation.PolicyResponse;
             policyResponse.Payload = (bool) true;
             policyResponse.DestinationAddress = message.SourceAddress;
+            policyResponse.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
             SendMessage(policyResponse);
         }
 

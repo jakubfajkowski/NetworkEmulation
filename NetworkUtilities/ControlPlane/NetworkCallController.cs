@@ -21,8 +21,10 @@ namespace NetworkUtilities.ControlPlane {
 
         private void SendPolicyRequest(SignallingMessage message) {
             var policyRequest = message;
+            policyRequest.Operation = SignallingMessageOperation.PolicyRequest;
             policyRequest.DestinationAddress = NameServer.Address;
             policyRequest.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.Policy;
+            SendMessage(policyRequest);
         }
 
         private void SendDirectoryAddressRequest(SignallingMessage message) {
@@ -135,7 +137,9 @@ namespace NetworkUtilities.ControlPlane {
             base.ReceiveMessage(message);
             switch (message.Operation) {
                 case SignallingMessageOperation.PolicyResponse:
-                    SendDirectorySnppRequest(message);
+                    if ((bool)message.Payload) {
+                        SendDirectorySnppRequest(message);
+                    }
                     break;
                 case SignallingMessageOperation.CallRequest:
                     var callRequestMessage = (object[]) message.Payload;
@@ -145,7 +149,7 @@ namespace NetworkUtilities.ControlPlane {
                     _capacityDictionary.Add(message.SessionId, capacity);
                     _nameDictionary.Add(message.SessionId, clientNames);
 
-                    //SendCallRequestResponse(message);
+                    
                     SendPolicyRequest(message);
                     break;
                 case SignallingMessageOperation.CallTeardown:
