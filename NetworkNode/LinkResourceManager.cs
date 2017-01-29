@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
+using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkNode {
     public class LinkResourceManager : ControlPlaneElement {
@@ -24,6 +25,7 @@ namespace NetworkNode {
                 _freeCapacityDictionary.Add(i, capacity);
             }
         }
+
 
         public int[] GetNewLabels(int portNumber) {
             int VPI;
@@ -49,11 +51,50 @@ namespace NetworkNode {
                                     labels[0] + ", VCI:" + labels[1]);
                     SendLabels(labels);
                     break;
+                case SignallingMessageOperation.LinkConnectionRequest:
+                    HandleLinkConnectionRequest(message);
+                    break;
             }
         }
 
+
+        public event CommutationTableRecordHandler OnClientTableRowAdded;
+        public event CommutationTableRecordHandler OnClientTableRowDeleted;
+
+        private void HandleLinkConnectionRequest(SignallingMessage message) {
+            message.Operation = SignallingMessageOperation.SNPNegotiation;
+            
+        }
         private void SendLabels(int[] labels) {
             //SendMessage(new SignallingMessage(SignallingMessageOperation.SetLabels, labels));
+        }
+
+        protected virtual void OnOnClientTableRowAdded(CommutationTableRecordHandlerArgs args) {
+            OnClientTableRowAdded?.Invoke(this, args);
+        }
+
+        protected virtual void OnOnClientTableRowDeleted(CommutationTableRecordHandlerArgs args) {
+            OnClientTableRowDeleted?.Invoke(this, args);
+        }
+    }
+
+    public delegate void CommutationTableRecordHandler(object sender, CommutationTableRecordHandlerArgs args);
+
+    public class CommutationTableRecordHandlerArgs {
+        public int InVpi { get; private set; }
+        public int InVci { get; private set; }
+        public int InPortNumber { get; private set; }
+        public int OutVpi { get; private set; }
+        public int OutVci { get; private set; }
+        public int LinkNumber { get; private set; }
+
+        public CommutationTableRecordHandlerArgs(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci, int linkNumber) {
+            InVpi = inVpi;
+            InVci = inVci;
+            InPortNumber = inPortNumber;
+            OutVpi = outVpi;
+            OutVci = outVci;
+            LinkNumber = linkNumber;
         }
     }
 }

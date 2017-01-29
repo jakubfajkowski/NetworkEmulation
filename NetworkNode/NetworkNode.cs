@@ -9,7 +9,7 @@ using NetworkUtilities.Network;
 namespace NetworkNode {
     public class NetworkNode : Node {
         private ConnectionController _connectionController;
-        private LinkResourceManager _linkResourceManager;
+        private List<LinkResourceManager> _linkResourceManagers;
 
         private Thread _networkNodeThread;
 
@@ -35,11 +35,18 @@ namespace NetworkNode {
             _connectionController.UpdateState += (sender, state) => OnUpdateState(state);
             _connectionController.MessageToSend += (sender, message) => Send(message);
 
-            //_linkResourceManager = new LinkResourceManager(parameters.NetworkAddress);
-            //_policy.UpdateState += (sender, state) => OnUpdateState(state);
-            //_policy.MessageToSend += (sender, message) => Send(message, message.DestinationAddress);
+
+            var _linkResourceManager = new LinkResourceManager(parameters.NetworkAddress, null, 0, 0);
+            _linkResourceManager.UpdateState += (sender, state) => OnUpdateState(state);
+            _linkResourceManager.MessageToSend += (sender, message) => Send(message);
+            _linkResourceManager.OnClientTableRowAdded += LinkResourceManagerOnOnClientTableRowAdded;
 
             StartThread();
+        }
+
+        private void LinkResourceManagerOnOnClientTableRowAdded(object sender, CommutationTableRecordHandlerArgs args) {
+            CommutationMatrix.CreateInputPort();
+            CommutationMatrix.CreateInputPort();
         }
 
         // Czas po jakim komórki ATM zostaną spakowane w CCM
