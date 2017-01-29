@@ -11,18 +11,20 @@ namespace NetworkUtilities.Network {
         protected int PathComputationServerListeningPort;
 
 
-        protected Node(NetworkAddress networkAddress, string ipAddress, int cableCloudListeningPort,
+        protected Node(NetworkAddress networkAddress, NetworkAddress pathcomputationServerNetworkAddress, string ipAddress, int cableCloudListeningPort,
             int pathComputationServerListeningPort) {
             NetworkAddress = networkAddress;
 
             CableCloudListeningPort = cableCloudListeningPort;
-            _dataPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, ipAddress, cableCloudListeningPort);
+            _dataPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, null, ipAddress, cableCloudListeningPort);
+            _dataPlaneConnectionComponent.UpdateState += (sender, state) => OnUpdateState(state);
             _dataPlaneConnectionComponent.ObjectReceived += OnCableCloudMessageReceived;
             _dataPlaneConnectionComponent.Initialize();
 
             PathComputationServerListeningPort = pathComputationServerListeningPort;
-            _controlPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, ipAddress,
+            _controlPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, pathcomputationServerNetworkAddress, ipAddress,
                 pathComputationServerListeningPort);
+            _controlPlaneConnectionComponent.UpdateState += (sender, state) => OnUpdateState(state);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
             _controlPlaneConnectionComponent.Initialize();
         }
@@ -44,12 +46,7 @@ namespace NetworkUtilities.Network {
         protected abstract void Receive(CableCloudMessage cableCloudMessage);
 
         protected void Send(CableCloudMessage cableCloudMessage) {
-            _dataPlaneConnectionComponent.SendObject(cableCloudMessage);
-        }
-
-        public List<AtmCell> ExtractAtmCells(CableCloudMessage cableCloudMessage) {
-            var atmCells = BinarySerializer.Deserialize(cableCloudMessage.Data) as List<AtmCell>;
-            return atmCells?.FindAll(cell => cell.Valid());
+            _dataPlaneConnectionComponent.Send(cableCloudMessage);
         }
 
         private void OnSignallingMessageReceived(object sender, object receivedObject) {
@@ -60,7 +57,7 @@ namespace NetworkUtilities.Network {
         protected abstract void Receive(SignallingMessage signallingMessage);
 
         protected void Send(SignallingMessage signallingMessage) {
-            _controlPlaneConnectionComponent.SendObject(signallingMessage);
+            _controlPlaneConnectionComponent.Send(signallingMessage);
         }
     }
 }

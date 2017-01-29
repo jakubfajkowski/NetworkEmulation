@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using NetworkUtilities.Log;
 
 namespace NetworkUtilities.ControlPlane {
-    public abstract class ControlPlaneElement {
+    public abstract class ControlPlaneElement : LogObject {
         public delegate void MessageToSendHandler(object sender, SignallingMessage message);
 
         private readonly List<UniqueId> _currentlyHandledSessions = new List<UniqueId>();
@@ -16,6 +17,7 @@ namespace NetworkUtilities.ControlPlane {
 
         protected void SendMessage(SignallingMessage message) {
             message.SourceAddress = Address;
+            OnUpdateState(message.ToString());
             MessageToSend?.Invoke(this, message);
         }
 

@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.Editor.Element;
 using NetworkEmulation.Network;
 using NetworkUtilities;
+using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Element;
 
 namespace NetworkEmulationTest {
@@ -22,13 +23,39 @@ namespace NetworkEmulationTest {
             var portB = 6;
 
             var cableCloud = new CableCloud(10000);
-            cableCloud.UpdateState += (sender, state) => Console.WriteLine(state);
+            cableCloud.UpdateState += (sender, state) => Console.WriteLine("CC: " + state);
             cableCloud.StartListening();
 
             var nms = new NetworkManagmentSystem();
-            nms.UpdateState += (sender, state) => Console.WriteLine(state);
+            nms.UpdateState += (sender, state) => Console.WriteLine("NMS:" + state);
 
             Thread.Sleep(1000);
+
+            var nameServer = new NameServer(30000);
+            nameServer.UpdateState += (sender, state) => Console.WriteLine("NS " + state);
+            nameServer.StartListening();
+
+            var sspcs1 = new StepByStepPathComputationServer(
+                new NetworkAddress(1),
+                new NetworkAddress(2),
+                localhost,
+                20000,
+                20001,
+                30000
+            );
+            sspcs1.UpdateState += (sender, state) => Console.WriteLine("SSPCS1: " + state);
+            sspcs1.StartListening();
+
+            var sspcs2 = new StepByStepPathComputationServer(
+                new NetworkAddress(2),
+                new NetworkAddress(1), 
+                localhost,
+                20001,
+                20000,
+                30000
+            );
+            sspcs2.UpdateState += (sender, state) => Console.WriteLine("SSPCS2: " + state);
+            sspcs2.StartListening();
 
             var clientNodeA = new ClientNode.ClientNode(new ClientNodeModel {
                 NetworkAddress = new NetworkAddress("1.1"),
@@ -38,7 +65,7 @@ namespace NetworkEmulationTest {
                 IpAddress = localhost
             });
             //clientNodeA.OnMessageReceived += (sender, state) => Console.WriteLine(state);
-            clientNodeA.UpdateState += (sender, state) => Console.WriteLine(state);
+            clientNodeA.UpdateState += (sender, state) => Console.WriteLine("ClientNode A: " + state);
 
             var clientNodeB = new ClientNode.ClientNode(new ClientNodeModel {
                 NetworkAddress = new NetworkAddress("2.2"),
@@ -48,7 +75,7 @@ namespace NetworkEmulationTest {
                 IpAddress = localhost
             });
             //clientNodeB.OnMessageReceived += (sender, state) => Console.WriteLine(state);
-            clientNodeB.UpdateState += (sender, state) => Console.WriteLine(state);
+            clientNodeB.UpdateState += (sender, state) => Console.WriteLine("ClientNode B: " + state);
 
             var networkNode1 = new NetworkNode.NetworkNode(new NetworkNodeModel {
                 NetworkAddress = new NetworkAddress("1.2"),
@@ -92,7 +119,11 @@ namespace NetworkEmulationTest {
 
             //for (var i = 0; i < 5000; i++) sb.Append("0123456789");
 
-            clientNodeA.SendMessage("Message", "B");
+            clientNodeA.Connect("B", 10);
+
+            //Thread.Sleep(1000);
+
+            //clientNodeA.SendMessage("Message", "B");
 
             Thread.Sleep(1000);
         }

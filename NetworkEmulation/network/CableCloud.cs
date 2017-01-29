@@ -32,7 +32,7 @@ namespace NetworkEmulation.Network {
                               " - no avaliable link.");
             }
             catch (Exception) {
-                if (output != null) DisconnectClient(output.NetworkAddress);
+                if (output != null) DeleteConnection(output.NetworkAddress);
                 OnUpdateState("Node [" + input.NetworkAddress + "] to ATM port: " +
                               cableCloudMessage.PortNumber +
                               " - could not connect.");
@@ -44,7 +44,7 @@ namespace NetworkEmulation.Network {
         }
 
         private void PassCableCloudMessage(CableCloudMessage cableCloudMessage, NetworkAddress outputNetworkAddress) {
-            SendObject(cableCloudMessage, outputNetworkAddress);
+            Send(cableCloudMessage, outputNetworkAddress);
             OnUpdateState("Node [" + outputNetworkAddress + "] to   ATM port: " + cableCloudMessage.PortNumber + " - " +
                           cableCloudMessage.Data.Length + " bytes sent.");
         }

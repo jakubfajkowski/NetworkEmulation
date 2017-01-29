@@ -34,35 +34,40 @@ namespace NetworkUtilities.Network {
                     Online = true;
                     while (Online) {
                         var receivedData = await _connectionUdpClient.ReceiveAsync();
-                        EstabilishNodeConnection(
+                        ConnectToNode(
                             (NetworkAddressSocketPortPair) BinarySerializer.Deserialize(receivedData.Buffer));
                     }
                 }
             });
         }
 
-        private void EstabilishNodeConnection(NetworkAddressSocketPortPair initializationMessage) {
+        private void ConnectToNode(NetworkAddressSocketPortPair initializationMessage) {
             var nodeTcpClient = new TcpClient();
 
             var port = initializationMessage.SocketPort;
             var networkAddress = initializationMessage.NetworkAddress;
 
             try {
-                ConnectWithClient(nodeTcpClient, port, networkAddress);
-                OnUpdateState($"Connected to {networkAddress} on TCP port: {port}");
+                EstablishConnection(nodeTcpClient, port, networkAddress);
+                OnUpdateState($"Received connection request from {networkAddress} - accepted");
                 Listen(nodeTcpClient, networkAddress).Start();
             }
             catch (SocketException e) {
+                OnUpdateState($"Connection to {networkAddress} - failed");
                 OnUpdateState(e.Message);
             }
         }
 
-        private void ConnectWithClient(TcpClient nodeTcpClient, int port, NetworkAddress networkAddress) {
+        private void EstablishConnection(TcpClient nodeTcpClient, int port, NetworkAddress networkAddress) {
             nodeTcpClient.Connect(IPAddress.Loopback, port);
+            AddConnection(networkAddress, nodeTcpClient);
+        }
+
+        public void AddConnection(NetworkAddress networkAddress, TcpClient nodeTcpClient) {
             _nodesTcpClients.Add(networkAddress, nodeTcpClient);
         }
 
-        protected void DisconnectClient(NetworkAddress networkAddress) {
+        public void DeleteConnection(NetworkAddress networkAddress) {
             _nodesTcpClients.Remove(networkAddress);
         }
 
@@ -75,21 +80,22 @@ namespace NetworkUtilities.Network {
             });
         }
 
+        private object Receive(Stream networkStream) {
+            return BinarySerializer.DeserializeFromStream(networkStream);
+        }
+
         protected abstract void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress);
 
-        protected void SendObject(object objectToSend, NetworkAddress outputNetworkAddress) {
+        protected void Send(object objectToSend, NetworkAddress outputNetworkAddress) {
             var tcpClient = _nodesTcpClients[outputNetworkAddress];
             var networkStream = tcpClient.GetStream();
 
             BinarySerializer.SerializeToStream(objectToSend, networkStream);
         }
 
-        private object Receive(Stream networkStream) {
-            return BinarySerializer.DeserializeFromStream(networkStream);
-        }
-
         public void Dispose() {
             OnUpdateState("Hello darkness my old friend...");
+            Online = false;
             _connectionUdpClient.Close();
         }
     }

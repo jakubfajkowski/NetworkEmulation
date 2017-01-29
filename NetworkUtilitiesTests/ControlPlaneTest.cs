@@ -15,6 +15,14 @@ namespace NetworkUtilitiesTests {
             var directory = new Directory(NameServer.Address);
             _controlPlaneElements.Add(NameServer.Address, directory);
 
+            var ncc1Address = new NetworkAddress("1");
+            var ncc1 = new NetworkCallController(ncc1Address);
+            _controlPlaneElements.Add(ncc1Address, ncc1);
+
+            var ncc2Address = new NetworkAddress("2");
+            var ncc2 = new NetworkCallController(ncc2Address);
+            _controlPlaneElements.Add(ncc2Address, ncc2);
+
             var cpccAAddress = new NetworkAddress("1.1");
             var cpccA = new CallingPartyCallController(cpccAAddress);
             _controlPlaneElements.Add(cpccAAddress, cpccA);
@@ -24,14 +32,6 @@ namespace NetworkUtilitiesTests {
             var cpccB = new CallingPartyCallController(cpccBAddress);
             _controlPlaneElements.Add(cpccBAddress, cpccB);
             directory.UpdateDirectory("Babacki", cpccBAddress, new SubnetworkPointPool(2));
-
-            var ncc1Address = new NetworkAddress("1");
-            var ncc1 = new NetworkCallController(ncc1Address);
-            _controlPlaneElements.Add(ncc1Address, ncc1);
-
-            var ncc2Address = new NetworkAddress("2");
-            var ncc2 = new NetworkCallController(ncc2Address);
-            _controlPlaneElements.Add(ncc2Address, ncc2);
 
             var ccAddress = new NetworkAddress("0.1");
             var cc = new ConnectionController(ccAddress);
@@ -44,7 +44,7 @@ namespace NetworkUtilitiesTests {
             cpccB.MessageToSend += PassMessage;
             directory.MessageToSend += PassMessage;
 
-            cpccA.SendCallRequest("Abacki", "Babacki", ncc1Address, 20);
+            cpccA.SendCallRequest("Abacki", "Babacki", 20);
         }
 
         private void PassMessage(object sender, SignallingMessage message) {

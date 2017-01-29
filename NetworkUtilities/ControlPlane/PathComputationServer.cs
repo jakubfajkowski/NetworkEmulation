@@ -4,22 +4,22 @@ using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
     public abstract class PathComputationServer : ConnectionManager {
-        private readonly ConnectionComponent _controlPlaneConnectionComponent;
+        protected int PathComputationServerListeningPort;
         private readonly Dictionary<NetworkAddress, NetworkAddress> _signallingLinkDictionary;
 
-        protected int PathComputationServerListeningPort;
+        private readonly ConnectionComponent _controlPlaneConnectionComponent;
 
-        protected PathComputationServer(NetworkAddress networkAddress,
-            string ipAddress,
-            int listeningPort,
-            int pathComputationServerListeningPort) : base(listeningPort) {
+        protected PathComputationServer(NetworkAddress networkAddress, NetworkAddress otherPathComputationServerNetworkAddress, string ipAddress, int listeningPort, int pathComputationServerListeningPort) : base(listeningPort) {
+
             PathComputationServerListeningPort = pathComputationServerListeningPort;
-            _controlPlaneConnectionComponent = new ConnectionComponent(networkAddress, ipAddress,
-                pathComputationServerListeningPort);
-            _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
 
             NetworkAddress = networkAddress;
             _signallingLinkDictionary = new Dictionary<NetworkAddress, NetworkAddress>();
+
+            _controlPlaneConnectionComponent = new ConnectionComponent(networkAddress, otherPathComputationServerNetworkAddress, ipAddress,
+                pathComputationServerListeningPort);
+            _controlPlaneConnectionComponent.UpdateState += (sender, state) => OnUpdateState(state);
+            _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
         }
 
         public NetworkAddress NetworkAddress { get; }
@@ -44,21 +44,21 @@ namespace NetworkUtilities.ControlPlane {
                 try {
                     output = _signallingLinkDictionary[signallingMessage.DestinationAddress];
 
-                    PassSignallingMessage(signallingMessage, output);
+                    SendSignallingMessage(signallingMessage, output);
                 }
                 catch (KeyNotFoundException) {
                     OnUpdateState("Error sending to [" + signallingMessage.DestinationAddress +
                                   "]: There is no such record.");
                 }
                 catch (Exception) {
-                    if (output != null) DisconnectClient(output);
+                    if (output != null) DeleteConnection(output);
                     OnUpdateState("Error sending to [" + signallingMessage.DestinationAddress + "]: Could not connect.");
                 }
             }
         }
 
-        private void PassSignallingMessage(SignallingMessage signallingMessage, NetworkAddress outputNetworkAddress) {
-            SendObject(signallingMessage, outputNetworkAddress);
+        protected void SendSignallingMessage(SignallingMessage signallingMessage, NetworkAddress outputNetworkAddress) {
+            Send(signallingMessage, outputNetworkAddress);
             OnUpdateState("Sent to [" + signallingMessage.DestinationAddress + "]: Element" +
                           signallingMessage.DestinationControlPlaneElement +
                           "Operation" + signallingMessage.Operation + ".");
@@ -76,7 +76,7 @@ namespace NetworkUtilities.ControlPlane {
         protected abstract void Receive(SignallingMessage signallingMessage);
 
         protected void SendToOtherPathComputationServer(SignallingMessage signallingMessage) {
-            _controlPlaneConnectionComponent.SendObject(signallingMessage);
+            _controlPlaneConnectionComponent.Send(signallingMessage);
         }
     }
 }

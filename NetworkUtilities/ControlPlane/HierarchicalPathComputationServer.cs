@@ -6,10 +6,12 @@
         public HierarchicalPathComputationServer(NetworkAddress networkAddress,
             string ipAddress,
             int listeningPort,
-            int pathComputationServerListeningPort) : base(networkAddress,
-            ipAddress,
-            listeningPort,
-            pathComputationServerListeningPort) {
+            int pathComputationServerListeningPort) : base(
+                networkAddress,
+                networkAddress.GetParentsAddress(),
+                ipAddress,
+                listeningPort, pathComputationServerListeningPort) {
+
             _connectionController = new ConnectionController(networkAddress);
             _routingController = new RoutingController(networkAddress);
         }

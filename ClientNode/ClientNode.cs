@@ -9,31 +9,62 @@ using NetworkUtilities.Network;
 namespace ClientNode {
     public class ClientNode : Node {
         public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
-        private CallingPartyCallController _callingPartyCallController;
+        private readonly CallingPartyCallController _callingPartyCallController;
 
         public ClientNode(ClientNodeModel parameters)
             : base(
-                parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort,
+                parameters.NetworkAddress, parameters.NetworkAddress.GetParentsAddress() ,parameters.IpAddress, parameters.CableCloudListeningPort,
                 parameters.PathComputationServerListeningPort) {
 
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             ClientName = parameters.ClientName;
 
             _callingPartyCallController = new CallingPartyCallController(parameters.NetworkAddress);
+            _callingPartyCallController.UpdateState += (sender, state) => OnUpdateState(state);
+            _callingPartyCallController.MessageToSend += (sender, message) => Send(message);
         }
 
-        public string ClientName { get; private set; }
+        public string ClientName { get; }
         public event MessageHandler OnMessageReceived;
+        public event MessageHandler OnClientTableRowAdded;
+        public event MessageHandler OnClientTableRowDeleted;
 
-        protected void MessageReceived(string message) {
+        private void MessageReceived(string message) {
             OnMessageReceived?.Invoke(this, message);
         }
 
-        public void SendMessage(string message, string receiverName) {
-            var clientTableRow = SearchUsingClientName(receiverName);
+        private void ClientTableRowAdded(string clientName) {
+            OnClientTableRowAdded?.Invoke(this, clientName);
+        }
+
+        private void ClientTableRowDeleted(string clientName) {
+            OnClientTableRowDeleted?.Invoke(this, clientName);
+        }
+
+        private void AddClient(ClientTableRow clientTableRow) {
+            ClientTableList.Add(clientTableRow);
+            ClientTableRowAdded(clientTableRow.ClientName);
+        }
+
+        private void DeleteClient(ClientTableRow clientTableRow) {
+            ClientTableList.Remove(clientTableRow);
+            ClientTableRowDeleted(clientTableRow.ClientName);
+        }
+
+        public void Connect(string receiverId, int demandedCapacity) {
+            _callingPartyCallController.SendCallRequest(ClientName, receiverId, demandedCapacity);
+        }
+
+        public void SendMessage(string message, string receiverId) {
+            var clientTableRow = SearchUsingClientName(receiverId);
 
             if (clientTableRow != null) SendCableCloudMessage(message, clientTableRow);
-            else OnUpdateState("Client " + receiverName + " not found.");
+            else OnUpdateState("Client " + receiverId + " not found.");
+        }
+
+        public void Disconnect(string receiverId) {
+            _callingPartyCallController.SendCallTeardown(ClientName, receiverId);
+            DeleteClient(SearchUsingClientName(receiverId));
         }
 
         private ClientTableRow SearchUsingClientName(string clientName) {
@@ -51,10 +82,9 @@ namespace ClientNode {
 
             foreach (var cableCloudMessage in cableCloudMessages) {
                 Send(cableCloudMessage);
-                OnUpdateState("Sent: " + ExtractAtmCells(cableCloudMessage).Count + " ATMCells.");
+                OnUpdateState("Sent: " +cableCloudMessage.ExtractAtmCells().Count + " ATMCells.");
             }
         }
-
 
         public static List<CableCloudMessage> Generate(int portNumber, int vpi, int vci, string message) {
             var atmCells = AtmCell.Generate(vpi, vci, message);
@@ -70,20 +100,13 @@ namespace ClientNode {
             return cableCloudMessages;
         }
 
-        public string ToString(CableCloudMessage cableCloudMessage) {
-            var sb = new StringBuilder();
-            foreach (var cell in ExtractAtmCells(cableCloudMessage)) sb.Append(Encoding.UTF8.GetString(cell.Data));
-            return sb.ToString();
-        }
-
         protected override void Receive(CableCloudMessage cableCloudMessage) {
-            MessageReceived(ToString(cableCloudMessage));
-            OnUpdateState("Received: " + ExtractAtmCells(cableCloudMessage).Count + " ATMCells.");
+            MessageReceived(cableCloudMessage.ToString());
+            OnUpdateState("Received: " + cableCloudMessage.ExtractAtmCells().Count + " ATMCells.");
         }
 
-        protected override void Receive(SignallingMessage signallingMessage) {
-            //TODO Signalling message handling implementation!
-            throw new NotImplementedException();
+        protected override void Receive(SignallingMessage message) {
+            _callingPartyCallController.ReceiveMessage(message);
         }
     }
 }

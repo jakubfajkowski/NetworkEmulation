@@ -17,7 +17,7 @@ namespace NetworkNode {
 
         public NetworkNode(NetworkNodeModel parameters)
             : base(
-                parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort,
+                parameters.NetworkAddress, parameters.NetworkAddress.GetParentsAddress(), parameters.IpAddress, parameters.CableCloudListeningPort,
                 parameters.PathComputationServerListeningPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemListeningPort;
@@ -86,21 +86,21 @@ namespace NetworkNode {
 
         public void ReceiveCableCloudMessage(CableCloudMessage cableCloudMessage) {
             Console.WriteLine("[" + DateTime.Now + "] Message received on port: " + cableCloudMessage.PortNumber);
-            Console.WriteLine("[" + DateTime.Now + "] Received " + ExtractAtmCells(cableCloudMessage).Count +
+            Console.WriteLine("[" + DateTime.Now + "] Received " + cableCloudMessage.ExtractAtmCells().Count +
                               " atmcells");
 
             /* foreach (var cell in ExtractAtmCells(cableCloudMessage))
                  CommutationMatrix.AddAtmCellToInputPort(cell, cableCloudMessage.PortNumber);
                  */
 
-            SendCableCloudMessage(CommutationMatrix.CommuteAllCells(ExtractAtmCells(cableCloudMessage),
+            SendCableCloudMessage(CommutationMatrix.CommuteAllCells(cableCloudMessage.ExtractAtmCells(),
                 cableCloudMessage.PortNumber));
         }
 
         private void SendCableCloudMessage(CableCloudMessage cableCloudMessage) {
             Send(cableCloudMessage);
             Console.WriteLine("[" + DateTime.Now + "] Message sent on port: " + cableCloudMessage.PortNumber);
-            Console.WriteLine("[" + DateTime.Now + "] Sent " + ExtractAtmCells(cableCloudMessage).Count + " atmcells");
+            Console.WriteLine("[" + DateTime.Now + "] Sent " + cableCloudMessage.ExtractAtmCells().Count + " atmcells");
         }
 
         protected override void Receive(SignallingMessage signallingMessage) {

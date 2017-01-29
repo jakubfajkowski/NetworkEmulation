@@ -29,6 +29,7 @@
             // logRichTextBox
             // 
             this.logRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logRichTextBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.logRichTextBox.Location = new System.Drawing.Point(0, 0);
             this.logRichTextBox.Name = "logRichTextBox";
             this.logRichTextBox.ReadOnly = true;
@@ -45,6 +46,7 @@
             this.Name = "LogForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LogForm_FormClosing);
             this.ResumeLayout(false);
+
         }
 
         #endregion

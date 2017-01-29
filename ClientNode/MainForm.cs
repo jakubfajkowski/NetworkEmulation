@@ -16,13 +16,15 @@ namespace ClientNode {
                 XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeModel));
             _client = new ClientNode(param);
 
-            Text = $"Client Node ({_client.ClientName})";
+            Text = $"Client Node {_client.ClientName} ({_client.NetworkAddress})";
 
             textBoxEventLog.TextChanged += textBox_enableAutoscroll;
             textBoxReceived.TextChanged += textBox_enableAutoscroll;
 
             _client.UpdateState += UpdateState;
             _client.OnMessageReceived += MessageReceived;
+            _client.OnClientTableRowAdded += AddConnection;
+            _client.OnClientTableRowDeleted += DeleteConnection;
         }
 
         private void textBox_enableAutoscroll(object sender, EventArgs e) {
@@ -35,9 +37,17 @@ namespace ClientNode {
 
         private void buttonSend_Click(object sender, EventArgs e) {
             var message = textBoxMessage.Text;
-            var receiverName = textBoxReceiver.Text;
+            var receiverName = comboBoxConnections.Text;
 
             _client.SendMessage(message, receiverName);
+        }
+
+        public void AddConnection(object sender, string clientName) {
+            comboBoxConnections.Items.Add(clientName);
+        }
+
+        public void DeleteConnection(object sender, string clientName) {
+            comboBoxConnections.Items.Remove(clientName);
         }
 
         private void MessageReceived(object sender, string message) {
@@ -61,8 +71,17 @@ namespace ClientNode {
         }
 
         private void buttonConnection_Click(object sender, EventArgs e) {
-            buttonConnection.BackColor = Color.Red;
-            buttonConnection.Text = "Disconnect";
+            if (buttonConnection.Text.Equals("Connect")) {
+                buttonConnection.BackColor = Color.Red;
+                buttonConnection.Text = "Disconnect";
+                _client.Connect(textBoxReceiver.Text, (int) numericUpDownCapacity.Value);
+                textBoxReceiver.Text = "";
+            }
+            else {
+                buttonConnection.BackColor = Color.Lime;
+                buttonConnection.Text = "Connect";
+                _client.Disconnect(comboBoxConnections.Text);
+            }
         }
     }
 }
