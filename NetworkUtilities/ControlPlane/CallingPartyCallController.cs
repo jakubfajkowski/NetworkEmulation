@@ -64,7 +64,7 @@
             switch (message.Operation) {
                 case SignallingMessageOperation.CallAccept:
                     //SendCallAcceptResponse(message);
-                    _callConfirmed = false;
+                    _callConfirmed = true;
                     SendCallConfirmation(message, _callConfirmed);
                     break;
                 case SignallingMessageOperation.CallTeardown:

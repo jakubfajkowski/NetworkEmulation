@@ -59,11 +59,6 @@ namespace NetworkUtilities.ControlPlane {
                     break;
                 case SignallingMessageOperation.GetLabelsFromLRM:
                     break;
-                case SignallingMessageOperation.ConnectionConfirmation:
-                    if (message.DestinationAddress.Levels > 2) SendConnectionConfirmation(message);
-                    else SendConnectionConfirmationToNCC(message);
-
-                    break;
             }
         }
 
@@ -97,7 +92,10 @@ namespace NetworkUtilities.ControlPlane {
 
         private void HandleConnectionRequestResponse(SignallingMessage msg) {
             if (_snpPools == null) {
-                msg.DestinationAddress.GetParentsAddress();
+                if(msg.DestinationAddress.Levels==1)
+                    msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
+                else
+                    msg.DestinationAddress = msg.DestinationAddress.GetParentsAddress();
                 SendMessage(msg);
             }
             else if (Convert.ToBoolean(msg.Payload)) {
@@ -108,23 +106,6 @@ namespace NetworkUtilities.ControlPlane {
                 msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
                 SendMessage(msg);
             }
-        }
-
-        private void SendConnectionConfirmation(SignallingMessage message) {
-            var connectionConfirmation = message;
-            connectionConfirmation.Operation = SignallingMessageOperation.ConnectionConfirmation;
-            connectionConfirmation.Payload = true;
-            connectionConfirmation.DestinationAddress = Address.GetParentsAddress();
-            connectionConfirmation.DestinationControlPlaneElement =
-                SignallingMessageDestinationControlPlaneElement.ConnectionController;
-            SendMessage(connectionConfirmation);
-        }
-
-        private void SendConnectionConfirmationToNCC(SignallingMessage message) {
-            message.Operation = SignallingMessageOperation.ConnectionConfirmation;
-            message.DestinationAddress = _snppDictionary[message.SessionId][0].GetRootFromBeginning(1);
-            message.DestinationControlPlaneElement =
-                SignallingMessageDestinationControlPlaneElement.NetworkCallController;
         }
 
         public void SendGetLabelsMessage() {
@@ -143,24 +124,28 @@ namespace NetworkUtilities.ControlPlane {
 
         private void HandleRouteTableQueryResponse(SignallingMessage msg) {
             if (msg.Operation.Equals(SignallingMessageOperation.RouteTableQueryResponse))
-                _snpPools = msg.Payload as Queue<SubnetworkPointPool>;
+                _snpPools = msg.Payload as Queue<SubnetworkPointPool>;            
             if (_snpPools != null) {
                 var snpps = new[] {
-                _snpPools.Dequeue(),
-                _snpPools.Dequeue()
-            };
+                    _snpPools.Dequeue(),
+                    _snpPools.Dequeue()
+                };
                 var levelsOfAddress = msg.DestinationAddress.Levels + 1;
                 msg.Operation = SignallingMessageOperation.ConnectionRequest;
                 msg.DestinationAddress = snpps[0].NetworkSnppAddress.GetRootFromBeginning(levelsOfAddress);
                 msg.Payload = snpps;
                 SendMessage(msg);
             }
-            //else {
-            //    msg.Payload = false;
-            //    msg.DestinationAddress.GetParentsAddress();
-            //    msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
-            //    SendMessage(msg);
-            //}
+            else {
+                msg.Payload = false;
+                if (msg.DestinationAddress.Levels == 1)
+                    msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
+                else {
+                    msg.DestinationAddress = msg.DestinationAddress.GetParentsAddress();
+                    msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
+                }
+                SendMessage(msg);
+            }
         }
     }
 }
