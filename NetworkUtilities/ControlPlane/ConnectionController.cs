@@ -69,14 +69,14 @@ namespace NetworkUtilities.ControlPlane {
 
         private void SendLinkConnectionRequest(SignallingMessage message) {
             message.Operation = SignallingMessageOperation.LinkConnectionRequest;
-            message.DestinationAddress = message.SourceAddress;
+            message.DestinationAddress = _snppDictionary[message.SessionId][1]; 
             message.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
             SendMessage(message);
         }
 
         private void SendRouteTableQuery(SignallingMessage message) {
             message.Operation = SignallingMessageOperation.RouteTableQuery;
-            message.DestinationAddress = _snppDictionary[message.SessionId][0];
+           
             message.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.RoutingController;
             SendMessage(message);
         }

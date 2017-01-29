@@ -22,6 +22,7 @@ namespace NetworkUtilities.ControlPlane {
         private void SendPolicyRequest(SignallingMessage message) {
             var policyRequest = message;
             policyRequest.DestinationAddress = NameServer.Address;
+            policyRequest.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.Policy;
         }
 
         private void SendDirectoryAddressRequest(SignallingMessage message) {
