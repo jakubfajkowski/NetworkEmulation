@@ -4,6 +4,8 @@
         ConnectionController,
         NetworkCallController,
         RoutingController,
-        LinkResourceManager
+        LinkResourceManager,
+        Directory,
+        Policy
     }
 }

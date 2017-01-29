@@ -4,8 +4,6 @@ using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkUtilities.ControlPlane {
     public class Directory : ControlPlaneElement {
-        public static readonly NetworkAddress Address = new NetworkAddress("0");
-
         private readonly Dictionary<string, NetworkAddress> _clientAdderssDictionary = new Dictionary<string, NetworkAddress>();
         private readonly Dictionary<string, SubnetworkPointPool> _snppDictionary = new Dictionary<string, SubnetworkPointPool>();
 
@@ -56,7 +54,7 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(directioryResponse);
         }
 
-        public void UpdateDierctory(string clientName, NetworkAddress clientAddress, SubnetworkPointPool snpp) {
+        public void UpdateDirectory(string clientName, NetworkAddress clientAddress, SubnetworkPointPool snpp) {
             _clientAdderssDictionary.Add(clientName, clientAddress);
             _snppDictionary.Add(clientName, snpp);
         }

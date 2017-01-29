@@ -67,7 +67,7 @@ namespace NetworkUtilities.Network {
         private Task Listen(TcpClient nodeTcpClient, NetworkAddress inputNetworkAddress) {
             return new Task(() => {
                 while (Online) {
-                    var receivedObject = ReceiveObject(nodeTcpClient.GetStream());
+                    var receivedObject = Receive(nodeTcpClient.GetStream());
                     HandleReceivedObject(receivedObject, inputNetworkAddress);
                 }
             });
@@ -82,12 +82,12 @@ namespace NetworkUtilities.Network {
             BinarySerializer.SerializeToStream(objectToSend, networkStream);
         }
 
-        protected object ReceiveObject(Stream networkStream) {
+        private object Receive(Stream networkStream) {
             return BinarySerializer.DeserializeFromStream(networkStream);
         }
 
         public void Dispose() {
-            OnUpdateState("It's gettin' dark... To dark to see.");
+            OnUpdateState("Hello darkness my old friend...");
             _connectionUdpClient.Close();
         }
     }

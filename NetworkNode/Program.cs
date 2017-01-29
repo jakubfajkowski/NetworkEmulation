@@ -12,7 +12,7 @@ namespace NetworkNode {
                 XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeModel));
             var networkNode = new NetworkNode(parameters);
             Console.Title =
-                $"Network Node (CC:{parameters.CableCloudDataPort}|NN:{parameters.NetworkManagmentSystemDataPort})";
+                $"Network Node ({parameters.NetworkAddress})";
         }
     }
 }

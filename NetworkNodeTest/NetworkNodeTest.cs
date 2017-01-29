@@ -16,7 +16,6 @@ namespace NetworkNodeTest {
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
                 IpAddress = "127.0.0.1",
-                CableCloudDataPort = PortRandomizer.RandomFreePort(),
                 NetworkManagmentSystemListeningPort = 6666,
                 NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             };
@@ -40,7 +39,6 @@ namespace NetworkNodeTest {
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
                 IpAddress = "127.0.0.1",
-                CableCloudDataPort = PortRandomizer.RandomFreePort(),
                 NetworkManagmentSystemListeningPort = 6666,
                 NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             };
@@ -58,12 +56,12 @@ namespace NetworkNodeTest {
             //var LRM2 = new LinkResourceManager(new CommutationTable(), 4, 400);
             //var CC = new ConnectionController(1234,1245);
 
-            //LRM.OnMessageToSend += (sender, message) => CC.ReceiveMessage(message);
-            //LRM2.OnMessageToSend += (sender, message) => CC.ReceiveMessage(message);
-            //CC.OnMessageToSend += (sender, message) => LRM.ReceiveMessage(message);
+            //LRM.MessageToSend += (sender, message) => CC.ReceiveMessage(message);
+            //LRM2.MessageToSend += (sender, message) => CC.ReceiveMessage(message);
+            //CC.MessageToSend += (sender, message) => LRM.ReceiveMessage(message);
 
             //CC.SendGetLabelsMessage();
-            //CC.OnMessageToSend += (sender, message) => LRM2.ReceiveMessage(message);
+            //CC.MessageToSend += (sender, message) => LRM2.ReceiveMessage(message);
             //CC.SendGetLabelsMessage();
         }
 

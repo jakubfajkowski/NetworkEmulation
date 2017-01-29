@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Element;
@@ -11,31 +10,16 @@ namespace ClientNode {
         public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
 
         public ClientNode(ClientNodeModel parameters)
-            : base(parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort,
-                                         parameters.PathComputationServerListeningPort, parameters.PathComputationServerDataPort) {
+            : base(parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort, parameters.PathComputationServerListeningPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             ClientName = parameters.ClientName;
         }
 
         public string ClientName { get; private set; }
         public event MessageHandler OnMessageReceived;
-        public event MessageHandler OnNewClientTableRow;
-
-        public void ReadClientTable(ClientNodeModel parameters) {
-            if (parameters.ClientTable != null) foreach (var client in parameters.ClientTable) AddClient(client);
-        }
 
         protected void MessageReceived(string message) {
             OnMessageReceived?.Invoke(this, message);
-        }
-
-        protected void AddClientToComboBox(string clientName) {
-            OnNewClientTableRow?.Invoke(this, clientName);
-        }
-
-        public void AddClient(ClientTableRow clientTableRow) {
-            ClientTableList.Add(clientTableRow);
-            AddClientToComboBox(clientTableRow.ClientName);
         }
 
         public void SendMessage(string message, string receiverName) {

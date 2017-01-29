@@ -11,7 +11,6 @@ namespace NetworkEmulation.Editor.Element {
             Image = Resources.ClientNodeNotSelected;
             Parameters = new ClientNodeModel();
             CableCloudDataPort = PortRandomizer.RandomFreePort();
-            Parameters.CableCloudDataPort = CableCloudDataPort;
         }
 
         public ClientNodeModel Parameters { get; set; }
@@ -53,7 +52,6 @@ namespace NetworkEmulation.Editor.Element {
             base.ReadXml(reader);
             reader.ReadStartElement(nameof(ClientNodeView));
             Parameters = XmlSerializer.Deserialize<ClientNodeModel>(reader);
-            CableCloudDataPort = Parameters.CableCloudDataPort;
             NetworkAddress = Parameters.NetworkAddress;
             reader.ReadEndElement();
         }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkUtilities.ControlPlane {
@@ -21,7 +16,7 @@ namespace NetworkUtilities.ControlPlane {
             var directioryRequest = message;
             directioryRequest.Operation = SignallingMessageOperation.DirectoryAddressRequest;
             directioryRequest.Payload = _nameDictionary[message.SessionId];
-            directioryRequest.DestinationAddress = Directory.Address;
+            directioryRequest.DestinationAddress = Address;
             SendMessage(directioryRequest);
         }
 
@@ -29,7 +24,7 @@ namespace NetworkUtilities.ControlPlane {
             var directioryRequest = message;
             directioryRequest.Operation = SignallingMessageOperation.DirectorySnppRequest;
             directioryRequest.Payload = _nameDictionary[message.SessionId];
-            directioryRequest.DestinationAddress = Directory.Address;
+            directioryRequest.DestinationAddress = Address;
             SendMessage(directioryRequest);
         }
 
@@ -37,7 +32,7 @@ namespace NetworkUtilities.ControlPlane {
             var directioryRequest = message;
             directioryRequest.Operation = SignallingMessageOperation.DirectoryNameRequest;
             directioryRequest.Payload = (NetworkAddress[])message.Payload;
-            directioryRequest.DestinationAddress = Directory.Address;
+            directioryRequest.DestinationAddress = Address;
             SendMessage(directioryRequest);
         }
 

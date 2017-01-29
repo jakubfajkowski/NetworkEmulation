@@ -26,9 +26,6 @@ namespace NetworkEmulationTest {
             var clientNodePictureBox = new NetworkEmulation.Editor.Element.ClientNodeView {
                 Parameters = new ClientNodeModel {
                     ClientName = "Janusz",
-                    ClientTable =
-                        new List<ClientTableRow>(new[]
-                            {new ClientTableRow("clientName", 1, 2, 3), new ClientTableRow("clientName2", 1, 2, 3)}),
                     CableCloudListeningPort = 10000,
                     IpAddress = "localhost"
                 }

@@ -2,21 +2,21 @@
 
 namespace NetworkUtilities.ControlPlane {
     public abstract class ControlPlaneElement {
-        public NetworkAddress SourceAddress { get; }
+        public NetworkAddress Address { get; }
 
         public delegate void MessageToSendHandler(object sender, SignallingMessage message);
 
         private readonly List<UniqueId> _currentlyHandledSessions = new List<UniqueId>();
 
-        public event MessageToSendHandler OnMessageToSend;
+        public event MessageToSendHandler MessageToSend;
 
         protected ControlPlaneElement(NetworkAddress networkAddress) {
-            SourceAddress = networkAddress;
+            Address = networkAddress;
         }
 
         protected void SendMessage(SignallingMessage message) {
-            message.SourceAddress = SourceAddress;
-            OnMessageToSend?.Invoke(this, message);
+            message.SourceAddress = Address;
+            MessageToSend?.Invoke(this, message);
         }
 
         protected bool IsCurrentlyHandled(UniqueId sessionId) {

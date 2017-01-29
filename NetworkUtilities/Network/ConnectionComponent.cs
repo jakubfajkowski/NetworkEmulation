@@ -21,10 +21,10 @@ namespace NetworkUtilities.Network {
         public bool Online { get; private set; }
         private readonly NetworkAddressSocketPortPair _handshakeMessage;
 
-        public ConnectionComponent(NetworkAddress networkAddress, int dataTransferPort, string connectionManagerIpAddress, int connectionManagerListeningPort) {
+        public ConnectionComponent(NetworkAddress networkAddress, string connectionManagerIpAddress, int connectionManagerListeningPort) {
             _ipAddress = IPAddress.Parse(connectionManagerIpAddress);
             _connectionManagerListeningPort = connectionManagerListeningPort;
-            _handshakeMessage = new NetworkAddressSocketPortPair(networkAddress, dataTransferPort);
+            _handshakeMessage = new NetworkAddressSocketPortPair(networkAddress, PortRandomizer.RandomFreePort());
         }
 
         public void Initialize() {

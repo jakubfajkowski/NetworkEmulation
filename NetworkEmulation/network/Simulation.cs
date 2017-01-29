@@ -15,6 +15,7 @@ namespace NetworkEmulation.Network {
     public class Simulation {
         private readonly CableCloud _cableCloud;
         private readonly NetworkManagmentSystem _networkManagmentSystem;
+        private readonly NameServer _nameServer;
         private readonly List<PathComputationServer> _pathComputationServers;
 
         private readonly List<NodeView> _initializableNodes;
@@ -22,17 +23,17 @@ namespace NetworkEmulation.Network {
 
         private readonly Dictionary<int, Process> _processes;
 
-        private bool _cableCloudLogFormShown;
-        private bool _networkManagmentSystemLogFormShown;
-        private bool _pathComputationServerLogFormShown;
-
         public Simulation(TreeNodeCollection networkHierarchy, List<LinkView> links) {
-            //TODO Zmienić metodę pokazywania logu
             _cableCloud = new CableCloud(Settings.Default.CableCloudUdpListenerPortNumber);
             PreapareCableCloudLogForm();
+            _cableCloud.StartListening();
 
             _networkManagmentSystem = new NetworkManagmentSystem();
             PrepareNetworkManagmentSystemLogForm();
+
+            _nameServer = new NameServer(Settings.Default.NameServerListeningPort);
+            PrepareNameServerLogForm();
+            _nameServer.StartListening();
 
             _pathComputationServers = new List<PathComputationServer>();
             _initializableNodes = new List<NodeView>();
@@ -63,6 +64,8 @@ namespace NetworkEmulation.Network {
             _links = links;
 
             _processes = new Dictionary<int, Process>();
+
+            Run();
         }
 
         private void GetNetworkComponentsFromTree(TreeNodeCollection nodes) {
@@ -81,13 +84,11 @@ namespace NetworkEmulation.Network {
 
                 if (node is ClientNodeView) {
                     var parameters = ((ClientNodeView) node).Parameters;
-                    parameters.PathComputationServerDataPort = PortRandomizer.RandomFreePort();
                     parameters.PathComputationServerListeningPort = pcs.ListeningPort;
                 }
 
                 if (node is NetworkNodeView) {
                     var parameters = ((NetworkNodeView)node).Parameters;
-                    parameters.PathComputationServerDataPort = PortRandomizer.RandomFreePort();
                     parameters.PathComputationServerListeningPort = pcs.ListeningPort;
                 }
 
@@ -103,44 +104,30 @@ namespace NetworkEmulation.Network {
 
         public LogForm CableCloudLogForm { get; private set; }
         public LogForm NetworkManagmentSystemLogForm { get; private set; }
+        public LogForm NameServerLogForm { get; private set; }
         public PathComputationServerLogForm PathComputationServerLogForm { get; private set; }
 
         private void PreapareCableCloudLogForm() {
             CableCloudLogForm = new LogForm(_cableCloud);
             CableCloudLogForm.Text = "Cable Cloud Log";
-            CableCloudLogForm.Shown += CableCloudLogForm_Shown;
             CableCloudLogForm.Show();
         }
 
         private void PrepareNetworkManagmentSystemLogForm() {
             NetworkManagmentSystemLogForm = new LogForm(_networkManagmentSystem);
             NetworkManagmentSystemLogForm.Text = "Network Managment System Log";
-            NetworkManagmentSystemLogForm.Shown += NetworkManagmentSystemLogForm_Shown;
             NetworkManagmentSystemLogForm.Show();
+        }
+
+        private void PrepareNameServerLogForm() {
+            NameServerLogForm = new LogForm(_nameServer);
+            NameServerLogForm.Text = "Name Server Log";
+            NameServerLogForm.Show();
         }
 
         private void PreparePathComputationServerMultipleLogForm() {
             PathComputationServerLogForm = new PathComputationServerLogForm(_pathComputationServers);
-            PathComputationServerLogForm.Shown += PathComputationServerLogForm_Shown;
             PathComputationServerLogForm.Show();
-        }
-
-        private void CableCloudLogForm_Shown(object sender, EventArgs e) {
-            _cableCloudLogFormShown = true;
-
-            if (_networkManagmentSystemLogFormShown && _pathComputationServerLogFormShown) Run();
-        }
-
-        private void NetworkManagmentSystemLogForm_Shown(object sender, EventArgs e) {
-            _networkManagmentSystemLogFormShown = true;
-
-            if (_cableCloudLogFormShown && _pathComputationServerLogFormShown) Run();
-        }
-
-        private void PathComputationServerLogForm_Shown(object sender, EventArgs e) {
-            _pathComputationServerLogFormShown = true;
-
-            if (_cableCloudLogFormShown && _networkManagmentSystemLogFormShown) Run();
         }
 
         private void InitializableNodeOnDoubleClick(object sender, EventArgs eventArgs) {

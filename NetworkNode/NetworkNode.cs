@@ -16,13 +16,11 @@ namespace NetworkNode {
         public NetworkNodeAgent NetworkNodeAgent;
 
         public NetworkNode(NetworkNodeModel parameters)
-            : base(parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort, parameters.CableCloudDataPort,
-                                         parameters.PathComputationServerListeningPort, parameters.PathComputationServerDataPort) {
+            : base(parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort, parameters.PathComputationServerListeningPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemListeningPort;
             NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkManagmentSystemDataPort, this);
-            Console.WriteLine("Network Node \nNMS port: " + parameters.NetworkManagmentSystemDataPort +
-                              "\nCableCloud port: " + parameters.CableCloudDataPort);
+            Console.WriteLine("Network Node \nNMS port: " + parameters.NetworkManagmentSystemDataPort);
             CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts);
             NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
 

@@ -25,6 +25,7 @@ namespace NetworkEmulationTest {
 
             var cableCloud = new CableCloud(10000);
             cableCloud.UpdateState += (sender, state) => Console.WriteLine(state);
+            cableCloud.StartListening();
 
             var nms = new NetworkManagmentSystem();
             nms.UpdateState += (sender, state) => Console.WriteLine(state);
@@ -35,10 +36,8 @@ namespace NetworkEmulationTest {
                 NetworkAddress = new NetworkAddress("1.1"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "A",
-                ClientTable = new List<ClientTableRow>(new[] {new ClientTableRow("B", portA, 1, 1)}),
                 CableCloudListeningPort = 10000,
-                IpAddress = localhost,
-                CableCloudDataPort = PortRandomizer.RandomFreePort()
+                IpAddress = localhost
             });
             //clientNodeA.OnMessageReceived += (sender, state) => Console.WriteLine(state);
             clientNodeA.UpdateState += (sender, state) => Console.WriteLine(state);
@@ -48,8 +47,7 @@ namespace NetworkEmulationTest {
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "B",
                 CableCloudListeningPort = 10000,
-                IpAddress = localhost,
-                CableCloudDataPort = PortRandomizer.RandomFreePort()
+                IpAddress = localhost
             });
             //clientNodeB.OnMessageReceived += (sender, state) => Console.WriteLine(state);
             clientNodeB.UpdateState += (sender, state) => Console.WriteLine(state);
@@ -60,7 +58,6 @@ namespace NetworkEmulationTest {
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
                 IpAddress = localhost,
-                CableCloudDataPort = PortRandomizer.RandomFreePort(),
                 NetworkManagmentSystemListeningPort = 6666,
                 NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             });
@@ -71,7 +68,6 @@ namespace NetworkEmulationTest {
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
                 IpAddress = localhost,
-                CableCloudDataPort = PortRandomizer.RandomFreePort(),
                 NetworkManagmentSystemListeningPort = 6666,
                 NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             });
@@ -94,8 +90,6 @@ namespace NetworkEmulationTest {
 
             Thread.Sleep(1000);
 
-            clientNodeA.AddClient(new ClientTableRow("B", portA, 1, 1));
-
             //var sb = new StringBuilder();
 
             //for (var i = 0; i < 5000; i++) sb.Append("0123456789");
@@ -110,9 +104,6 @@ namespace NetworkEmulationTest {
             var clientNodePB = new NetworkEmulation.Editor.Element.ClientNodeView {
                 Parameters = new ClientNodeModel {
                     ClientName = "Janusz",
-                    ClientTable =
-                        new List<ClientTableRow>(new[]
-                            {new ClientTableRow("clientName", 1, 2, 3), new ClientTableRow("clientName2", 1, 2, 3)}),
                     CableCloudListeningPort = 10000,
                     IpAddress = "127.0.0.1"
                 }
@@ -127,7 +118,6 @@ namespace NetworkEmulationTest {
                     NumberOfPorts = 8,
                     CableCloudListeningPort = 10000,
                     IpAddress = "127.0.0.1",
-                    CableCloudDataPort = PortRandomizer.RandomFreePort(),
                     NetworkManagmentSystemListeningPort = 6666,
                     NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
                 }

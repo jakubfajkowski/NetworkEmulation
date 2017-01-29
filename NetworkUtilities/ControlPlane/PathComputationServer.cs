@@ -8,26 +8,23 @@ namespace NetworkUtilities.ControlPlane {
         public NetworkAddress NetworkAddress { get; }
         private readonly Dictionary<NetworkAddress, NetworkAddress> _signallingLinkDictionary;
 
-        public int OutputPort { get; protected set; }
         protected int PathComputationServerListeningPort;
         private readonly ConnectionComponent _controlPlaneConnectionComponent;
 
         protected PathComputationServer(NetworkAddress networkAddress, 
                                         string ipAddress, 
                                         int listeningPort, 
-                                        int pathComputationServerListeningPort, 
-                                        int pathComputationServerDataPort) : base(listeningPort) {
+                                        int pathComputationServerListeningPort) : base(listeningPort) {
 
             PathComputationServerListeningPort = pathComputationServerListeningPort;
-            OutputPort = pathComputationServerDataPort;
-            _controlPlaneConnectionComponent = new ConnectionComponent(networkAddress, OutputPort, ipAddress, pathComputationServerListeningPort);
+            _controlPlaneConnectionComponent = new ConnectionComponent(networkAddress, ipAddress, pathComputationServerListeningPort);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
 
             NetworkAddress = networkAddress;
             _signallingLinkDictionary = new Dictionary<NetworkAddress, NetworkAddress>();
         }
 
-        public void Initialize() {
+        public virtual void Initialize() {
             _controlPlaneConnectionComponent.Initialize();
         }
 
@@ -68,14 +65,14 @@ namespace NetworkUtilities.ControlPlane {
             _signallingLinkDictionary.Add(inputNetworkAddress, outputNetworkAddress);
         }
 
-        private void OnSignallingMessageReceived(object sender, object receivedObject) {
-            var signallingMessage = (SignallingMessage)receivedObject;
+        protected void OnSignallingMessageReceived(object sender, object receivedObject) {
+            var signallingMessage = (SignallingMessage) receivedObject;
             Receive(signallingMessage);
         }
 
         protected abstract void Receive(SignallingMessage signallingMessage);
 
-        protected void Send(SignallingMessage signallingMessage) {
+        protected void SendToOtherPathComputationServer(SignallingMessage signallingMessage) {
             _controlPlaneConnectionComponent.SendObject(signallingMessage);
         }
     }

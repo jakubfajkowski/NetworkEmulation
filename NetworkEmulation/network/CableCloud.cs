@@ -10,7 +10,6 @@ namespace NetworkEmulation.Network {
 
         public CableCloud(int listeningPort) : base(listeningPort) {
             _linkDictionary = new Dictionary<NetworkAddressNodePortPair, NetworkAddressNodePortPair>();
-            StartListening();
         }
 
         protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {

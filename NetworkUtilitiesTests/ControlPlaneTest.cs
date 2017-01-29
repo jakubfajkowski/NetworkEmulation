@@ -14,18 +14,18 @@ namespace NetworkUtilitiesTests {
         [TestMethod]
         public void TestMessageTransfer() {
 
-            Directory directory = new Directory(Directory.Address);
-            _controlPlaneElements.Add(Directory.Address, directory);
+            Directory directory = new Directory(NameServer.Address);
+            _controlPlaneElements.Add(NameServer.Address, directory);
 
             var cpccAAddress = new NetworkAddress("1.1");
             CallingPartyCallController cpccA = new CallingPartyCallController(cpccAAddress);
             _controlPlaneElements.Add(cpccAAddress, cpccA);
-            directory.UpdateDierctory("Abacki", cpccAAddress, new SubnetworkPointPool(1));
+            directory.UpdateDirectory("Abacki", cpccAAddress, new SubnetworkPointPool(1));
 
             var cpccBAddress = new NetworkAddress("2.2");
             CallingPartyCallController cpccB = new CallingPartyCallController(cpccBAddress);
             _controlPlaneElements.Add(cpccBAddress, cpccB);
-            directory.UpdateDierctory("Babacki", cpccBAddress, new SubnetworkPointPool(2));
+            directory.UpdateDirectory("Babacki", cpccBAddress, new SubnetworkPointPool(2));
 
             var ncc1Address = new NetworkAddress("1");
             NetworkCallController ncc1 = new NetworkCallController(ncc1Address);
@@ -39,11 +39,11 @@ namespace NetworkUtilitiesTests {
             ConnectionController cc = new ConnectionController(ccAddress);
             _controlPlaneElements.Add(ccAddress, cc);
 
-            ncc1.OnMessageToSend += PassMessage;
-            ncc2.OnMessageToSend += PassMessage;
-            cpccA.OnMessageToSend += PassMessage;
-            cpccB.OnMessageToSend += PassMessage;
-            directory.OnMessageToSend += PassMessage;
+            ncc1.MessageToSend += PassMessage;
+            ncc2.MessageToSend += PassMessage;
+            cpccA.MessageToSend += PassMessage;
+            cpccB.MessageToSend += PassMessage;
+            directory.MessageToSend += PassMessage;
 
             cpccA.SendCallRequest("Abacki", "Babacki", ncc1Address, 20);
         }

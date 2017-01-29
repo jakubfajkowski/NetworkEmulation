@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using NetworkUtilities;
 using NetworkUtilities.Element;
@@ -23,9 +24,6 @@ namespace ClientNode {
 
             _client.UpdateState += UpdateState;
             _client.OnMessageReceived += MessageReceived;
-            _client.OnNewClientTableRow += AddClientToComboBox;
-
-            _client.ReadClientTable(param);
         }
 
         private void textBox_enableAutoscroll(object sender, EventArgs e) {
@@ -38,13 +36,9 @@ namespace ClientNode {
             textBox.ScrollToCaret();
         }
 
-        public void AddClientToComboBox(object sender, string clientName) {
-            comboBoxClients.Items.Add(clientName);
-        }
-
         private void buttonSend_Click(object sender, EventArgs e) {
             var message = textBoxMessage.Text;
-            var receiverName = comboBoxClients.SelectedItem as string;
+            var receiverName = textBoxReceiver.Text;
 
             _client.SendMessage(message, receiverName);
         }
@@ -67,6 +61,11 @@ namespace ClientNode {
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
             Environment.Exit(0);
+        }
+
+        private void buttonConnection_Click(object sender, EventArgs e) {
+            buttonConnection.BackColor = Color.Red;
+            buttonConnection.Text = "Disconnect";
         }
     }
 }

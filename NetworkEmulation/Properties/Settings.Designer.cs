@@ -79,5 +79,17 @@ namespace NetworkEmulation.Properties {
                 return ((string)(this["IpAddress"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("9999")]
+        public int NameServerListeningPort {
+            get {
+                return ((int)(this["NameServerListeningPort"]));
+            }
+            set {
+                this["NameServerListeningPort"] = value;
+            }
+        }
     }
 }
