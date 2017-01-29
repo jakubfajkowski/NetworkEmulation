@@ -28,11 +28,20 @@ namespace NetworkUtilities.ControlPlane {
                     var snpp = (SubnetworkPointPool[]) obj[0];
                     var snppAddressA = snpp[0].NetworkSnppAddress;
                     var snppAddressB = snpp[1].NetworkSnppAddress;
-                    NetworkAddress[] snppAddress = {snppAddressA, snppAddressB};
+                    NetworkAddress[] snppAddress = {snppAddressA, snppAddressB}; 
                     _snppDictionary.Add(message.SessionId, snppAddress);
 
+                    if (message.DestinationAddress.Levels == _snppDictionary[message.SessionId][0].Levels - 1) {
+                        SendLinkConnectionRequest(message);
+                    }
+
                     if (message.SourceAddress.Equals(new NetworkAddress("1")) ||
-                        message.SourceAddress.Equals(new NetworkAddress("2"))) SendPeerCoordination(message);
+                        message.SourceAddress.Equals(new NetworkAddress("2"))) {
+                        if (message.SourceAddress.GetRootFromBeginning(1).Equals(_snppDictionary[message.SessionId][1])) {
+                            SendPeerCoordination(message);
+                        }
+                        else SendRouteTableQuery(message);
+                    }
                     else SendRouteTableQuery(message);
                     break;
                 case SignallingMessageOperation.PeerCoordination:
@@ -60,7 +69,7 @@ namespace NetworkUtilities.ControlPlane {
 
         private void SendLinkConnectionRequest(SignallingMessage message) {
             message.Operation = SignallingMessageOperation.LinkConnectionRequest;
-            //message.DestinationAddress = ???
+            message.DestinationAddress = message.SourceAddress;
             message.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
             SendMessage(message);
         }
@@ -137,25 +146,21 @@ namespace NetworkUtilities.ControlPlane {
                 _snpPools = msg.Payload as Queue<SubnetworkPointPool>;
             if (_snpPools != null) {
                 var snpps = new[] {
-                    _snpPools.Dequeue(),
-                    _snpPools.Dequeue()
-                };
+                _snpPools.Dequeue(),
+                _snpPools.Dequeue()
+            };
                 var levelsOfAddress = msg.DestinationAddress.Levels + 1;
                 msg.Operation = SignallingMessageOperation.ConnectionRequest;
                 msg.DestinationAddress = snpps[0].NetworkSnppAddress.GetRootFromBeginning(levelsOfAddress);
                 msg.Payload = snpps;
                 SendMessage(msg);
             }
-            else {
-                msg.Payload = false;
-                msg.DestinationAddress.GetParentsAddress();
-                msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
-                SendMessage(msg);
-            }
-        }
-
-
-        public void LinkConnectionRequest() {
+            //else {
+            //    msg.Payload = false;
+            //    msg.DestinationAddress.GetParentsAddress();
+            //    msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
+            //    SendMessage(msg);
+            //}
         }
     }
 }

@@ -19,11 +19,16 @@ namespace NetworkUtilities.ControlPlane {
         public NetworkCallController(NetworkAddress networkAddress) : base(networkAddress) {
         }
 
+        private void SendPolicyRequest(SignallingMessage message) {
+            var policyRequest = message;
+            policyRequest.DestinationAddress = NameServer.Address;
+        }
+
         private void SendDirectoryAddressRequest(SignallingMessage message) {
             var directioryRequest = message;
             directioryRequest.Operation = SignallingMessageOperation.DirectoryAddressRequest;
             directioryRequest.Payload = _nameDictionary[message.SessionId];
-            directioryRequest.DestinationAddress = Address;
+            directioryRequest.DestinationAddress = NameServer.Address;
             directioryRequest.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.Directory;
             SendMessage(directioryRequest);
         }
@@ -32,7 +37,7 @@ namespace NetworkUtilities.ControlPlane {
             var directioryRequest = message;
             directioryRequest.Operation = SignallingMessageOperation.DirectorySnppRequest;
             directioryRequest.Payload = _nameDictionary[message.SessionId];
-            directioryRequest.DestinationAddress = Address;
+            directioryRequest.DestinationAddress = NameServer.Address;
             directioryRequest.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.Directory;
             SendMessage(directioryRequest);
         }
@@ -41,7 +46,7 @@ namespace NetworkUtilities.ControlPlane {
             var directioryRequest = message;
             directioryRequest.Operation = SignallingMessageOperation.DirectoryNameRequest;
             directioryRequest.Payload = (NetworkAddress[]) message.Payload;
-            directioryRequest.DestinationAddress = Address;
+            directioryRequest.DestinationAddress = NameServer.Address;
             directioryRequest.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.Directory;
             SendMessage(directioryRequest);
         }
@@ -128,6 +133,9 @@ namespace NetworkUtilities.ControlPlane {
         public override void ReceiveMessage(SignallingMessage message) {
             base.ReceiveMessage(message);
             switch (message.Operation) {
+                case SignallingMessageOperation.PolicyResponse:
+                    SendDirectorySnppRequest(message);
+                    break;
                 case SignallingMessageOperation.CallRequest:
                     var callRequestMessage = (object[]) message.Payload;
                     var clientNames = (string[]) callRequestMessage[0];
@@ -137,7 +145,7 @@ namespace NetworkUtilities.ControlPlane {
                     _nameDictionary.Add(message.SessionId, clientNames);
 
                     //SendCallRequestResponse(message);
-                    SendDirectorySnppRequest(message);
+                    SendPolicyRequest(message);
                     break;
                 case SignallingMessageOperation.CallTeardown:
                     SendCallTeardownResponse(message);

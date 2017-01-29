@@ -8,6 +8,8 @@
         CallTeardown,
         CallTeardownResponse,
         //NCC operations
+        PolicyRequest,
+        PolicyResponse,
         DirectoryAddressRequest,
         DirectoryAddressResponse,
         DirectoryNameRequest,
