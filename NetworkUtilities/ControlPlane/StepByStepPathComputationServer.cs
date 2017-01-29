@@ -37,6 +37,8 @@ namespace NetworkUtilities.ControlPlane {
                 (sender, message) => SendSignallingMessage(message, message.DestinationAddress);
 
             _nameServerConnectionComponent = new ConnectionComponent(networkAddress, NameServer.Address, ipAddress, nameServerListeningPort);
+            _nameServerConnectionComponent.ConnectionEstablished +=
+                (sender, args) => AddConnection(args.NetworkAddress, args.TcpClient);
             _nameServerConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
         }
 

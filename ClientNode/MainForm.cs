@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 using NetworkUtilities.Element;
 using NetworkUtilities.Serialization;
@@ -15,16 +16,19 @@ namespace ClientNode {
                 (ClientNodeModel)
                 XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeModel));
             _client = new ClientNode(param);
+        }
+
+        private void MainForm_Load(object sender, EventArgs e) {
+            _client.UpdateState += UpdateState;
+            _client.OnMessageReceived += MessageReceived;
+            _client.OnClientTableRowAdded += AddConnection;
+            _client.OnClientTableRowDeleted += DeleteConnection;
+            _client.Initialize();
 
             Text = $"Client Node {_client.ClientName} ({_client.NetworkAddress})";
 
             textBoxEventLog.TextChanged += textBox_enableAutoscroll;
             textBoxReceived.TextChanged += textBox_enableAutoscroll;
-
-            _client.UpdateState += UpdateState;
-            _client.OnMessageReceived += MessageReceived;
-            _client.OnClientTableRowAdded += AddConnection;
-            _client.OnClientTableRowDeleted += DeleteConnection;
         }
 
         private void textBox_enableAutoscroll(object sender, EventArgs e) {

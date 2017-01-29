@@ -43,8 +43,9 @@ namespace NetworkEmulation.Network {
             PreparePathComputationServerMultipleLogForm();
 
             foreach (var pathComputationServer in _pathComputationServers) pathComputationServer.StartListening();
-
+            Thread.Sleep(100);
             foreach (var pathComputationServer in _pathComputationServers) pathComputationServer.Initialize();
+            Thread.Sleep(100);
 
 
             foreach (var initializableNode in _initializableNodes.OfType<NetworkNodeView>()) {

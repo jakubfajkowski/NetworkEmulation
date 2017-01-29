@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using NetworkUtilities;
+using NetworkUtilities.Log;
 
 namespace NetworkNode {
-    public class CommutationMatrix {
+    public class CommutationMatrix : LogObject {
         // Tablica połączeń in/out ta sama, która się znajduje w NetworkNodeAgent
         private readonly CommutationTable _commutationTable;
 
@@ -19,6 +20,8 @@ namespace NetworkNode {
 
         public CommutationMatrix(CommutationTable comTable, int portNumber) {
             _commutationTable = comTable;
+            _commutationTable.UpdateState += (sender, state) => OnUpdateState(state);
+
             _inputPorts = new List<Port>();
             OutputPorts = new List<Port>();
 
@@ -78,7 +81,7 @@ namespace NetworkNode {
         public CableCloudMessage CommuteAllCells(List<AtmCell> cells, int inputPortNumber) {
             var row = _commutationTable.FindRow(cells[0].Vpi, cells[0].Vci, inputPortNumber);
             if (row == null) {
-                Console.WriteLine("Nie znaleziono wpisu w tablicy!!!!!!!!!!!");
+                //OnUpdateState("Nie znaleziono wpisu w tablicy!!!!!!!!!!!");
                 return null;
             }
             foreach (var cell in cells) {
@@ -99,11 +102,11 @@ namespace NetworkNode {
                 if (row.GetOutVci() != -1)
                     cell.Vci = row.GetOutVci();
 
-                //Console.WriteLine(" outVpi: " + cell.Vpi + " outVci: " + cell.Vci);
+                //OnUpdateState(" outVpi: " + cell.Vpi + " outVci: " + cell.Vci);
                 return AddAtmCellToOutputPort(cell, row.GetOutPort());
             }
             //else
-            // Console.WriteLine("WYWALILO BLAD");
+            // OnUpdateState("WYWALILO BLAD");
             return false;
         }
 

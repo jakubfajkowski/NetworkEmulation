@@ -13,7 +13,7 @@ namespace NetworkUtilities.Network {
         private readonly IPAddress _ipAddress;
 
         private TcpListener _connectionManagerTcpListener;
-        public TcpClient TcpClient { get; private set; }
+        private TcpClient _tcpClient;
 
         public ConnectionComponent(NetworkAddress networkAddress, NetworkAddress connectionManagerNetworkAddress, string connectionManagerIpAddress,
             int connectionManagerListeningPort) {
@@ -25,6 +25,7 @@ namespace NetworkUtilities.Network {
 
         public bool Online { get; private set; }
         public event ObjectHandler ObjectReceived;
+        public event ConnectionHandler ConnectionEstablished;
 
         public void Initialize() {
             _connectionManagerTcpListener = CreateTcpListener(_ipAddress, _handshakeMessage.SocketPort);
@@ -61,14 +62,14 @@ namespace NetworkUtilities.Network {
         private void ListenForConnectRequest(TcpListener tcpListener) {
             tcpListener.Start();
             Task.Run(async () => {
-                TcpClient = await tcpListener.AcceptTcpClientAsync();
+                _tcpClient = await tcpListener.AcceptTcpClientAsync();
                 Online = true;
 
                 if (_connectionManagerNetworkAddress != null)
                     OnUpdateState($"Sent connection request to {_connectionManagerNetworkAddress} - accepted");
                 else
                     OnUpdateState($"Sent connection request to cable cloud - accepted");
-
+                OnConnectionEstablished();
                 ListenForMessages();
             });
         }
@@ -81,7 +82,7 @@ namespace NetworkUtilities.Network {
         }
 
         private object Receive() {
-            var networkStream = TcpClient.GetStream();
+            var networkStream = _tcpClient.GetStream();
             return BinarySerializer.DeserializeFromStream(networkStream);
         }
 
@@ -89,11 +90,27 @@ namespace NetworkUtilities.Network {
             ObjectReceived?.Invoke(this, receivedObject);
         }
 
+        private void OnConnectionEstablished() {
+            ConnectionEstablished?.Invoke(this, new ConnectionHandlerArgs(_connectionManagerNetworkAddress, _tcpClient));
+        }
+
         public void Send(object objectToSend) {
-            var networkStream = TcpClient.GetStream();
+            var networkStream = _tcpClient.GetStream();
             BinarySerializer.SerializeToStream(objectToSend, networkStream);
         }
 
         public delegate void ObjectHandler(object sender, object receivedObject);
+    }
+
+    public delegate void ConnectionHandler(object sender, ConnectionHandlerArgs args);
+
+    public class ConnectionHandlerArgs {
+        public NetworkAddress NetworkAddress { get; }
+        public TcpClient TcpClient { get; }
+
+        public ConnectionHandlerArgs(NetworkAddress networkAddress, TcpClient tcpClient) {
+            NetworkAddress = networkAddress;
+            TcpClient = tcpClient;
+        }
     }
 }

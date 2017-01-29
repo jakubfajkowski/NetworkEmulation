@@ -1,4 +1,5 @@
-﻿using NetworkUtilities.Network;
+﻿using System;
+using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
     public class NameServer : ConnectionManager {
@@ -9,13 +10,12 @@ namespace NetworkUtilities.ControlPlane {
 
         public NameServer(int listeningPort) : base(listeningPort) {
             _directory = new Directory(Address);
-            _directory.MessageToSend += MessageToSend;
-            _policy = new Policy(Address);
-            _policy.MessageToSend += MessageToSend;
-        }
+            _directory.UpdateState += (sender, state) => OnUpdateState(state);
+            _directory.MessageToSend += (sender, message) => Send(message, message.DestinationAddress);
 
-        private void MessageToSend(object sender, SignallingMessage message) {
-            Send(message, message.DestinationAddress);
+            _policy = new Policy(Address);
+            _policy.UpdateState += (sender, state) => OnUpdateState(state);
+            _policy.MessageToSend += (sender, message) => Send(message, message.DestinationAddress);
         }
 
         protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {

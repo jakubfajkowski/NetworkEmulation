@@ -19,13 +19,16 @@ namespace NetworkUtilities.Network {
             _dataPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, null, ipAddress, cableCloudListeningPort);
             _dataPlaneConnectionComponent.UpdateState += (sender, state) => OnUpdateState(state);
             _dataPlaneConnectionComponent.ObjectReceived += OnCableCloudMessageReceived;
-            _dataPlaneConnectionComponent.Initialize();
 
             PathComputationServerListeningPort = pathComputationServerListeningPort;
             _controlPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, pathcomputationServerNetworkAddress, ipAddress,
                 pathComputationServerListeningPort);
             _controlPlaneConnectionComponent.UpdateState += (sender, state) => OnUpdateState(state);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
+        }
+
+        public void Initialize() {
+            _dataPlaneConnectionComponent.Initialize();
             _controlPlaneConnectionComponent.Initialize();
         }
 

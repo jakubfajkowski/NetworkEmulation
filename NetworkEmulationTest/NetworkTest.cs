@@ -66,6 +66,7 @@ namespace NetworkEmulationTest {
             });
             //clientNodeA.OnMessageReceived += (sender, state) => Console.WriteLine(state);
             clientNodeA.UpdateState += (sender, state) => Console.WriteLine("ClientNode A: " + state);
+            clientNodeA.Initialize();
 
             var clientNodeB = new ClientNode.ClientNode(new ClientNodeModel {
                 NetworkAddress = new NetworkAddress("2.2"),
@@ -76,6 +77,7 @@ namespace NetworkEmulationTest {
             });
             //clientNodeB.OnMessageReceived += (sender, state) => Console.WriteLine(state);
             clientNodeB.UpdateState += (sender, state) => Console.WriteLine("ClientNode B: " + state);
+            clientNodeB.Initialize();
 
             var networkNode1 = new NetworkNode.NetworkNode(new NetworkNodeModel {
                 NetworkAddress = new NetworkAddress("1.2"),
@@ -86,6 +88,8 @@ namespace NetworkEmulationTest {
                 NetworkManagmentSystemListeningPort = 6666,
                 NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             });
+            networkNode1.UpdateState += (sender, state) => Console.WriteLine("NetworkNode 1.2: " + state);
+            networkNode1.Initialize();
 
             var networkNode2 = new NetworkNode.NetworkNode(new NetworkNodeModel {
                 NetworkAddress = new NetworkAddress("2.1"),
@@ -96,6 +100,8 @@ namespace NetworkEmulationTest {
                 NetworkManagmentSystemListeningPort = 6666,
                 NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
             });
+            networkNode2.UpdateState += (sender, state) => Console.WriteLine("NetworkNode 2.1: " + state);
+            networkNode2.Initialize();
 
             Thread.Sleep(5000);
 

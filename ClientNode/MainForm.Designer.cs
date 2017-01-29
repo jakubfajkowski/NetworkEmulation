@@ -35,11 +35,11 @@
             this.textBoxMessage = new System.Windows.Forms.RichTextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.textBoxReceived = new System.Windows.Forms.RichTextBox();
+            this.comboBoxConnections = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.numericUpDownCapacity = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonConnection = new System.Windows.Forms.Button();
-            this.numericUpDownCapacity = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
-            this.comboBoxConnections = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -196,6 +196,30 @@
             this.textBoxReceived.TabIndex = 18;
             this.textBoxReceived.Text = "";
             // 
+            // comboBoxConnections
+            // 
+            this.comboBoxConnections.FormattingEnabled = true;
+            this.comboBoxConnections.Location = new System.Drawing.Point(83, 32);
+            this.comboBoxConnections.Name = "comboBoxConnections";
+            this.comboBoxConnections.Size = new System.Drawing.Size(211, 21);
+            this.comboBoxConnections.TabIndex = 18;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(301, 8);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(106, 13);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "Demanded Capacity:";
+            // 
+            // numericUpDownCapacity
+            // 
+            this.numericUpDownCapacity.Location = new System.Drawing.Point(413, 6);
+            this.numericUpDownCapacity.Name = "numericUpDownCapacity";
+            this.numericUpDownCapacity.Size = new System.Drawing.Size(125, 20);
+            this.numericUpDownCapacity.TabIndex = 16;
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -216,30 +240,6 @@
             this.buttonConnection.UseVisualStyleBackColor = false;
             this.buttonConnection.Click += new System.EventHandler(this.buttonConnection_Click);
             // 
-            // numericUpDownCapacity
-            // 
-            this.numericUpDownCapacity.Location = new System.Drawing.Point(413, 6);
-            this.numericUpDownCapacity.Name = "numericUpDownCapacity";
-            this.numericUpDownCapacity.Size = new System.Drawing.Size(125, 20);
-            this.numericUpDownCapacity.TabIndex = 16;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(301, 8);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(106, 13);
-            this.label2.TabIndex = 17;
-            this.label2.Text = "Demanded Capacity:";
-            // 
-            // comboBoxConnections
-            // 
-            this.comboBoxConnections.FormattingEnabled = true;
-            this.comboBoxConnections.Location = new System.Drawing.Point(83, 32);
-            this.comboBoxConnections.Name = "comboBoxConnections";
-            this.comboBoxConnections.Size = new System.Drawing.Size(211, 21);
-            this.comboBoxConnections.TabIndex = 18;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -250,6 +250,7 @@
             this.Name = "MainForm";
             this.Text = "ClientNode";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
