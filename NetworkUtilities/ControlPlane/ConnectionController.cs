@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkUtilities.ControlPlane {
     public class ConnectionController : ControlPlaneElement {
@@ -26,8 +25,8 @@ namespace NetworkUtilities.ControlPlane {
                 case SignallingMessageOperation.ConnectionRequest:
                     var obj = (object[]) message.Payload;
                     var snpp = (SubnetworkPointPool[]) obj[0];
-                    var snppAddressA = snpp[0].NetworkSnppAddress;
-                    var snppAddressB = snpp[1].NetworkSnppAddress;
+                    var snppAddressA = snpp[0].NetworkAddress;
+                    var snppAddressB = snpp[1].NetworkAddress;
                     NetworkAddress[] snppAddress = {snppAddressA, snppAddressB}; 
                     _snppDictionary.Add(message.SessionId, snppAddress);
 
@@ -132,7 +131,7 @@ namespace NetworkUtilities.ControlPlane {
                 };
                 var levelsOfAddress = msg.DestinationAddress.Levels + 1;
                 msg.Operation = SignallingMessageOperation.ConnectionRequest;
-                msg.DestinationAddress = snpps[0].NetworkSnppAddress.GetRootFromBeginning(levelsOfAddress);
+                msg.DestinationAddress = snpps[0].NetworkAddress.GetRootFromBeginning(levelsOfAddress);
                 msg.Payload = snpps;
                 SendMessage(msg);
             }

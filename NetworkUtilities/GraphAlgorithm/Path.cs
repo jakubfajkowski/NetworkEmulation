@@ -1,20 +1,20 @@
 ﻿namespace NetworkUtilities.GraphAlgorithm {
-    public class Path {
-        private readonly SubnetworkPointPool[] _subnetworkPointPools;
+    internal class Path {
+        private readonly Vertex[] vertices;
 
         public Path(int n) {
-            _subnetworkPointPools = new SubnetworkPointPool[n];
+            vertices = new Vertex[n];
             Length = 0;
             SumWeight = 0;
             MinWeight = double.MaxValue;
         }
 
-        public SubnetworkPointPool[] SubnetworkPointPools {
+        public Vertex[] Vertices {
             get {
-                var existingSubnetworkPointPools = new SubnetworkPointPool[Length];
+                var existingVertices = new Vertex[Length];
                 for (var i = 0; i < Length; i++)
-                    existingSubnetworkPointPools[i] = _subnetworkPointPools[Length - 1 - i];
-                return existingSubnetworkPointPools;
+                    existingVertices[i] = vertices[Length - 1 - i];
+                return existingVertices;
             }
         }
 
@@ -24,8 +24,8 @@
 
         public int Length { get; private set; }
 
-        public void Push(SubnetworkPointPool subnetworkPointPool) {
-            _subnetworkPointPools[Length++] = subnetworkPointPool;
+        public void push(Vertex vertex) {
+            vertices[Length++] = vertex;
         }
     }
 }
