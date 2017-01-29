@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
-using NetworkEmulation.Network.Element;
+using NetworkUtilities.Element;
 using NetworkUtilities.Serialization;
 using UniqueId = NetworkUtilities.UniqueId;
 

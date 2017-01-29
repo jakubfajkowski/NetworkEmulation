@@ -2,170 +2,165 @@
 using NetworkUtilities.GraphAlgorithm.PriorityQueue;
 
 namespace NetworkUtilities.GraphAlgorithm {
-    public static class Dijkstra {
-        private const double Infinity = double.MaxValue;
-        private static Graph _graph;
+    internal static class Dijkstra {
+        private const double infinity = double.MaxValue;
+        private static Graph graph;
 
-        public static Path[] RunAlgorithm(Graph graph_, SubnetworkPointPool begin) {
-            _graph = graph_;
-            var widestPaths = new Path[_graph.SubnetworkPointPools.Length];
-            var verticesHeap = new Heap<SubnetworkPointPool>();
+        public static Path[] runAlgorithm(Graph graph_, Vertex begin) {
+            graph = graph_;
+            var widestPaths = new Path[graph.Vertices.Length];
+            var verticesHeap = new Heap<Vertex>();
 
-            Initialize(begin);
-            verticesHeap.Initialise(_graph.SubnetworkPointPools.Length);
-            for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++)
-                verticesHeap.InsertElement(
-                    new Element<SubnetworkPointPool>(_graph.SubnetworkPointPools[i].CumulatedWeight,
-                        _graph.SubnetworkPointPools[i]));
+            initialize(begin);
+            verticesHeap.initialise(graph.Vertices.Length);
+            for (var i = 0; i < graph.Vertices.Length; i++)
+                verticesHeap.insertElement(new Element<Vertex>(graph.Vertices[i].CumulatedWeight,
+                    graph.Vertices[i]));
 
             while (verticesHeap.NumberOfElements != 0) {
-                var currentSubnetworkPointPool = verticesHeap.DeleteMax().Data;
-                if (currentSubnetworkPointPool.CumulatedWeight == 0)
+                var currentVertex = verticesHeap.deleteMax().Data;
+                if (currentVertex.CumulatedWeight == 0)
                     break;
 
-                foreach (var e in currentSubnetworkPointPool.LinksOut) {
+                foreach (var e in currentVertex.EdgesOut) {
                     var neighbor = e.End;
 
-                    var alternate = Math.Max(neighbor.CumulatedWeight,
-                        Math.Min(currentSubnetworkPointPool.CumulatedWeight, e.Weight));
+                    var alternate = Math.Max(neighbor.CumulatedWeight, Math.Min(currentVertex.CumulatedWeight, e.Weight));
 
                     if (alternate > neighbor.CumulatedWeight) {
                         neighbor.CumulatedWeight = alternate;
-                        neighbor.Prev = currentSubnetworkPointPool;
+                        neighbor.Prev = currentVertex;
                     }
                 }
-                SortHeap(ref verticesHeap);
+                sortHeap(ref verticesHeap);
             }
 
-            for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++)
-                widestPaths[i] = GeneratePath(begin, _graph.SubnetworkPointPools[i]);
+            for (var i = 0; i < graph.Vertices.Length; i++)
+                widestPaths[i] = generatePath(begin, graph.Vertices[i]);
 
             return widestPaths;
         }
 
 
-        public static Path[] RunAlgorithm(Graph graph_, SubnetworkPointPool begin, SubnetworkPointPool end) {
-            _graph = graph_;
-            var widestPath = new Path[_graph.SubnetworkPointPools.Length];
-            var verticesHeap = new Heap<SubnetworkPointPool>();
+        public static Path[] runAlgorithm(Graph graph_, Vertex begin, Vertex end) {
+            graph = graph_;
+            var widestPath = new Path[graph.Vertices.Length];
+            var verticesHeap = new Heap<Vertex>();
 
-            Initialize(begin);
-            verticesHeap.Initialise(_graph.SubnetworkPointPools.Length);
-            for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++)
-                verticesHeap.InsertElement(
-                    new Element<SubnetworkPointPool>(_graph.SubnetworkPointPools[i].CumulatedWeight,
-                        _graph.SubnetworkPointPools[i]));
+            initialize(begin);
+            verticesHeap.initialise(graph.Vertices.Length);
+            for (var i = 0; i < graph.Vertices.Length; i++)
+                verticesHeap.insertElement(new Element<Vertex>(graph.Vertices[i].CumulatedWeight,
+                    graph.Vertices[i]));
 
             while (verticesHeap.NumberOfElements != 0) {
-                var currentSubnetworkPointPool = verticesHeap.DeleteMax().Data;
-                if (currentSubnetworkPointPool.CumulatedWeight == 0)
+                var currentVertex = verticesHeap.deleteMax().Data;
+                if (currentVertex.CumulatedWeight == 0)
                     break;
 
 
-                foreach (var e in currentSubnetworkPointPool.LinksOut) {
+                foreach (var e in currentVertex.EdgesOut) {
                     var neighbor = e.End;
 
 
-                    var alternate = Math.Max(neighbor.CumulatedWeight,
-                        Math.Min(currentSubnetworkPointPool.CumulatedWeight, e.Weight));
+                    var alternate = Math.Max(neighbor.CumulatedWeight, Math.Min(currentVertex.CumulatedWeight, e.Weight));
 
                     if (alternate > neighbor.CumulatedWeight) {
                         neighbor.CumulatedWeight = alternate;
-                        neighbor.Prev = currentSubnetworkPointPool;
+                        neighbor.Prev = currentVertex;
                     }
                 }
 
 
-                SortHeap(ref verticesHeap);
+                sortHeap(ref verticesHeap);
             }
 
 
-            widestPath[0] = GeneratePath(begin, end);
+            widestPath[0] = generatePath(begin, end);
 
 
             return widestPath;
         }
 
-        public static Path[,] RunAlgorithm(Graph graph_) {
-            _graph = graph_;
-            var widestPaths = new Path[_graph.SubnetworkPointPools.Length, _graph.SubnetworkPointPools.Length];
-            var verticesHeap = new Heap<SubnetworkPointPool>();
+        public static Path[,] runAlgorithm(Graph graph_) {
+            graph = graph_;
+            var widestPaths = new Path[graph.Vertices.Length, graph.Vertices.Length];
+            var verticesHeap = new Heap<Vertex>();
 
 
-            for (var b = 0; b < _graph.SubnetworkPointPools.Length; b++) {
-                var begin = _graph.SubnetworkPointPools[b];
-                Initialize(begin);
-                verticesHeap.Initialise(_graph.SubnetworkPointPools.Length);
-                for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++)
-                    verticesHeap.InsertElement(
-                        new Element<SubnetworkPointPool>(_graph.SubnetworkPointPools[i].CumulatedWeight,
-                            _graph.SubnetworkPointPools[i]));
+            for (var b = 0; b < graph.Vertices.Length; b++) {
+                var begin = graph.Vertices[b];
+                initialize(begin);
+                verticesHeap.initialise(graph.Vertices.Length);
+                for (var i = 0; i < graph.Vertices.Length; i++)
+                    verticesHeap.insertElement(new Element<Vertex>(graph.Vertices[i].CumulatedWeight,
+                        graph.Vertices[i]));
 
                 while (verticesHeap.NumberOfElements != 0) {
-                    var currentSubnetworkPointPool = verticesHeap.DeleteMax().Data;
-                    if (currentSubnetworkPointPool.CumulatedWeight == 0)
+                    var currentVertex = verticesHeap.deleteMax().Data;
+                    if (currentVertex.CumulatedWeight == 0)
                         break;
 
 
-                    foreach (var e in currentSubnetworkPointPool.LinksOut) {
+                    foreach (var e in currentVertex.EdgesOut) {
                         var neighbor = e.End;
 
 
                         var alternate = Math.Max(neighbor.CumulatedWeight,
-                            Math.Min(currentSubnetworkPointPool.CumulatedWeight, e.Weight));
+                            Math.Min(currentVertex.CumulatedWeight, e.Weight));
 
                         if (alternate > neighbor.CumulatedWeight) {
                             neighbor.CumulatedWeight = alternate;
-                            neighbor.Prev = currentSubnetworkPointPool;
+                            neighbor.Prev = currentVertex;
                         }
                     }
 
 
-                    SortHeap(ref verticesHeap);
+                    sortHeap(ref verticesHeap);
                 }
 
-                for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++)
-                    widestPaths[b, i] = GeneratePath(begin, _graph.SubnetworkPointPools[i]);
+                for (var i = 0; i < graph.Vertices.Length; i++)
+                    widestPaths[b, i] = generatePath(begin, graph.Vertices[i]);
             }
             return widestPaths;
         }
 
 
-        private static void Initialize(SubnetworkPointPool begin) {
-            for (var i = 0; i < _graph.SubnetworkPointPools.Length; i++) {
-                _graph.SubnetworkPointPools[i].CumulatedWeight = 0;
-                _graph.SubnetworkPointPools[i].Prev = null;
+        private static void initialize(Vertex begin) {
+            for (var i = 0; i < graph.Vertices.Length; i++) {
+                graph.Vertices[i].CumulatedWeight = 0;
+                graph.Vertices[i].Prev = null;
             }
 
-            _graph.SubnetworkPointPools[begin.Id - 1].CumulatedWeight = Infinity;
+            graph.Vertices[begin.Id - 1].CumulatedWeight = infinity;
 
             begin.Prev = begin;
         }
 
-        private static void SortHeap(ref Heap<SubnetworkPointPool> heap) {
-            var updatedKeys = new Element<SubnetworkPointPool>[heap.NumberOfElements];
+        private static void sortHeap(ref Heap<Vertex> heap) {
+            var updatedKeys = new Element<Vertex>[heap.NumberOfElements];
             for (var i = 0; i < updatedKeys.Length; i++)
-                updatedKeys[i] = UpdateKey(heap.DeleteMax());
+                updatedKeys[i] = updateKey(heap.deleteMax());
             for (var i = 0; i < updatedKeys.Length; i++)
-                heap.InsertElement(updatedKeys[i]);
+                heap.insertElement(updatedKeys[i]);
         }
 
-        private static Element<SubnetworkPointPool> UpdateKey(Element<SubnetworkPointPool> element) {
+        private static Element<Vertex> updateKey(Element<Vertex> element) {
             element.Key = element.Data.CumulatedWeight;
             return element;
         }
 
-        private static Path GeneratePath(SubnetworkPointPool begin, SubnetworkPointPool end) {
-            var path = new Path(_graph.SubnetworkPointPools.Length);
-            var currentSubnetworkPointPool = end;
+        private static Path generatePath(Vertex begin, Vertex end) {
+            var path = new Path(graph.Vertices.Length);
+            var currentVertex = end;
 
-            while (currentSubnetworkPointPool != begin) {
-                if (currentSubnetworkPointPool == null)
+            while (currentVertex != begin) {
+                if (currentVertex == null)
                     return null;
-                path.Push(currentSubnetworkPointPool);
-                currentSubnetworkPointPool = currentSubnetworkPointPool.Prev;
+                path.push(currentVertex);
+                currentVertex = currentVertex.Prev;
             }
-            path.Push(begin);
+            path.push(begin);
 
             return path;
         }

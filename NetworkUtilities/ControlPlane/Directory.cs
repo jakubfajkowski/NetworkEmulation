@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkUtilities.ControlPlane {
     public class Directory : ControlPlaneElement {
@@ -64,8 +63,8 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(directioryResponse);
         }
 
-        public static void UpdateDirectory(string clientName, NetworkAddress clientAddress, SubnetworkPointPool snpp) {
-            _clientAdderssDictionary.Add(clientName, clientAddress);
+        public static void UpdateDirectory(string clientName, SubnetworkPointPool snpp) {
+            _clientAdderssDictionary.Add(clientName, snpp.NetworkAddress.GetParentsAddress());
             _snppDictionary.Add(clientName, snpp);
         }
 

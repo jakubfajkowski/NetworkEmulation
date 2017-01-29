@@ -1,6 +1,4 @@
-﻿using NetworkUtilities;
-
-namespace NetworkEmulation.Network.Element {
+﻿namespace NetworkUtilities.Element {
     public class LinkModel {
         public NetworkAddressNodePortPair InputNodePortPair { get; set; }
         public NetworkAddressNodePortPair OutputNodePortPair { get; set; }

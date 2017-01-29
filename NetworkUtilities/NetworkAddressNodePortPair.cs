@@ -1,7 +1,6 @@
 ﻿using System.Xml.Serialization;
-using NetworkUtilities;
 
-namespace NetworkEmulation.Network {
+namespace NetworkUtilities {
     [XmlRoot]
     public class NetworkAddressNodePortPair {
         private NetworkAddressNodePortPair() {

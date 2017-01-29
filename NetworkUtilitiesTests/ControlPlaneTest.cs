@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
-using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkUtilitiesTests {
     [TestClass]
@@ -26,12 +25,12 @@ namespace NetworkUtilitiesTests {
             var cpccAAddress = new NetworkAddress("1.1");
             var cpccA = new CallingPartyCallController(cpccAAddress);
             _controlPlaneElements.Add(cpccAAddress, cpccA);
-            directory.UpdateDirectory("Abacki", cpccAAddress, new SubnetworkPointPool(1));
+            //directory.UpdateDirectory("Abacki", cpccAAddress, new SubnetworkPointPool(1));
 
             var cpccBAddress = new NetworkAddress("2.2");
             var cpccB = new CallingPartyCallController(cpccBAddress);
             _controlPlaneElements.Add(cpccBAddress, cpccB);
-            directory.UpdateDirectory("Babacki", cpccBAddress, new SubnetworkPointPool(2));
+            //directory.UpdateDirectory("Babacki", cpccBAddress, new SubnetworkPointPool(2));
 
             var ccAddress = new NetworkAddress("0.1");
             var cc = new ConnectionController(ccAddress);

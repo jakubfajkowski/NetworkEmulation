@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using NetworkEmulation.Network;
+using NetworkUtilities;
 
 namespace NetworkEmulation.Editor.Element {
     public partial class LinkForm : Form {
