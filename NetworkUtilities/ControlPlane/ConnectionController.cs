@@ -28,7 +28,7 @@ namespace NetworkUtilities.ControlPlane {
                     var snpp = (SubnetworkPointPool[]) obj[0];
                     var snppAddressA = snpp[0].NetworkSnppAddress;
                     var snppAddressB = snpp[1].NetworkSnppAddress;
-                    NetworkAddress[] snppAddress = {snppAddressA, snppAddressB};
+                    NetworkAddress[] snppAddress = {snppAddressA, snppAddressB}; 
                     _snppDictionary.Add(message.SessionId, snppAddress);
 
                     if (message.SourceAddress.Equals(new NetworkAddress("1")) ||
