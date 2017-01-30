@@ -48,7 +48,15 @@ namespace ClientNode {
         }
 
         public void AddConnection(object sender, string clientName) {
-            comboBoxConnections.Items.Add(clientName);
+            if (clientName != null) {
+                comboBoxConnections.Items.Add(clientName);
+                buttonConnection.BackColor = Color.Red;
+                buttonConnection.Text = "Disonnect";
+            }
+            else {
+                buttonConnection.BackColor = Color.Lime;
+                buttonConnection.Text = "Connect";
+            }
         }
 
         public void DeleteConnection(object sender, string clientName) {
@@ -77,15 +85,17 @@ namespace ClientNode {
 
         private void buttonConnection_Click(object sender, EventArgs e) {
             if (buttonConnection.Text.Equals("Connect")) {
-                buttonConnection.BackColor = Color.Red;
-                buttonConnection.Text = "Disconnect";
+                buttonConnection.BackColor = Color.Yellow;
+                buttonConnection.Text = "Connecting";
                 _client.Connect(textBoxReceiver.Text, (int) numericUpDownCapacity.Value);
                 textBoxReceiver.Text = "";
             }
             else {
+                if (!buttonConnection.Text.Equals("Connecting")) {
+                    _client.Disconnect(comboBoxConnections.Text);
+                }
                 buttonConnection.BackColor = Color.Lime;
                 buttonConnection.Text = "Connect";
-                _client.Disconnect(comboBoxConnections.Text);
             }
         }
     }

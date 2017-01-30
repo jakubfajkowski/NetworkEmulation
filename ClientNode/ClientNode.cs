@@ -104,6 +104,17 @@ namespace ClientNode {
 
         protected override void Receive(SignallingMessage message) {
             _callingPartyCallController.ReceiveMessage(message);
+
+            if (message.Operation == SignallingMessageOperation.CallConfirmation) {
+                var snps = message.Payload as SubnetworkPoint;
+                if (snps != null) {
+                    OnUpdateState(snps.ToString());
+                }
+                else {
+                    OnUpdateState("Connection request rejected");
+                    ClientTableRowAdded(null);
+                }
+            }
         }
     }
 }

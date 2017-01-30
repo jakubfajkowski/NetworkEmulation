@@ -22,6 +22,10 @@ namespace NetworkUtilities.ControlPlane {
             return new SubnetworkPoint(vpi, vci, capacity);
         }
 
+        public override string ToString() {
+            return $"{nameof(Vpi)}: {Vpi}, {nameof(Vci)}: {Vci}, {nameof(Capacity)}: {Capacity}";
+        }
+
         protected bool Equals(SubnetworkPoint other) {
             return Vpi == other.Vpi && Vci == other.Vci;
         }
