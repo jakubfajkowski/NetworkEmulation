@@ -57,6 +57,9 @@ namespace NetworkUtilities.ControlPlane {
                     break;
                 case SignallingMessageOperation.GetLabelsFromLRM:
                     break;
+                case SignallingMessageOperation.LinkConnectionResponse:
+                    HandleLinkConnectionResponse(message);
+                    break;
             }
         }
 
@@ -93,6 +96,7 @@ namespace NetworkUtilities.ControlPlane {
                 if (msg.DestinationAddress.Levels == 1) {
                     msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
                     msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
+                    //msg.Payload = true;
                     SendMessage(msg);
                 }
                 else {
@@ -112,6 +116,9 @@ namespace NetworkUtilities.ControlPlane {
             }
         }
 
+        private void HandleLinkConnectionResponse(SignallingMessage message) {
+            
+        }
         public void SendGetLabelsMessage() {
             //SendMessage(new SignallingMessage(SignallingMessageOperation.GetLabels, 1));
         }

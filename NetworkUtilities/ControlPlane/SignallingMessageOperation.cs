@@ -30,6 +30,7 @@
         ConnectionConfirmation, // CC       -> CC
         PeerCoordination,
         LinkConnectionRequest,
+        LinkConnectionResponse,
         ConnectionConfirmationToNCC,
         //RC operations 
         NetworkTopology, // RC -> RC
