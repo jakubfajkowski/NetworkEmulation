@@ -5,8 +5,8 @@ using NetworkUtilities.Serialization;
 
 namespace NetworkUtilities.Network {
     public abstract class Node : LogObject {
-        private readonly ConnectionComponent _controlPlaneConnectionComponent;
         private readonly ConnectionComponent _dataPlaneConnectionComponent;
+        private readonly ConnectionComponent _controlPlaneConnectionComponent;
         protected int CableCloudListeningPort;
         protected int SignallingCloudListeningPort;
 
