@@ -23,8 +23,7 @@ namespace NetworkUtilities.ControlPlane {
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
                 case SignallingMessageOperation.ConnectionRequest:
-                    var obj = (object[]) message.Payload;
-                    var snpp = (SubnetworkPointPool[]) obj[0];
+                    var snpp = (SubnetworkPointPool[]) message.Payload;
                     var snppAddressA = snpp[0].NetworkAddress;
                     var snppAddressB = snpp[1].NetworkAddress;
                     NetworkAddress[] snppAddress = {snppAddressA, snppAddressB}; 
@@ -91,11 +90,16 @@ namespace NetworkUtilities.ControlPlane {
 
         private void HandleConnectionRequestResponse(SignallingMessage msg) {
             if (_snpPools == null) {
-                if(msg.DestinationAddress.Levels==1)
+                if (msg.DestinationAddress.Levels == 1) {
                     msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
-                else
+                    msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
+                    SendMessage(msg);
+                }
+                else {
                     msg.DestinationAddress = msg.DestinationAddress.GetParentsAddress();
-                SendMessage(msg);
+                    msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
+                    SendMessage(msg);
+                }
             }
             else if (Convert.ToBoolean(msg.Payload)) {
                 HandleRouteTableQueryResponse(msg);
@@ -103,6 +107,7 @@ namespace NetworkUtilities.ControlPlane {
             else {
                 msg.DestinationAddress.GetParentsAddress();
                 msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
+                msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
                 SendMessage(msg);
             }
         }
@@ -132,16 +137,20 @@ namespace NetworkUtilities.ControlPlane {
                 var levelsOfAddress = msg.DestinationAddress.Levels + 1;
                 msg.Operation = SignallingMessageOperation.ConnectionRequest;
                 msg.DestinationAddress = snpps[0].NetworkAddress.GetRootFromBeginning(levelsOfAddress);
+                msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
                 msg.Payload = snpps;
                 SendMessage(msg);
             }
             else {
                 msg.Payload = false;
-                if (msg.DestinationAddress.Levels == 1)
+                if (msg.DestinationAddress.Levels == 1) {
                     msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
+                    msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
+                }
                 else {
                     msg.DestinationAddress = msg.DestinationAddress.GetParentsAddress();
                     msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
+                    msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
                 }
                 SendMessage(msg);
             }

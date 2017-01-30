@@ -45,8 +45,8 @@ namespace NetworkNode {
         }
 
         private void LinkResourceManagerOnOnClientTableRowAdded(object sender, CommutationTableRecordHandlerArgs args) {
-            CommutationMatrix.CreateInputPort();
-            CommutationMatrix.CreateInputPort();
+            //CommutationMatrix.CreateInputPort();
+            //CommutationMatrix.CreateInputPort();
         }
 
         // Czas po jakim komórki ATM zostaną spakowane w CCM

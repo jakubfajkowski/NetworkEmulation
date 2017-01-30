@@ -62,7 +62,7 @@ namespace NetworkNode {
         public event CommutationTableRecordHandler OnClientTableRowDeleted;
 
         private void HandleLinkConnectionRequest(SignallingMessage message) {
-            message.Operation = SignallingMessageOperation.SNPNegotiation;
+            //message.Operation = SignallingMessageOperation.SNPNegotiation;
             
         }
         private void SendLabels(int[] labels) {
