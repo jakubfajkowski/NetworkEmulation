@@ -124,7 +124,7 @@ namespace NetworkUtilities.ControlPlane {
         private void HandleRouteTableQueryResponse(SignallingMessage msg) {
             if (msg.Operation.Equals(SignallingMessageOperation.RouteTableQueryResponse))
                 _snpPools = msg.Payload as Queue<SubnetworkPointPool>;            
-            if (_snpPools != null) {
+            if (_snpPools.Count > 0) {
                 var snpps = new[] {
                     _snpPools.Dequeue(),
                     _snpPools.Dequeue()

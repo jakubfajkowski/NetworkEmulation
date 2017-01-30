@@ -12,14 +12,15 @@ namespace NetworkUtilities.ControlPlane {
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
                 case SignallingMessageOperation.RouteTableQuery:
-                    var snpps = message.Payload as SubnetworkPointPool[];
-                    //if (snpps != null) HandleRouteTableQuery(snpps[0], snpps[1], capacity, message);
+                    HandleRouteTableQuery(message);
                     break;
                 case SignallingMessageOperation.LocalTopology:
-                    _links.Add((Link) message.Payload);
+                    HandleLocalTopology(message);
+                    if (Address.Levels > 1)
+                        SendNetworkTopology(message);
                     break;
                 case SignallingMessageOperation.NetworkTopology:
-
+                    HandleNetworkTopology(message);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -27,26 +28,70 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void SendNetworkTopology(SignallingMessage message) {
-            var networkTopology = message;
-            networkTopology.Operation = SignallingMessageOperation.NetworkTopology;
-            networkTopology.Payload = _links;
-            //networkTopology.DestinationAddress = ???
-            SendMessage(networkTopology);
+            message.Operation = SignallingMessageOperation.NetworkTopology;
+            message.DestinationAddress = Address.GetParentsAddress();
+            message.DestinationControlPlaneElement = 
+                SignallingMessageDestinationControlPlaneElement.RoutingController;
+            SendMessage(message);
         }
 
-        //private SubnetworkPointPool[] Route(SubnetworkPointPool snppStart, SubnetworkPointPool snppEnd, int capacity) {
-        //    var preparedList = _links.Where(link => link.Capacity >= capacity).ToArray();
-        //    var graph = new Graph();
-        //    graph.Load(preparedList);
-        //    var paths = Floyd.RunAlgorithm(graph, snppStart, snppEnd);
-        //    return paths[0].SubnetworkPointPools;
-        //}
+        private void HandleRouteTableQuery(SignallingMessage message) {
+            var snpps = (SubnetworkPointPool[]) message.Payload;
+            var beginSnpp = snpps[0];
+            var endSnpp = snpps[1];
+            var demandedCapacity = message.DemandedCapacity;
 
-        private void HandleRouteTableQuery(SubnetworkPointPool snppStart, SubnetworkPointPool snppEnd, int capacity,
-            SignallingMessage message) {
             message.Operation = SignallingMessageOperation.RouteTableQueryResponse;
-            //message.Link = Route(snppStart, snppEnd, capacity);
+            message.Payload = CalculateShortestPath(beginSnpp, endSnpp, demandedCapacity);
+            message.DestinationAddress = message.SourceAddress;
+            message.DestinationControlPlaneElement = 
+                SignallingMessageDestinationControlPlaneElement.ConnectionController;
+
             SendMessage(message);
+        }
+
+        private Queue<SubnetworkPointPool> CalculateShortestPath(SubnetworkPointPool beginSnpp, SubnetworkPointPool endSnpp, int demandedCapacity) {
+            var beginNode = beginSnpp.NetworkNodeAddress;
+            var endNode = endSnpp.NetworkNodeAddress;
+            var availableLinks = _links.Where(link => link.CapacityLeft >= demandedCapacity).ToList();
+            var preparedPaths = Convert(availableLinks);
+
+            var shortestPath = Engine.CalculateShortestPathBetween(beginNode, endNode, preparedPaths);
+
+            return Convert(shortestPath);
+        }
+
+        private List<Path<NetworkAddress>> Convert(List<Link> links) {
+            var paths = new List<Path<NetworkAddress>>();
+
+            foreach (var link in links) {
+                paths.Add(new Path<NetworkAddress> {
+                    Source = link.BeginSubnetworkPointPool.NetworkNodeAddress,
+                    Destination = link.EndSubnetworkPointPool.NetworkNodeAddress,
+                    Link = link
+                });
+            }
+
+            return paths;
+        }
+
+        private Queue<SubnetworkPointPool> Convert(LinkedList<Path<NetworkAddress>> paths) {
+            var subnetworkPointPools = new Queue<SubnetworkPointPool>();
+
+            foreach (var path in paths) {
+                subnetworkPointPools.Enqueue(path.Link.BeginSubnetworkPointPool);
+                subnetworkPointPools.Enqueue(path.Link.EndSubnetworkPointPool);
+            }
+
+            return subnetworkPointPools;
+        }
+
+        private void HandleLocalTopology(SignallingMessage message) {
+            _links.Add((Link) message.Payload);
+        }
+
+        private void HandleNetworkTopology(SignallingMessage message) {
+            _links.Add((Link) message.Payload);
         }
     }
 }

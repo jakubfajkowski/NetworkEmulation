@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
@@ -32,11 +33,6 @@ namespace NetworkUtilitiesTests {
             );
 
             Assert.IsTrue(result.Count == 0);
-        }
-
-        [TestMethod]
-        public void TestDirectConnection() {
-
         }
     }
 }
