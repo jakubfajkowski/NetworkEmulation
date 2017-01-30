@@ -12,8 +12,8 @@ namespace NetworkNode {
         private readonly CommutationTable _commutationTable;
         private readonly Dictionary<int, double> _freeCapacityDictionary;
         private readonly Random _random;
-        private List<SubnetworkPoint> _subnetworkPoints = new List<SubnetworkPoint>();
-        private SubnetworkPointPool _subnetworkPointPool;
+        private Dictionary<UniqueId,SubnetworkPoint> _subnetworkPoints = new Dictionary<UniqueId, SubnetworkPoint>();
+        private SubnetworkPointPool[] _subnetworkPointPools;
 
 
         public LinkResourceManager(NetworkAddress networkAddress, CommutationTable commutationTable, int numberOfPorts,
@@ -75,8 +75,8 @@ namespace NetworkNode {
 
         private void HandleLinkConnectionRequest(SignallingMessage message) {
             message.Operation = SignallingMessageOperation.SNPNegotiation;
-            var snpps = message.Payload as SubnetworkPointPool[];
-            message.DestinationAddress = snpps[1].NetworkAddress;
+            _subnetworkPointPools = message.Payload as SubnetworkPointPool[];
+            message.DestinationAddress = _subnetworkPointPools[1].NetworkAddress;
             message.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
             message.Payload = _subnetworkPoints;
             SendMessage(message);
@@ -85,17 +85,17 @@ namespace NetworkNode {
         private void HandleSnpNegotiation(SignallingMessage message) {
             var collapse = true;
             SubnetworkPoint subnetworkPoint = null;
-            var _subnetworkPointsReceived = message.Payload as List<SubnetworkPoint>;
+            var _subnetworkPointsReceived = message.Payload as Dictionary<UniqueId,SubnetworkPoint>;
             while (collapse) {
                 subnetworkPoint = SubnetworkPoint.GenerateRandom(message.DemandedCapacity);
-                if (!_subnetworkPointsReceived.Contains(subnetworkPoint) && !_subnetworkPoints.Contains(subnetworkPoint)) {
+                if (!_subnetworkPointsReceived.ContainsValue(subnetworkPoint) && !_subnetworkPoints.ContainsValue(subnetworkPoint)) {
                     message.Payload = subnetworkPoint;
                     message.Operation = SignallingMessageOperation.SNPNegotiationResponse;
                     message.DestinationAddress = message.SourceAddress;
                     message.DestinationControlPlaneElement =
                         SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
-                    _subnetworkPoints.Add(subnetworkPoint);
-                    _subnetworkPointPool.ReserveCapacity(subnetworkPoint.Capacity);
+                    _subnetworkPoints.Add(message.SessionId,subnetworkPoint);
+                    _subnetworkPointPools[0].ReserveCapacity(subnetworkPoint.Capacity);
                     //_subnetworkPoints.Add(subnetworkPoint);
                     SendMessage(message);
                     collapse = false;
@@ -105,23 +105,28 @@ namespace NetworkNode {
 
         private void HandleSnpNegotiationResponse(SignallingMessage message) {
             var subnetworkPoint= message.Payload as SubnetworkPoint;
-            _subnetworkPoints.Add(subnetworkPoint);
-            _subnetworkPointPool.ReserveCapacity(subnetworkPoint.Capacity);
-            //message.Payload = new[] { _subnetworkPointPool, subnetworkPointPool };
-            //message.DestinationControlPlaneElement= SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
-            //message.DestinationAddress = message.SourceAddress;
-            //message.Operation = SignallingMessageOperation.SNPRelease;
+            _subnetworkPoints.Add(message.SessionId, subnetworkPoint);
+            _subnetworkPointPools[1].ReserveCapacity(subnetworkPoint.Capacity);
+            message.Payload = _subnetworkPointPools;
+            message.DestinationControlPlaneElement= SignallingMessageDestinationControlPlaneElement.RoutingController;
+            message.DestinationAddress = message.SourceAddress.GetParentsAddress();
+            message.Operation = SignallingMessageOperation.LocalTopology;
+            SendMessage(message);
+            message.Operation = SignallingMessageOperation.LinkConnectionResponse;
+            message.Payload = _subnetworkPoints[message.SessionId];
+            message.DestinationControlPlaneElement= SignallingMessageDestinationControlPlaneElement.ConnectionController;
+            message.DestinationAddress = _subnetworkPointPools[0].NetworkNodeAddress;
             SendMessage(message);
         }
 
         private void HandleSnpRelease(SignallingMessage message) {
             var subnetworkPoint = message.Payload as SubnetworkPoint;
            
-            message.DestinationAddress = message.SourceAddress;
-            message.DestinationControlPlaneElement= SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
-            message.Operation = SignallingMessageOperation.Confirm;
-            message.Payload = _subnetworkPointPool;
-            SendMessage(message);
+            //message.DestinationAddress = message.SourceAddress;
+            //message.DestinationControlPlaneElement= SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
+            //message.Operation = SignallingMessageOperation.Confirm;
+            //message.Payload = _subnetworkPointPool;
+            //SendMessage(message);
         }
 
         private void HandleConfirm(SignallingMessage message) {
