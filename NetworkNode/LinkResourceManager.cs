@@ -89,6 +89,13 @@ namespace NetworkNode {
             while (collapse) {
                 subnetworkPoint = SubnetworkPoint.GenerateRandom(message.DemandedCapacity);
                 if (!_subnetworkPointsReceived.ContainsValue(subnetworkPoint) && !_subnetworkPoints.ContainsValue(subnetworkPoint)) {
+                    var myMsg = new SignallingMessage();
+                    myMsg = message;
+                    myMsg.Payload = subnetworkPoint;
+                    myMsg.DestinationControlPlaneElement= SignallingMessageDestinationControlPlaneElement.ConnectionController;
+                    myMsg.DestinationAddress = myMsg.DestinationAddress.GetParentsAddress();
+                    myMsg.Operation= SignallingMessageOperation.SetSNP;
+                    SendMessage(myMsg);
                     message.Payload = subnetworkPoint;
                     message.Operation = SignallingMessageOperation.SNPNegotiationResponse;
                     message.DestinationAddress = message.SourceAddress;

@@ -39,6 +39,7 @@
         SNPNegotiationResponse,
         SNPRelease,
         Confirm,
+        SetSNP,
         GetLabels,
         LocalTopology // LRM -> RC
     }
