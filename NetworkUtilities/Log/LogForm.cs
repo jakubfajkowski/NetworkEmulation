@@ -4,7 +4,6 @@ using System.Windows.Forms;
 namespace NetworkUtilities.Log {
     public partial class LogForm : Form {
         private readonly LogObject _logObject;
-        private bool _bound;
 
         public LogForm(LogObject logObject) {
             InitializeComponent();
