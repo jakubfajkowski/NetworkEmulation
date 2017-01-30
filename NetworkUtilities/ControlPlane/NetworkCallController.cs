@@ -142,8 +142,8 @@ namespace NetworkUtilities.ControlPlane {
                     //-----------------------------------------------------------
                     SubnetworkPointPool snppA = new SubnetworkPointPool(new NetworkAddress("1.1.1.1"));
                     SubnetworkPointPool snppB = new SubnetworkPointPool(new NetworkAddress("2.2.2"));
-                    Directory.UpdateDirectory("B", snppA);
-                    Directory.UpdateDirectory("A", snppB);
+                    Directory.UpdateDirectory("A", snppA);
+                    Directory.UpdateDirectory("B", snppB);
                     //-----------------------------------------------------------
 
                     SendPolicyRequest(message);

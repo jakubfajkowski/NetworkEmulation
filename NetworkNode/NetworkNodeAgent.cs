@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -15,7 +16,7 @@ namespace NetworkNode {
         private IPEndPoint _ipEndpoint;
         private NetworkNode _networkNode;
         private bool _timeToQuit;
-
+        static Random random = new Random();
         private UdpClient _udpClient;
         public int ListenUdpPort;
 
@@ -64,7 +65,7 @@ namespace NetworkNode {
             var keepAliveMessage = Encoding.UTF8.GetBytes("keepAlive " + ListenUdpPort);
             while (!_timeToQuit) {
                 SendToNms(keepAliveMessage);
-                Thread.Sleep(SleepTimeKeepAlive);
+                Thread.Sleep(SleepTimeKeepAlive - 150 + random.Next(100));
             }
         }
 
