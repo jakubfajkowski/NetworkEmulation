@@ -11,10 +11,10 @@
 
         public void SendCallRequest(string clientA, string clientZ, int capacity) {
             string[] clientNames = {clientA, clientZ};
-            object[] callRequestMessage = {clientNames, capacity};
             var callRequest = new SignallingMessage {
                 Operation = SignallingMessageOperation.CallRequest,
-                Payload = callRequestMessage,
+                Payload = clientNames,
+                DemandedCapacity = capacity,
                 DestinationAddress = _nccAddress,
                 DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController
             };

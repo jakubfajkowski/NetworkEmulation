@@ -11,6 +11,7 @@ namespace NetworkUtilities.ControlPlane {
         public SignallingMessageOperation Operation { get; set; }
         public SignallingMessageDestinationControlPlaneElement DestinationControlPlaneElement { get; set; }
         public UniqueId SessionId { get; private set; }
+        public int DemandedCapacity { get; set; }
         public NetworkAddress DestinationAddress { get; set; }
         public NetworkAddress SourceAddress { get; set; }
         public object Payload { get; set; }

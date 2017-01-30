@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
+using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkNode {
     public class LinkResourceManager : ControlPlaneElement {
@@ -11,6 +12,9 @@ namespace NetworkNode {
         private readonly CommutationTable _commutationTable;
         private readonly Dictionary<int, double> _freeCapacityDictionary;
         private readonly Random _random;
+        private List<SubnetworkPoint> _subnetworkPoints = new List<SubnetworkPoint>();
+        private SubnetworkPointPool _subnetworkPointPool;
+
 
         public LinkResourceManager(NetworkAddress networkAddress, CommutationTable commutationTable, int numberOfPorts,
             int capacity) : base(networkAddress) {
@@ -25,13 +29,14 @@ namespace NetworkNode {
             }
         }
 
+
         public int[] GetNewLabels(int portNumber) {
             int VPI;
             int VCI;
 
             while (true) {
-                VPI = _random.Next() % MaxLabelNumber;
-                VCI = _random.Next() % MaxLabelNumber;
+                VPI = _random.Next()%MaxLabelNumber;
+                VCI = _random.Next()%MaxLabelNumber;
                 Debug.WriteLine(VPI + " " + VCI);
 
                 if (_commutationTable.FindRow(VPI, VCI, portNumber) == null)
@@ -49,11 +54,78 @@ namespace NetworkNode {
                                     labels[0] + ", VCI:" + labels[1]);
                     SendLabels(labels);
                     break;
+                case SignallingMessageOperation.LinkConnectionRequest:
+                    HandleLinkConnectionRequest(message);
+                    break;
+                case SignallingMessageOperation.SNPNegotiation:
+                    HandleSnpNegotiation(message);
+                    break;
+            }
+        }
+
+
+        public event CommutationTableRecordHandler OnClientTableRowAdded;
+        public event CommutationTableRecordHandler OnClientTableRowDeleted;
+
+        private void HandleLinkConnectionRequest(SignallingMessage message) {
+            message.Operation = SignallingMessageOperation.SNPNegotiation;
+            var snpps = message.Payload as SubnetworkPointPool[];
+            message.DestinationAddress = snpps[1].NetworkAddress;
+            message.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
+            message.Payload = _subnetworkPoints;
+            SendMessage(message);
+        }
+
+        private void HandleSnpNegotiation(SignallingMessage message) {
+            var collapse = true;
+            SubnetworkPoint subnetworkPoint = null;
+            var _subnetworkPointsReceived = message.Payload as List<SubnetworkPoint>;
+            while (collapse) {
+                subnetworkPoint = SubnetworkPoint.GenerateRandom(message.DemandedCapacity);
+                if (!_subnetworkPointsReceived.Contains(subnetworkPoint) && !_subnetworkPoints.Contains(subnetworkPoint)) {
+                    message.Payload = subnetworkPoint;
+                    message.Operation = SignallingMessageOperation.SNPNegotiationResponse;
+                    message.DestinationAddress = message.SourceAddress;
+                    message.DestinationControlPlaneElement =
+                        SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
+                    _subnetworkPoints.Add(subnetworkPoint);
+                    SendMessage(message);
+                    collapse = false;
+                }
             }
         }
 
         private void SendLabels(int[] labels) {
             //SendMessage(new SignallingMessage(SignallingMessageOperation.SetLabels, labels));
+        }
+
+        protected virtual void OnOnClientTableRowAdded(CommutationTableRecordHandlerArgs args) {
+            OnClientTableRowAdded?.Invoke(this, args);
+        }
+
+        protected virtual void OnOnClientTableRowDeleted(CommutationTableRecordHandlerArgs args) {
+            OnClientTableRowDeleted?.Invoke(this, args);
+        }
+    }
+
+    public delegate void CommutationTableRecordHandler(object sender, CommutationTableRecordHandlerArgs args);
+
+    public class CommutationTableRecordHandlerArgs {
+        public int InVpi { get; private set; }
+        public int InVci { get; private set; }
+        public int InPortNumber { get; private set; }
+        public int OutVpi { get; private set; }
+        public int OutVci { get; private set; }
+        public int LinkNumber { get; private set; }
+
+        public CommutationTableRecordHandlerArgs(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci,
+            int linkNumber) {
+            InVpi = inVpi;
+            InVci = inVci;
+            InPortNumber = inPortNumber;
+            OutVpi = outVpi;
+            OutVci = outVci;
+            LinkNumber = linkNumber;
         }
     }
 }

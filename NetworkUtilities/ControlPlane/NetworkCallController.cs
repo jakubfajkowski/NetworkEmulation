@@ -2,8 +2,6 @@
 
 namespace NetworkUtilities.ControlPlane {
     public class NetworkCallController : ControlPlaneElement {
-        private readonly Dictionary<UniqueId, int> _capacityDictionary =
-            new Dictionary<UniqueId, int>();
 
         private readonly Dictionary<UniqueId, string[]> _nameDictionary =
             new Dictionary<UniqueId, string[]>();
@@ -66,14 +64,10 @@ namespace NetworkUtilities.ControlPlane {
         private void SendConnectionRequest(SignallingMessage message) {
             var connectionRequest = message;
             var snpp = _snppDictionary[message.SessionId];
-            var capacity = _capacityDictionary[message.SessionId];
-
-            object[] connectionRequestMessage = {snpp, capacity};
             connectionRequest.Operation = SignallingMessageOperation.ConnectionRequest;
-            connectionRequest.Payload = connectionRequestMessage;
+            connectionRequest.Payload = snpp;
             connectionRequest.DestinationAddress =
                 _networkAddressDictionary[message.SessionId][1].GetRootFromBeginning(1);
-            //connectionRequest.DestinationAddress = new NetworkAddress("0.1");
             connectionRequest.DestinationControlPlaneElement =
                 SignallingMessageDestinationControlPlaneElement.ConnectionController;
             SendMessage(connectionRequest);
@@ -141,14 +135,17 @@ namespace NetworkUtilities.ControlPlane {
                     }
                     break;
                 case SignallingMessageOperation.CallRequest:
-                    var callRequestMessage = (object[]) message.Payload;
-                    var clientNames = (string[]) callRequestMessage[0];
-                    var capacity = (int) callRequestMessage[1];
+                    var clientNames = (string[]) message.Payload;
 
-                    _capacityDictionary.Add(message.SessionId, capacity);
                     _nameDictionary.Add(message.SessionId, clientNames);
 
-                    
+                    //-----------------------------------------------------------
+                    SubnetworkPointPool snppA = new SubnetworkPointPool(new NetworkAddress("1.1.1.1"));
+                    SubnetworkPointPool snppB = new SubnetworkPointPool(new NetworkAddress("2.2.2"));
+                    Directory.UpdateDirectory("B", snppA);
+                    Directory.UpdateDirectory("A", snppB);
+                    //-----------------------------------------------------------
+
                     SendPolicyRequest(message);
                     break;
                 case SignallingMessageOperation.CallTeardown:
