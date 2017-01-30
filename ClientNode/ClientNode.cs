@@ -105,7 +105,8 @@ namespace ClientNode {
         protected override void Receive(SignallingMessage message) {
             _callingPartyCallController.ReceiveMessage(message);
 
-            if (message.Operation == SignallingMessageOperation.CallConfirmation) {
+            if (message.Operation == SignallingMessageOperation.CallConfirmation &&
+                message.DestinationControlPlaneElement == SignallingMessageDestinationControlPlaneElement.CallingPartyCallController) {
                 var snps = message.Payload as SubnetworkPoint;
                 if (snps != null) {
                     OnUpdateState(snps.ToString());

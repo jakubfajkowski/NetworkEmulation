@@ -84,6 +84,8 @@ namespace ClientNode {
         }
 
         private void buttonConnection_Click(object sender, EventArgs e) {
+            if (textBoxReceiver.Text.Equals("")) return;
+
             if (buttonConnection.Text.Equals("Connect")) {
                 buttonConnection.BackColor = Color.Yellow;
                 buttonConnection.Text = "Connecting";

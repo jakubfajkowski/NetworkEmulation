@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NetworkUtilities.ControlPlane {
     public class NetworkCallController : ControlPlaneElement {
@@ -141,10 +142,10 @@ namespace NetworkUtilities.ControlPlane {
                     _nameDictionary.Add(message.SessionId, clientNames);
 
                     //-----------------------------------------------------------
-                    SubnetworkPointPool snppA = new SubnetworkPointPool(new NetworkAddress("1.1.1.1"));
-                    SubnetworkPointPool snppB = new SubnetworkPointPool(new NetworkAddress("2.2.2"));
-                    Directory.UpdateDirectory("A", snppA);
-                    Directory.UpdateDirectory("B", snppB);
+                    //SubnetworkPointPool snppA = new SubnetworkPointPool(new NetworkAddress("1.1.1.1"));
+                    //SubnetworkPointPool snppB = new SubnetworkPointPool(new NetworkAddress("2.2.2"));
+                    //Directory.UpdateDirectory("A", snppA);
+                    //Directory.UpdateDirectory("B", snppB);
                     //-----------------------------------------------------------
 
                     SendPolicyRequest(message);
@@ -168,10 +169,16 @@ namespace NetworkUtilities.ControlPlane {
                     break;
                 case SignallingMessageOperation.DirectoryAddressResponse:
                     var networkAdress = (NetworkAddress[]) message.Payload;
-                    _networkAddressDictionary.Add(message.SessionId, networkAdress);
 
-                    if (networkAdress[0].GetId(0) == networkAdress[1].GetId(0)) SendCallAccept(message);
-                    else SendCallCoordination(message);
+                    try {
+                        _networkAddressDictionary.Add(message.SessionId, networkAdress);
+
+                        if (networkAdress[0].GetId(0) == networkAdress[1].GetId(0)) SendCallAccept(message);
+                        else SendCallCoordination(message);
+                    }
+                    catch (ArgumentOutOfRangeException) {
+                        SendCallConfirmationToCPCC(message);
+                    }
                     break;
                 case SignallingMessageOperation.DirectoryNameResponse:
                     var clientName = (string[]) message.Payload;

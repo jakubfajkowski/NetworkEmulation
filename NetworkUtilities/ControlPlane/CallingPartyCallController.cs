@@ -71,7 +71,7 @@
                     SendCallTeardownResponse(message);
                     break;
                 case SignallingMessageOperation.CallConfirmation:
-                    // u klienta okienko że połączenie potwierdzone
+                    
                     break;
                 case SignallingMessageOperation.CallRequestResponse:
 

@@ -15,14 +15,21 @@ namespace NetworkUtilities.ControlPlane {
         private void SendDirectoryAddressResponse(SignallingMessage message) {
             var clientNames = (string[]) message.Payload;
 
-            var clientAddressA = _clientAdderssDictionary[clientNames[0]];
-            var clientAddressZ = _clientAdderssDictionary[clientNames[1]];
+            NetworkAddress[] clientAddresses = null;
+            try {
+                var clientAddressA = _clientAdderssDictionary[clientNames[0]];
+                var clientAddressZ = _clientAdderssDictionary[clientNames[1]];
+                clientAddresses = new[]{clientAddressA, clientAddressZ};
+            }
+            catch (KeyNotFoundException e) {
+                OnUpdateState(clientNames[1] + " not found");
+            }
 
-            NetworkAddress[] clientAddress = {clientAddressA, clientAddressZ};
+            
 
             var directioryResponse = message;
             directioryResponse.Operation = SignallingMessageOperation.DirectoryAddressResponse;
-            directioryResponse.Payload = clientAddress;
+            directioryResponse.Payload = clientAddresses;
             directioryResponse.DestinationAddress = message.SourceAddress;
             directioryResponse.DestinationControlPlaneElement =
                 SignallingMessageDestinationControlPlaneElement.NetworkCallController;
@@ -49,12 +56,19 @@ namespace NetworkUtilities.ControlPlane {
         private void SendDirectorySnppResponse(SignallingMessage message) {
             var clientNames = (string[]) message.Payload;
 
-            var snmpA = _snppDictionary[clientNames[0]];
-            var snmpZ = _snppDictionary[clientNames[1]];
+            SubnetworkPointPool[] snpp = null;
+            try {
+                var snmpA = _snppDictionary[clientNames[0]];
+                var snmpZ = _snppDictionary[clientNames[1]];
 
-            SubnetworkPointPool[] snpp = {snmpA, snmpZ};
+                snpp = new[] {snmpA, snmpZ};
 
-            var directioryResponse = message;
+            }
+            catch (KeyNotFoundException e) {
+                OnUpdateState(clientNames[1] + " not found");
+            }
+
+    var directioryResponse = message;
             directioryResponse.Operation = SignallingMessageOperation.DirectorySnppResponse;
             directioryResponse.Payload = snpp;
             directioryResponse.DestinationAddress = message.SourceAddress;
@@ -63,7 +77,7 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(directioryResponse);
         }
 
-        public static void UpdateDirectory(string clientName, SubnetworkPointPool snpp) {
+        public void UpdateDirectory(string clientName, SubnetworkPointPool snpp) {
             _clientAdderssDictionary.Add(clientName, snpp.NetworkAddress.GetParentsAddress());
             _snppDictionary.Add(clientName, snpp);
         }

@@ -29,6 +29,10 @@ namespace NetworkUtilities.ControlPlane {
             _controlPlaneConnectionComponent.Initialize();
         }
 
+        public void UpdateDirectory(string clientName, SubnetworkPointPool snpp) {
+            _directory.UpdateDirectory(clientName, snpp);
+        } 
+
         private void OnMessageToSend(object sender, SignallingMessage message) {
             _controlPlaneConnectionComponent.Send(message);
         }

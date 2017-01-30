@@ -53,6 +53,7 @@ namespace NetworkUtilities.Network {
                 Listen(nodeTcpClient, networkAddress).Start();
             }
             catch (SocketException e) {
+                DeleteConnection(networkAddress);
                 OnUpdateState($"Connection to {networkAddress} - failed");
                 OnUpdateState(e.Message);
             }

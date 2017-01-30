@@ -53,6 +53,7 @@ namespace NetworkEmulation.Network {
                 Thread.Sleep(100);
             }
 
+            _links = links;
 
             foreach (var initializableNode in _initializableNodes.OfType<NetworkNodeView>()) {
                 initializableNode.DoubleClick += InitializableNodeOnDoubleClick;
@@ -63,9 +64,9 @@ namespace NetworkEmulation.Network {
             foreach (var initializableNode in _initializableNodes.OfType<ClientNodeView>()) {
                 initializableNode.Parameters.MaxAtmCellsNumberInCableCloudMessage =
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
+                _nameServer.UpdateDirectory(initializableNode.Parameters.ClientName,
+                    new SubnetworkPointPool(initializableNode.NetworkAddress.Append(1)));
             }
-
-            _links = links;
 
             _processes = new Dictionary<int, Process>();
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
-using NetworkUtilities.GraphAlgorithm;
 
 namespace NetworkNode {
     public class LinkResourceManager : ControlPlaneElement {
