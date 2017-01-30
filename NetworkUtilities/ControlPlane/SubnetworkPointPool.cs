@@ -14,17 +14,29 @@ namespace NetworkUtilities.ControlPlane {
             NetworkAddress = networkAddress;
         }
 
-        public bool ReserveCapacity(int demandedCapacity) {
-            if (CapacityLeft >= demandedCapacity) {
-                CapacityLeft -= demandedCapacity;
-                return true;
-            }
-
-            return false;
+        public void ReserveCapacity(int demandedCapacity) {
+            CapacityLeft -= demandedCapacity;
         }
 
-        public void ReleaseCapacity(int capacityToRelease) {
-            CapacityLeft += capacityToRelease;
+        public void ReleaseCapacity(int releasedCapacity) {
+            CapacityLeft += releasedCapacity;
+        }
+
+        protected bool Equals(SubnetworkPointPool other) {
+            return Equals(NetworkAddress, other.NetworkAddress) && CapacityLeft == other.CapacityLeft;
+        }
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((SubnetworkPointPool) obj);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                return ((NetworkAddress?.GetHashCode() ?? 0) * 397) ^ CapacityLeft;
+            }
         }
     }
 }

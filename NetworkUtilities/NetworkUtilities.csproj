@@ -52,16 +52,9 @@
     <Compile Include="ControlPlane\SignallingMessageDestinationControlPlaneElement.cs" />
     <Compile Include="ControlPlane\SubnetworkPointPool.cs" />
     <Compile Include="Element\LinkModel.cs" />
-    <Compile Include="GraphAlgorithm\Dijkstra.cs" />
-    <Compile Include="GraphAlgorithm\Edge.cs" />
-    <Compile Include="GraphAlgorithm\Floyd.cs" />
-    <Compile Include="GraphAlgorithm\Graph.cs" />
+    <Compile Include="GraphAlgorithm\Engine.cs" />
+    <Compile Include="GraphAlgorithm\Link.cs" />
     <Compile Include="GraphAlgorithm\Path.cs" />
-    <Compile Include="GraphAlgorithm\PriorityQueue\Element.cs" />
-    <Compile Include="GraphAlgorithm\PriorityQueue\Heap.cs" />
-    <Compile Include="GraphAlgorithm\PriorityQueue\Queue.cs" />
-    <Compile Include="GraphAlgorithm\Test.cs" />
-    <Compile Include="GraphAlgorithm\Vertex.cs" />
     <Compile Include="Log\PathComputationServerLogForm.cs">
       <SubType>Form</SubType>
     </Compile>
