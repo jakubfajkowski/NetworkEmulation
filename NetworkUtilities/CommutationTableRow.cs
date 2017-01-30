@@ -1,4 +1,4 @@
-﻿namespace NetworkNode {
+﻿namespace NetworkUtilities {
     public class CommutationTableRow {
         private readonly int _inPortNumber;
         private readonly int _inVci;

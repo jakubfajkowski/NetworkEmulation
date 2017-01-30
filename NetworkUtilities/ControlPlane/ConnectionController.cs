@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -16,6 +17,8 @@ namespace NetworkUtilities.ControlPlane {
         private int _udpPortLrm;
         private int _udpPortRc;
         private Dictionary<string, int> _udpPortsCc;
+        public SubnetworkPoint snPoint { get; set; }
+        public int Port { get; set; }
 
         public ConnectionController(NetworkAddress networkAddress) : base(networkAddress) {
         }
@@ -62,6 +65,9 @@ namespace NetworkUtilities.ControlPlane {
                 case SignallingMessageOperation.LinkConnectionResponse:
                     HandleLinkConnectionResponse(message);
                     break;
+                case SignallingMessageOperation.SetSNP:
+                    HandleSetSnp(message);
+                    break;
             }
         }
 
@@ -97,6 +103,7 @@ namespace NetworkUtilities.ControlPlane {
             if (_snpPools == null) {
                 if (msg.DestinationAddress.Levels == 1) {
                     msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
+                    msg.DestinationAddress = _snppDictionary[msg.SessionId][0].GetRootFromBeginning(1);
                     msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
                     //msg.Payload = true;
                     SendMessage(msg);
@@ -119,8 +126,28 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleLinkConnectionResponse(SignallingMessage message) {
-            
+            var snp = message.Payload as SubnetworkPoint;
+            OnCommutationCommand(
+                new CommutationHandlerArgs(new CommutationTableRow(snPoint.Vpi, snPoint.Vpi, Port,
+                    snp.Vpi, snp.Vci, message.SourceAddress.GetLastId())));
+            message.Payload = true;
+            message.DestinationAddress = message.DestinationAddress.GetParentsAddress();
+            message.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
+            message.Operation = SignallingMessageOperation.ConnectionRequestResponse;
+            SendMessage(message);
         }
+
+        private void HandleSetSnp(SignallingMessage message) {
+            snPoint= message.Payload as SubnetworkPoint;
+            Port = message.SourceAddress.GetLastId();
+        }
+
+        public event CommutationHandler CommutationCommand;
+
+
+        public delegate void CommutationHandler(object sender, CommutationHandlerArgs args);
+
+
         public void SendGetLabelsMessage() {
             //SendMessage(new SignallingMessage(SignallingMessageOperation.GetLabels, 1));
         }
@@ -154,6 +181,7 @@ namespace NetworkUtilities.ControlPlane {
                 msg.Payload = false;
                 if (msg.DestinationAddress.Levels == 1) {
                     msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
+                    msg.DestinationAddress = _snppDictionary[msg.SessionId][0].GetRootFromBeginning(1);
                     msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
                 }
                 else {
@@ -163,6 +191,18 @@ namespace NetworkUtilities.ControlPlane {
                 }
                 SendMessage(msg);
             }
+        }
+
+        protected virtual void OnCommutationCommand(CommutationHandlerArgs args) {
+            CommutationCommand?.Invoke(this, args);
+        }
+    }
+
+    public class CommutationHandlerArgs {
+        public CommutationTableRow CommutationTableRow { get; private set; }
+
+        public CommutationHandlerArgs(CommutationTableRow commutationTableRow) {
+            CommutationTableRow = commutationTableRow;
         }
     }
 }

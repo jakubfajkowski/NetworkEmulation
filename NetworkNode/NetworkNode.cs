@@ -4,6 +4,7 @@ using System.Threading;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Element;
+using NetworkUtilities.Log;
 using NetworkUtilities.Network;
 
 namespace NetworkNode {
@@ -17,6 +18,11 @@ namespace NetworkNode {
 
         public CommutationMatrix CommutationMatrix;
         public NetworkNodeAgent NetworkNodeAgent;
+
+       
+
+
+
 
         public NetworkNode(NetworkNodeModel parameters)
             : base(
@@ -32,6 +38,7 @@ namespace NetworkNode {
             _connectionController = new ConnectionController(parameters.NetworkAddress);
             _connectionController.UpdateState += (sender, state) => OnUpdateState(state);
             _connectionController.MessageToSend += (sender, message) => Send(message);
+            _connectionController.CommutationCommand += ConnectionControllerOnCommutationCommand;
 
 
             var _linkResourceManager = new LinkResourceManager(parameters.NetworkAddress, null, 0, 0);
@@ -39,6 +46,10 @@ namespace NetworkNode {
             _linkResourceManager.MessageToSend += (sender, message) => Send(message);
 
             StartThread();
+        }
+
+        private void ConnectionControllerOnCommutationCommand(object sender, CommutationHandlerArgs args) {
+            throw new NotImplementedException();
         }
 
         public override void Initialize() {
