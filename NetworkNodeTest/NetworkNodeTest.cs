@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.Network;
+using NetworkNode;
 using NetworkUtilities;
 using NetworkUtilities.Element;
 using NetworkUtilities.Serialization;
@@ -11,6 +13,7 @@ namespace NetworkNodeTest {
         [TestMethod]
         public void NetworkNodeSetupTest() {
             var networkNodeSerializableParameters = new NetworkNodeModel {
+                NetworkAddress = new NetworkAddress(1),
                 NumberOfPorts = 8,
                 CableCloudListeningPort = 10000,
                 IpAddress = "127.0.0.1",
@@ -34,16 +37,13 @@ namespace NetworkNodeTest {
 
         [TestMethod]
         public void NmsKeepAlive() {
-            var networkNodeSerializableParameters = new NetworkNodeModel {
-                NumberOfPorts = 8,
-                CableCloudListeningPort = 10000,
-                IpAddress = "127.0.0.1",
-                NetworkManagmentSystemListeningPort = 6666,
-                NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
-            };
-            var nms = new NetworkManagmentSystem();
-            var networkNode = new NetworkNode.NetworkNode(networkNodeSerializableParameters);
-            networkNode.Initialize();
+            var nms = new NetworkManagmentSystem(6666);
+            nms.UpdateState += (sender, state) => Debug.WriteLine(state);
+            nms.StartListening();
+
+            var agent = new NetworkNodeAgent(new NetworkAddress(1), "127.0.0.1", 6666);
+            agent.UpdateState += (sender, state) => Debug.WriteLine(state);
+            agent.Initialize();
             Thread.Sleep(10000);
         }
 

@@ -28,8 +28,9 @@ namespace NetworkEmulation.Network {
             PreapareCableCloudLogForm();
             _cableCloud.StartListening();
 
-            _networkManagmentSystem = new NetworkManagmentSystem();
+            _networkManagmentSystem = new NetworkManagmentSystem(Settings.Default.NetworkManagmentSystemListeningPort);
             PrepareNetworkManagmentSystemLogForm();
+            _networkManagmentSystem.StartListening();
 
             _nameServer = new NameServer(Settings.Default.NameServerListeningPort);
             PrepareNameServerLogForm();
@@ -125,10 +126,10 @@ namespace NetworkEmulation.Network {
 
         private void InitializableNodeOnDoubleClick(object sender, EventArgs eventArgs) {
             var networkNodeView = sender as NetworkNodeView;
-            var nodeUdpPort = networkNodeView.Parameters.NetworkManagmentSystemDataPort;
+            var nodeAddress = networkNodeView.NetworkAddress;
             var cableCloudDataPort = networkNodeView.CableCloudDataPort;
 
-            if (_networkManagmentSystem.IsOnline(nodeUdpPort)) {
+            if (_networkManagmentSystem.IsNetworkNodeOnline(nodeAddress)) {
                 MarkAsOffline(networkNodeView);
                 //TODO Mark links as offline
 
@@ -173,7 +174,7 @@ namespace NetworkEmulation.Network {
         }
 
         private void InitializeNetworkManagmentSystem() {
-            WaitForNetworkNodesOnline();
+            //WaitForNetworkNodesOnline();
             MarkAsOnline(_initializableNodes.OfType<IMarkable>().ToList());
             //TODO Mark links as online
         }
@@ -211,6 +212,7 @@ namespace NetworkEmulation.Network {
         }
 
         private void StartProcess(int id) {
+            Thread.Sleep(100);
             var process = _processes[id];
             process.Start();
         }
@@ -221,6 +223,7 @@ namespace NetworkEmulation.Network {
 
             _cableCloud.Dispose();
             _networkManagmentSystem.Dispose();
+            _nameServer.Dispose();
 
             foreach (var pathComputationServer in _pathComputationServers) pathComputationServer.Dispose();
 

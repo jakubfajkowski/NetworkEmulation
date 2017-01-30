@@ -13,7 +13,7 @@ namespace NetworkEmulation.Editor.Element {
 
             textBoxIpAddress.Text = Settings.Default.IpAddress;
             textBoxCloudPort.Text = Settings.Default.CableCloudUdpListenerPortNumber.ToString();
-            textBoxNMSPort.Text = Settings.Default.NetworkManagmentSystemUdpListenerPortNumber.ToString();
+            textBoxNMSPort.Text = Settings.Default.NetworkManagmentSystemListeningPort.ToString();
         }
 
         private void buttonOK_Click(object sender, EventArgs e) {

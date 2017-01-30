@@ -12,8 +12,12 @@ namespace NetworkNode {
             var networkNode = new NetworkNode(parameters);
             networkNode.UpdateState += (sender, state) => Console.WriteLine(state);
             networkNode.Initialize();
+            //var n = new NetworkNodeAgent(parameters.NetworkAddress, parameters.IpAddress, parameters.NetworkManagmentSystemListeningPort);
+            //n.Initialize();
+            //n.UpdateState += (sender, state) => Console.WriteLine(state);
             Console.Title =
                 $"Network Node ({parameters.NetworkAddress})";
+            //Console.ReadKey();
         }
     }
 }

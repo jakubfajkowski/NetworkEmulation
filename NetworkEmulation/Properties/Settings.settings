@@ -7,7 +7,7 @@
     <Setting Name="CableCloudUdpListenerPortNumber" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10000</Value>
     </Setting>
-    <Setting Name="NetworkManagmentSystemUdpListenerPortNumber" Type="System.Int32" Scope="User">
+    <Setting Name="NetworkManagmentSystemListeningPort" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">6666</Value>
     </Setting>
     <Setting Name="MaxAtmCellsNumberInCableCloudMessage" Type="System.Int32" Scope="User">

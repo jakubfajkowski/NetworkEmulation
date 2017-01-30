@@ -24,12 +24,10 @@ namespace NetworkNode {
                 parameters.PathComputationServerListeningPort) {
 
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
-            NetworkNodeAgent.NmsPort = parameters.NetworkManagmentSystemListeningPort;
-            NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkManagmentSystemDataPort, this);
+            NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkAddress, parameters.IpAddress, parameters.NetworkManagmentSystemListeningPort);
             OnUpdateState("Network Node \nNMS port: " + parameters.NetworkManagmentSystemDataPort);
-            CommutationMatrix = new CommutationMatrix(NetworkNodeAgent.GetCommutationTable(), parameters.NumberOfPorts);
+            CommutationMatrix = new CommutationMatrix(new CommutationTable(), parameters.NumberOfPorts);
             CommutationMatrix.UpdateState += (sender, state) => OnUpdateState(state);
-            NetworkNodeAgent.SetCommutationMatrix(CommutationMatrix);
 
             _connectionController = new ConnectionController(parameters.NetworkAddress);
             _connectionController.UpdateState += (sender, state) => OnUpdateState(state);
@@ -43,6 +41,11 @@ namespace NetworkNode {
             StartThread();
         }
 
+        public override void Initialize() {
+            base.Initialize();
+            NetworkNodeAgent.Initialize();
+        }
+
         // Czas po jakim komórki ATM zostaną spakowane w CCM
         public static int MinLastAddTime { private get; set; } = 100;
 
@@ -51,13 +54,11 @@ namespace NetworkNode {
             _networkNodeThread = new Thread(RunThread);
             _networkNodeThread.Start();
             CommutationMatrix.StartThread();
-            NetworkNodeAgent.StartThread();
         }
 
         public void Shutdown() {
             //_timeToQuit = true;
             CommutationMatrix.Shutdown();
-            NetworkNodeAgent.Shutdown();
         }
 
         /* Wątek pobierający komórki ATM z portów wyjściowych pola komutacyjnego i wysyłający je do chmury kablowej */
