@@ -59,8 +59,8 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         protected void SendSignallingMessage(SignallingMessage signallingMessage, NetworkAddress outputNetworkAddress) {
-            Send(signallingMessage, outputNetworkAddress);
             OnUpdateState("Sent " + signallingMessage);
+            Send(signallingMessage, outputNetworkAddress);
         }
 
         protected abstract void Receive(SignallingMessage signallingMessage);

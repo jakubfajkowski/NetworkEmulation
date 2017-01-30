@@ -69,6 +69,8 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         public override void ReceiveMessage(SignallingMessage message) {
+            base.ReceiveMessage(message);
+
             switch (message.Operation) {
                 case SignallingMessageOperation.DirectoryAddressRequest:
                     SendDirectoryAddressResponse(message);

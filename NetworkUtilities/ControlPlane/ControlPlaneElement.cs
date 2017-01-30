@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using NetworkUtilities.Log;
 
 namespace NetworkUtilities.ControlPlane {
@@ -17,7 +18,7 @@ namespace NetworkUtilities.ControlPlane {
 
         protected void SendMessage(SignallingMessage message) {
             message.SourceAddress = Address;
-
+            OnUpdateState("Sent: " + message);
             MessageToSend?.Invoke(this, message);
         }
 
@@ -34,8 +35,8 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         public virtual void ReceiveMessage(SignallingMessage message) {
+            OnUpdateState("Received: " + message);
             var sessionId = message.SessionId;
-
             if (!IsCurrentlyHandled(sessionId)) StartSession(sessionId);
         }
     }

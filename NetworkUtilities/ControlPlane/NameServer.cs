@@ -19,8 +19,8 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void OnMessageToSend(object sender, SignallingMessage message) {
-            Send(message, message.DestinationAddress);
             OnUpdateState("Sent " + message);
+            Send(message, message.DestinationAddress);
         }
 
         protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {

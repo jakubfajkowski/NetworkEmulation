@@ -10,6 +10,8 @@ namespace NetworkUtilities.ControlPlane {
         public RoutingController(NetworkAddress networkAddress) : base(networkAddress) {}
 
         public override void ReceiveMessage(SignallingMessage message) {
+            base.ReceiveMessage(message);
+
             switch (message.Operation) {
                 case SignallingMessageOperation.RouteTableQuery:
                     HandleRouteTableQuery(message);

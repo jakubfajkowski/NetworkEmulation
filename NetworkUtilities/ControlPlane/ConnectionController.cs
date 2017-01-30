@@ -21,6 +21,8 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         public override void ReceiveMessage(SignallingMessage message) {
+            base.ReceiveMessage(message);
+
             switch (message.Operation) {
                 case SignallingMessageOperation.ConnectionRequest:
                     var snpp = (SubnetworkPointPool[]) message.Payload;
@@ -69,7 +71,7 @@ namespace NetworkUtilities.ControlPlane {
 
         private void SendRouteTableQuery(SignallingMessage message) {
             message.Operation = SignallingMessageOperation.RouteTableQuery;
-           
+            message.DestinationAddress = Address;
             message.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.RoutingController;
             SendMessage(message);
         }

@@ -128,6 +128,7 @@ namespace NetworkUtilities.ControlPlane {
 
         public override void ReceiveMessage(SignallingMessage message) {
             base.ReceiveMessage(message);
+
             switch (message.Operation) {
                 case SignallingMessageOperation.PolicyResponse:
                     if ((bool)message.Payload) {
@@ -140,7 +141,7 @@ namespace NetworkUtilities.ControlPlane {
                     _nameDictionary.Add(message.SessionId, clientNames);
 
                     //-----------------------------------------------------------
-                    SubnetworkPointPool snppA = new SubnetworkPointPool(new NetworkAddress("1.1.1.1"));
+                    SubnetworkPointPool snppA = new SubnetworkPointPool(new NetworkAddress("1.1.1")); //1.1.1.1
                     SubnetworkPointPool snppB = new SubnetworkPointPool(new NetworkAddress("2.2.2"));
                     Directory.UpdateDirectory("A", snppA);
                     Directory.UpdateDirectory("B", snppB);
