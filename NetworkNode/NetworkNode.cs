@@ -130,8 +130,15 @@ namespace NetworkNode {
         }
 
         protected override void Receive(SignallingMessage signallingMessage) {
-            //TODO Signalling message handling implementation!
-            throw new NotImplementedException();
+            switch (signallingMessage.DestinationControlPlaneElement) {
+                case SignallingMessageDestinationControlPlaneElement.ConnectionController:
+                    _connectionController.ReceiveMessage(signallingMessage);
+                    break;
+
+                case SignallingMessageDestinationControlPlaneElement.LinkResourceManager:
+                    _linkResourceManagers[signallingMessage.DestinationAddress.GetLastId() - 1].ReceiveMessage(signallingMessage);
+                    break;
+            }
         }
     }
 }
