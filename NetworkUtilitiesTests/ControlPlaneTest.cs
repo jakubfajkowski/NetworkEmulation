@@ -46,7 +46,7 @@ namespace NetworkUtilitiesTests {
                 _controlPlaneElements.Add(new Row(cc2Address, SignallingMessageDestinationControlPlaneElement.ConnectionController), cc2);
 
                 var rc2Address = new NetworkAddress("2");
-                var rc2 = new ConnectionController(rc2Address);
+                var rc2 = new RoutingController(rc2Address);
                 _controlPlaneElements.Add(new Row(rc2Address, SignallingMessageDestinationControlPlaneElement.RoutingController), rc2);
 
                 directory.MessageToSend += PassMessage;

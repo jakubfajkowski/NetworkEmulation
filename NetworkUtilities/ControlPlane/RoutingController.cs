@@ -53,14 +53,19 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private Queue<SubnetworkPointPool> CalculateShortestPath(SubnetworkPointPool beginSnpp, SubnetworkPointPool endSnpp, int demandedCapacity) {
-            var beginNode = beginSnpp.NetworkNodeAddress;
-            var endNode = endSnpp.NetworkNodeAddress;
-            var availableLinks = _links.Where(link => link.CapacityLeft >= demandedCapacity).ToList();
-            var preparedPaths = Convert(availableLinks);
+            try {
+                var beginNode = beginSnpp.NetworkNodeAddress;
+                var endNode = endSnpp.NetworkNodeAddress;
+                var availableLinks = _links.Where(link => link.CapacityLeft >= demandedCapacity).ToList();
+                var preparedPaths = Convert(availableLinks);
 
-            var shortestPath = Engine.CalculateShortestPathBetween(beginNode, endNode, preparedPaths);
+                var shortestPath = Engine.CalculateShortestPathBetween(beginNode, endNode, preparedPaths);
 
-            return Convert(shortestPath);
+                return Convert(shortestPath);
+            }
+            catch (Exception) {
+                return new Queue<SubnetworkPointPool>();
+            }
         }
 
         private List<Path<NetworkAddress>> Convert(List<Link> links) {
