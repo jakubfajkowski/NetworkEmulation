@@ -18,9 +18,13 @@ namespace NetworkUtilities.ControlPlane {
         private int _udpPortRc;
         private Dictionary<string, int> _udpPortsCc;
         public SubnetworkPoint snPoint { get; set; }
+        public SubnetworkPoint snPointCpcc { get; set; }
         public int Port { get; set; }
 
         public ConnectionController(NetworkAddress networkAddress) : base(networkAddress) {
+            snPoint = SubnetworkPoint.GenerateRandom(100);
+            snPointCpcc = snPoint;
+            Port = 1;
         }
 
         public override void ReceiveMessage(SignallingMessage message) {
@@ -103,6 +107,7 @@ namespace NetworkUtilities.ControlPlane {
             if (_snpPools == null) {
                 if (msg.DestinationAddress.Levels == 1) {
                     msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
+                    msg.Payload = snPointCpcc;
                     msg.DestinationAddress = _snppDictionary[msg.SessionId][0].GetRootFromBeginning(1);
                     msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
                     //msg.Payload = true;
