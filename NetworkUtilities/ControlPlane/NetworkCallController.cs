@@ -196,7 +196,7 @@ namespace NetworkUtilities.ControlPlane {
                     SendConnectionRequest(message);
                     break;
 
-                case SignallingMessageOperation.ConnectionConfirmation:
+                case SignallingMessageOperation.ConnectionConfirmationToNCC:
                     SendCallConfirmationToCPCC(message);
                     break;
             }

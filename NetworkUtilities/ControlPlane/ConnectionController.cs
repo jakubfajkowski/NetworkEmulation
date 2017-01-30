@@ -97,6 +97,7 @@ namespace NetworkUtilities.ControlPlane {
             if (_snpPools == null) {
                 if (msg.DestinationAddress.Levels == 1) {
                     msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
+                    msg.DestinationAddress = _snppDictionary[msg.SessionId][0].GetRootFromBeginning(1);
                     msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
                     //msg.Payload = true;
                     SendMessage(msg);
@@ -154,6 +155,7 @@ namespace NetworkUtilities.ControlPlane {
                 msg.Payload = false;
                 if (msg.DestinationAddress.Levels == 1) {
                     msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
+                    msg.DestinationAddress = _snppDictionary[msg.SessionId][0].GetRootFromBeginning(1);
                     msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
                 }
                 else {
