@@ -7,7 +7,7 @@ using NetworkUtilities.Log;
 namespace NetworkNode {
     public class CommutationMatrix : LogObject {
         // Tablica połączeń in/out ta sama, która się znajduje w NetworkNodeAgent
-        private readonly CommutationTable _commutationTable;
+        public CommutationTable _commutationTable { get; set; }
 
         private readonly List<Port> _inputPorts;
         public readonly List<Port> OutputPorts;

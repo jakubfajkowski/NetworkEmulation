@@ -49,7 +49,7 @@ namespace NetworkNode {
         }
 
         private void ConnectionControllerOnCommutationCommand(object sender, CommutationHandlerArgs args) {
-            throw new NotImplementedException();
+            CommutationMatrix._commutationTable.AddConnection(args.CommutationTableRow);
         }
 
         public override void Initialize() {

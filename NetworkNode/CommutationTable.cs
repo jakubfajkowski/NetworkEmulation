@@ -23,6 +23,10 @@ namespace NetworkNode {
                               "/" + outVci + ",  port in/out: " + inPortNumber + "/" + outPortNumber);
         }
 
+        public void AddConnection(CommutationTableRow c) {
+            AddConnection(c._inVpi, c._inVci, c._inPortNumber, c._outVpi, c._outVci, c._outPortNumber);
+        }
+
         public bool RemoveConnection(CommutationTableRow rowToRemove) {
             return _commutationTableRows.Remove(rowToRemove);
         }
