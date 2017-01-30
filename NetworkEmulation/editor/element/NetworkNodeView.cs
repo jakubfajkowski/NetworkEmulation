@@ -10,7 +10,7 @@ namespace NetworkEmulation.Editor.Element {
         public NetworkNodeView() {
             Image = Resources.NetworkNodeNotSelected;
             Parameters = new NetworkNodeModel();
-            Parameters.SignallingCloudListeningPort = PortRandomizer.RandomFreePort();
+            Parameters.CableCloudListeningPort = Settings.Default.CableCloudListenerPort;
         }
 
         public NetworkNodeModel Parameters { get; set; }

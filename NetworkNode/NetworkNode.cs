@@ -19,11 +19,6 @@ namespace NetworkNode {
         public CommutationMatrix CommutationMatrix;
         public NetworkNodeAgent NetworkNodeAgent;
 
-       
-
-
-
-
         public NetworkNode(NetworkNodeModel parameters)
             : base(
                 parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort,

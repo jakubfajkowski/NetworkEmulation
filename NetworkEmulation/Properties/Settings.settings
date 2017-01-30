@@ -18,7 +18,7 @@
       <Value Profile="(Default)">127.0.0.1</Value>
     </Setting>
     <Setting Name="SignallingCloudListeningPort" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">9999</Value>
+      <Value Profile="(Default)">20000</Value>
     </Setting>
   </Settings>
 </SettingsFile>

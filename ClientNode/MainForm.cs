@@ -16,6 +16,7 @@ namespace ClientNode {
                 (ClientNodeModel)
                 XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeModel));
             _client = new ClientNode(param);
+            textBoxEventLog.Text = joinedArgs + "\n";
         }
 
         private void MainForm_Load(object sender, EventArgs e) {

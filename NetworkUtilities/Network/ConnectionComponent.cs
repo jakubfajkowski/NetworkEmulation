@@ -57,6 +57,7 @@ namespace NetworkUtilities.Network {
         private void ListenForConnectRequest(TcpListener tcpListener) {
             tcpListener.Start();
             Task.Run(async () => {
+                OnUpdateState($"Sent connection request - waiting for response");
                 _tcpClient = await tcpListener.AcceptTcpClientAsync();
                 Online = true;
 

@@ -19,6 +19,8 @@ namespace NetworkEmulation.Editor.Element {
             _parameters.IpAddress = textBoxIpAddress.Text;
             _parameters.ClientName = textBoxClientName.Text;
             _parameters.CableCloudListeningPort = int.Parse(textBoxCloudPort.Text);
+            //TODO
+            _parameters.SignallingCloudListeningPort = Settings.Default.SignallingCloudListeningPort;
 
             Close();
         }

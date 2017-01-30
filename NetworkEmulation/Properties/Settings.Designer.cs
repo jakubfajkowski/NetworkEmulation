@@ -82,7 +82,7 @@ namespace NetworkEmulation.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("9999")]
+        [global::System.Configuration.DefaultSettingValueAttribute("20000")]
         public int SignallingCloudListeningPort {
             get {
                 return ((int)(this["SignallingCloudListeningPort"]));

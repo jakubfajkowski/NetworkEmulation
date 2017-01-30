@@ -6,6 +6,7 @@ namespace NetworkNode {
     internal class Program {
         private static void Main(string[] args) {
             var joinedArgs = string.Join(" ", args);
+            Console.WriteLine(joinedArgs);
             var parameters =
                 (NetworkNodeModel)
                 XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeModel));

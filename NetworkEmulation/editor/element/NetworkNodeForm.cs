@@ -21,6 +21,8 @@ namespace NetworkEmulation.Editor.Element {
             _parameters.CableCloudListeningPort = int.Parse(textBoxCloudPort.Text);
             _parameters.NetworkManagmentSystemListeningPort = int.Parse(textBoxNMSPort.Text);
             _parameters.NumberOfPorts = int.Parse(textBoxNumberOfPorts.Text);
+            //TODO
+            _parameters.SignallingCloudListeningPort = Settings.Default.SignallingCloudListeningPort;
 
             Close();
         }
