@@ -60,12 +60,18 @@ namespace NetworkNode {
                 case SignallingMessageOperation.SNPNegotiation:
                     HandleSnpNegotiation(message);
                     break;
+                case SignallingMessageOperation.SNPNegotiationResponse:
+                    HandleSnpNegotiationResponse(message);
+                    break;
+                case SignallingMessageOperation.SNPRelease:
+                    HandleSnpRelease(message);
+                    break;
+                case SignallingMessageOperation.Confirm:
+                    HandleConfirm(message);
+                    break;
             }
         }
-
-
-        public event CommutationTableRecordHandler OnClientTableRowAdded;
-        public event CommutationTableRecordHandler OnClientTableRowDeleted;
+       
 
         private void HandleLinkConnectionRequest(SignallingMessage message) {
             message.Operation = SignallingMessageOperation.SNPNegotiation;
@@ -89,43 +95,45 @@ namespace NetworkNode {
                     message.DestinationControlPlaneElement =
                         SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
                     _subnetworkPoints.Add(subnetworkPoint);
+                    _subnetworkPointPool.ReserveCapacity(subnetworkPoint.Capacity);
+                    //_subnetworkPoints.Add(subnetworkPoint);
                     SendMessage(message);
                     collapse = false;
                 }
             }
         }
 
+        private void HandleSnpNegotiationResponse(SignallingMessage message) {
+            var subnetworkPoint= message.Payload as SubnetworkPoint;
+            _subnetworkPoints.Add(subnetworkPoint);
+            _subnetworkPointPool.ReserveCapacity(subnetworkPoint.Capacity);
+            //message.Payload = new[] { _subnetworkPointPool, subnetworkPointPool };
+            //message.DestinationControlPlaneElement= SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
+            //message.DestinationAddress = message.SourceAddress;
+            //message.Operation = SignallingMessageOperation.SNPRelease;
+            SendMessage(message);
+        }
+
+        private void HandleSnpRelease(SignallingMessage message) {
+            var subnetworkPoint = message.Payload as SubnetworkPoint;
+           
+            message.DestinationAddress = message.SourceAddress;
+            message.DestinationControlPlaneElement= SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
+            message.Operation = SignallingMessageOperation.Confirm;
+            message.Payload = _subnetworkPointPool;
+            SendMessage(message);
+        }
+
+        private void HandleConfirm(SignallingMessage message) {
+            var subnetworkPointPool = message.Payload as SubnetworkPointPool;
+            message.Payload = 
+            message.DestinationControlPlaneElement= SignallingMessageDestinationControlPlaneElement.ConnectionController;
+            message.DestinationAddress = message.SourceAddress.GetParentsAddress();
+            //message.Operation = SignallingMessageOperation.Lin
+        }
         private void SendLabels(int[] labels) {
             //SendMessage(new SignallingMessage(SignallingMessageOperation.SetLabels, labels));
         }
-
-        protected virtual void OnOnClientTableRowAdded(CommutationTableRecordHandlerArgs args) {
-            OnClientTableRowAdded?.Invoke(this, args);
-        }
-
-        protected virtual void OnOnClientTableRowDeleted(CommutationTableRecordHandlerArgs args) {
-            OnClientTableRowDeleted?.Invoke(this, args);
-        }
-    }
-
-    public delegate void CommutationTableRecordHandler(object sender, CommutationTableRecordHandlerArgs args);
-
-    public class CommutationTableRecordHandlerArgs {
-        public int InVpi { get; private set; }
-        public int InVci { get; private set; }
-        public int InPortNumber { get; private set; }
-        public int OutVpi { get; private set; }
-        public int OutVci { get; private set; }
-        public int LinkNumber { get; private set; }
-
-        public CommutationTableRecordHandlerArgs(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci,
-            int linkNumber) {
-            InVpi = inVpi;
-            InVci = inVci;
-            InPortNumber = inPortNumber;
-            OutVpi = outVpi;
-            OutVci = outVci;
-            LinkNumber = linkNumber;
-        }
+        
     }
 }
