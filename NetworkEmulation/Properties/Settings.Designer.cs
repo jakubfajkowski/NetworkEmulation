@@ -38,12 +38,12 @@ namespace NetworkEmulation.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("6666")]
-        public int NetworkManagmentSystemUdpListenerPortNumber {
+        public int NetworkManagmentSystemListeningPort {
             get {
-                return ((int)(this["NetworkManagmentSystemUdpListenerPortNumber"]));
+                return ((int)(this["NetworkManagmentSystemListeningPort"]));
             }
             set {
-                this["NetworkManagmentSystemUdpListenerPortNumber"] = value;
+                this["NetworkManagmentSystemListeningPort"] = value;
             }
         }
         

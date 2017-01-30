@@ -27,7 +27,7 @@ namespace NetworkUtilities.Network {
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
         }
 
-        public void Initialize() {
+        public virtual void Initialize() {
             _dataPlaneConnectionComponent.Initialize();
             _controlPlaneConnectionComponent.Initialize();
         }

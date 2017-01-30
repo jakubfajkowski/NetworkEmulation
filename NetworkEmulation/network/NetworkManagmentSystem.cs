@@ -1,177 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Linq;
+using System.Timers;
 using NetworkEmulation.Editor.Element;
-using NetworkUtilities.Log;
+using NetworkUtilities;
+using NetworkUtilities.Network;
 
 namespace NetworkEmulation.Network {
-    public class NetworkManagmentSystem : LogObject {
-        private const int ListenUdpPort = 6666;
-        private const int MaxTimeNotReceivingKeepAliveMessage = 2000;
-        private readonly List<ConnectionTableRow> _connectionTable;
-        private readonly Dictionary<int, DateTime> _keepAliveDictionary;
-        private readonly UdpClient _listenUdpClient;
-        private readonly Thread _messageThread;
+    public class NetworkManagmentSystem : ConnectionManager {
+        private const int MaxTimeNotReceivingKeepAliveMessage = 5000;
+        private readonly Dictionary<NetworkAddress, Timer> _keepAliveDictionary = new Dictionary<NetworkAddress, Timer>();
 
-        //private bool isKeepAliveListenerActive;
-        //private bool isCheckKeepAliveTableActive;
-        //private bool isListenForConnectionActive;
+        public NetworkManagmentSystem(int listeningPort) : base(listeningPort) {}
 
-        private readonly List<string> _receivedMessagesList;
-        private List<string> _receivedConnectionLabelsList;
-
-
-        public NetworkManagmentSystem() {
-            _keepAliveDictionary = new Dictionary<int, DateTime>();
-            _connectionTable = new List<ConnectionTableRow>();
-
-            _receivedMessagesList = new List<string>();
-            _receivedConnectionLabelsList = new List<string>();
-
-            var ipEndPoint = new IPEndPoint(IPAddress.Any, ListenUdpPort);
-            _listenUdpClient = new UdpClient(ipEndPoint);
-
-            ListenForConnectionRequests();
-
-            _messageThread = new Thread(RunThread);
-            _messageThread.Start();
-
-            var checkKeepAliveTableThread = new Thread(CheckKeepAliveTable);
-            checkKeepAliveTableThread.Start();
-        }
-
-
-        public ConnectionTableRow GetRow(int node1, int node2) {
-            foreach (var row in _connectionTable)
-                if (row.CheckNodes(node1, node2))
-                    return row;
-            return null;
-        }
-
-        public void SendConnectionToNetworkNodeAgent(NodeConnectionInformation information) {
-            SendConnectionToNetworkNodeAgent(information.NodeUdpPort,
-                information.InVpi,
-                information.InVci,
-                information.InPortNumber,
-                information.OutVpi,
-                information.OutVci,
-                information.OutPortNumber);
-        }
-
-        // Wpis w tablicy pola komutacyjnego
-        public void SendConnectionToNetworkNodeAgent(int nodeUdpPort, int inVpi, int inVci, int inPortNumber, int outVpi,
-            int outVci, int outPortNumber) {
-            SendMessageToNetworkNode(
-                "CreateConnection " + inVpi + " " + inVci + " " + inPortNumber + " " + outVpi + " " + outVci + " " +
-                outPortNumber, nodeUdpPort);
-            OnUpdateState(" Message to " + nodeUdpPort + ": " + "CreateConnection inVpi:" + inVpi + ", inVci: " + inVci +
-                          ", inPort: " +
-                          inPortNumber + ", outVpi: " + outVpi + ", outVci: " + outVci + ", outPort: " +
-                          outPortNumber);
-        }
-
-        /* Wątek obsługujący keep alive*/
-
-        private void RunThread() {
-            while (true)
-                if (_receivedMessagesList.Count > 0) {
-                    var message = _receivedMessagesList[0].Split(' ');
-
-                    switch (message[0]) {
-                        case "networkNodeStart":
-                            try {
-                                _keepAliveDictionary.Add(int.Parse(message[1]), DateTime.Now);
-                                OnUpdateState("Network node " + message[1] + " is online.");
-                            }
-                            catch (SystemException e) {
-                            }
-                            ;
-                            //sendMessageToNetworkNode(Encoding.UTF8.GetBytes("OK " + int.Parse(message[1])), int.Parse(message[1]));
-                            break;
-                        case "keepAlive":
-                            _keepAliveDictionary[int.Parse(message[1])] = DateTime.Now;
-                            break;
-                    }
-                    _receivedMessagesList.Remove(_receivedMessagesList[0]);
-                }
-                else {
-                    lock (_messageThread) {
-                        Monitor.Wait(_messageThread);
-                    }
-                }
-        }
-
-        private void CheckKeepAliveTable() {
-            while (true) {
-                try {
-                    foreach (var node in _keepAliveDictionary)
-                        if ((DateTime.Now - node.Value).TotalMilliseconds > MaxTimeNotReceivingKeepAliveMessage) {
-                            _keepAliveDictionary.Remove(node.Key);
-                            OnUpdateState("Network node " + node.Key + " is offline.");
-                        }
-                }
-                catch (InvalidOperationException e) {
-                }
-                Thread.Sleep(500);
+        protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {
+            if (_keepAliveDictionary.ContainsKey(networkAddress)) {
+                _keepAliveDictionary[networkAddress].Stop();
+                _keepAliveDictionary[networkAddress].Start();
             }
+            else {
+                OnUpdateState(networkAddress + " is online");
+                _keepAliveDictionary[networkAddress] = CreateKeepAliveMessagesTimer();
+            }
+        }
+
+        private Timer CreateKeepAliveMessagesTimer() {
+            var timer = new Timer {
+                AutoReset = true,
+                Interval = MaxTimeNotReceivingKeepAliveMessage,
+                Enabled = true
+            };
+
+            timer.Elapsed += OnTimedEvent;
+            
+            return timer;
+        }
+
+        private void OnTimedEvent(object source, ElapsedEventArgs e) {
+            var timer = (Timer) source;
+            timer.Stop();
+            var recordToRemove = _keepAliveDictionary.First(kvp => kvp.Value.Equals(timer));
+            _keepAliveDictionary.Remove(recordToRemove.Key);
+            timer.Dispose();
+            OnUpdateState(recordToRemove.Key + " is offline");
+        }
+
+        public bool IsNetworkNodeOnline(NetworkAddress networkAddress) {
+            return _keepAliveDictionary.ContainsKey(networkAddress);
         }
 
         public bool AreOnline(List<NetworkNodeView> networkNodeViews) {
-            var areOnline = true;
-
-            foreach (var networkNodeView in networkNodeViews) {
-                var nodeUdpPort = networkNodeView.Parameters.NetworkManagmentSystemDataPort;
-
-                if (!IsOnline(nodeUdpPort)) {
-                    areOnline = false;
-                    break;
-                }
+            foreach (var networkNode in networkNodeViews) {
+                if (!IsNetworkNodeOnline(networkNode.NetworkAddress)) return false;
             }
-
-            return areOnline;
-        }
-
-        public bool IsOnline(int nodeUdpPort) {
-            return _keepAliveDictionary.ContainsKey(nodeUdpPort);
-        }
-
-        private void AddToMessageList(string message) {
-            _receivedMessagesList.Add(message);
-            lock (_messageThread) {
-                Monitor.Pulse(_messageThread);
-            }
-        }
-
-
-        private void SendMessageToNetworkNode(string message, int port) {
-            var bytes = Encoding.UTF8.GetBytes(message);
-            var udpClient = new UdpClient();
-            var ipEndpoint = new IPEndPoint(IPAddress.Loopback, port);
-            udpClient.Send(bytes, bytes.Length, ipEndpoint);
-        }
-
-        private void ListenForConnectionRequests() {
-            Task.Run(async () => {
-                using (_listenUdpClient) {
-                    while (true) {
-                        //Console.WriteLine("czeka na zgloszenie");
-                        var receivedData = await _listenUdpClient.ReceiveAsync();
-                        //Console.WriteLine("Otrzymal " + System.Text.Encoding.UTF8.GetString(receivedData.Buffer));
-                        var message = Encoding.UTF8.GetString(receivedData.Buffer);
-                        AddToMessageList(message);
-                        //EstabilishNodeConnection(BitConverter.ToInt32(receivedData.Buffer, 0));
-                    }
-                }
-            });
-        }
-
-        public void Dispose() {
-            _listenUdpClient.Close();
-            OnUpdateState("Network Managment System shutting down.");
+            return true;
         }
     }
 }

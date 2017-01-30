@@ -73,9 +73,15 @@ namespace NetworkUtilities.Network {
 
         private Task Listen(TcpClient nodeTcpClient, NetworkAddress inputNetworkAddress) {
             return new Task(() => {
-                while (Online) {
-                    var receivedObject = Receive(nodeTcpClient.GetStream());
-                    HandleReceivedObject(receivedObject, inputNetworkAddress);
+                try {
+                    while (Online) {
+                        var receivedObject = Receive(nodeTcpClient.GetStream());
+                        HandleReceivedObject(receivedObject, inputNetworkAddress);
+                    }
+                }
+                catch (IOException) {
+                    OnUpdateState($"Connection to {inputNetworkAddress} - closed");
+                    DeleteConnection(inputNetworkAddress);
                 }
             });
         }

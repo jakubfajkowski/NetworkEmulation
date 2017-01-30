@@ -26,7 +26,7 @@ namespace NetworkEmulationTest {
             cableCloud.UpdateState += (sender, state) => Console.WriteLine("CC: " + state);
             cableCloud.StartListening();
 
-            var nms = new NetworkManagmentSystem();
+            var nms = new NetworkManagmentSystem(6666);
             nms.UpdateState += (sender, state) => Console.WriteLine("NMS:" + state);
 
             Thread.Sleep(1000);
@@ -115,9 +115,6 @@ namespace NetworkEmulationTest {
             cableCloud.AddLink(socketNodePortPair1, socketNodePortPair2);
             cableCloud.AddLink(socketNodePortPair3, socketNodePortPair4);
             cableCloud.AddLink(socketNodePortPair5, socketNodePortPair6);
-
-            nms.SendConnectionToNetworkNodeAgent(networkNode1.NetworkNodeAgent.ListenUdpPort, 1, 1, port1, 2, 2, port2);
-            nms.SendConnectionToNetworkNodeAgent(networkNode2.NetworkNodeAgent.ListenUdpPort, 2, 2, port3, 3, 3, port4);
 
             Thread.Sleep(1000);
 
