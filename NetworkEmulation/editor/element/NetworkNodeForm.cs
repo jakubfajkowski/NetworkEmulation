@@ -12,7 +12,7 @@ namespace NetworkEmulation.Editor.Element {
             _parameters = networkNodeView.Parameters;
 
             textBoxIpAddress.Text = Settings.Default.IpAddress;
-            textBoxCloudPort.Text = Settings.Default.CableCloudUdpListenerPortNumber.ToString();
+            textBoxCloudPort.Text = Settings.Default.CableCloudListenerPort.ToString();
             textBoxNMSPort.Text = Settings.Default.NetworkManagmentSystemListeningPort.ToString();
         }
 

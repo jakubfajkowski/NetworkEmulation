@@ -20,12 +20,12 @@ namespace NetworkNode {
 
         public NetworkNode(NetworkNodeModel parameters)
             : base(
-                parameters.NetworkAddress, parameters.NetworkAddress.GetParentsAddress(), parameters.IpAddress, parameters.CableCloudListeningPort,
-                parameters.PathComputationServerListeningPort) {
+                parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort,
+                parameters.SignallingCloudListeningPort) {
 
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkAddress, parameters.IpAddress, parameters.NetworkManagmentSystemListeningPort);
-            OnUpdateState("Network Node \nNMS port: " + parameters.NetworkManagmentSystemDataPort);
+            OnUpdateState("Network Node \nNMS port: " + parameters.SignallingCloudListeningPort);
             CommutationMatrix = new CommutationMatrix(new CommutationTable(), parameters.NumberOfPorts);
             CommutationMatrix.UpdateState += (sender, state) => OnUpdateState(state);
 

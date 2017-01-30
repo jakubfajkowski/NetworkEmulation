@@ -8,16 +8,14 @@ using NetworkUtilities.Serialization;
 namespace NetworkUtilities.Network {
     public class ConnectionComponent : LogObject {
         private readonly int _connectionManagerListeningPort;
-        private readonly NetworkAddress _connectionManagerNetworkAddress;
         private readonly NetworkAddressSocketPortPair _handshakeMessage;
         private readonly IPAddress _ipAddress;
 
         private TcpListener _connectionManagerTcpListener;
         private TcpClient _tcpClient;
 
-        public ConnectionComponent(NetworkAddress networkAddress, NetworkAddress connectionManagerNetworkAddress, string connectionManagerIpAddress,
+        public ConnectionComponent(NetworkAddress networkAddress, string connectionManagerIpAddress,
             int connectionManagerListeningPort) {
-            _connectionManagerNetworkAddress = connectionManagerNetworkAddress;
             _ipAddress = IPAddress.Parse(connectionManagerIpAddress);
             _connectionManagerListeningPort = connectionManagerListeningPort;
             _handshakeMessage = new NetworkAddressSocketPortPair(networkAddress, PortRandomizer.RandomFreePort());
@@ -39,10 +37,7 @@ namespace NetworkUtilities.Network {
                 tcpListener = new TcpListener(ipAddress, port);
             }
             catch (Exception e) {
-                if (_connectionManagerNetworkAddress != null)
-                    OnUpdateState($"Sent connection request to {_connectionManagerNetworkAddress} - rejected");
-                else
-                    OnUpdateState($"Sent connection request to cable cloud - rejected");
+                OnUpdateState($"Sent connection request - rejected");
             }
 
             return tcpListener;
@@ -65,10 +60,7 @@ namespace NetworkUtilities.Network {
                 _tcpClient = await tcpListener.AcceptTcpClientAsync();
                 Online = true;
 
-                if (_connectionManagerNetworkAddress != null)
-                    OnUpdateState($"Sent connection request to {_connectionManagerNetworkAddress} - accepted");
-                else
-                    OnUpdateState($"Sent connection request to cable cloud - accepted");
+                OnUpdateState($"Sent connection request - accepted");
                 OnConnectionEstablished();
                 ListenForMessages();
             });
@@ -91,7 +83,7 @@ namespace NetworkUtilities.Network {
         }
 
         private void OnConnectionEstablished() {
-            ConnectionEstablished?.Invoke(this, new ConnectionHandlerArgs(_connectionManagerNetworkAddress, _tcpClient));
+            ConnectionEstablished?.Invoke(this, new EventArgs());
         }
 
         public void Send(object objectToSend) {
@@ -102,15 +94,5 @@ namespace NetworkUtilities.Network {
         public delegate void ObjectHandler(object sender, object receivedObject);
     }
 
-    public delegate void ConnectionHandler(object sender, ConnectionHandlerArgs args);
-
-    public class ConnectionHandlerArgs {
-        public NetworkAddress NetworkAddress { get; }
-        public TcpClient TcpClient { get; }
-
-        public ConnectionHandlerArgs(NetworkAddress networkAddress, TcpClient tcpClient) {
-            NetworkAddress = networkAddress;
-            TcpClient = tcpClient;
-        }
-    }
+    public delegate void ConnectionHandler(object sender, EventArgs args);
 }

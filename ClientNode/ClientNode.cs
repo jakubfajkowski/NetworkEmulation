@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Element;
@@ -13,8 +11,7 @@ namespace ClientNode {
 
         public ClientNode(ClientNodeModel parameters)
             : base(
-                parameters.NetworkAddress, parameters.NetworkAddress.GetParentsAddress() ,parameters.IpAddress, parameters.CableCloudListeningPort,
-                parameters.PathComputationServerListeningPort) {
+                parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort, parameters.SignallingCloudListeningPort) {
 
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             ClientName = parameters.ClientName;

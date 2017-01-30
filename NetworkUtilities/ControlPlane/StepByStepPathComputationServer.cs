@@ -3,23 +3,16 @@
 namespace NetworkUtilities.ControlPlane {
     public class StepByStepPathComputationServer : PathComputationServer {
         private readonly ConnectionController _connectionController;
-
-        private readonly ConnectionComponent _nameServerConnectionComponent;
         private readonly NetworkCallController _networkCallController;
         private readonly RoutingController _routingController;
 
         public StepByStepPathComputationServer(
-            NetworkAddress networkAddress, 
-            NetworkAddress peerPathComputationServerNetworkAddress,
+            NetworkAddress networkAddress,
             string ipAddress,
-            int listeningPort,
-            int pathComputationServerListeningPort,
-            int nameServerListeningPort) : base(
+            int signallingCloudListeningPort) : base(
                                                 networkAddress,
-                                                peerPathComputationServerNetworkAddress,
                                                 ipAddress,
-                                                listeningPort,
-                                                pathComputationServerListeningPort) {
+                                                signallingCloudListeningPort) {
 
             _connectionController = new ConnectionController(networkAddress);
             _connectionController.UpdateState += (sender, state) => OnUpdateState(state);
@@ -35,17 +28,6 @@ namespace NetworkUtilities.ControlPlane {
             _routingController.UpdateState += (sender, state) => OnUpdateState(state);
             _routingController.MessageToSend +=
                 (sender, message) => SendSignallingMessage(message, message.DestinationAddress);
-
-            _nameServerConnectionComponent = new ConnectionComponent(networkAddress, NameServer.Address, ipAddress, nameServerListeningPort);
-            _nameServerConnectionComponent.ConnectionEstablished +=
-                (sender, args) => AddConnection(args.NetworkAddress, args.TcpClient);
-            _nameServerConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
-        }
-
-        public override void Initialize() {
-            base.Initialize();
-
-            _nameServerConnectionComponent.Initialize();
         }
 
         protected override void Receive(SignallingMessage signallingMessage) {

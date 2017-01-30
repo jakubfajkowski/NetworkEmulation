@@ -1,14 +1,17 @@
 ﻿using System;
+using NetworkUtilities.Log;
 using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
-    public class NameServer : ConnectionManager {
+    public class NameServer : LogObject {
         public static readonly NetworkAddress Address = new NetworkAddress("0");
+
+        private readonly ConnectionComponent _controlPlaneConnectionComponent;
 
         private readonly Directory _directory;
         private readonly Policy _policy;
 
-        public NameServer(int listeningPort) : base(listeningPort) {
+        public NameServer(string ipAddress, int signallingCloudListeningPort) {
             _directory = new Directory(Address);
             _directory.UpdateState += (sender, state) => OnUpdateState(state);
             _directory.MessageToSend += OnMessageToSend;
@@ -16,17 +19,23 @@ namespace NetworkUtilities.ControlPlane {
             _policy = new Policy(Address);
             _policy.UpdateState += (sender, state) => OnUpdateState(state);
             _policy.MessageToSend += OnMessageToSend;
+
+            _controlPlaneConnectionComponent = new ConnectionComponent(Address, ipAddress, signallingCloudListeningPort);
+            _controlPlaneConnectionComponent.UpdateState += (sender, state) => OnUpdateState(state);
+            _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
+        }
+
+        public void Initialize() {
+            _controlPlaneConnectionComponent.Initialize();
         }
 
         private void OnMessageToSend(object sender, SignallingMessage message) {
-            OnUpdateState("Sent " + message);
-            Send(message, message.DestinationAddress);
+            _controlPlaneConnectionComponent.Send(message);
         }
 
-        protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {
-            var message = (SignallingMessage) receivedObject;
-            Receive(message);
-            OnUpdateState("Received " + message);
+        private void OnSignallingMessageReceived(object sender, object receivedObject) {
+            var signallingMessage = (SignallingMessage)receivedObject;
+            Receive(signallingMessage);
         }
 
         private void Receive(SignallingMessage message) {

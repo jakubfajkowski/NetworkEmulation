@@ -40,11 +40,11 @@ namespace NetworkEmulation {
 
         private void AddTopTwoSubnetworks() {
             AddSubnetworkNode();
-            networkHierarchyTreeView.Nodes[0].Tag = new StepByStepPathComputationServer(new NetworkAddress(1), NameServer.Address,
-                "127.0.0.1", 20000, 20001, Settings.Default.NameServerListeningPort);
+            networkHierarchyTreeView.Nodes[0].Tag = new StepByStepPathComputationServer(new NetworkAddress(1),
+                "127.0.0.1", Settings.Default.SignallingCloudListeningPort);
             AddSubnetworkNode();
-            networkHierarchyTreeView.Nodes[1].Tag = new StepByStepPathComputationServer(new NetworkAddress(2), NameServer.Address,
-                "127.0.0.1", 20001, 20000, Settings.Default.NameServerListeningPort);
+            networkHierarchyTreeView.Nodes[1].Tag = new StepByStepPathComputationServer(new NetworkAddress(2),
+                "127.0.0.1", Settings.Default.SignallingCloudListeningPort);
         }
 
         private void editorPanel_ControlAdded(object sender, ControlEventArgs e) {
@@ -103,9 +103,8 @@ namespace NetworkEmulation {
                         nodes.Add(subnetworkNode);
                         currentAddress = currentAddress.GetParentsAddress().Append(nodes.Count);
                         subnetworkNode.Text = currentAddress.ToString();
-                        var parentPathComputationServer = (PathComputationServer) subnetworkNode.Parent.Tag;
                         subnetworkNode.Tag = new HierarchicalPathComputationServer(currentAddress,
-                            "127.0.0.1", PortRandomizer.RandomFreePort(), parentPathComputationServer.ListeningPort);
+                            "127.0.0.1", Settings.Default.SignallingCloudListeningPort);
                     }
 
                 parent = nodes[id - 1];

@@ -14,6 +14,7 @@ using NetworkUtilities.Log;
 namespace NetworkEmulation.Network {
     public class Simulation {
         private readonly CableCloud _cableCloud;
+        private readonly SignallingCloud _signallingCloud;
 
         private readonly List<NodeView> _initializableNodes;
         private readonly List<LinkView> _links;
@@ -24,17 +25,21 @@ namespace NetworkEmulation.Network {
         private readonly Dictionary<int, Process> _processes;
 
         public Simulation(TreeNodeCollection networkHierarchy, List<LinkView> links) {
-            _cableCloud = new CableCloud(Settings.Default.CableCloudUdpListenerPortNumber);
+            _cableCloud = new CableCloud(Settings.Default.CableCloudListenerPort);
             PreapareCableCloudLogForm();
             _cableCloud.StartListening();
+
+            _signallingCloud = new SignallingCloud(Settings.Default.SignallingCloudListeningPort);
+            PreapareSignallingCloudLogForm();
+            _signallingCloud.StartListening();
 
             _networkManagmentSystem = new NetworkManagmentSystem(Settings.Default.NetworkManagmentSystemListeningPort);
             PrepareNetworkManagmentSystemLogForm();
             _networkManagmentSystem.StartListening();
 
-            _nameServer = new NameServer(Settings.Default.NameServerListeningPort);
+            _nameServer = new NameServer(Settings.Default.IpAddress, Settings.Default.SignallingCloudListeningPort);
             PrepareNameServerLogForm();
-            _nameServer.StartListening();
+            _nameServer.Initialize();
 
             _pathComputationServers = new List<PathComputationServer>();
             _initializableNodes = new List<NodeView>();
@@ -43,9 +48,10 @@ namespace NetworkEmulation.Network {
 
             PreparePathComputationServerMultipleLogForm();
 
-            foreach (var pathComputationServer in _pathComputationServers) pathComputationServer.StartListening();
-
-            foreach (var pathComputationServer in _pathComputationServers) pathComputationServer.Initialize();
+            foreach (var pathComputationServer in _pathComputationServers) {
+                pathComputationServer.Initialize();
+                Thread.Sleep(100);
+            }
 
 
             foreach (var initializableNode in _initializableNodes.OfType<NetworkNodeView>()) {
@@ -69,6 +75,7 @@ namespace NetworkEmulation.Network {
         public bool Running { get; private set; }
 
         public LogForm CableCloudLogForm { get; private set; }
+        public LogForm SignallingCloudLogForm { get; private set; }
         public LogForm NetworkManagmentSystemLogForm { get; private set; }
         public LogForm NameServerLogForm { get; private set; }
         public PathComputationServerLogForm PathComputationServerLogForm { get; private set; }
@@ -82,18 +89,7 @@ namespace NetworkEmulation.Network {
 
             if (component is PathComputationServer) _pathComputationServers.Add((PathComputationServer) component);
             if (component is NodeView) {
-                var pcs = treeNode.Parent.Tag as PathComputationServer;
                 var node = (NodeView) component;
-
-                if (node is ClientNodeView) {
-                    var parameters = ((ClientNodeView) node).Parameters;
-                    parameters.PathComputationServerListeningPort = pcs.ListeningPort;
-                }
-
-                if (node is NetworkNodeView) {
-                    var parameters = ((NetworkNodeView) node).Parameters;
-                    parameters.PathComputationServerListeningPort = pcs.ListeningPort;
-                }
 
                 _initializableNodes.Add(node);
             }
@@ -105,6 +101,12 @@ namespace NetworkEmulation.Network {
             CableCloudLogForm = new LogForm(_cableCloud);
             CableCloudLogForm.Text = "Cable Cloud Log";
             CableCloudLogForm.Show();
+        }
+
+        private void PreapareSignallingCloudLogForm() {
+            SignallingCloudLogForm = new LogForm(_signallingCloud);
+            SignallingCloudLogForm.Text = "Signalling Cloud Log";
+            SignallingCloudLogForm.Show();
         }
 
         private void PrepareNetworkManagmentSystemLogForm() {
@@ -223,9 +225,6 @@ namespace NetworkEmulation.Network {
 
             _cableCloud.Dispose();
             _networkManagmentSystem.Dispose();
-            _nameServer.Dispose();
-
-            foreach (var pathComputationServer in _pathComputationServers) pathComputationServer.Dispose();
 
             KillProcesses();
 

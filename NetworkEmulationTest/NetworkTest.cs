@@ -26,42 +26,42 @@ namespace NetworkEmulationTest {
             cableCloud.UpdateState += (sender, state) => Console.WriteLine("CC: " + state);
             cableCloud.StartListening();
 
+            var signallingCloud = new SignallingCloud(20000);
+            signallingCloud.UpdateState += (sender, state) => Console.WriteLine("SC: " + state);
+            signallingCloud.StartListening();
+
             var nms = new NetworkManagmentSystem(6666);
             nms.UpdateState += (sender, state) => Console.WriteLine("NMS:" + state);
+            nms.StartListening();
 
             Thread.Sleep(1000);
 
-            var nameServer = new NameServer(30000);
+            var nameServer = new NameServer(localhost, 20000);
             nameServer.UpdateState += (sender, state) => Console.WriteLine("NS " + state);
-            nameServer.StartListening();
+            nameServer.Initialize();
 
             var sspcs1 = new StepByStepPathComputationServer(
                 new NetworkAddress(1),
-                new NetworkAddress(2),
                 localhost,
-                20000,
-                20001,
-                30000
+                20000
             );
             sspcs1.UpdateState += (sender, state) => Console.WriteLine("SSPCS1: " + state);
-            sspcs1.StartListening();
+            sspcs1.Initialize();
 
             var sspcs2 = new StepByStepPathComputationServer(
                 new NetworkAddress(2),
-                new NetworkAddress(1), 
                 localhost,
-                20001,
-                20000,
-                30000
+                20000
             );
             sspcs2.UpdateState += (sender, state) => Console.WriteLine("SSPCS2: " + state);
-            sspcs2.StartListening();
+            sspcs2.Initialize();
 
             var clientNodeA = new ClientNode.ClientNode(new ClientNodeModel {
                 NetworkAddress = new NetworkAddress("1.1"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "A",
                 CableCloudListeningPort = 10000,
+                SignallingCloudListeningPort = 20000,
                 IpAddress = localhost
             });
             //clientNodeA.OnMessageReceived += (sender, state) => Console.WriteLine(state);
@@ -73,6 +73,7 @@ namespace NetworkEmulationTest {
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "B",
                 CableCloudListeningPort = 10000,
+                SignallingCloudListeningPort = 20000,
                 IpAddress = localhost
             });
             //clientNodeB.OnMessageReceived += (sender, state) => Console.WriteLine(state);
@@ -86,7 +87,7 @@ namespace NetworkEmulationTest {
                 CableCloudListeningPort = 10000,
                 IpAddress = localhost,
                 NetworkManagmentSystemListeningPort = 6666,
-                NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
+                SignallingCloudListeningPort = 20000
             });
             networkNode1.UpdateState += (sender, state) => Console.WriteLine("NetworkNode 1.2: " + state);
             networkNode1.Initialize();
@@ -98,12 +99,12 @@ namespace NetworkEmulationTest {
                 CableCloudListeningPort = 10000,
                 IpAddress = localhost,
                 NetworkManagmentSystemListeningPort = 6666,
-                NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
+                SignallingCloudListeningPort = 20000
             });
             networkNode2.UpdateState += (sender, state) => Console.WriteLine("NetworkNode 2.1: " + state);
             networkNode2.Initialize();
 
-            Thread.Sleep(5000);
+            Thread.Sleep(1000);
 
             var socketNodePortPair1 = new NetworkAddressNodePortPair(clientNodeA.NetworkAddress, portA);
             var socketNodePortPair2 = new NetworkAddressNodePortPair(networkNode1.NetworkAddress, port1);
@@ -151,7 +152,7 @@ namespace NetworkEmulationTest {
                     CableCloudListeningPort = 10000,
                     IpAddress = "127.0.0.1",
                     NetworkManagmentSystemListeningPort = 6666,
-                    NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
+                    SignallingCloudListeningPort = PortRandomizer.RandomFreePort()
                 }
             };
 

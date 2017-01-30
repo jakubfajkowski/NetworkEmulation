@@ -18,7 +18,7 @@ namespace NetworkNodeTest {
                 CableCloudListeningPort = 10000,
                 IpAddress = "127.0.0.1",
                 NetworkManagmentSystemListeningPort = 6666,
-                NetworkManagmentSystemDataPort = PortRandomizer.RandomFreePort()
+                SignallingCloudListeningPort = PortRandomizer.RandomFreePort()
             };
 
             var serializedParameters = XmlSerializer.Serialize(networkNodeSerializableParameters);

@@ -9,7 +9,7 @@ namespace NetworkNode {
         private readonly ConnectionComponent _managmentPlaneConnectionComponent;
 
         public NetworkNodeAgent(NetworkAddress networkAddress, string networkManagmentSystemIpAddress, int networkManagmentSystemListeningPort) {
-            _managmentPlaneConnectionComponent = new ConnectionComponent(networkAddress, null, networkManagmentSystemIpAddress, networkManagmentSystemListeningPort);
+            _managmentPlaneConnectionComponent = new ConnectionComponent(networkAddress, networkManagmentSystemIpAddress, networkManagmentSystemListeningPort);
         }
 
         public void Initialize() {

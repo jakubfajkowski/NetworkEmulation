@@ -8,21 +8,21 @@ namespace NetworkUtilities.Network {
         private readonly ConnectionComponent _controlPlaneConnectionComponent;
         private readonly ConnectionComponent _dataPlaneConnectionComponent;
         protected int CableCloudListeningPort;
-        protected int PathComputationServerListeningPort;
+        protected int SignallingCloudListeningPort;
 
 
-        protected Node(NetworkAddress networkAddress, NetworkAddress pathcomputationServerNetworkAddress, string ipAddress, int cableCloudListeningPort,
-            int pathComputationServerListeningPort) {
+        protected Node(NetworkAddress networkAddress, string ipAddress, int cableCloudListeningPort,
+            int signallingCloudListeningPort) {
             NetworkAddress = networkAddress;
 
             CableCloudListeningPort = cableCloudListeningPort;
-            _dataPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, null, ipAddress, cableCloudListeningPort);
+            _dataPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, ipAddress, cableCloudListeningPort);
             _dataPlaneConnectionComponent.UpdateState += (sender, state) => OnUpdateState(state);
             _dataPlaneConnectionComponent.ObjectReceived += OnCableCloudMessageReceived;
 
-            PathComputationServerListeningPort = pathComputationServerListeningPort;
-            _controlPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, pathcomputationServerNetworkAddress, ipAddress,
-                pathComputationServerListeningPort);
+            SignallingCloudListeningPort = signallingCloudListeningPort;
+            _controlPlaneConnectionComponent = new ConnectionComponent(NetworkAddress, ipAddress,
+                signallingCloudListeningPort);
             _controlPlaneConnectionComponent.UpdateState += (sender, state) => OnUpdateState(state);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
         }

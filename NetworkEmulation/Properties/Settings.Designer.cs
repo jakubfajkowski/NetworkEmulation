@@ -26,12 +26,12 @@ namespace NetworkEmulation.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10000")]
-        public int CableCloudUdpListenerPortNumber {
+        public int CableCloudListenerPort {
             get {
-                return ((int)(this["CableCloudUdpListenerPortNumber"]));
+                return ((int)(this["CableCloudListenerPort"]));
             }
             set {
-                this["CableCloudUdpListenerPortNumber"] = value;
+                this["CableCloudListenerPort"] = value;
             }
         }
         
@@ -83,12 +83,12 @@ namespace NetworkEmulation.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("9999")]
-        public int NameServerListeningPort {
+        public int SignallingCloudListeningPort {
             get {
-                return ((int)(this["NameServerListeningPort"]));
+                return ((int)(this["SignallingCloudListeningPort"]));
             }
             set {
-                this["NameServerListeningPort"] = value;
+                this["SignallingCloudListeningPort"] = value;
             }
         }
     }

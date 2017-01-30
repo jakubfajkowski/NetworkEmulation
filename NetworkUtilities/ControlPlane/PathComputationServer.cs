@@ -1,34 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using NetworkUtilities.Log;
 using NetworkUtilities.Network;
 
 namespace NetworkUtilities.ControlPlane {
-    public abstract class PathComputationServer : ConnectionManager {
-        protected int PathComputationServerListeningPort;
+    public abstract class PathComputationServer : LogObject {
+        protected int SignallingCloudListeningPort;
 
         private readonly ConnectionComponent _controlPlaneConnectionComponent;
 
-        protected PathComputationServer(NetworkAddress networkAddress, NetworkAddress otherPathComputationServerNetworkAddress, string ipAddress, int listeningPort, int pathComputationServerListeningPort) : base(listeningPort) {
-
-            PathComputationServerListeningPort = pathComputationServerListeningPort;
+        protected PathComputationServer(NetworkAddress networkAddress, string ipAddress, int signallingCloudListeningPort) {
+            SignallingCloudListeningPort = signallingCloudListeningPort;
 
             NetworkAddress = networkAddress;
 
-            _controlPlaneConnectionComponent = new ConnectionComponent(networkAddress, otherPathComputationServerNetworkAddress, ipAddress,
-                pathComputationServerListeningPort);
-            _controlPlaneConnectionComponent.ConnectionEstablished += ControlPlaneConnectionComponentOnConnectionEstablished;
+            _controlPlaneConnectionComponent = new ConnectionComponent(networkAddress, ipAddress, signallingCloudListeningPort);
             _controlPlaneConnectionComponent.UpdateState += (sender, state) => OnUpdateState(state);
             _controlPlaneConnectionComponent.ObjectReceived += OnSignallingMessageReceived;
         }
 
         protected void OnSignallingMessageReceived(object sender, object receivedObject) {
             var signallingMessage = (SignallingMessage) receivedObject;
-
-            HandleReceivedObject(signallingMessage, null);
-        }
-
-        private void ControlPlaneConnectionComponentOnConnectionEstablished(object sender, ConnectionHandlerArgs args) {
-            AddConnection(args.NetworkAddress, args.TcpClient);
+            Receive(signallingMessage);
         }
 
         public NetworkAddress NetworkAddress { get; }
@@ -37,30 +30,8 @@ namespace NetworkUtilities.ControlPlane {
             _controlPlaneConnectionComponent.Initialize();
         }
 
-        protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {
-            var signallingMessage = (SignallingMessage) receivedObject;
-
-            OnUpdateState("Received " + signallingMessage);
-
-            if (signallingMessage.DestinationAddress.Equals(NetworkAddress)) {
-                Receive(signallingMessage);
-            }
-            else {
-                try {
-                    SendSignallingMessage(signallingMessage, signallingMessage.DestinationAddress);
-                }
-                catch (KeyNotFoundException) {
-                    OnUpdateState("Error sending " + signallingMessage  + ": There is no such record.");
-                }
-                catch (Exception) {
-                    OnUpdateState("Error sending " + signallingMessage + ": Could not connect.");
-                }
-            }
-        }
-
         protected void SendSignallingMessage(SignallingMessage signallingMessage, NetworkAddress outputNetworkAddress) {
-            OnUpdateState("Sent " + signallingMessage);
-            Send(signallingMessage, outputNetworkAddress);
+            _controlPlaneConnectionComponent.Send(signallingMessage);
         }
 
         protected abstract void Receive(SignallingMessage signallingMessage);

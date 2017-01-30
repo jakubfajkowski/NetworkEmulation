@@ -49,6 +49,7 @@
     <Compile Include="ControlPlane\NameServer.cs" />
     <Compile Include="ControlPlane\PathComputationServer.cs" />
     <Compile Include="ControlPlane\Policy.cs" />
+    <Compile Include="ControlPlane\SignallingCloud.cs" />
     <Compile Include="ControlPlane\SignallingMessageDestinationControlPlaneElement.cs" />
     <Compile Include="ControlPlane\SubnetworkPointPool.cs" />
     <Compile Include="Element\LinkModel.cs" />
