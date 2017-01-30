@@ -5,12 +5,12 @@ using System.Windows.Forms;
 using System.Xml;
 using NetworkEmulation.Editor;
 using NetworkEmulation.Editor.Element;
-using NetworkEmulation.Network;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Log;
-using NetworkUtilities.Serialization;
+using NetworkUtilities.Utilities;
+using NetworkUtilities.Utilities.Serialization;
 
 namespace NetworkEmulation {
     public partial class MainForm : Form {

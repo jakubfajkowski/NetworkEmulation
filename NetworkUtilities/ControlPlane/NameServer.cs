@@ -1,6 +1,7 @@
 ﻿using System;
 using NetworkUtilities.Log;
 using NetworkUtilities.Network;
+using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     public class NameServer : LogObject {

@@ -73,8 +73,6 @@
     </Compile>
     <Compile Include="Editor\IInitializable.cs" />
     <Compile Include="Editor\IMarkable.cs" />
-    <Compile Include="Network\ConnectionTableRow.cs" />
-    <Compile Include="Network\CableCloud.cs" />
     <Compile Include="Editor\ClippedPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -84,8 +82,7 @@
     <Compile Include="Editor\Element\LinkView.Designer.cs">
       <DependentUpon>LinkView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Network\NodeConnectionInformation.cs" />
-    <Compile Include="Network\Simulation.cs" />
+    <Compile Include="Simulation.cs" />
     <Compile Include="Editor\Element\ClientNodeView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -95,7 +92,6 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Network\NetworkManagmentSystem.cs" />
     <Compile Include="Editor\Element\NetworkNodeView.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -4,9 +4,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkEmulation.Network;
 using NetworkUtilities;
-using NetworkUtilities.Serialization;
+using NetworkUtilities.DataPlane;
+using NetworkUtilities.Utilities;
+using NetworkUtilities.Utilities.Serialization;
 
 namespace NetworkEmulationTest {
     [TestClass]

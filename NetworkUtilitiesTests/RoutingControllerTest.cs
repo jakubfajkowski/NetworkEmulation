@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
-using NetworkUtilities.Element;
-using NetworkUtilities.GraphAlgorithm;
+using NetworkUtilities.ControlPlane.GraphAlgorithm;
+using NetworkUtilities.Utilities;
 
 namespace NetworkUtilitiesTests {
     [TestClass]

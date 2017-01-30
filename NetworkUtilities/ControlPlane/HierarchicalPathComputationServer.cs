@@ -1,4 +1,6 @@
-﻿namespace NetworkUtilities.ControlPlane {
+﻿using NetworkUtilities.Utilities;
+
+namespace NetworkUtilities.ControlPlane {
     public class HierarchicalPathComputationServer : PathComputationServer {
         private readonly ConnectionController _connectionController;
         private readonly RoutingController _routingController;

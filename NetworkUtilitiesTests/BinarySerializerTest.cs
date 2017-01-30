@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
-using NetworkUtilities.Serialization;
+using NetworkUtilities.DataPlane;
+using NetworkUtilities.Utilities.Serialization;
 
 namespace NetworkUtilitiesTests {
     [TestClass]

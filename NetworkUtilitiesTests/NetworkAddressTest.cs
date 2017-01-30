@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities;
+using NetworkUtilities.Utilities;
 
 namespace NetworkUtilitiesTests {
     [TestClass]

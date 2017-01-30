@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NetworkUtilities.GraphAlgorithm;
+using NetworkUtilities.ControlPlane.GraphAlgorithm;
+using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     public class RoutingController : ControlPlaneElement {

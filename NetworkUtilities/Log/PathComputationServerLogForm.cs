@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using NetworkUtilities.ControlPlane;
+using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.Log {
     public partial class PathComputationServerLogForm : Form {

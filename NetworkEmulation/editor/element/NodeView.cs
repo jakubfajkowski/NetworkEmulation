@@ -4,8 +4,9 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using NetworkUtilities;
-using NetworkUtilities.Serialization;
-using UniqueId = NetworkUtilities.UniqueId;
+using NetworkUtilities.Utilities;
+using NetworkUtilities.Utilities.Serialization;
+using UniqueId = NetworkUtilities.Utilities.UniqueId;
 
 namespace NetworkEmulation.Editor.Element {
     public abstract class NodeView : ClippedPictureBox, IMarkable, IInitializable, ISerializable {

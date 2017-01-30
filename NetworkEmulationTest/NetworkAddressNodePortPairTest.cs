@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkEmulation.Network;
 using NetworkUtilities;
+using NetworkUtilities.Utilities;
 
 namespace NetworkEmulationTest {
     [TestClass]

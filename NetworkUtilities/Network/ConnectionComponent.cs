@@ -3,7 +3,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using NetworkUtilities.Log;
-using NetworkUtilities.Serialization;
+using NetworkUtilities.Utilities;
+using NetworkUtilities.Utilities.Serialization;
 
 namespace NetworkUtilities.Network {
     public class ConnectionComponent : LogObject {

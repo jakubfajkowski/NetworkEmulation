@@ -2,10 +2,13 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.Editor.Element;
-using NetworkEmulation.Network;
 using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
-using NetworkUtilities.Element;
+using NetworkUtilities.DataPlane;
+using NetworkUtilities.ManagementPlane;
+using NetworkUtilities.Network.Model;
+using NetworkUtilities.Utilities;
+using NetworkNode = NetworkUtilities.Network.NetworkNode;
 
 namespace NetworkEmulationTest {
     [TestClass]
@@ -56,7 +59,7 @@ namespace NetworkEmulationTest {
             sspcs2.UpdateState += (sender, state) => Console.WriteLine("SSPCS2: " + state);
             sspcs2.Initialize();
 
-            var clientNodeA = new ClientNode.ClientNode(new ClientNodeModel {
+            var clientNodeA = new NetworkUtilities.Network.ClientNode(new ClientNodeModel {
                 NetworkAddress = new NetworkAddress("1.1"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "A",
@@ -69,7 +72,7 @@ namespace NetworkEmulationTest {
             clientNodeA.Initialize();
             nameServer.UpdateDirectory("A", new SubnetworkPointPool(clientNodeA.NetworkAddress.Append(1)));
 
-            var clientNodeB = new ClientNode.ClientNode(new ClientNodeModel {
+            var clientNodeB = new NetworkUtilities.Network.ClientNode(new ClientNodeModel {
                 NetworkAddress = new NetworkAddress("2.2"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "B",
@@ -82,7 +85,7 @@ namespace NetworkEmulationTest {
             clientNodeB.Initialize();
             nameServer.UpdateDirectory("B", new SubnetworkPointPool(clientNodeB.NetworkAddress.Append(1)));
 
-            var networkNode1 = new NetworkNode.NetworkNode(new NetworkNodeModel {
+            var networkNode1 = new NetworkNode(new NetworkNodeModel {
                 NetworkAddress = new NetworkAddress("1.2"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 NumberOfPorts = 8,
@@ -94,7 +97,7 @@ namespace NetworkEmulationTest {
             networkNode1.UpdateState += (sender, state) => Console.WriteLine("NetworkNode 1.2: " + state);
             networkNode1.Initialize();
 
-            var networkNode2 = new NetworkNode.NetworkNode(new NetworkNodeModel {
+            var networkNode2 = new NetworkNode(new NetworkNodeModel {
                 NetworkAddress = new NetworkAddress("2.1"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 NumberOfPorts = 8,

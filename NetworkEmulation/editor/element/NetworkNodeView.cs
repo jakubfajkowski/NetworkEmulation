@@ -2,8 +2,8 @@
 using System.Xml;
 using NetworkEmulation.Properties;
 using NetworkUtilities;
-using NetworkUtilities.Element;
-using NetworkUtilities.Serialization;
+using NetworkUtilities.Network.Model;
+using NetworkUtilities.Utilities.Serialization;
 
 namespace NetworkEmulation.Editor.Element {
     public class NetworkNodeView : NodeView {

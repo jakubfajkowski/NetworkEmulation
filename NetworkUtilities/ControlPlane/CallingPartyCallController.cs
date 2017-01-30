@@ -1,4 +1,6 @@
-﻿namespace NetworkUtilities.ControlPlane {
+﻿using NetworkUtilities.Utilities;
+
+namespace NetworkUtilities.ControlPlane {
     public class CallingPartyCallController : ControlPlaneElement {
         public CallingPartyCallController(NetworkAddress networkAddress)
             : base(networkAddress) {

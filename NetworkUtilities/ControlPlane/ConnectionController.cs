@@ -5,6 +5,7 @@ using System.Drawing.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     public class ConnectionController : ControlPlaneElement {

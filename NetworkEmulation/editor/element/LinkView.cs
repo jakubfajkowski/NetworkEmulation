@@ -2,9 +2,9 @@
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
-using NetworkUtilities.Element;
-using NetworkUtilities.Serialization;
-using UniqueId = NetworkUtilities.UniqueId;
+using NetworkUtilities.Network.Model;
+using NetworkUtilities.Utilities.Serialization;
+using UniqueId = NetworkUtilities.Utilities.UniqueId;
 
 namespace NetworkEmulation.Editor.Element {
     public partial class LinkView : Control, IMarkable, ISerializable {

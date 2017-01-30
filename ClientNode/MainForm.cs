@@ -2,12 +2,12 @@
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
-using NetworkUtilities.Element;
-using NetworkUtilities.Serialization;
+using NetworkUtilities.Network.Model;
+using NetworkUtilities.Utilities.Serialization;
 
 namespace ClientNode {
     public partial class MainForm : Form {
-        private readonly ClientNode _client;
+        private readonly NetworkUtilities.Network.ClientNode _client;
 
         public MainForm(string[] args) {
             InitializeComponent();
@@ -15,7 +15,7 @@ namespace ClientNode {
             var param =
                 (ClientNodeModel)
                 XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeModel));
-            _client = new ClientNode(param);
+            _client = new NetworkUtilities.Network.ClientNode(param);
             textBoxEventLog.Text = joinedArgs + "\n";
         }
 

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkUtilities.GraphAlgorithm;
+using NetworkUtilities.ControlPlane.GraphAlgorithm;
 
 namespace NetworkUtilitiesTests {
     [TestClass]

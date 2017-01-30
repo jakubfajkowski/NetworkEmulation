@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.Editor.Element;
-using NetworkEmulation.Network;
 using NetworkUtilities;
-using NetworkUtilities.Element;
-using NetworkUtilities.Serialization;
+using NetworkUtilities.Network.Model;
+using NetworkUtilities.Utilities;
+using NetworkUtilities.Utilities.Serialization;
 
 namespace NetworkEmulationTest {
     [TestClass]

@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkEmulation.Network;
 using NetworkNode;
 using NetworkUtilities;
-using NetworkUtilities.Element;
-using NetworkUtilities.Serialization;
+using NetworkUtilities.ManagementPlane;
+using NetworkUtilities.Network.Model;
+using NetworkUtilities.Utilities;
+using NetworkUtilities.Utilities.Serialization;
+using NetworkNode = NetworkUtilities.Network.NetworkNode;
 
 namespace NetworkNodeTest {
     [TestClass]
@@ -31,7 +33,7 @@ namespace NetworkNodeTest {
                 (NetworkNodeModel)
                 XmlSerializer.Deserialize(joinedArgs, typeof(NetworkNodeModel));
 
-            var networkNode = new NetworkNode.NetworkNode(parameters);
+            var networkNode = new NetworkNode(parameters);
             networkNode.Initialize();
         }
 

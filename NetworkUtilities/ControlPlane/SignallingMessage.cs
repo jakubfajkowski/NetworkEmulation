@@ -1,4 +1,5 @@
 ﻿using System;
+using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     [Serializable]

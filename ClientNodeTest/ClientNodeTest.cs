@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkUtilities.Element;
+using NetworkUtilities.Network.Model;
 
 namespace ClientNodeTest {
     [TestClass]
