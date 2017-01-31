@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkEmulation.Editor.Element;
+using NetworkEmulation.Workplace.Element;
 using NetworkUtilities.Network;
 using NetworkUtilities.Network.ClientNode;
 using NetworkUtilities.Network.NetworkNode;

@@ -1,4 +1,4 @@
-﻿namespace NetworkEmulation.Editor {
+﻿namespace NetworkEmulation.Workplace {
     public interface IMarkable {
         void MarkAsSelected();
         void MarkAsDeselected();

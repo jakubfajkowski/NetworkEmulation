@@ -1,4 +1,4 @@
-﻿using NetworkEmulation.Editor;
+﻿using NetworkEmulation.Workplace;
 
 namespace NetworkEmulation {
     partial class MainForm {
@@ -52,7 +52,7 @@ namespace NetworkEmulation {
             this.networkHierarchyTreeView = new System.Windows.Forms.TreeView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.parametersListView = new System.Windows.Forms.ListView();
-            this.editorPanel = new NetworkEmulation.Editor.EditorPanel();
+            this.editorPanel = new EditorPanel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Xml;
 using NetworkEmulation.Properties;
 using NetworkUtilities.Network.NetworkNode;
 using NetworkUtilities.Utilities.Serialization;
 
-namespace NetworkEmulation.Editor.Element {
+namespace NetworkEmulation.Workplace.Element {
     public class NetworkNodeView : NodeView {
         public NetworkNodeView() {
             Image = Resources.NetworkNodeNotSelected;

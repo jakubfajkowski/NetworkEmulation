@@ -7,7 +7,7 @@ using NetworkUtilities.Utilities;
 using NetworkUtilities.Utilities.Serialization;
 using UniqueId = NetworkUtilities.Utilities.UniqueId;
 
-namespace NetworkEmulation.Editor.Element {
+namespace NetworkEmulation.Workplace.Element {
     public abstract class NodeView : ClippedPictureBox, IMarkable, IInitializable, ISerializable {
         public delegate void NodeMovingHandler(object sender);
 

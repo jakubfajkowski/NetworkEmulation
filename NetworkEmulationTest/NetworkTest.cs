@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkEmulation.Editor.Element;
+using NetworkEmulation.Workplace.Element;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.DataPlane;
 using NetworkUtilities.ManagementPlane;

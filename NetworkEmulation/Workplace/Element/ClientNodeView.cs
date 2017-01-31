@@ -5,7 +5,7 @@ using NetworkUtilities.Network.ClientNode;
 using NetworkUtilities.Utilities;
 using NetworkUtilities.Utilities.Serialization;
 
-namespace NetworkEmulation.Editor.Element {
+namespace NetworkEmulation.Workplace.Element {
     public class ClientNodeView : NodeView {
         public ClientNodeView() {
             Image = Resources.ClientNodeNotSelected;

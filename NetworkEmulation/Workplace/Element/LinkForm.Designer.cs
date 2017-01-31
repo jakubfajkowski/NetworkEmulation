@@ -1,4 +1,4 @@
-﻿namespace NetworkEmulation.Editor.Element {
+﻿namespace NetworkEmulation.Workplace.Element {
     partial class LinkForm {
         /// <summary>
         /// Required designer variable.

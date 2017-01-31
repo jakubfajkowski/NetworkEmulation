@@ -1,4 +1,4 @@
-﻿namespace NetworkEmulation.Editor.Element {
+﻿namespace NetworkEmulation.Workplace.Element {
     partial class ClientNodeForm {
         /// <summary>
         /// Required designer variable.

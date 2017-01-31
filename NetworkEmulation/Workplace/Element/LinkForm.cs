@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using NetworkUtilities.Utilities;
 
-namespace NetworkEmulation.Editor.Element {
+namespace NetworkEmulation.Workplace.Element {
     public partial class LinkForm : Form {
         private readonly LinkView _link;
 

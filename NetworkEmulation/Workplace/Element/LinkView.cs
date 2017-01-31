@@ -6,7 +6,7 @@ using NetworkUtilities.Network;
 using NetworkUtilities.Utilities.Serialization;
 using UniqueId = NetworkUtilities.Utilities.UniqueId;
 
-namespace NetworkEmulation.Editor.Element {
+namespace NetworkEmulation.Workplace.Element {
     public partial class LinkView : Control, IMarkable, ISerializable {
         private static readonly Pen SelectedPen = new Pen(Color.Black, 5);
         private static readonly Pen DeselectedPen = new Pen(Color.Black, 1);

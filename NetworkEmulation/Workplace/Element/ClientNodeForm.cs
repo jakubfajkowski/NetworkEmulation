@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using NetworkEmulation.Properties;
 using NetworkUtilities.Network.ClientNode;
 
-namespace NetworkEmulation.Editor.Element {
+namespace NetworkEmulation.Workplace.Element {
     public partial class ClientNodeForm : Form {
         private readonly ClientNodeModel _parameters;
 
