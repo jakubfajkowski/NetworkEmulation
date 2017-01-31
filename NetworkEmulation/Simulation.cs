@@ -247,9 +247,6 @@ namespace NetworkEmulation {
             foreach (var pathComputationServer in _pathComputationServers) {
                 pathComputationServer?.Dispose();
             }
-            ConnectionManagersLogForm?.Dispose();
-            NameServerLogForm?.Dispose();
-            PathComputationServersLogForm?.Dispose();
         }
     }
 }

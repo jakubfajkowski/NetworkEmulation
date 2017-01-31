@@ -30,28 +30,12 @@ namespace NetworkUtilities.ControlPlane {
             }
         }
 
-
-        public int[] GetNewLabels(int portNumber) {
-            int VPI;
-            int VCI;
-
-            while (true) {
-                VPI = _random.Next() % MaxLabelNumber;
-                VCI = _random.Next() % MaxLabelNumber;
-                Debug.WriteLine(VPI + " " + VCI);
-
-                if (_commutationTable.FindRow(VPI, VCI, portNumber) == null)
-                    break;
-            }
-            return new[] {VPI, VCI};
-        }
-
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
                 case OperationType.GetLabels:
-                    Debug.WriteLine("GetLabels " + (int) message.Payload + " port.");
-                    var labels = GetNewLabels((int) message.Payload);
-                    Debug.WriteLine(_capacityDictionary.Count + " Send labels " + (int) message.Payload + " port, VPI: " +
+                    Debug.WriteLine("GetLabels " + (int)message.Payload + " port.");
+                    var labels = GetNewLabels((int)message.Payload);
+                    Debug.WriteLine(_capacityDictionary.Count + " Send labels " + (int)message.Payload + " port, VPI: " +
                                     labels[0] + ", VCI:" + labels[1]);
                     SendLabels(labels);
                     break;
@@ -71,6 +55,22 @@ namespace NetworkUtilities.ControlPlane {
                     HandleConfirm(message);
                     break;
             }
+        }
+
+
+        public int[] GetNewLabels(int portNumber) {
+            int VPI;
+            int VCI;
+
+            while (true) {
+                VPI = _random.Next() % MaxLabelNumber;
+                VCI = _random.Next() % MaxLabelNumber;
+                Debug.WriteLine(VPI + " " + VCI);
+
+                if (_commutationTable.FindRow(VPI, VCI, portNumber) == null)
+                    break;
+            }
+            return new[] {VPI, VCI};
         }
 
 

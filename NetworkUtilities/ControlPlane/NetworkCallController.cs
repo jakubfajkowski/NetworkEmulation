@@ -17,6 +17,79 @@ namespace NetworkUtilities.ControlPlane {
         public NetworkCallController(NetworkAddress networkAddress) : 
             base(networkAddress, ControlPlaneElementType.NCC) {}
 
+        public override void ReceiveMessage(SignallingMessage message) {
+            base.ReceiveMessage(message);
+
+            switch (message.Operation) {
+                case OperationType.PolicyResponse:
+                    if ((bool) message.Payload) SendDirectorySnppRequest(message);
+                    break;
+                case OperationType.CallRequest:
+                    var clientNames = (string[]) message.Payload;
+
+                    _nameDictionary.Add(message.SessionId, clientNames);
+
+                    SendPolicyRequest(message);
+                    break;
+                case OperationType.CallTeardown:
+                    SendCallTeardownResponse(message);
+                    break;
+                case OperationType.CallCoordination:
+                    var networkAddress = (NetworkAddress[]) message.Payload;
+                    _networkAddressDictionary.Add(message.SessionId, networkAddress);
+                    SendDirectoryNameRequest(message);
+                    //SendCallCoordinationResponse(message);
+                    break;
+                case OperationType.CallTeardownResponse:
+
+                    break;
+                case OperationType.DirectorySnppResponse:
+                    var snpp = (SubnetworkPointPool[]) message.Payload;
+                    _snppDictionary.Add(message.SessionId, snpp);
+                    SendDirectoryAddressRequest(message);
+                    break;
+                case OperationType.DirectoryAddressResponse:
+                    var networkAdress = (NetworkAddress[]) message.Payload;
+
+                    try {
+                        _networkAddressDictionary.Add(message.SessionId, networkAdress);
+
+                        if (networkAdress[0].GetId(0) == networkAdress[1].GetId(0)) SendCallAccept(message);
+                        else SendCallCoordination(message);
+                    }
+                    catch (ArgumentOutOfRangeException) {
+                        SendCallConfirmationToCPCC(message);
+                    }
+                    break;
+                case OperationType.DirectoryNameResponse:
+                    var clientName = (string[]) message.Payload;
+                    _nameDictionary.Add(message.SessionId, clientName);
+                    SendCallAccept(message);
+                    break;
+                case OperationType.CallCoordinationResponse:
+
+                    break;
+                case OperationType.CallAcceptResponse:
+
+                    break;
+                case OperationType.ConnectionRequestResponse:
+
+                    break;
+                case OperationType.CallConfirmation:
+                    var address = _networkAddressDictionary[message.SessionId];
+                    if (address[0].GetId(0) == address[1].GetId(0)) SendConnectionRequest(message);
+                    else SendCallConfirmationToNCC(message);
+                    break;
+                case OperationType.CallConfirmationFromNCC:
+                    SendConnectionRequest(message);
+                    break;
+
+                case OperationType.ConnectionConfirmationToNCC:
+                    SendCallConfirmationToCPCC(message);
+                    break;
+            }
+        }
+
         private void SendPolicyRequest(SignallingMessage message) {
             var policyRequest = message;
             policyRequest.Operation = OperationType.PolicyRequest;
@@ -127,84 +200,6 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callTeardownResponse);
         }
 
-        public override void ReceiveMessage(SignallingMessage message) {
-            base.ReceiveMessage(message);
-
-            switch (message.Operation) {
-                case OperationType.PolicyResponse:
-                    if ((bool) message.Payload) SendDirectorySnppRequest(message);
-                    break;
-                case OperationType.CallRequest:
-                    var clientNames = (string[]) message.Payload;
-
-                    _nameDictionary.Add(message.SessionId, clientNames);
-
-                    //-----------------------------------------------------------
-                    //SubnetworkPointPool snppA = new SubnetworkPointPool(new NetworkAddress("1.1.1.1"));
-                    //SubnetworkPointPool snppB = new SubnetworkPointPool(new NetworkAddress("2.2.2"));
-                    //Directory.UpdateDirectory("A", snppA);
-                    //Directory.UpdateDirectory("B", snppB);
-                    //-----------------------------------------------------------
-
-                    SendPolicyRequest(message);
-                    break;
-                case OperationType.CallTeardown:
-                    SendCallTeardownResponse(message);
-                    break;
-                case OperationType.CallCoordination:
-                    var networkAddress = (NetworkAddress[]) message.Payload;
-                    _networkAddressDictionary.Add(message.SessionId, networkAddress);
-                    SendDirectoryNameRequest(message);
-                    //SendCallCoordinationResponse(message);
-                    break;
-                case OperationType.CallTeardownResponse:
-
-                    break;
-                case OperationType.DirectorySnppResponse:
-                    var snpp = (SubnetworkPointPool[]) message.Payload;
-                    _snppDictionary.Add(message.SessionId, snpp);
-                    SendDirectoryAddressRequest(message);
-                    break;
-                case OperationType.DirectoryAddressResponse:
-                    var networkAdress = (NetworkAddress[]) message.Payload;
-
-                    try {
-                        _networkAddressDictionary.Add(message.SessionId, networkAdress);
-
-                        if (networkAdress[0].GetId(0) == networkAdress[1].GetId(0)) SendCallAccept(message);
-                        else SendCallCoordination(message);
-                    }
-                    catch (ArgumentOutOfRangeException) {
-                        SendCallConfirmationToCPCC(message);
-                    }
-                    break;
-                case OperationType.DirectoryNameResponse:
-                    var clientName = (string[]) message.Payload;
-                    _nameDictionary.Add(message.SessionId, clientName);
-                    SendCallAccept(message);
-                    break;
-                case OperationType.CallCoordinationResponse:
-
-                    break;
-                case OperationType.CallAcceptResponse:
-
-                    break;
-                case OperationType.ConnectionRequestResponse:
-
-                    break;
-                case OperationType.CallConfirmation:
-                    var address = _networkAddressDictionary[message.SessionId];
-                    if (address[0].GetId(0) == address[1].GetId(0)) SendConnectionRequest(message);
-                    else SendCallConfirmationToNCC(message);
-                    break;
-                case OperationType.CallConfirmationFromNCC:
-                    SendConnectionRequest(message);
-                    break;
-
-                case OperationType.ConnectionConfirmationToNCC:
-                    SendCallConfirmationToCPCC(message);
-                    break;
-            }
-        }
+        
     }
 }

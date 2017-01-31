@@ -38,5 +38,9 @@ namespace NetworkUtilities.ControlPlane {
                 return ((NetworkAddress?.GetHashCode() ?? 0) * 397) ^ CapacityLeft;
             }
         }
+
+        public override string ToString() {
+            return $"{NetworkNodeAddress}:{Id}";
+        }
     }
 }

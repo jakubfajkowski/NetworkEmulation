@@ -38,9 +38,10 @@ namespace NetworkUtilities.ControlPlane {
                 var clientAddressA = _clientAdderssDictionary[clientNames[0]];
                 var clientAddressZ = _clientAdderssDictionary[clientNames[1]];
                 clientAddresses = new[] {clientAddressA, clientAddressZ};
+                OnUpdateState($"[FOUND] {clientNames[1]}");
             }
             catch (KeyNotFoundException) {
-                OnUpdateState($"{clientNames[1]} not found");
+                OnUpdateState($"[NOT_FOUND] {clientNames[1]}");
             }
 
 
@@ -79,9 +80,10 @@ namespace NetworkUtilities.ControlPlane {
                 var snmpZ = _snppDictionary[clientNames[1]];
 
                 snpp = new[] {snmpA, snmpZ};
+                OnUpdateState($"[FOUND] {clientNames[1]}");
             }
             catch (KeyNotFoundException e) {
-                OnUpdateState($"{clientNames[1]} not found");
+                OnUpdateState($"[NOT_FOUND] {clientNames[1]}");
             }
 
             var directioryResponse = message;
@@ -94,13 +96,9 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         public void UpdateDirectory(string clientName, SubnetworkPointPool snpp) {
-            try {
-                _clientAdderssDictionary.Add(clientName, snpp.NetworkAddress.GetParentsAddress());
-                _snppDictionary.Add(clientName, snpp);
-            }
-            catch (ArgumentException) {
-                //ignored
-            }
+            _clientAdderssDictionary.Add(clientName, snpp.NetworkAddress.GetParentsAddress());
+            _snppDictionary.Add(clientName, snpp);
+            OnUpdateState($"[ADDED] Client {clientName} is {snpp}");
         }
     }
 }

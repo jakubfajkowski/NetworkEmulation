@@ -17,11 +17,6 @@ namespace NetworkUtilities.ControlPlane {
             snPointCpcc = snPoint;
             Port = 1;
         }
-
-        public SubnetworkPoint snPoint { get; set; }
-        public SubnetworkPoint snPointCpcc { get; set; }
-        public int Port { get; set; }
-
         public override void ReceiveMessage(SignallingMessage message) {
             base.ReceiveMessage(message);
 
@@ -39,7 +34,7 @@ namespace NetworkUtilities.ControlPlane {
                     HandleConnectionRequestResponse(message);
                     break;
                 case OperationType.SetLabels:
-                    var labels = (int[]) message.Payload;
+                    var labels = (int[])message.Payload;
                     Debug.WriteLine("Received VPI: " + labels[0] + ", VCI: " + labels[1]);
                     break;
                 case OperationType.GetLabelsFromLRM:
@@ -52,6 +47,12 @@ namespace NetworkUtilities.ControlPlane {
                     break;
             }
         }
+
+        public SubnetworkPoint snPoint { get; set; }
+        public SubnetworkPoint snPointCpcc { get; set; }
+        public int Port { get; set; }
+
+        
 
         private void HandleConnectionReques(SignallingMessage message) {
             var snpp = (SubnetworkPointPool[])message.Payload;

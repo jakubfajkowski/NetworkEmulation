@@ -11,6 +11,30 @@ namespace NetworkUtilities.ControlPlane {
             _nccAddress = networkAddress.GetRootFromBeginning(1);
         }
 
+        public override void ReceiveMessage(SignallingMessage message) {
+            base.ReceiveMessage(message);
+
+            switch (message.Operation) {
+                case OperationType.CallAccept:
+                    //SendCallAcceptResponse(message);
+                    _callConfirmed = true;
+                    SendCallConfirmation(message, _callConfirmed);
+                    break;
+                case OperationType.CallTeardown:
+                    SendCallTeardownResponse(message);
+                    break;
+                case OperationType.CallConfirmation:
+
+                    break;
+                case OperationType.CallRequestResponse:
+
+                    break;
+                case OperationType.CallTeardownResponse:
+
+                    break;
+            }
+        }
+
         public void SendCallRequest(string clientA, string clientZ, int capacity) {
             string[] clientNames = {clientA, clientZ};
             var callRequest = new SignallingMessage {
@@ -60,28 +84,6 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callTeardownResponse);
         }
 
-        public override void ReceiveMessage(SignallingMessage message) {
-            base.ReceiveMessage(message);
-
-            switch (message.Operation) {
-                case OperationType.CallAccept:
-                    //SendCallAcceptResponse(message);
-                    _callConfirmed = true;
-                    SendCallConfirmation(message, _callConfirmed);
-                    break;
-                case OperationType.CallTeardown:
-                    SendCallTeardownResponse(message);
-                    break;
-                case OperationType.CallConfirmation:
-
-                    break;
-                case OperationType.CallRequestResponse:
-
-                    break;
-                case OperationType.CallTeardownResponse:
-
-                    break;
-            }
-        }
+        
     }
 }
