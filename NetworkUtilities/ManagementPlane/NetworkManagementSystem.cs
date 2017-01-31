@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Timers;
 using NetworkUtilities.Network;
 using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ManagementPlane {
     public class NetworkManagementSystem : ConnectionManager {
-        private const int MaxTimeNotReceivingKeepAliveMessage = 5000;
+        private const int MaxTimeNotReceivingKeepAliveMessage = 30000;
 
         private readonly Dictionary<NetworkAddress, DateTime> _keepAliveDictionary =
             new Dictionary<NetworkAddress, DateTime>();
@@ -16,23 +15,41 @@ namespace NetworkUtilities.ManagementPlane {
             CreateKeepAliveTimer();
         }
 
-        protected override void HandleReceivedObject(object receivedObject, NetworkAddress inputNetworkAddress) {
-            if (!_keepAliveDictionary.ContainsKey(inputNetworkAddress)) {
-                OnUpdateState($"[ONLINE] {inputNetworkAddress}");
-                _keepAliveDictionary.Add(inputNetworkAddress, DateTime.Now);
-            }
-                
-            _keepAliveDictionary[inputNetworkAddress] = DateTime.Now;
-        }
-
         private void CreateKeepAliveTimer() {
             var timer = new Timer {
                 AutoReset = true,
-                Interval = MaxTimeNotReceivingKeepAliveMessage/2,
+                Interval = MaxTimeNotReceivingKeepAliveMessage / 2,
                 Enabled = true
             };
 
             timer.Elapsed += OnTimedEvent;
+        }
+
+        protected override void HandleReceivedObject(object receivedObject, NetworkAddress inputNetworkAddress) {
+            var message = (ManagementMessage) receivedObject;
+
+            switch (message.Type) {
+                    case ManagementMessageType.KeepAlive:
+                    HandleKeepAlive(inputNetworkAddress);
+                    break;
+
+                    case ManagementMessageType.PlugIn:
+                    HandlePlugIn(message);
+                    break;
+            }
+        }
+
+        private void HandleKeepAlive(NetworkAddress inputNetworkAddress) {
+            if (!_keepAliveDictionary.ContainsKey(inputNetworkAddress)) {
+                OnUpdateState($"[ONLINE] {inputNetworkAddress}");
+                _keepAliveDictionary.Add(inputNetworkAddress, DateTime.Now);
+            }
+
+            _keepAliveDictionary[inputNetworkAddress] = DateTime.Now;
+        }
+
+        private void HandlePlugIn(ManagementMessage message) {
+            throw new NotImplementedException();
         }
 
         private void OnTimedEvent(object source, ElapsedEventArgs e) {

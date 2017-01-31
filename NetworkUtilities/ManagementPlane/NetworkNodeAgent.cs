@@ -23,7 +23,7 @@ namespace NetworkUtilities.ManagementPlane {
         private void StartSendingKeepAliveMessages() {
             var timer = new Timer {
                 AutoReset = true,
-                Interval = 2000,
+                Interval = 5000,
                 Enabled = true
             };
 
@@ -32,7 +32,8 @@ namespace NetworkUtilities.ManagementPlane {
 
         private void OnTimedEvent(object source, ElapsedEventArgs e) {
             if (_managmentPlaneConnectionComponent.Online) {
-                _managmentPlaneConnectionComponent.Send("KEEP_ALIVE");
+                var message = new ManagementMessage(ManagementMessageType.KeepAlive, new object());
+                _managmentPlaneConnectionComponent.Send(message);
                 //OnUpdateState("[SENT] [KEEP_ALIVE]");
             }
         }

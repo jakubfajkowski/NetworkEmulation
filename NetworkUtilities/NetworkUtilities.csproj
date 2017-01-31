@@ -49,6 +49,7 @@
     <Compile Include="DataPlane\Port.cs" />
     <Compile Include="Log\ComboBoxItem.cs" />
     <Compile Include="ManagementPlane\ManagementMessage.cs" />
+    <Compile Include="ManagementPlane\ManagementMessageType.cs" />
     <Compile Include="ManagementPlane\NetworkNodeAgent.cs" />
     <Compile Include="Network\ClientNode\ClientNode.cs" />
     <Compile Include="Network\ConnectionManagerType.cs" />

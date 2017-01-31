@@ -52,7 +52,6 @@ namespace NetworkEmulation {
 
             foreach (var pathComputationServer in _pathComputationServers) {
                 pathComputationServer.Initialize();
-                Thread.Sleep(100);
             }
 
             _links = links;
@@ -64,7 +63,6 @@ namespace NetworkEmulation {
                 }
                 initializableNode.Parameters.MaxAtmCellsNumberInCableCloudMessage =
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
-                Thread.Sleep(100);
             }
 
             foreach (var initializableNode in _initializableNodes.OfType<ClientNodeView>()) {
@@ -72,7 +70,6 @@ namespace NetworkEmulation {
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
                 _nameServer.UpdateDirectory(initializableNode.Parameters.ClientName,
                     new SubnetworkPointPool(initializableNode.NetworkAddress.Append(1)));
-                Thread.Sleep(100);
             }
 
             _processes = new Dictionary<int, Process>();
@@ -211,7 +208,6 @@ namespace NetworkEmulation {
         }
 
         private void StartProcess(int id) {
-            Thread.Sleep(100);
             var process = _processes[id];
             process.Start();
         }

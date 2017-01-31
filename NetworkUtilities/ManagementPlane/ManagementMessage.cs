@@ -1,10 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NetworkUtilities.ManagementPlane {
+    [Serializable]
     class ManagementMessage {
+        public ManagementMessageType Type { get; }
+        public object Payload { get; }
+
+        public ManagementMessage(ManagementMessageType type, object payload) {
+            Type = type;
+            Payload = payload;
+        }
     }
 }
