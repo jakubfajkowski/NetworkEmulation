@@ -92,11 +92,17 @@ namespace NetworkEmulation.Editor {
                         SelectedNodeView = sender as NodeView;
                     }
                     else {
-                        var link = CreateLink(SelectedNodeView, sender as NodeView);
-                        new LinkForm(link).ShowDialog(this);
-                        Add(link);
-                        link.MarkAsDeselected();
-                        SelectedNodeView = null;
+                        var secondNodeView = sender as NodeView;
+                        if (SelectedNodeView.Equals(secondNodeView)) {
+                            MessageBox.Show("Selected nodes are the same.");
+                        }
+                        else {
+                            var link = CreateLink(SelectedNodeView, secondNodeView);
+                            new LinkForm(link).ShowDialog(this);
+                            Add(link);
+                            link.MarkAsDeselected();
+                            SelectedNodeView = null;
+                        }
                     }
                     break;
 
@@ -116,19 +122,20 @@ namespace NetworkEmulation.Editor {
             foreach (var insertedLink in AddedLinks) insertedLink.DrawLink(graphics);
             foreach (var addedNodeView in AddedNodeViews) {
                 var centerPoint = addedNodeView.CenterPoint();
-                DrawTextLine(graphics, centerPoint, addedNodeView.NetworkAddress.ToString());
+                DrawTextLine(graphics, new Point(centerPoint.X, centerPoint.Y + addedNodeView.Image.Height / 2), 
+                    addedNodeView.NetworkAddress.ToString());
 
                 var clientNodeView = addedNodeView as ClientNodeView;
 
                 if (clientNodeView == null) continue;
-                DrawTextLine(graphics, new Point(centerPoint.X, centerPoint.Y + 10),
+                DrawTextLine(graphics, new Point(centerPoint.X, centerPoint.Y + clientNodeView.Image.Height/2 + 10),
                     clientNodeView.Parameters.ClientName);
             }
         }
 
-        private void DrawTextLine(Graphics g, Point centerPoint, string text) {
+        private void DrawTextLine(Graphics g, Point textPoint, string text) {
             using (var myFont = new Font("Arial", 8)) {
-                var namePoint = new Point(centerPoint.X - 3 * text.Length, centerPoint.Y + 32);
+                var namePoint = new Point(textPoint.X - 3 * text.Length, textPoint.Y);
                 g.DrawString(text, myFont, Brushes.Black, namePoint);
             }
         }

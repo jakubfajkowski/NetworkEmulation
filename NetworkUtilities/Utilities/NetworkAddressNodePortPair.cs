@@ -31,5 +31,9 @@ namespace NetworkUtilities.Utilities {
         public override int GetHashCode() {
             return NodePortNumber ^ NetworkAddress.GetHashCode();
         }
+
+        public override string ToString() {
+            return $"{NetworkAddress}:{NodePortNumber}";
+        }
     }
 }

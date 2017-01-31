@@ -8,7 +8,7 @@ using NetworkUtilities.ManagementPlane;
 namespace NetworkUtilities.Network.NetworkNode {
     public class NetworkNode : Node.Node {
         private readonly ConnectionController _connectionController;
-        private List<LinkResourceManager> _linkResourceManagers;
+        private readonly LinkResourceManager _linkResourceManager;
 
         private Thread _networkNodeThread;
 
@@ -22,9 +22,12 @@ namespace NetworkUtilities.Network.NetworkNode {
                 parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort,
                 parameters.SignallingCloudListeningPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
+
             NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkAddress, parameters.IpAddress,
                 parameters.NetworkManagmentSystemListeningPort);
-            OnUpdateState("Network Node \nNMS port: " + parameters.SignallingCloudListeningPort);
+            NetworkNodeAgent.UpdateState += (sender, state) => OnUpdateState(state);
+
+
             CommutationMatrix = new CommutationMatrix(new CommutationTable(), parameters.NumberOfPorts);
             CommutationMatrix.UpdateState += (sender, state) => OnUpdateState(state);
 
@@ -34,7 +37,7 @@ namespace NetworkUtilities.Network.NetworkNode {
             _connectionController.CommutationCommand += ConnectionControllerOnCommutationCommand;
 
 
-            var _linkResourceManager = new LinkResourceManager(parameters.NetworkAddress, null, 0, 0);
+            _linkResourceManager = new LinkResourceManager(parameters.NetworkAddress, null, 0, 0);
             _linkResourceManager.UpdateState += (sender, state) => OnUpdateState(state);
             _linkResourceManager.MessageToSend += (sender, message) => Send(message);
 
@@ -129,8 +132,7 @@ namespace NetworkUtilities.Network.NetworkNode {
                     break;
 
                 case ControlPlaneElementType.LRM:
-                    _linkResourceManagers[signallingMessage.DestinationAddress.GetLastId() - 1].ReceiveMessage(
-                        signallingMessage);
+                    _linkResourceManager.ReceiveMessage(signallingMessage);
                     break;
             }
         }

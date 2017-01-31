@@ -47,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Editor\ClippedPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Editor\EditorPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -59,16 +62,14 @@
     <Compile Include="Editor\Element\ClientNodeForm.Designer.cs">
       <DependentUpon>ClientNodeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editor\Element\ClientNodeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Editor\Element\LinkForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Editor\Element\LinkForm.Designer.cs">
       <DependentUpon>LinkForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Editor\IInitializable.cs" />
-    <Compile Include="Editor\IMarkable.cs" />
-    <Compile Include="Editor\ClippedPictureBox.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Editor\Element\LinkView.cs">
       <SubType>Component</SubType>
@@ -76,21 +77,20 @@
     <Compile Include="Editor\Element\LinkView.Designer.cs">
       <DependentUpon>LinkView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Simulation.cs" />
-    <Compile Include="Editor\Element\ClientNodeView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Editor\Element\NetworkNodeView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Editor\Element\NodeView.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Editor\IInitializable.cs" />
+    <Compile Include="Editor\IMarkable.cs" />
+    <Compile Include="Simulation.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -64,6 +64,7 @@ namespace NetworkEmulation {
                 }
                 initializableNode.Parameters.MaxAtmCellsNumberInCableCloudMessage =
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
+                Thread.Sleep(100);
             }
 
             foreach (var initializableNode in _initializableNodes.OfType<ClientNodeView>()) {
@@ -71,6 +72,7 @@ namespace NetworkEmulation {
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
                 _nameServer.UpdateDirectory(initializableNode.Parameters.ClientName,
                     new SubnetworkPointPool(initializableNode.NetworkAddress.Append(1)));
+                Thread.Sleep(100);
             }
 
             _processes = new Dictionary<int, Process>();
@@ -139,8 +141,10 @@ namespace NetworkEmulation {
         private void InitializeCableCloud() {
             CableCloudMessage.MaxAtmCellsNumber = Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
 
-            foreach (var link in _links)
+            foreach (var link in _links) {
                 _cableCloud.AddLink(link.Parameters.InputNodePortPair, link.Parameters.OutputNodePortPair);
+                _cableCloud.AddLink(link.Parameters.OutputNodePortPair, link.Parameters.InputNodePortPair);
+            }
         }
 
         private void MarkAsOnline(IMarkable markable) {

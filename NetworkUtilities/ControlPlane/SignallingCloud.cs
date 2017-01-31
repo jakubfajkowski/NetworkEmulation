@@ -8,6 +8,7 @@ namespace NetworkUtilities.ControlPlane {
 
         protected override void HandleReceivedObject(object receivedObject, NetworkAddress inputNetworkAddress) {
             var signallingMessage = (SignallingMessage) receivedObject;
+            OnUpdateState(signallingMessage.ToString());
             Send(signallingMessage, signallingMessage.DestinationAddress);
         }
     }

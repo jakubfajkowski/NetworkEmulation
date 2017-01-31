@@ -12,6 +12,7 @@ namespace NetworkUtilities.ManagementPlane {
             int networkManagmentSystemListeningPort) {
             _managmentPlaneConnectionComponent = new ConnectionComponent(networkAddress, networkManagmentSystemIpAddress,
                 networkManagmentSystemListeningPort, ConnectionManagerType.NetworkManagementSystem);
+            _managmentPlaneConnectionComponent.UpdateState += (sender, state) => OnUpdateState(state);
         }
 
         public void Initialize() {
@@ -32,7 +33,7 @@ namespace NetworkUtilities.ManagementPlane {
         private void OnTimedEvent(object source, ElapsedEventArgs e) {
             if (_managmentPlaneConnectionComponent.Online) {
                 _managmentPlaneConnectionComponent.Send("KEEP_ALIVE");
-                OnUpdateState("[SENT] [KEEP_ALIVE]");
+                //OnUpdateState("[SENT] [KEEP_ALIVE]");
             }
         }
     }

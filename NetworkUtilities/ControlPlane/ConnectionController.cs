@@ -27,21 +27,7 @@ namespace NetworkUtilities.ControlPlane {
 
             switch (message.Operation) {
                 case OperationType.ConnectionRequest:
-                    var snpp = (SubnetworkPointPool[]) message.Payload;
-                    var snppAddressA = snpp[0].NetworkAddress;
-                    var snppAddressB = snpp[1].NetworkAddress;
-                    NetworkAddress[] snppAddress = {snppAddressA, snppAddressB};
-                    _snppDictionary.Add(message.SessionId, snppAddress);
-
-                    if (message.DestinationAddress.Levels == _snppDictionary[message.SessionId][0].Levels - 1)
-                        SendLinkConnectionRequest(message);
-
-                    if (message.SourceAddress.Equals(new NetworkAddress("1")) ||
-                        message.SourceAddress.Equals(new NetworkAddress("2")))
-                        if (message.SourceAddress.GetRootFromBeginning(1).Equals(_snppDictionary[message.SessionId][1]))
-                            SendPeerCoordination(message);
-                        else SendRouteTableQuery(message);
-                    else SendRouteTableQuery(message);
+                    HandleConnectionReques(message);
                     break;
                 case OperationType.PeerCoordination:
                     SendRouteTableQuery(message);
@@ -65,6 +51,24 @@ namespace NetworkUtilities.ControlPlane {
                     HandleSetSnp(message);
                     break;
             }
+        }
+
+        private void HandleConnectionReques(SignallingMessage message) {
+            var snpp = (SubnetworkPointPool[])message.Payload;
+            var snppAddressA = snpp[0].NetworkAddress;
+            var snppAddressB = snpp[1].NetworkAddress;
+            NetworkAddress[] snppAddress = { snppAddressA, snppAddressB };
+            _snppDictionary.Add(message.SessionId, snppAddress);
+
+            if (message.DestinationAddress.Levels == _snppDictionary[message.SessionId][0].Levels - 1)
+                SendLinkConnectionRequest(message);
+
+            if (message.SourceAddress.Equals(new NetworkAddress("1")) ||
+                message.SourceAddress.Equals(new NetworkAddress("2")))
+                if (message.SourceAddress.GetRootFromBeginning(1).Equals(_snppDictionary[message.SessionId][1]))
+                    SendPeerCoordination(message);
+                else SendRouteTableQuery(message);
+            else SendRouteTableQuery(message);
         }
 
         private void SendLinkConnectionRequest(SignallingMessage message) {

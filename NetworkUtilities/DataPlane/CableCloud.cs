@@ -45,6 +45,7 @@ namespace NetworkUtilities.DataPlane {
 
         public void AddLink(NetworkAddressNodePortPair key, NetworkAddressNodePortPair value) {
             _linkDictionary.Add(key, value);
+            OnUpdateState($"[ADD_LINK] {key}=>{value}");
         }
 
         public void RemoveLink(NetworkAddressNodePortPair key) {

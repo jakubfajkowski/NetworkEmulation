@@ -28,7 +28,7 @@ namespace NetworkUtilities.ManagementPlane {
         private void CreateKeepAliveTimer() {
             var timer = new Timer {
                 AutoReset = true,
-                Interval = MaxTimeNotReceivingKeepAliveMessage,
+                Interval = MaxTimeNotReceivingKeepAliveMessage/2,
                 Enabled = true
             };
 
@@ -38,15 +38,20 @@ namespace NetworkUtilities.ManagementPlane {
         private void OnTimedEvent(object source, ElapsedEventArgs e) {
             var keysToRemove = new List<NetworkAddress>();
 
-            foreach (var pair in _keepAliveDictionary) {
-                if (DateTime.Now.Subtract(pair.Value).TotalMilliseconds > MaxTimeNotReceivingKeepAliveMessage) {
-                    keysToRemove.Add(pair.Key);
+            try {
+                foreach (var pair in _keepAliveDictionary) {
+                    if (DateTime.Now.Subtract(pair.Value).TotalMilliseconds > MaxTimeNotReceivingKeepAliveMessage) {
+                        keysToRemove.Add(pair.Key);
+                    }
+                }
+
+                foreach (var key in keysToRemove) {
+                    _keepAliveDictionary.Remove(key);
+                    OnUpdateState($"[OFFLINE] {key}");
                 }
             }
-
-            foreach (var key in keysToRemove) {
-                _keepAliveDictionary.Remove(key);
-                OnUpdateState($"[OFFLINE] {key}");
+            catch (InvalidOperationException) {
+                //Ignored
             }
         }
 

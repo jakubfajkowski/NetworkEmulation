@@ -150,6 +150,10 @@ namespace NetworkEmulation {
             if (e.Node.Tag is NodeView) networkHierarchyTreeView.SelectedNode = e.Node.Parent;
         }
 
+        private void networkHierarchyTreeView_MouseDoubleClick(object sender, MouseEventArgs e) {
+            AddSubnetworkNode();
+        }
+
         private void saveProjectMenuItem_Click(object sender, EventArgs e) {
             var saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Xml File (.xml)|*.xml";
@@ -215,6 +219,8 @@ namespace NetworkEmulation {
 
             subnetworkNode.Tag = new HierarchicalPathComputationServer(new NetworkAddress(subnetworkNode.Text),
                              "127.0.0.1", Settings.Default.SignallingCloudListeningPort);
+
+            networkHierarchyTreeView.SelectedNode?.Expand();
         }
 
         private void moveToolStripMenuItem_Click(object sender, EventArgs e) {

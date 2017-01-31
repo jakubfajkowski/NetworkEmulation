@@ -42,17 +42,17 @@ namespace NetworkEmulation {
             this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.connectionManagersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pathComputationServersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nameServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.workspaceGroupBox = new System.Windows.Forms.GroupBox();
-            this.editorPanel = new NetworkEmulation.Editor.EditorPanel();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.networkHierarchyTreeView = new System.Windows.Forms.TreeView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.parametersListView = new System.Windows.Forms.ListView();
-            this.connectionManagersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pathComputationServersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.nameServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editorPanel = new NetworkEmulation.Editor.EditorPanel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -209,6 +209,27 @@ namespace NetworkEmulation {
             this.logToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.logToolStripMenuItem.Text = "Log";
             // 
+            // connectionManagersToolStripMenuItem
+            // 
+            this.connectionManagersToolStripMenuItem.Name = "connectionManagersToolStripMenuItem";
+            this.connectionManagersToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.connectionManagersToolStripMenuItem.Text = "Connection Managers";
+            this.connectionManagersToolStripMenuItem.Click += new System.EventHandler(this.connectionManagersToolStripMenuItem_Click);
+            // 
+            // pathComputationServersToolStripMenuItem
+            // 
+            this.pathComputationServersToolStripMenuItem.Name = "pathComputationServersToolStripMenuItem";
+            this.pathComputationServersToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.pathComputationServersToolStripMenuItem.Text = "Path Computation Servers";
+            this.pathComputationServersToolStripMenuItem.Click += new System.EventHandler(this.pathComputationServersToolStripMenuItem_Click);
+            // 
+            // nameServerToolStripMenuItem
+            // 
+            this.nameServerToolStripMenuItem.Name = "nameServerToolStripMenuItem";
+            this.nameServerToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.nameServerToolStripMenuItem.Text = "Name Server";
+            this.nameServerToolStripMenuItem.Click += new System.EventHandler(this.nameServerToolStripMenuItem_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -236,17 +257,6 @@ namespace NetworkEmulation {
             this.workspaceGroupBox.TabIndex = 0;
             this.workspaceGroupBox.TabStop = false;
             this.workspaceGroupBox.Text = "Workspace";
-            // 
-            // editorPanel
-            // 
-            this.editorPanel.BackColor = System.Drawing.SystemColors.Control;
-            this.editorPanel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.editorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.editorPanel.Location = new System.Drawing.Point(3, 16);
-            this.editorPanel.Name = "editorPanel";
-            this.editorPanel.Size = new System.Drawing.Size(552, 518);
-            this.editorPanel.TabIndex = 3;
-            this.editorPanel.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.editorPanel_ControlAdded);
             // 
             // splitContainer2
             // 
@@ -285,6 +295,7 @@ namespace NetworkEmulation {
             this.networkHierarchyTreeView.Size = new System.Drawing.Size(216, 286);
             this.networkHierarchyTreeView.TabIndex = 1;
             this.networkHierarchyTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.networkHierarchyTreeView_AfterSelect);
+            this.networkHierarchyTreeView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.networkHierarchyTreeView_MouseDoubleClick);
             // 
             // groupBox2
             // 
@@ -307,26 +318,16 @@ namespace NetworkEmulation {
             this.parametersListView.UseCompatibleStateImageBehavior = false;
             this.parametersListView.View = System.Windows.Forms.View.List;
             // 
-            // connectionManagersToolStripMenuItem
+            // editorPanel
             // 
-            this.connectionManagersToolStripMenuItem.Name = "connectionManagersToolStripMenuItem";
-            this.connectionManagersToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.connectionManagersToolStripMenuItem.Text = "Connection Managers";
-            this.connectionManagersToolStripMenuItem.Click += new System.EventHandler(this.connectionManagersToolStripMenuItem_Click);
-            // 
-            // pathComputationServersToolStripMenuItem
-            // 
-            this.pathComputationServersToolStripMenuItem.Name = "pathComputationServersToolStripMenuItem";
-            this.pathComputationServersToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.pathComputationServersToolStripMenuItem.Text = "Path Computation Servers";
-            this.pathComputationServersToolStripMenuItem.Click += new System.EventHandler(this.pathComputationServersToolStripMenuItem_Click);
-            // 
-            // nameServerToolStripMenuItem
-            // 
-            this.nameServerToolStripMenuItem.Name = "nameServerToolStripMenuItem";
-            this.nameServerToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.nameServerToolStripMenuItem.Text = "Name Server";
-            this.nameServerToolStripMenuItem.Click += new System.EventHandler(this.nameServerToolStripMenuItem_Click);
+            this.editorPanel.BackColor = System.Drawing.SystemColors.Control;
+            this.editorPanel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.editorPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.editorPanel.Location = new System.Drawing.Point(3, 16);
+            this.editorPanel.Name = "editorPanel";
+            this.editorPanel.Size = new System.Drawing.Size(552, 518);
+            this.editorPanel.TabIndex = 3;
+            this.editorPanel.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.editorPanel_ControlAdded);
             // 
             // MainForm
             // 

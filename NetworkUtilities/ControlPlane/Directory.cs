@@ -14,6 +14,22 @@ namespace NetworkUtilities.ControlPlane {
         public Directory(NetworkAddress networkAddress) : base(networkAddress, ControlPlaneElementType.Directory) {
         }
 
+        public override void ReceiveMessage(SignallingMessage message) {
+            base.ReceiveMessage(message);
+
+            switch (message.Operation) {
+                case OperationType.DirectoryAddressRequest:
+                    SendDirectoryAddressResponse(message);
+                    break;
+                case OperationType.DirectoryNameRequest:
+                    SendDirectoryNameResponse(message);
+                    break;
+                case OperationType.DirectorySnppRequest:
+                    SendDirectorySnppResponse(message);
+                    break;
+            }
+        }
+
         private void SendDirectoryAddressResponse(SignallingMessage message) {
             var clientNames = (string[]) message.Payload;
 
@@ -84,22 +100,6 @@ namespace NetworkUtilities.ControlPlane {
             }
             catch (ArgumentException) {
                 //ignored
-            }
-        }
-
-        public override void ReceiveMessage(SignallingMessage message) {
-            base.ReceiveMessage(message);
-
-            switch (message.Operation) {
-                case OperationType.DirectoryAddressRequest:
-                    SendDirectoryAddressResponse(message);
-                    break;
-                case OperationType.DirectoryNameRequest:
-                    SendDirectoryNameResponse(message);
-                    break;
-                case OperationType.DirectorySnppRequest:
-                    SendDirectorySnppResponse(message);
-                    break;
             }
         }
     }
