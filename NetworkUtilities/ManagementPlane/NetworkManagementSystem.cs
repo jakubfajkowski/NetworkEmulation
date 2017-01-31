@@ -33,7 +33,7 @@ namespace NetworkUtilities.ManagementPlane {
                     HandleKeepAlive(inputNetworkAddress);
                     break;
 
-                    case ManagementMessageType.PlugIn:
+                    case ManagementMessageType.Configuration:
                     HandlePlugIn(message);
                     break;
             }

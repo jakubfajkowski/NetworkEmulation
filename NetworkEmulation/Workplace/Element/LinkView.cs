@@ -29,6 +29,17 @@ namespace NetworkEmulation.Workplace.Element {
         public NodeView BeginNodeView { get; private set; }
         public NodeView EndNodeView { get; private set; }
 
+        public Point CenterPoint {
+            get {
+                var begin = BeginNodeView.CenterPoint();
+                var end = EndNodeView.CenterPoint();
+
+                int x = (begin.X + end.X)/2;
+                int y = (begin.Y + end.Y)/2;
+
+                return new Point(x, y);
+            }
+        }
         public LinkModel Parameters { get; set; }
 
         public void MarkAsSelected() {

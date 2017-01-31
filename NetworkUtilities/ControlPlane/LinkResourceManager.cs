@@ -1,153 +1,104 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
+using NetworkUtilities.ControlPlane.GraphAlgorithm;
 using NetworkUtilities.DataPlane;
 using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     public class LinkResourceManager : ControlPlaneElement {
-        public static int MaxLabelNumber = 1000;
-        private readonly Dictionary<int, double> _capacityDictionary;
-        private readonly CommutationTable _commutationTable;
-        private readonly Dictionary<int, double> _freeCapacityDictionary;
-        private readonly Random _random;
-        private SubnetworkPointPool[] _subnetworkPointPools;
-
-        private readonly Dictionary<UniqueId, SubnetworkPoint> _subnetworkPoints =
-            new Dictionary<UniqueId, SubnetworkPoint>();
+        private readonly List<Link> _links;
+        private readonly List<SubnetworkPoint> _usedSubnetworkPoints;
 
 
-        public LinkResourceManager(NetworkAddress networkAddress, CommutationTable commutationTable, int numberOfPorts,
-            int capacity) : base(networkAddress, ControlPlaneElementType.LRM) {
-            _random = new Random();
-            _commutationTable = commutationTable;
-            _capacityDictionary = new Dictionary<int, double>();
-            _freeCapacityDictionary = new Dictionary<int, double>();
+        public LinkResourceManager(NetworkAddress networkAddress) : 
+            base(networkAddress, ControlPlaneElementType.LRM) {
 
-            for (var i = 1; i <= numberOfPorts; i++) {
-                _capacityDictionary.Add(i, capacity);
-                _freeCapacityDictionary.Add(i, capacity);
-            }
+            _links = new List<Link>();
+            _usedSubnetworkPoints = new List<SubnetworkPoint>();
         }
 
         public override void ReceiveMessage(SignallingMessage message) {
             switch (message.Operation) {
-                case OperationType.GetLabels:
-                    Debug.WriteLine("GetLabels " + (int)message.Payload + " port.");
-                    var labels = GetNewLabels((int)message.Payload);
-                    Debug.WriteLine(_capacityDictionary.Count + " Send labels " + (int)message.Payload + " port, VPI: " +
-                                    labels[0] + ", VCI:" + labels[1]);
-                    SendLabels(labels);
+                case OperationType.SNPLinkConnectionRequest:
+                    HandleSnpLinkConnectionRequest(message);
                     break;
-                case OperationType.LinkConnectionRequest:
-                    HandleLinkConnectionRequest(message);
+
+                case OperationType.SNPLinkConnectionDeallocation:
+                    HandleSnpLinkConnectionDeallocation(message);
                     break;
+
+                case OperationType.Configuration:
+                    HandleConfiguration(message);
+                    break;
+
                 case OperationType.SNPNegotiation:
-                    HandleSnpNegotiation(message);
+                    if (message.SourceControlPlaneElement.Equals(ControlPlaneElementType.LRM)) 
+                        HandleSnpNegotiationResponse(message);
+                    else
+                        HandleSnpNegotiation(message);
                     break;
-                case OperationType.SNPNegotiationResponse:
-                    HandleSnpNegotiationResponse(message);
-                    break;
+
                 case OperationType.SNPRelease:
-                    HandleSnpRelease(message);
-                    break;
-                case OperationType.Confirm:
-                    HandleConfirm(message);
+                    if (message.SourceControlPlaneElement.Equals(ControlPlaneElementType.LRM))
+                        HandleSnpRelease(message);
+                    else
+                        HandleSnpReleaseResponse(message);
                     break;
             }
         }
 
+        private void HandleSnpLinkConnectionRequest(SignallingMessage message) {
 
-        public int[] GetNewLabels(int portNumber) {
-            int VPI;
-            int VCI;
-
-            while (true) {
-                VPI = _random.Next() % MaxLabelNumber;
-                VCI = _random.Next() % MaxLabelNumber;
-                Debug.WriteLine(VPI + " " + VCI);
-
-                if (_commutationTable.FindRow(VPI, VCI, portNumber) == null)
-                    break;
-            }
-            return new[] {VPI, VCI};
         }
 
+        private void HandleSnpLinkConnectionDeallocation(SignallingMessage message) {
 
-        private void HandleLinkConnectionRequest(SignallingMessage message) {
-            message.Operation = OperationType.SNPNegotiation;
-            _subnetworkPointPools = message.Payload as SubnetworkPointPool[];
-            message.DestinationAddress = _subnetworkPointPools[1].NetworkAddress;
-            message.DestinationControlPlaneElement = ControlPlaneElementType.LRM;
-            message.Payload = _subnetworkPoints;
-            SendMessage(message);
+        }
+
+        private void HandleConfiguration(SignallingMessage message) {
+
+
         }
 
         private void HandleSnpNegotiation(SignallingMessage message) {
-            var collapse = true;
-            SubnetworkPoint subnetworkPoint = null;
-            var _subnetworkPointsReceived = message.Payload as Dictionary<UniqueId, SubnetworkPoint>;
-            while (collapse) {
-                subnetworkPoint = SubnetworkPoint.GenerateRandom(message.DemandedCapacity);
-                if (!_subnetworkPointsReceived.ContainsValue(subnetworkPoint) &&
-                    !_subnetworkPoints.ContainsValue(subnetworkPoint)) {
-                    var myMsg = new SignallingMessage();
-                    myMsg = message;
-                    myMsg.Payload = subnetworkPoint;
-                    myMsg.DestinationControlPlaneElement = ControlPlaneElementType.CC;
-                    myMsg.DestinationAddress = myMsg.DestinationAddress.GetParentsAddress();
-                    myMsg.Operation = OperationType.SetSNP;
-                    SendMessage(myMsg);
-                    message.Payload = subnetworkPoint;
-                    message.Operation = OperationType.SNPNegotiationResponse;
-                    message.DestinationAddress = message.SourceAddress;
-                    message.DestinationControlPlaneElement =
-                        ControlPlaneElementType.LRM;
-                    _subnetworkPoints.Add(message.SessionId, subnetworkPoint);
-                    _subnetworkPointPools[0].ReserveCapacity(subnetworkPoint.Capacity);
-                    //_subnetworkPoints.Add(subnetworkPoint);
-                    SendMessage(message);
-                    collapse = false;
-                }
-            }
+
         }
 
         private void HandleSnpNegotiationResponse(SignallingMessage message) {
-            var subnetworkPoint = message.Payload as SubnetworkPoint;
-            _subnetworkPoints.Add(message.SessionId, subnetworkPoint);
-            _subnetworkPointPools[1].ReserveCapacity(subnetworkPoint.Capacity);
-            message.Payload = _subnetworkPointPools;
-            message.DestinationControlPlaneElement = ControlPlaneElementType.RC;
-            message.DestinationAddress = message.SourceAddress.GetParentsAddress();
-            message.Operation = OperationType.LocalTopology;
-            SendMessage(message);
-            message.Operation = OperationType.LinkConnectionResponse;
-            message.Payload = _subnetworkPoints[message.SessionId];
-            message.DestinationControlPlaneElement = ControlPlaneElementType.CC;
-            message.DestinationAddress = _subnetworkPointPools[0].NetworkNodeAddress;
-            SendMessage(message);
+            var success = false;
+
+
+
+            if (success) {
+                SendLocalTopology(message);
+            }
+            SendSnpLinkConnectionRequest(message);
         }
 
         private void HandleSnpRelease(SignallingMessage message) {
-            var subnetworkPoint = message.Payload as SubnetworkPoint;
 
-            //message.DestinationAddress = message.SourceAddress;
-            //message.DestinationControlPlaneElement= SignallingMessageControlPlaneElement.LRM;
-            //message.Operation = SignallingMessageOperation.Confirm;
-            //message.Payload = _subnetworkPointPool;
-            //SendMessage(message);
         }
 
-        private void HandleConfirm(SignallingMessage message) {
-            var subnetworkPointPool = message.Payload as SubnetworkPointPool;
-            message.Payload =
-                message.DestinationControlPlaneElement = ControlPlaneElementType.CC;
-            message.DestinationAddress = message.SourceAddress.GetParentsAddress();
-            //message.Operation = SignallingMessageOperation.Lin
+        private void HandleSnpReleaseResponse(SignallingMessage message) {
+            var success = false;
+
+
+
+            if (success) {
+                SendLocalTopology(message);
+            }
+            SendSnpLinkConnectionDeallocation(message);
         }
 
-        private void SendLabels(int[] labels) {
-            //SendMessage(new SignallingMessage(SignallingMessageOperation.SetLabels, labels));
+        private void SendLocalTopology(SignallingMessage message) {
+
+        }
+
+        private void SendSnpLinkConnectionRequest(SignallingMessage message) {
+
+        }
+
+        private void SendSnpLinkConnectionDeallocation(SignallingMessage message) {
+            
         }
     }
 }

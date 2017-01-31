@@ -6,5 +6,6 @@ namespace NetworkUtilities.Network {
         public NetworkAddressNodePortPair OutputNodePortPair { get; set; }
         public UniqueId BeginNodeViewId { get; set; }
         public UniqueId EndNodeViewId { get; set; }
+        public int Capacity { get; set; }
     }
 }

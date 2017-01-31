@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace NetworkUtilities.ManagementPlane {
     enum ManagementMessageType {
         KeepAlive,
-        PlugIn
+        Configuration
     }
 }

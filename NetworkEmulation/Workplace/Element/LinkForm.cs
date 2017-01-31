@@ -29,6 +29,8 @@ namespace NetworkEmulation.Workplace.Element {
             _link.Parameters.InputNodePortPair = new NetworkAddressNodePortPair(inputNetworkAddress, inputNodePort);
             _link.Parameters.OutputNodePortPair = new NetworkAddressNodePortPair(outputNetworkAddress, outputNodePort);
 
+            _link.Parameters.Capacity = int.Parse(textBoxCapacity.Text);
+
             Close();
         }
 

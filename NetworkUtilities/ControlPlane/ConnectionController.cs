@@ -24,26 +24,29 @@ namespace NetworkUtilities.ControlPlane {
                 case OperationType.ConnectionRequest:
                     HandleConnectionReques(message);
                     break;
+
                 case OperationType.PeerCoordination:
                     SendRouteTableQuery(message);
                     break;
+
                 case OperationType.RouteTableQueryResponse:
                     HandleRouteTableQueryResponse(message);
                     break;
+
                 case OperationType.ConnectionRequestResponse:
                     HandleConnectionRequestResponse(message);
                     break;
+
                 case OperationType.SetLabels:
                     var labels = (int[])message.Payload;
                     Debug.WriteLine("Received VPI: " + labels[0] + ", VCI: " + labels[1]);
                     break;
+
                 case OperationType.GetLabelsFromLRM:
                     break;
+
                 case OperationType.LinkConnectionResponse:
                     HandleLinkConnectionResponse(message);
-                    break;
-                case OperationType.SetSNP:
-                    HandleSetSnp(message);
                     break;
             }
         }
@@ -73,7 +76,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void SendLinkConnectionRequest(SignallingMessage message) {
-            message.Operation = OperationType.LinkConnectionRequest;
+            message.Operation = OperationType.SNPLinkConnectionRequest;
             message.DestinationAddress = _snppDictionary[message.SessionId][1];
             message.DestinationControlPlaneElement = ControlPlaneElementType.LRM;
             SendMessage(message);
@@ -148,7 +151,7 @@ namespace NetworkUtilities.ControlPlane {
 
 
         public void SendGetLabelsMessage() {
-            //SendMessage(new SignallingMessage(SignallingMessageOperation.GetLabels, 1));
+            //SendMessage(new SignallingMessage(SignallingMessageOperation.SNPLinkConnectionDeallocation, 1));
         }
 
         private void HandleRouteTableQueryResponse(SignallingMessage msg) {

@@ -3,7 +3,6 @@
 namespace NetworkUtilities.ControlPlane {
     public class CallingPartyCallController : ControlPlaneElement {
         private readonly NetworkAddress _nccAddress;
-
         private bool _callConfirmed;
 
         public CallingPartyCallController(NetworkAddress networkAddress)
@@ -20,15 +19,19 @@ namespace NetworkUtilities.ControlPlane {
                     _callConfirmed = true;
                     SendCallConfirmation(message, _callConfirmed);
                     break;
+
                 case OperationType.CallTeardown:
                     SendCallTeardownResponse(message);
                     break;
+
                 case OperationType.CallConfirmation:
 
                     break;
+
                 case OperationType.CallRequestResponse:
 
                     break;
+
                 case OperationType.CallTeardownResponse:
 
                     break;

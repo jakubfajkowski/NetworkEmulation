@@ -23,13 +23,14 @@
         CallConfirmation,
         CallConfirmationFromNCC,
         //CC operations
+        SNPLinkConnectionRequest,
+        SNPLinkConnectionDeallocation,
         RouteTableQuery, // CC       -> RC
         RouteTableQueryResponse, // RC       -> CC
         SetLabels, // LRM(NN)  -> CC(NN)
         GetLabelsFromLRM, // CC(HPCS) -> CC(NN)
         ConnectionConfirmation, // CC       -> CC
         PeerCoordination,
-        LinkConnectionRequest,
         LinkConnectionResponse,
         ConnectionConfirmationToNCC,
         //RC operations 
@@ -38,9 +39,7 @@
         SNPNegotiation,
         SNPNegotiationResponse,
         SNPRelease,
-        Confirm,
-        SetSNP,
-        GetLabels,
-        LocalTopology // LRM -> RC
+        LocalTopology, 
+        Configuration
     }
 }

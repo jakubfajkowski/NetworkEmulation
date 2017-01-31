@@ -37,7 +37,7 @@ namespace NetworkUtilities.Network.NetworkNode {
             _connectionController.CommutationCommand += ConnectionControllerOnCommutationCommand;
 
 
-            _linkResourceManager = new LinkResourceManager(parameters.NetworkAddress, null, 0, 0);
+            _linkResourceManager = new LinkResourceManager(parameters.NetworkAddress);
             _linkResourceManager.UpdateState += (sender, state) => OnUpdateState(state);
             _linkResourceManager.MessageToSend += (sender, message) => Send(message);
 

@@ -83,6 +83,7 @@ namespace NetworkEmulation.Workplace {
 
             Add(_selectedNodeView);
             _selectedNodeView.Location = e.Location;
+            Refresh();
         }
 
         private void nodeView_OnClick(object sender, EventArgs e) {
@@ -119,24 +120,27 @@ namespace NetworkEmulation.Workplace {
             base.OnPaint(e);
 
             var graphics = e.Graphics;
-            foreach (var insertedLink in AddedLinks) insertedLink.DrawLink(graphics);
+            foreach (var insertedLink in AddedLinks) {
+                insertedLink.DrawLink(graphics);
+                DrawTextLine(graphics, insertedLink.CenterPoint, insertedLink.Parameters.Capacity.ToString(), Brushes.Gray);
+            }
             foreach (var addedNodeView in AddedNodeViews) {
                 var centerPoint = addedNodeView.CenterPoint();
                 DrawTextLine(graphics, new Point(centerPoint.X, centerPoint.Y + addedNodeView.Image.Height / 2), 
-                    addedNodeView.NetworkAddress.ToString());
+                    addedNodeView.NetworkAddress.ToString(), Brushes.DimGray);
 
                 var clientNodeView = addedNodeView as ClientNodeView;
 
                 if (clientNodeView == null) continue;
-                DrawTextLine(graphics, new Point(centerPoint.X, centerPoint.Y + clientNodeView.Image.Height/2 + 10),
-                    clientNodeView.Parameters.ClientName);
+                DrawTextLine(graphics, new Point(centerPoint.X + addedNodeView.Image.Width/2, centerPoint.Y),
+                    clientNodeView.Parameters.ClientName, Brushes.SaddleBrown);
             }
         }
 
-        private void DrawTextLine(Graphics g, Point textPoint, string text) {
+        private void DrawTextLine(Graphics g, Point textPoint, string text, Brush color) {
             using (var myFont = new Font("Arial", 8)) {
-                var namePoint = new Point(textPoint.X - 3 * text.Length, textPoint.Y);
-                g.DrawString(text, myFont, Brushes.Black, namePoint);
+                var namePoint = new Point(textPoint.X, textPoint.Y);
+                g.DrawString(text, myFont, color, namePoint);
             }
         }
 
