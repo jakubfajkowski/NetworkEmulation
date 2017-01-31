@@ -1,4 +1,6 @@
-﻿namespace NetworkUtilities.Network.Model {
+﻿using NetworkUtilities.Network.Node;
+
+namespace NetworkUtilities.Network.ClientNode {
     public class ClientNodeModel : NodeModel {
         public string ClientName { get; set; }
     }

@@ -34,6 +34,7 @@ namespace NetworkEmulation {
             this.clientNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.networkNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.linkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.subnetworkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cursorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,8 +42,6 @@ namespace NetworkEmulation {
             this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cableCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.networkManagmentSystemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.workspaceGroupBox = new System.Windows.Forms.GroupBox();
             this.editorPanel = new NetworkEmulation.Editor.EditorPanel();
@@ -51,7 +50,9 @@ namespace NetworkEmulation {
             this.networkHierarchyTreeView = new System.Windows.Forms.TreeView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.parametersListView = new System.Windows.Forms.ListView();
-            this.subnetworkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.connectionManagersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pathComputationServersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nameServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -143,6 +144,13 @@ namespace NetworkEmulation {
             this.linkToolStripMenuItem.Text = "Link";
             this.linkToolStripMenuItem.Click += new System.EventHandler(this.linkToolStripMenuItem_Click);
             // 
+            // subnetworkToolStripMenuItem
+            // 
+            this.subnetworkToolStripMenuItem.Name = "subnetworkToolStripMenuItem";
+            this.subnetworkToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.subnetworkToolStripMenuItem.Text = "Subnetwork";
+            this.subnetworkToolStripMenuItem.Click += new System.EventHandler(this.subnetworkToolStripMenuItem_Click);
+            // 
             // cursorToolStripMenuItem
             // 
             this.cursorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -194,25 +202,12 @@ namespace NetworkEmulation {
             // logToolStripMenuItem
             // 
             this.logToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cableCloudToolStripMenuItem,
-            this.networkManagmentSystemToolStripMenuItem});
+            this.connectionManagersToolStripMenuItem,
+            this.pathComputationServersToolStripMenuItem,
+            this.nameServerToolStripMenuItem});
             this.logToolStripMenuItem.Name = "logToolStripMenuItem";
             this.logToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.logToolStripMenuItem.Text = "Log";
-            // 
-            // cableCloudToolStripMenuItem
-            // 
-            this.cableCloudToolStripMenuItem.Name = "cableCloudToolStripMenuItem";
-            this.cableCloudToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.cableCloudToolStripMenuItem.Text = "Cable Cloud";
-            this.cableCloudToolStripMenuItem.Click += new System.EventHandler(this.cableCloudToolStripMenuItem_Click);
-            // 
-            // networkManagmentSystemToolStripMenuItem
-            // 
-            this.networkManagmentSystemToolStripMenuItem.Name = "networkManagmentSystemToolStripMenuItem";
-            this.networkManagmentSystemToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.networkManagmentSystemToolStripMenuItem.Text = "Network Managment System";
-            this.networkManagmentSystemToolStripMenuItem.Click += new System.EventHandler(this.networkManagmentSystemToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -312,12 +307,26 @@ namespace NetworkEmulation {
             this.parametersListView.UseCompatibleStateImageBehavior = false;
             this.parametersListView.View = System.Windows.Forms.View.List;
             // 
-            // subnetworkToolStripMenuItem
+            // connectionManagersToolStripMenuItem
             // 
-            this.subnetworkToolStripMenuItem.Name = "subnetworkToolStripMenuItem";
-            this.subnetworkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.subnetworkToolStripMenuItem.Text = "Subnetwork";
-            this.subnetworkToolStripMenuItem.Click += new System.EventHandler(this.subnetworkToolStripMenuItem_Click);
+            this.connectionManagersToolStripMenuItem.Name = "connectionManagersToolStripMenuItem";
+            this.connectionManagersToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.connectionManagersToolStripMenuItem.Text = "Connection Managers";
+            this.connectionManagersToolStripMenuItem.Click += new System.EventHandler(this.connectionManagersToolStripMenuItem_Click);
+            // 
+            // pathComputationServersToolStripMenuItem
+            // 
+            this.pathComputationServersToolStripMenuItem.Name = "pathComputationServersToolStripMenuItem";
+            this.pathComputationServersToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.pathComputationServersToolStripMenuItem.Text = "Path Computation Servers";
+            this.pathComputationServersToolStripMenuItem.Click += new System.EventHandler(this.pathComputationServersToolStripMenuItem_Click);
+            // 
+            // nameServerToolStripMenuItem
+            // 
+            this.nameServerToolStripMenuItem.Name = "nameServerToolStripMenuItem";
+            this.nameServerToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.nameServerToolStripMenuItem.Text = "Name Server";
+            this.nameServerToolStripMenuItem.Click += new System.EventHandler(this.nameServerToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -364,8 +373,6 @@ namespace NetworkEmulation {
         private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem cableCloudToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem networkManagmentSystemToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem simulationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
@@ -378,6 +385,9 @@ namespace NetworkEmulation {
         private System.Windows.Forms.GroupBox workspaceGroupBox;
         private EditorPanel editorPanel;
         private System.Windows.Forms.ToolStripMenuItem subnetworkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem connectionManagersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pathComputationServersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nameServerToolStripMenuItem;
     }
 }
 

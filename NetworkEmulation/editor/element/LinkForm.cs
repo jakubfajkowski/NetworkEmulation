@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using NetworkUtilities;
 using NetworkUtilities.Utilities;
 
 namespace NetworkEmulation.Editor.Element {

@@ -4,9 +4,6 @@ using NetworkUtilities.Log;
 
 namespace NetworkUtilities.DataPlane {
     public class CommutationMatrix : LogObject {
-        // Tablica połączeń in/out ta sama, która się znajduje w NetworkNodeAgent
-        public CommutationTable _commutationTable { get; set; }
-
         private readonly List<Port> _inputPorts;
         public readonly List<Port> OutputPorts;
 
@@ -28,6 +25,9 @@ namespace NetworkUtilities.DataPlane {
                 CreateOutputPort(i);
             }
         }
+
+        // Tablica połączeń in/out ta sama, która się znajduje w NetworkNodeAgent
+        public CommutationTable _commutationTable { get; set; }
 
         public void StartThread() {
             _timeToQuit = false;
@@ -78,10 +78,7 @@ namespace NetworkUtilities.DataPlane {
 
         public CableCloudMessage CommuteAllCells(List<AtmCell> cells, int inputPortNumber) {
             var row = _commutationTable.FindRow(cells[0].Vpi, cells[0].Vci, inputPortNumber);
-            if (row == null) {
-                //OnUpdateState("Nie znaleziono wpisu w tablicy!!!!!!!!!!!");
-                return null;
-            }
+            if (row == null) return null;
             foreach (var cell in cells) {
                 cell.Vpi = row.GetOutVpi();
                 if (row.GetOutVci() != -1)

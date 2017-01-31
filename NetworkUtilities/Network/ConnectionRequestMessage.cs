@@ -1,9 +1,10 @@
 ﻿using System;
+using NetworkUtilities.Utilities;
 
-namespace NetworkUtilities.Utilities {
+namespace NetworkUtilities.Network {
     [Serializable]
-    public class NetworkAddressSocketPortPair {
-        public NetworkAddressSocketPortPair(NetworkAddress networkAddress, int socketPort) {
+    public class ConnectionRequestMessage {
+        public ConnectionRequestMessage(NetworkAddress networkAddress, int socketPort) {
             NetworkAddress = networkAddress;
             SocketPort = socketPort;
         }

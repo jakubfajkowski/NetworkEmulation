@@ -1,5 +1,5 @@
 ﻿namespace NetworkUtilities.ControlPlane {
-    public enum SignallingMessageOperation {
+    public enum OperationType {
         //CPCC operations
         CallRequest,
         CallRequestResponse, // CC       -> NCC

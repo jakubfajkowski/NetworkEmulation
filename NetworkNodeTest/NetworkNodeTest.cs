@@ -1,13 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkNode;
-using NetworkUtilities;
 using NetworkUtilities.ManagementPlane;
-using NetworkUtilities.Network.Model;
+using NetworkUtilities.Network.NetworkNode;
 using NetworkUtilities.Utilities;
 using NetworkUtilities.Utilities.Serialization;
-using NetworkNode = NetworkUtilities.Network.NetworkNode;
 
 namespace NetworkNodeTest {
     [TestClass]
@@ -39,7 +36,7 @@ namespace NetworkNodeTest {
 
         [TestMethod]
         public void NmsKeepAlive() {
-            var nms = new NetworkManagmentSystem(6666);
+            var nms = new NetworkManagementSystem(6666);
             nms.UpdateState += (sender, state) => Debug.WriteLine(state);
             nms.StartListening();
 
@@ -47,23 +44,6 @@ namespace NetworkNodeTest {
             agent.UpdateState += (sender, state) => Debug.WriteLine(state);
             agent.Initialize();
             Thread.Sleep(10000);
-        }
-
-        [TestMethod]
-        public void LrMandCcConnectionTest() {
-            //CC NIE MA PARAMETRÓW!!!!!!!!!!!!!!!!!!!!!!!!
-
-            //var LRM = new LinkResourceManager(new CommutationTable(),3,300);
-            //var LRM2 = new LinkResourceManager(new CommutationTable(), 4, 400);
-            //var CC = new ConnectionController(1234,1245);
-
-            //LRM.MessageToSend += (sender, message) => CC.ReceiveMessage(message);
-            //LRM2.MessageToSend += (sender, message) => CC.ReceiveMessage(message);
-            //CC.MessageToSend += (sender, message) => LRM.ReceiveMessage(message);
-
-            //CC.SendGetLabelsMessage();
-            //CC.MessageToSend += (sender, message) => LRM2.ReceiveMessage(message);
-            //CC.SendGetLabelsMessage();
         }
     }
 }

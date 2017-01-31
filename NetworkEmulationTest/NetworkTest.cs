@@ -2,13 +2,12 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkEmulation.Editor.Element;
-using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.DataPlane;
 using NetworkUtilities.ManagementPlane;
-using NetworkUtilities.Network.Model;
+using NetworkUtilities.Network.ClientNode;
+using NetworkUtilities.Network.NetworkNode;
 using NetworkUtilities.Utilities;
-using NetworkNode = NetworkUtilities.Network.NetworkNode;
 
 namespace NetworkEmulationTest {
     [TestClass]
@@ -33,7 +32,7 @@ namespace NetworkEmulationTest {
             signallingCloud.UpdateState += (sender, state) => Console.WriteLine("SC: " + state);
             signallingCloud.StartListening();
 
-            var nms = new NetworkManagmentSystem(6666);
+            var nms = new NetworkManagementSystem(6666);
             nms.UpdateState += (sender, state) => Console.WriteLine("NMS:" + state);
             nms.StartListening();
 
@@ -59,7 +58,7 @@ namespace NetworkEmulationTest {
             sspcs2.UpdateState += (sender, state) => Console.WriteLine("SSPCS2: " + state);
             sspcs2.Initialize();
 
-            var clientNodeA = new NetworkUtilities.Network.ClientNode(new ClientNodeModel {
+            var clientNodeA = new ClientNode(new ClientNodeModel {
                 NetworkAddress = new NetworkAddress("1.1"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "A",
@@ -72,7 +71,7 @@ namespace NetworkEmulationTest {
             clientNodeA.Initialize();
             nameServer.UpdateDirectory("A", new SubnetworkPointPool(clientNodeA.NetworkAddress.Append(1)));
 
-            var clientNodeB = new NetworkUtilities.Network.ClientNode(new ClientNodeModel {
+            var clientNodeB = new ClientNode(new ClientNodeModel {
                 NetworkAddress = new NetworkAddress("2.2"),
                 MaxAtmCellsNumberInCableCloudMessage = maxAtmCellsInCableCloudMessage,
                 ClientName = "B",

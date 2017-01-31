@@ -6,16 +6,15 @@ using NetworkUtilities.ControlPlane.GraphAlgorithm;
 namespace NetworkUtilitiesTests {
     [TestClass]
     public class DijkstraRouteEngineTests {
-
         [TestMethod]
         public void Calculate_A_to_D_given_AB_BC_CD__should_be__ABCD() {
             var results = Engine.CalculateShortestPathBetween(
                 "A",
                 "D",
                 new[] {
-                new Path<string> { Source = "A", Destination = "B", Cost = 3 },
-                new Path<string> { Source = "B", Destination = "C", Cost = 3 },
-                new Path<string> { Source = "C", Destination = "D", Cost = 3 }
+                    new Path<string> {Source = "A", Destination = "B", Cost = 3},
+                    new Path<string> {Source = "B", Destination = "C", Cost = 3},
+                    new Path<string> {Source = "C", Destination = "D", Cost = 3}
                 });
 
             results.Sum(r => r.Cost).Should().Be(9);
@@ -40,10 +39,10 @@ namespace NetworkUtilitiesTests {
                 "A",
                 "D",
                 new[] {
-                new Path<string> { Source = "A", Destination = "B", Cost = 3 },
-                new Path<string> { Source = "B", Destination = "C", Cost = 3 },
-                new Path<string> { Source = "C", Destination = "D", Cost = 3 },
-                new Path<string> { Source = "D", Destination = "E", Cost = 3 }
+                    new Path<string> {Source = "A", Destination = "B", Cost = 3},
+                    new Path<string> {Source = "B", Destination = "C", Cost = 3},
+                    new Path<string> {Source = "C", Destination = "D", Cost = 3},
+                    new Path<string> {Source = "D", Destination = "E", Cost = 3}
                 });
 
             results.Sum(r => r.Cost).Should().Be(9);
@@ -68,16 +67,13 @@ namespace NetworkUtilitiesTests {
                 "A",
                 "D",
                 new[] {
-                new Path<string> { Source = "A", Destination = "B", Cost = 3 },
-                new Path<string> { Source = "A", Destination = "C", Cost = 3 },
-                new Path<string> { Source = "A", Destination = "D", Cost = 7 }, // set this just above ABC (3+3=6)
-                new Path<string> { Source = "A", Destination = "E", Cost = 3 },
-
-                new Path<string> { Source = "B", Destination = "C", Cost = 3 },
-
-                new Path<string> { Source = "C", Destination = "D", Cost = 3 },
-
-                new Path<string> { Source = "D", Destination = "E", Cost = 3 }
+                    new Path<string> {Source = "A", Destination = "B", Cost = 3},
+                    new Path<string> {Source = "A", Destination = "C", Cost = 3},
+                    new Path<string> {Source = "A", Destination = "D", Cost = 7}, // set this just above ABC (3+3=6)
+                    new Path<string> {Source = "A", Destination = "E", Cost = 3},
+                    new Path<string> {Source = "B", Destination = "C", Cost = 3},
+                    new Path<string> {Source = "C", Destination = "D", Cost = 3},
+                    new Path<string> {Source = "D", Destination = "E", Cost = 3}
                 });
 
             results.Sum(r => r.Cost).Should().Be(6);
@@ -98,16 +94,13 @@ namespace NetworkUtilitiesTests {
                 "A",
                 "D",
                 new[] {
-                new Path<string> { Source = "A", Destination = "B", Cost = 3 },
-                new Path<string> { Source = "A", Destination = "C", Cost = 3 },
-                new Path<string> { Source = "A", Destination = "D", Cost = 5 }, // set this just below ABC (3+3=6)
-                new Path<string> { Source = "A", Destination = "E", Cost = 3 },
-
-                new Path<string> { Source = "B", Destination = "C", Cost = 3 },
-
-                new Path<string> { Source = "C", Destination = "D", Cost = 3 },
-
-                new Path<string> { Source = "D", Destination = "E", Cost = 3 }
+                    new Path<string> {Source = "A", Destination = "B", Cost = 3},
+                    new Path<string> {Source = "A", Destination = "C", Cost = 3},
+                    new Path<string> {Source = "A", Destination = "D", Cost = 5}, // set this just below ABC (3+3=6)
+                    new Path<string> {Source = "A", Destination = "E", Cost = 3},
+                    new Path<string> {Source = "B", Destination = "C", Cost = 3},
+                    new Path<string> {Source = "C", Destination = "D", Cost = 3},
+                    new Path<string> {Source = "D", Destination = "E", Cost = 3}
                 });
 
             results.Sum(r => r.Cost).Should().Be(5);
@@ -117,7 +110,5 @@ namespace NetworkUtilitiesTests {
             results.Single().Source.Should().Be("A");
             results.Single().Destination.Should().Be("D");
         }
-
-
     } // TestClass
 }

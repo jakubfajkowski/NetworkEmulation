@@ -5,47 +5,42 @@ using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.DataPlane {
     public class CableCloud : ConnectionManager {
-        private readonly Dictionary<NetworkAddressNodePortPair, NetworkAddressNodePortPair> _linkDictionary;
+        private readonly Dictionary<NetworkAddressNodePortPair, NetworkAddressNodePortPair> _linkDictionary = 
+            new Dictionary<NetworkAddressNodePortPair, NetworkAddressNodePortPair>();
 
-        public CableCloud(int listeningPort) : base(listeningPort) {
-            _linkDictionary = new Dictionary<NetworkAddressNodePortPair, NetworkAddressNodePortPair>();
-        }
 
-        protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {
+        public CableCloud(int listeningPort) : 
+            base(listeningPort, ConnectionManagerType.CableCloud) {}
+
+        protected override void HandleReceivedObject(object receivedObject, NetworkAddress inputNetworkAddress) {
             var cableCloudMessage = (CableCloudMessage) receivedObject;
-            OnUpdateState("Node [" + networkAddress + "] from ATM port: " + cableCloudMessage.PortNumber + " - " +
-                          cableCloudMessage.Data.Length + " bytes received.");
+            var input = new NetworkAddressNodePortPair(inputNetworkAddress, cableCloudMessage.PortNumber);
 
-            var input = new NetworkAddressNodePortPair(networkAddress, cableCloudMessage.PortNumber);
+            OnUpdateState($"[RECEIVED] {input.NetworkAddress}:{cableCloudMessage.PortNumber} OUT " +
+                          $"{cableCloudMessage.Data.Length} BYTES");
+
+
             NetworkAddressNodePortPair output = null;
 
             try {
                 output = LookUpLinkDictionary(input);
                 cableCloudMessage.PortNumber = output.NodePortNumber;
 
-                PassCableCloudMessage(cableCloudMessage, output.NetworkAddress);
+                SendCableCloudMessage(cableCloudMessage, output.NetworkAddress);
             }
             catch (KeyNotFoundException) {
-                OnUpdateState("Node [" + input.NetworkAddress + "] to ATM port: " +
-                              cableCloudMessage.PortNumber +
-                              " - no avaliable link.");
+                OnUpdateState($"[NO_AVAILABLE_LINK] {input.NetworkAddress}:{cableCloudMessage.PortNumber} OUT");
             }
             catch (Exception) {
-                if (output != null) DeleteConnection(output.NetworkAddress);
-                OnUpdateState("Node [" + input.NetworkAddress + "] to ATM port: " +
-                              cableCloudMessage.PortNumber +
-                              " - could not connect.");
+                if (output != null) {
+                    OnUpdateState($"[CONNECTION_ERROR] {input.NetworkAddress}:{cableCloudMessage.PortNumber}");
+                    DeleteConnection(output.NetworkAddress);
+                }
             }
         }
 
         private NetworkAddressNodePortPair LookUpLinkDictionary(NetworkAddressNodePortPair input) {
             return _linkDictionary[input];
-        }
-
-        private void PassCableCloudMessage(CableCloudMessage cableCloudMessage, NetworkAddress outputNetworkAddress) {
-            Send(cableCloudMessage, outputNetworkAddress);
-            OnUpdateState("Node [" + outputNetworkAddress + "] to   ATM port: " + cableCloudMessage.PortNumber + " - " +
-                          cableCloudMessage.Data.Length + " bytes sent.");
         }
 
         public void AddLink(NetworkAddressNodePortPair key, NetworkAddressNodePortPair value) {
@@ -54,6 +49,12 @@ namespace NetworkUtilities.DataPlane {
 
         public void RemoveLink(NetworkAddressNodePortPair key) {
             _linkDictionary.Remove(key);
+        }
+
+        private void SendCableCloudMessage(CableCloudMessage cableCloudMessage, NetworkAddress outputNetworkAddress) {
+            Send(cableCloudMessage, outputNetworkAddress);
+            OnUpdateState($"[SENT] {outputNetworkAddress}:{cableCloudMessage.PortNumber} IN " +
+                          $"{cableCloudMessage.Data.Length} BYTES");
         }
     }
 }

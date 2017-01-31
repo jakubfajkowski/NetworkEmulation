@@ -4,11 +4,10 @@ using System.Threading;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.DataPlane;
 using NetworkUtilities.ManagementPlane;
-using NetworkUtilities.Network.Model;
 
-namespace NetworkUtilities.Network {
-    public class NetworkNode : Node {
-        private ConnectionController _connectionController;
+namespace NetworkUtilities.Network.NetworkNode {
+    public class NetworkNode : Node.Node {
+        private readonly ConnectionController _connectionController;
         private List<LinkResourceManager> _linkResourceManagers;
 
         private Thread _networkNodeThread;
@@ -22,9 +21,9 @@ namespace NetworkUtilities.Network {
             : base(
                 parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort,
                 parameters.SignallingCloudListeningPort) {
-
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
-            NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkAddress, parameters.IpAddress, parameters.NetworkManagmentSystemListeningPort);
+            NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkAddress, parameters.IpAddress,
+                parameters.NetworkManagmentSystemListeningPort);
             OnUpdateState("Network Node \nNMS port: " + parameters.SignallingCloudListeningPort);
             CommutationMatrix = new CommutationMatrix(new CommutationTable(), parameters.NumberOfPorts);
             CommutationMatrix.UpdateState += (sender, state) => OnUpdateState(state);
@@ -42,6 +41,9 @@ namespace NetworkUtilities.Network {
             StartThread();
         }
 
+        // Czas po jakim komórki ATM zostaną spakowane w CCM
+        public static int MinLastAddTime { private get; set; } = 100;
+
         private void ConnectionControllerOnCommutationCommand(object sender, CommutationHandlerArgs args) {
             CommutationMatrix._commutationTable.AddConnection(args.CommutationTableRow);
         }
@@ -50,9 +52,6 @@ namespace NetworkUtilities.Network {
             base.Initialize();
             NetworkNodeAgent.Initialize();
         }
-
-        // Czas po jakim komórki ATM zostaną spakowane w CCM
-        public static int MinLastAddTime { private get; set; } = 100;
 
         public void StartThread() {
             //_timeToQuit = false;
@@ -107,7 +106,7 @@ namespace NetworkUtilities.Network {
         public void ReceiveCableCloudMessage(CableCloudMessage cableCloudMessage) {
             OnUpdateState("[" + DateTime.Now + "] Message received on port: " + cableCloudMessage.PortNumber);
             OnUpdateState("[" + DateTime.Now + "] Received " + cableCloudMessage.ExtractAtmCells().Count +
-                              " atmcells");
+                          " atmcells");
 
             /* foreach (var cell in ExtractAtmCells(cableCloudMessage))
                  CommutationMatrix.AddAtmCellToInputPort(cell, cableCloudMessage.PortNumber);
@@ -125,12 +124,13 @@ namespace NetworkUtilities.Network {
 
         protected override void Receive(SignallingMessage signallingMessage) {
             switch (signallingMessage.DestinationControlPlaneElement) {
-                case SignallingMessageDestinationControlPlaneElement.ConnectionController:
+                case ControlPlaneElementType.CC:
                     _connectionController.ReceiveMessage(signallingMessage);
                     break;
 
-                case SignallingMessageDestinationControlPlaneElement.LinkResourceManager:
-                    _linkResourceManagers[signallingMessage.DestinationAddress.GetLastId() - 1].ReceiveMessage(signallingMessage);
+                case ControlPlaneElementType.LRM:
+                    _linkResourceManagers[signallingMessage.DestinationAddress.GetLastId() - 1].ReceiveMessage(
+                        signallingMessage);
                     break;
             }
         }

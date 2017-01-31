@@ -62,17 +62,9 @@
     <Compile Include="ElementsSerializationTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClientNode\ClientNode.csproj">
-      <Project>{fa195c7b-853f-4bfc-bbf6-4d5c41adbd3b}</Project>
-      <Name>ClientNode</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NetworkEmulation\NetworkEmulation.csproj">
       <Project>{2e25ade2-5710-499e-a758-5f355793924b}</Project>
       <Name>NetworkEmulation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NetworkNode\NetworkNode.csproj">
-      <Project>{94e8c851-5c8a-400e-b37d-978df01b4bd3}</Project>
-      <Name>NetworkNode</Name>
     </ProjectReference>
     <ProjectReference Include="..\NetworkUtilities\NetworkUtilities.csproj">
       <Project>{f8933e14-6b9c-4b0d-b9ff-1a5fa8190d2f}</Project>

@@ -18,7 +18,7 @@ namespace NetworkUtilities.Utilities.Serialization {
             using (var sww = new StringWriter()) {
                 using (var writer = XmlWriter.Create(sww, settings)) {
                     xsSubmit.Serialize(writer, subReq);
-                    xml = sww.ToString(); // Your XML
+                    xml = sww.ToString();
                 }
             }
 
@@ -68,7 +68,11 @@ namespace NetworkUtilities.Utilities.Serialization {
         }
 
         public static string FormatXml(string xml) {
-            return new string('-', 15) + "\nXML" + new string('-', 15) + "\n\n";
+            var header = new string('-', 30) + "XML INPUT" + new string('-', 30) + "\n";
+            var xmlString = xml.Replace(Quota, "\"");
+            var footer = "\n" + new string('-', 69) + "\n\n";
+
+            return header + xmlString + footer;
         }
     }
 }

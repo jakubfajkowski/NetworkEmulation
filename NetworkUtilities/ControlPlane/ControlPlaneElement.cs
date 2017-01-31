@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using NetworkUtilities.Log;
 using NetworkUtilities.Utilities;
 
@@ -7,25 +6,18 @@ namespace NetworkUtilities.ControlPlane {
     public abstract class ControlPlaneElement : LogObject {
         public delegate void MessageToSendHandler(object sender, SignallingMessage message);
 
+        protected readonly ControlPlaneElementType ControlPlaneElementType;
+
         private readonly List<UniqueId> _currentlyHandledSessions = new List<UniqueId>();
 
-        protected ControlPlaneElement(NetworkAddress networkAddress) {
-            Address = networkAddress;
-        }
+        public readonly NetworkAddress Address;
 
-        public NetworkAddress Address { get; }
+        protected ControlPlaneElement(NetworkAddress networkAddress, ControlPlaneElementType controlPlaneElementType) {
+            Address = networkAddress;
+            ControlPlaneElementType = controlPlaneElementType;
+        }
 
         public event MessageToSendHandler MessageToSend;
-
-        protected void SendMessage(SignallingMessage message) {
-            message.SourceAddress = Address;
-            OnUpdateState("Sent: " + message);
-            MessageToSend?.Invoke(this, message);
-        }
-
-        protected bool IsCurrentlyHandled(UniqueId sessionId) {
-            return _currentlyHandledSessions.Contains(sessionId);
-        }
 
         private void StartSession(UniqueId sessionId) {
             _currentlyHandledSessions.Add(sessionId);
@@ -35,10 +27,27 @@ namespace NetworkUtilities.ControlPlane {
             _currentlyHandledSessions.Remove(sessionId);
         }
 
+        protected void SendMessage(SignallingMessage message) {
+            message.SourceAddress = Address;
+            message.SourceControlPlaneElement = ControlPlaneElementType;
+
+            OnUpdateState("[OUT] " + message);
+            MessageToSend?.Invoke(this, message);
+        }
+
         public virtual void ReceiveMessage(SignallingMessage message) {
-            OnUpdateState("Received: " + message);
+            OnUpdateState("[IN] " + message);
             var sessionId = message.SessionId;
             if (!IsCurrentlyHandled(sessionId)) StartSession(sessionId);
+        }
+
+        protected bool IsCurrentlyHandled(UniqueId sessionId) {
+            return _currentlyHandledSessions.Contains(sessionId);
+        }
+
+        protected override void OnUpdateState(string state) {
+            var controlPlaneElementState = $"[{ControlPlaneElementType}] {state}";
+            base.OnUpdateState(controlPlaneElementState);
         }
     }
 }

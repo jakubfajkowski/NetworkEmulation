@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NetworkUtilities.Utilities;
 
@@ -10,7 +11,7 @@ namespace NetworkUtilities.ControlPlane {
         private static readonly Dictionary<string, SubnetworkPointPool> _snppDictionary =
             new Dictionary<string, SubnetworkPointPool>();
 
-        public Directory(NetworkAddress networkAddress) : base(networkAddress) {
+        public Directory(NetworkAddress networkAddress) : base(networkAddress, ControlPlaneElementType.Directory) {
         }
 
         private void SendDirectoryAddressResponse(SignallingMessage message) {
@@ -20,20 +21,19 @@ namespace NetworkUtilities.ControlPlane {
             try {
                 var clientAddressA = _clientAdderssDictionary[clientNames[0]];
                 var clientAddressZ = _clientAdderssDictionary[clientNames[1]];
-                clientAddresses = new[]{clientAddressA, clientAddressZ};
+                clientAddresses = new[] {clientAddressA, clientAddressZ};
             }
-            catch (KeyNotFoundException e) {
-                OnUpdateState(clientNames[1] + " not found");
+            catch (KeyNotFoundException) {
+                OnUpdateState($"{clientNames[1]} not found");
             }
 
-            
 
             var directioryResponse = message;
-            directioryResponse.Operation = SignallingMessageOperation.DirectoryAddressResponse;
+            directioryResponse.Operation = OperationType.DirectoryAddressResponse;
             directioryResponse.Payload = clientAddresses;
             directioryResponse.DestinationAddress = message.SourceAddress;
             directioryResponse.DestinationControlPlaneElement =
-                SignallingMessageDestinationControlPlaneElement.NetworkCallController;
+                ControlPlaneElementType.NCC;
             SendMessage(directioryResponse);
         }
 
@@ -46,11 +46,11 @@ namespace NetworkUtilities.ControlPlane {
             string[] clientName = {clientNameA, clientNameZ};
 
             var directioryResponse = message;
-            directioryResponse.Operation = SignallingMessageOperation.DirectoryNameResponse;
+            directioryResponse.Operation = OperationType.DirectoryNameResponse;
             directioryResponse.Payload = clientName;
             directioryResponse.DestinationAddress = message.SourceAddress;
             directioryResponse.DestinationControlPlaneElement =
-                SignallingMessageDestinationControlPlaneElement.NetworkCallController;
+                ControlPlaneElementType.NCC;
             SendMessage(directioryResponse);
         }
 
@@ -63,37 +63,41 @@ namespace NetworkUtilities.ControlPlane {
                 var snmpZ = _snppDictionary[clientNames[1]];
 
                 snpp = new[] {snmpA, snmpZ};
-
             }
             catch (KeyNotFoundException e) {
-                OnUpdateState(clientNames[1] + " not found");
+                OnUpdateState($"{clientNames[1]} not found");
             }
 
-    var directioryResponse = message;
-            directioryResponse.Operation = SignallingMessageOperation.DirectorySnppResponse;
+            var directioryResponse = message;
+            directioryResponse.Operation = OperationType.DirectorySnppResponse;
             directioryResponse.Payload = snpp;
             directioryResponse.DestinationAddress = message.SourceAddress;
             directioryResponse.DestinationControlPlaneElement =
-                SignallingMessageDestinationControlPlaneElement.NetworkCallController;
+                ControlPlaneElementType.NCC;
             SendMessage(directioryResponse);
         }
 
         public void UpdateDirectory(string clientName, SubnetworkPointPool snpp) {
-            _clientAdderssDictionary.Add(clientName, snpp.NetworkAddress.GetParentsAddress());
-            _snppDictionary.Add(clientName, snpp);
+            try {
+                _clientAdderssDictionary.Add(clientName, snpp.NetworkAddress.GetParentsAddress());
+                _snppDictionary.Add(clientName, snpp);
+            }
+            catch (ArgumentException) {
+                //ignored
+            }
         }
 
         public override void ReceiveMessage(SignallingMessage message) {
             base.ReceiveMessage(message);
 
             switch (message.Operation) {
-                case SignallingMessageOperation.DirectoryAddressRequest:
+                case OperationType.DirectoryAddressRequest:
                     SendDirectoryAddressResponse(message);
                     break;
-                case SignallingMessageOperation.DirectoryNameRequest:
+                case OperationType.DirectoryNameRequest:
                     SendDirectoryNameResponse(message);
                     break;
-                case SignallingMessageOperation.DirectorySnppRequest:
+                case OperationType.DirectorySnppRequest:
                     SendDirectorySnppResponse(message);
                     break;
             }

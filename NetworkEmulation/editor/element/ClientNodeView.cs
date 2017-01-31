@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Xml;
 using NetworkEmulation.Properties;
-using NetworkUtilities;
-using NetworkUtilities.Network.Model;
+using NetworkUtilities.Network.ClientNode;
 using NetworkUtilities.Utilities;
 using NetworkUtilities.Utilities.Serialization;
 

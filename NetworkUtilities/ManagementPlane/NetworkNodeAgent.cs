@@ -1,15 +1,17 @@
-﻿using System.Timers;
+﻿using System;
+using System.Timers;
 using NetworkUtilities.Log;
 using NetworkUtilities.Network;
 using NetworkUtilities.Utilities;
-using Timer = System.Timers.Timer;
 
 namespace NetworkUtilities.ManagementPlane {
     public class NetworkNodeAgent : LogObject {
         private readonly ConnectionComponent _managmentPlaneConnectionComponent;
 
-        public NetworkNodeAgent(NetworkAddress networkAddress, string networkManagmentSystemIpAddress, int networkManagmentSystemListeningPort) {
-            _managmentPlaneConnectionComponent = new ConnectionComponent(networkAddress, networkManagmentSystemIpAddress, networkManagmentSystemListeningPort);
+        public NetworkNodeAgent(NetworkAddress networkAddress, string networkManagmentSystemIpAddress,
+            int networkManagmentSystemListeningPort) {
+            _managmentPlaneConnectionComponent = new ConnectionComponent(networkAddress, networkManagmentSystemIpAddress,
+                networkManagmentSystemListeningPort, ConnectionManagerType.NetworkManagementSystem);
         }
 
         public void Initialize() {
@@ -20,7 +22,7 @@ namespace NetworkUtilities.ManagementPlane {
         private void StartSendingKeepAliveMessages() {
             var timer = new Timer {
                 AutoReset = true,
-                Interval = 1000,
+                Interval = 2000,
                 Enabled = true
             };
 
@@ -30,7 +32,7 @@ namespace NetworkUtilities.ManagementPlane {
         private void OnTimedEvent(object source, ElapsedEventArgs e) {
             if (_managmentPlaneConnectionComponent.Online) {
                 _managmentPlaneConnectionComponent.Send("KEEP_ALIVE");
-                OnUpdateState("Keep alive sent");
+                OnUpdateState("[SENT] [KEEP_ALIVE]");
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿using NetworkUtilities.Utilities;
 
-namespace NetworkUtilities.Network.Model {
+namespace NetworkUtilities.Network {
     public class LinkModel {
         public NetworkAddressNodePortPair InputNodePortPair { get; set; }
         public NetworkAddressNodePortPair OutputNodePortPair { get; set; }

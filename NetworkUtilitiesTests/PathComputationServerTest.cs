@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Utilities;
 

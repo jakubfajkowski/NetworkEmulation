@@ -1,5 +1,5 @@
 ﻿using System;
-using NetworkUtilities.Network.Model;
+using NetworkUtilities.Network.NetworkNode;
 using NetworkUtilities.Utilities.Serialization;
 
 namespace NetworkNode {
@@ -14,7 +14,7 @@ namespace NetworkNode {
             Console.Title =
                 $"Network Node ({parameters.NetworkAddress})";
 
-            var networkNode = new NetworkUtilities.Network.NetworkNode(parameters);
+            var networkNode = new NetworkUtilities.Network.NetworkNode.NetworkNode(parameters);
             networkNode.UpdateState += (sender, state) => Console.WriteLine(state);
             networkNode.Initialize();
         }

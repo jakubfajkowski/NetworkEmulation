@@ -5,15 +5,15 @@ namespace NetworkUtilities.ControlPlane {
     public class SubnetworkPoint {
         private static readonly Random Random = new Random();
 
-        public int Vpi { get; private set; }
-        public int Vci { get; private set; }
-        public int Capacity { get; private set; }
-
         private SubnetworkPoint(int vpi, int vci, int capacity) {
             Vpi = vpi;
             Vci = vci;
             Capacity = capacity;
         }
+
+        public int Vpi { get; }
+        public int Vci { get; }
+        public int Capacity { get; }
 
         public static SubnetworkPoint GenerateRandom(int capacity) {
             var vpi = Random.Next(4096);
@@ -33,13 +33,13 @@ namespace NetworkUtilities.ControlPlane {
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((SubnetworkPoint) obj);
         }
 
         public override int GetHashCode() {
             unchecked {
-                return (Vpi*397) ^ Vci;
+                return (Vpi * 397) ^ Vci;
             }
         }
 

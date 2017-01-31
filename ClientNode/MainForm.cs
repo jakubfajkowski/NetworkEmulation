@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Drawing;
-using System.Threading;
 using System.Windows.Forms;
-using NetworkUtilities.Network.Model;
+using NetworkUtilities.Network.ClientNode;
 using NetworkUtilities.Utilities.Serialization;
 
 namespace ClientNode {
     public partial class MainForm : Form {
-        private readonly NetworkUtilities.Network.ClientNode _client;
+        private readonly NetworkUtilities.Network.ClientNode.ClientNode _client;
 
         public MainForm(string[] args) {
             InitializeComponent();
-            var joinedArgs = string.Join(" ", args);
+
+            var xmlArgs = string.Join(" ", args);
+            textBoxEventLog.Text = XmlSerializer.FormatXml(xmlArgs);
+
             var param =
                 (ClientNodeModel)
-                XmlSerializer.Deserialize(joinedArgs, typeof(ClientNodeModel));
-            _client = new NetworkUtilities.Network.ClientNode(param);
-            textBoxEventLog.Text = joinedArgs + "\n";
+                XmlSerializer.Deserialize(xmlArgs, typeof(ClientNodeModel));
+
+            _client = new NetworkUtilities.Network.ClientNode.ClientNode(param);
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
@@ -24,12 +26,15 @@ namespace ClientNode {
             _client.OnMessageReceived += MessageReceived;
             _client.OnClientTableRowAdded += AddConnection;
             _client.OnClientTableRowDeleted += DeleteConnection;
-            _client.Initialize();
 
             Text = $"Client Node {_client.ClientName} ({_client.NetworkAddress})";
 
             textBoxEventLog.TextChanged += textBox_enableAutoscroll;
             textBoxReceived.TextChanged += textBox_enableAutoscroll;
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e) {
+            _client.Initialize();
         }
 
         private void textBox_enableAutoscroll(object sender, EventArgs e) {
@@ -93,9 +98,7 @@ namespace ClientNode {
                 textBoxReceiver.Text = "";
             }
             else {
-                if (!buttonConnection.Text.Equals("Connecting")) {
-                    _client.Disconnect(comboBoxConnections.Text);
-                }
+                if (!buttonConnection.Text.Equals("Connecting")) _client.Disconnect(comboBoxConnections.Text);
                 buttonConnection.BackColor = Color.Lime;
                 buttonConnection.Text = "Connect";
             }

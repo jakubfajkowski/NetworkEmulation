@@ -1,16 +1,16 @@
-﻿using System.Drawing.Text;
-using NetworkUtilities.Utilities;
+﻿using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     public class Policy : ControlPlaneElement {
-        public Policy(NetworkAddress networkAddress) : base(networkAddress) {}
+        public Policy(NetworkAddress networkAddress) : base(networkAddress, ControlPlaneElementType.Policy) {
+        }
 
         private void SendPolicyResponse(SignallingMessage message) {
             var policyResponse = message;
-            policyResponse.Operation = SignallingMessageOperation.PolicyResponse;
+            policyResponse.Operation = OperationType.PolicyResponse;
             policyResponse.Payload = true;
             policyResponse.DestinationAddress = message.SourceAddress;
-            policyResponse.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
+            policyResponse.DestinationControlPlaneElement = ControlPlaneElementType.NCC;
             SendMessage(policyResponse);
         }
 

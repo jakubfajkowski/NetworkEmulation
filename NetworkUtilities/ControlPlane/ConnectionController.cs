@@ -1,102 +1,93 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Text;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     public class ConnectionController : ControlPlaneElement {
-        private readonly int _networkNodeAgentUdpPort;
+        public delegate void CommutationHandler(object sender, CommutationHandlerArgs args);
 
         private readonly Dictionary<UniqueId, NetworkAddress[]> _snppDictionary =
             new Dictionary<UniqueId, NetworkAddress[]>();
 
         private Queue<SubnetworkPointPool> _snpPools;
-        private int _udpPortLrm;
-        private int _udpPortRc;
-        private Dictionary<string, int> _udpPortsCc;
-        public SubnetworkPoint snPoint { get; set; }
-        public SubnetworkPoint snPointCpcc { get; set; }
-        public int Port { get; set; }
 
-        public ConnectionController(NetworkAddress networkAddress) : base(networkAddress) {
+        public ConnectionController(NetworkAddress networkAddress) : base(networkAddress, ControlPlaneElementType.CC) {
             snPoint = SubnetworkPoint.GenerateRandom(100);
             snPointCpcc = snPoint;
             Port = 1;
         }
 
+        public SubnetworkPoint snPoint { get; set; }
+        public SubnetworkPoint snPointCpcc { get; set; }
+        public int Port { get; set; }
+
         public override void ReceiveMessage(SignallingMessage message) {
             base.ReceiveMessage(message);
 
             switch (message.Operation) {
-                case SignallingMessageOperation.ConnectionRequest:
+                case OperationType.ConnectionRequest:
                     var snpp = (SubnetworkPointPool[]) message.Payload;
                     var snppAddressA = snpp[0].NetworkAddress;
                     var snppAddressB = snpp[1].NetworkAddress;
-                    NetworkAddress[] snppAddress = {snppAddressA, snppAddressB}; 
+                    NetworkAddress[] snppAddress = {snppAddressA, snppAddressB};
                     _snppDictionary.Add(message.SessionId, snppAddress);
 
-                    if (message.DestinationAddress.Levels == _snppDictionary[message.SessionId][0].Levels - 1) {
+                    if (message.DestinationAddress.Levels == _snppDictionary[message.SessionId][0].Levels - 1)
                         SendLinkConnectionRequest(message);
-                    }
 
                     if (message.SourceAddress.Equals(new NetworkAddress("1")) ||
-                        message.SourceAddress.Equals(new NetworkAddress("2"))) {
-                        if (message.SourceAddress.GetRootFromBeginning(1).Equals(_snppDictionary[message.SessionId][1])) {
+                        message.SourceAddress.Equals(new NetworkAddress("2")))
+                        if (message.SourceAddress.GetRootFromBeginning(1).Equals(_snppDictionary[message.SessionId][1]))
                             SendPeerCoordination(message);
-                        }
                         else SendRouteTableQuery(message);
-                    }
                     else SendRouteTableQuery(message);
                     break;
-                case SignallingMessageOperation.PeerCoordination:
+                case OperationType.PeerCoordination:
                     SendRouteTableQuery(message);
                     break;
-                case SignallingMessageOperation.RouteTableQueryResponse:
+                case OperationType.RouteTableQueryResponse:
                     HandleRouteTableQueryResponse(message);
                     break;
-                case SignallingMessageOperation.ConnectionRequestResponse:
+                case OperationType.ConnectionRequestResponse:
                     HandleConnectionRequestResponse(message);
                     break;
-                case SignallingMessageOperation.SetLabels:
+                case OperationType.SetLabels:
                     var labels = (int[]) message.Payload;
                     Debug.WriteLine("Received VPI: " + labels[0] + ", VCI: " + labels[1]);
                     break;
-                case SignallingMessageOperation.GetLabelsFromLRM:
+                case OperationType.GetLabelsFromLRM:
                     break;
-                case SignallingMessageOperation.LinkConnectionResponse:
+                case OperationType.LinkConnectionResponse:
                     HandleLinkConnectionResponse(message);
                     break;
-                case SignallingMessageOperation.SetSNP:
+                case OperationType.SetSNP:
                     HandleSetSnp(message);
                     break;
             }
         }
 
         private void SendLinkConnectionRequest(SignallingMessage message) {
-            message.Operation = SignallingMessageOperation.LinkConnectionRequest;
-            message.DestinationAddress = _snppDictionary[message.SessionId][1]; 
-            message.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.LinkResourceManager;
+            message.Operation = OperationType.LinkConnectionRequest;
+            message.DestinationAddress = _snppDictionary[message.SessionId][1];
+            message.DestinationControlPlaneElement = ControlPlaneElementType.LRM;
             SendMessage(message);
         }
 
         private void SendRouteTableQuery(SignallingMessage message) {
-            message.Operation = SignallingMessageOperation.RouteTableQuery;
+            message.Operation = OperationType.RouteTableQuery;
             message.DestinationAddress = Address;
-            message.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.RoutingController;
+            message.DestinationControlPlaneElement = ControlPlaneElementType.RC;
             SendMessage(message);
         }
 
         private void SendPeerCoordination(SignallingMessage message) {
             var peerCoordination = message;
-            peerCoordination.Operation = SignallingMessageOperation.ConnectionConfirmation;
+            peerCoordination.Operation = OperationType.ConnectionConfirmation;
             if (message.SourceAddress.Equals(new NetworkAddress("1"))) {
                 peerCoordination.DestinationAddress = new NetworkAddress("2");
                 peerCoordination.DestinationControlPlaneElement =
-                    SignallingMessageDestinationControlPlaneElement.ConnectionController;
+                    ControlPlaneElementType.CC;
             }
             else {
                 peerCoordination.DestinationAddress = new NetworkAddress("1");
@@ -107,16 +98,16 @@ namespace NetworkUtilities.ControlPlane {
         private void HandleConnectionRequestResponse(SignallingMessage msg) {
             if (_snpPools == null) {
                 if (msg.DestinationAddress.Levels == 1) {
-                    msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
+                    msg.Operation = OperationType.ConnectionConfirmationToNCC;
                     msg.Payload = snPointCpcc;
                     msg.DestinationAddress = _snppDictionary[msg.SessionId][0].GetRootFromBeginning(1);
-                    msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
+                    msg.DestinationControlPlaneElement = ControlPlaneElementType.NCC;
                     //msg.Payload = true;
                     SendMessage(msg);
                 }
                 else {
                     msg.DestinationAddress = msg.DestinationAddress.GetParentsAddress();
-                    msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
+                    msg.DestinationControlPlaneElement = ControlPlaneElementType.CC;
                     SendMessage(msg);
                 }
             }
@@ -125,8 +116,8 @@ namespace NetworkUtilities.ControlPlane {
             }
             else {
                 msg.DestinationAddress.GetParentsAddress();
-                msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
-                msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
+                msg.Operation = OperationType.ConnectionRequestResponse;
+                msg.DestinationControlPlaneElement = ControlPlaneElementType.CC;
                 SendMessage(msg);
             }
         }
@@ -138,62 +129,49 @@ namespace NetworkUtilities.ControlPlane {
                     snp.Vpi, snp.Vci, message.SourceAddress.GetLastId())));
             message.Payload = true;
             message.DestinationAddress = message.DestinationAddress.GetParentsAddress();
-            message.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
-            message.Operation = SignallingMessageOperation.ConnectionRequestResponse;
+            message.DestinationControlPlaneElement = ControlPlaneElementType.CC;
+            message.Operation = OperationType.ConnectionRequestResponse;
             SendMessage(message);
         }
 
         private void HandleSetSnp(SignallingMessage message) {
-            snPoint= message.Payload as SubnetworkPoint;
+            snPoint = message.Payload as SubnetworkPoint;
             Port = message.SourceAddress.GetLastId();
         }
 
         public event CommutationHandler CommutationCommand;
 
 
-        public delegate void CommutationHandler(object sender, CommutationHandlerArgs args);
-
-
         public void SendGetLabelsMessage() {
             //SendMessage(new SignallingMessage(SignallingMessageOperation.GetLabels, 1));
         }
 
-        public void SendConnectionToNetworkNodeAgent(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci,
-            int outPortNumber) {
-            var message = "CreateConnection " + inVpi + " " + inVci + " " + inPortNumber + " " + outVpi + " " + outVci +
-                          " " + outPortNumber;
-            var bytes = Encoding.UTF8.GetBytes(message);
-            var udpClient = new UdpClient();
-            var ipEndpoint = new IPEndPoint(IPAddress.Loopback, _networkNodeAgentUdpPort);
-            udpClient.Send(bytes, bytes.Length, ipEndpoint);
-        }
-
         private void HandleRouteTableQueryResponse(SignallingMessage msg) {
-            if (msg.Operation.Equals(SignallingMessageOperation.RouteTableQueryResponse))
-                _snpPools = msg.Payload as Queue<SubnetworkPointPool>;            
+            if (msg.Operation.Equals(OperationType.RouteTableQueryResponse))
+                _snpPools = msg.Payload as Queue<SubnetworkPointPool>;
             if (_snpPools.Count > 0) {
                 var snpps = new[] {
                     _snpPools.Dequeue(),
                     _snpPools.Dequeue()
                 };
                 var levelsOfAddress = msg.DestinationAddress.Levels + 1;
-                msg.Operation = SignallingMessageOperation.ConnectionRequest;
+                msg.Operation = OperationType.ConnectionRequest;
                 msg.DestinationAddress = snpps[0].NetworkAddress.GetRootFromBeginning(levelsOfAddress);
-                msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
+                msg.DestinationControlPlaneElement = ControlPlaneElementType.CC;
                 msg.Payload = snpps;
                 SendMessage(msg);
             }
             else {
                 msg.Payload = false;
                 if (msg.DestinationAddress.Levels == 1) {
-                    msg.Operation = SignallingMessageOperation.ConnectionConfirmationToNCC;
+                    msg.Operation = OperationType.ConnectionConfirmationToNCC;
                     msg.DestinationAddress = _snppDictionary[msg.SessionId][0].GetRootFromBeginning(1);
-                    msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.NetworkCallController;
+                    msg.DestinationControlPlaneElement = ControlPlaneElementType.NCC;
                 }
                 else {
                     msg.DestinationAddress = msg.DestinationAddress.GetParentsAddress();
-                    msg.Operation = SignallingMessageOperation.ConnectionRequestResponse;
-                    msg.DestinationControlPlaneElement = SignallingMessageDestinationControlPlaneElement.ConnectionController;
+                    msg.Operation = OperationType.ConnectionRequestResponse;
+                    msg.DestinationControlPlaneElement = ControlPlaneElementType.CC;
                 }
                 SendMessage(msg);
             }
@@ -205,10 +183,10 @@ namespace NetworkUtilities.ControlPlane {
     }
 
     public class CommutationHandlerArgs {
-        public CommutationTableRow CommutationTableRow { get; private set; }
-
         public CommutationHandlerArgs(CommutationTableRow commutationTableRow) {
             CommutationTableRow = commutationTableRow;
         }
+
+        public CommutationTableRow CommutationTableRow { get; private set; }
     }
 }

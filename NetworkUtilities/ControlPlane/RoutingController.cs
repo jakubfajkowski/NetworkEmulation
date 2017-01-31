@@ -8,21 +8,22 @@ namespace NetworkUtilities.ControlPlane {
     public class RoutingController : ControlPlaneElement {
         private readonly List<Link> _links = new List<Link>();
 
-        public RoutingController(NetworkAddress networkAddress) : base(networkAddress) {}
+        public RoutingController(NetworkAddress networkAddress) : base(networkAddress, ControlPlaneElementType.RC) {
+        }
 
         public override void ReceiveMessage(SignallingMessage message) {
             base.ReceiveMessage(message);
 
             switch (message.Operation) {
-                case SignallingMessageOperation.RouteTableQuery:
+                case OperationType.RouteTableQuery:
                     HandleRouteTableQuery(message);
                     break;
-                case SignallingMessageOperation.LocalTopology:
+                case OperationType.LocalTopology:
                     HandleLocalTopology(message);
                     if (Address.Levels > 1)
                         SendNetworkTopology(message);
                     break;
-                case SignallingMessageOperation.NetworkTopology:
+                case OperationType.NetworkTopology:
                     HandleNetworkTopology(message);
                     break;
                 default:
@@ -31,10 +32,10 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void SendNetworkTopology(SignallingMessage message) {
-            message.Operation = SignallingMessageOperation.NetworkTopology;
+            message.Operation = OperationType.NetworkTopology;
             message.DestinationAddress = Address.GetParentsAddress();
-            message.DestinationControlPlaneElement = 
-                SignallingMessageDestinationControlPlaneElement.RoutingController;
+            message.DestinationControlPlaneElement =
+                ControlPlaneElementType.RC;
             SendMessage(message);
         }
 
@@ -44,16 +45,17 @@ namespace NetworkUtilities.ControlPlane {
             var endSnpp = snpps[1];
             var demandedCapacity = message.DemandedCapacity;
 
-            message.Operation = SignallingMessageOperation.RouteTableQueryResponse;
+            message.Operation = OperationType.RouteTableQueryResponse;
             message.Payload = CalculateShortestPath(beginSnpp, endSnpp, demandedCapacity);
             message.DestinationAddress = message.SourceAddress;
-            message.DestinationControlPlaneElement = 
-                SignallingMessageDestinationControlPlaneElement.ConnectionController;
+            message.DestinationControlPlaneElement =
+                ControlPlaneElementType.CC;
 
             SendMessage(message);
         }
 
-        private Queue<SubnetworkPointPool> CalculateShortestPath(SubnetworkPointPool beginSnpp, SubnetworkPointPool endSnpp, int demandedCapacity) {
+        private Queue<SubnetworkPointPool> CalculateShortestPath(SubnetworkPointPool beginSnpp,
+            SubnetworkPointPool endSnpp, int demandedCapacity) {
             try {
                 var beginNode = beginSnpp.NetworkNodeAddress;
                 var endNode = endSnpp.NetworkNodeAddress;
@@ -72,13 +74,12 @@ namespace NetworkUtilities.ControlPlane {
         private List<Path<NetworkAddress>> Convert(List<Link> links) {
             var paths = new List<Path<NetworkAddress>>();
 
-            foreach (var link in links) {
+            foreach (var link in links)
                 paths.Add(new Path<NetworkAddress> {
                     Source = link.BeginSubnetworkPointPool.NetworkNodeAddress,
                     Destination = link.EndSubnetworkPointPool.NetworkNodeAddress,
                     Link = link
                 });
-            }
 
             return paths;
         }

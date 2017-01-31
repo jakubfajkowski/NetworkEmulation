@@ -19,8 +19,8 @@ namespace NetworkUtilities.DataPlane {
             _commutationTableRows.Add(new CommutationTableRow(inVpi, inVci, inPortNumber, outVpi, outVci, outPortNumber));
 
             OnUpdateState("[" + DateTime.Now + "] Added connection: VPI in/out: " + inVpi + "/" + outVpi +
-                              ",   VCI in/out:" + inVci +
-                              "/" + outVci + ",  port in/out: " + inPortNumber + "/" + outPortNumber);
+                          ",   VCI in/out:" + inVci +
+                          "/" + outVci + ",  port in/out: " + inPortNumber + "/" + outPortNumber);
         }
 
         public void AddConnection(CommutationTableRow c) {

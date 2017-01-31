@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     [Serializable]
     public class SubnetworkPointPool {
+        public SubnetworkPointPool(NetworkAddress networkAddress) {
+            NetworkAddress = networkAddress;
+        }
+
         public NetworkAddress NetworkAddress { get; }
         public int CapacityLeft { get; private set; }
 
         public NetworkAddress NetworkNodeAddress => NetworkAddress.GetParentsAddress();
         public int Id => NetworkAddress.GetLastId();
-
-        public SubnetworkPointPool(NetworkAddress networkAddress) {
-            NetworkAddress = networkAddress;
-        }
 
         public void ReserveCapacity(int demandedCapacity) {
             CapacityLeft -= demandedCapacity;
@@ -30,7 +29,7 @@ namespace NetworkUtilities.ControlPlane {
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((SubnetworkPointPool) obj);
         }
 

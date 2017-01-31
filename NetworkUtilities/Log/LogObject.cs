@@ -4,7 +4,7 @@
 
         public event MessageHandler UpdateState;
 
-        protected void OnUpdateState(string state) {
+        protected virtual void OnUpdateState(string state) {
             UpdateState?.Invoke(this, state);
         }
     }

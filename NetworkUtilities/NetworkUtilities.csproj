@@ -47,9 +47,12 @@
     <Compile Include="DataPlane\CommutationMatrix.cs" />
     <Compile Include="DataPlane\CommutationTable.cs" />
     <Compile Include="DataPlane\Port.cs" />
+    <Compile Include="Log\ComboBoxItem.cs" />
+    <Compile Include="ManagementPlane\ManagementMessage.cs" />
     <Compile Include="ManagementPlane\NetworkNodeAgent.cs" />
-    <Compile Include="Network\ClientNode.cs" />
-    <Compile Include="Network\NetworkNode.cs" />
+    <Compile Include="Network\ClientNode\ClientNode.cs" />
+    <Compile Include="Network\ConnectionManagerType.cs" />
+    <Compile Include="Network\NetworkNode\NetworkNode.cs" />
     <Compile Include="Utilities\ConnectionTableRow.cs" />
     <Compile Include="DataPlane\AtmCell.cs" />
     <Compile Include="DataPlane\CableCloud.cs" />
@@ -60,22 +63,22 @@
     <Compile Include="ControlPlane\PathComputationServer.cs" />
     <Compile Include="ControlPlane\Policy.cs" />
     <Compile Include="ControlPlane\SignallingCloud.cs" />
-    <Compile Include="ControlPlane\SignallingMessageDestinationControlPlaneElement.cs" />
+    <Compile Include="ControlPlane\ControlPlaneElementType.cs" />
     <Compile Include="ControlPlane\SubnetworkPointPool.cs" />
-    <Compile Include="ManagementPlane\NetworkManagmentSystem.cs" />
+    <Compile Include="ManagementPlane\NetworkManagementSystem.cs" />
     <Compile Include="ManagementPlane\NodeConnectionInformation.cs" />
-    <Compile Include="Network\Model\LinkModel.cs" />
+    <Compile Include="Network\LinkModel.cs" />
     <Compile Include="ControlPlane\GraphAlgorithm\Engine.cs" />
     <Compile Include="ControlPlane\GraphAlgorithm\Link.cs" />
     <Compile Include="ControlPlane\GraphAlgorithm\Path.cs" />
-    <Compile Include="Log\PathComputationServerLogForm.cs">
+    <Compile Include="Log\MultiLogForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Log\PathComputationServerLogForm.Designer.cs">
-      <DependentUpon>PathComputationServerLogForm.cs</DependentUpon>
+    <Compile Include="Log\MultiLogForm.Designer.cs">
+      <DependentUpon>MultiLogForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Utilities\NetworkAddressNodePortPair.cs" />
-    <Compile Include="Utilities\NetworkAddressSocketPortPair.cs" />
+    <Compile Include="Network\ConnectionRequestMessage.cs" />
     <Compile Include="Network\ConnectionManager.cs" />
     <Compile Include="ControlPlane\CallingPartyCallController.cs" />
     <Compile Include="ControlPlane\ConnectionController.cs" />
@@ -85,7 +88,7 @@
     <Compile Include="ControlPlane\NetworkCallController.cs" />
     <Compile Include="ControlPlane\RoutingController.cs" />
     <Compile Include="ControlPlane\SignallingMessage.cs" />
-    <Compile Include="ControlPlane\SignallingMessageOperation.cs" />
+    <Compile Include="ControlPlane\OperationType.cs" />
     <Compile Include="ControlPlane\StepByStepPathComputationServer.cs" />
     <Compile Include="ControlPlane\SubnetworkPoint.cs" />
     <Compile Include="Log\LogForm.cs">
@@ -98,10 +101,10 @@
     <Compile Include="Utilities\NetworkAddress.cs" />
     <Compile Include="Network\ConnectionComponent.cs" />
     <Compile Include="Utilities\Serialization\ISerializable.cs" />
-    <Compile Include="Network\Node.cs" />
-    <Compile Include="Network\Model\ClientNodeModel.cs" />
-    <Compile Include="Network\Model\NetworkNodeModel.cs" />
-    <Compile Include="Network\Model\NodeModel.cs" />
+    <Compile Include="Network\Node\Node.cs" />
+    <Compile Include="Network\ClientNode\ClientNodeModel.cs" />
+    <Compile Include="Network\NetworkNode\NetworkNodeModel.cs" />
+    <Compile Include="Network\Node\NodeModel.cs" />
     <Compile Include="Utilities\PortRandomizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Serialization\BinarySerializer.cs" />
@@ -109,8 +112,8 @@
     <Compile Include="Utilities\Serialization\XmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Log\PathComputationServerLogForm.resx">
-      <DependentUpon>PathComputationServerLogForm.cs</DependentUpon>
+    <EmbeddedResource Include="Log\MultiLogForm.resx">
+      <DependentUpon>MultiLogForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Log\LogForm.resx">
       <DependentUpon>LogForm.cs</DependentUpon>

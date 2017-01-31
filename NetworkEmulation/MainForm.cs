@@ -6,7 +6,6 @@ using System.Xml;
 using NetworkEmulation.Editor;
 using NetworkEmulation.Editor.Element;
 using NetworkEmulation.Properties;
-using NetworkUtilities;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.Log;
 using NetworkUtilities.Utilities;
@@ -222,17 +221,22 @@ namespace NetworkEmulation {
             editorPanel.Mode = Mode.Delete;
         }
 
-        private void cableCloudToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void connectionManagersToolStripMenuItem_Click(object sender, EventArgs e) {
             if (_simulation == null) return;
-            HandleLogFormOpen(_simulation.CableCloudLogForm);
+            HandleLogFormOpen(_simulation.ConnectionManagersLogForm);
         }
 
-        private void networkManagmentSystemToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void pathComputationServersToolStripMenuItem_Click(object sender, EventArgs e) {
             if (_simulation == null) return;
-            HandleLogFormOpen(_simulation.NetworkManagmentSystemLogForm);
+            HandleLogFormOpen(_simulation.PathComputationServersLogForm);
         }
 
-        private void HandleLogFormOpen(LogForm logForm) {
+        private void nameServerToolStripMenuItem_Click(object sender, EventArgs e) {
+            if (_simulation == null) return;
+            HandleLogFormOpen(_simulation.NameServerLogForm);
+        }
+
+        private void HandleLogFormOpen(Form logForm) {
             if (!logForm.Visible)
                 logForm.Show();
         }

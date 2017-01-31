@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.DataPlane;
-using NetworkUtilities.Network.Model;
 using NetworkUtilities.Utilities;
 
-namespace NetworkUtilities.Network {
-    public class ClientNode : Node {
-        public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
+namespace NetworkUtilities.Network.ClientNode {
+    public class ClientNode : Node.Node {
         private readonly CallingPartyCallController _callingPartyCallController;
+        public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
 
         public ClientNode(ClientNodeModel parameters)
             : base(
-                parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort, parameters.SignallingCloudListeningPort) {
-
+                parameters.NetworkAddress, parameters.IpAddress, parameters.CableCloudListeningPort,
+                parameters.SignallingCloudListeningPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
             ClientName = parameters.ClientName;
 
@@ -56,7 +55,7 @@ namespace NetworkUtilities.Network {
             var clientTableRow = SearchUsingClientName(receiverId);
 
             if (clientTableRow != null) SendCableCloudMessage(message, clientTableRow);
-            else OnUpdateState("Client " + receiverId + " not found.");
+            else OnUpdateState("Specified client not found");
         }
 
         public void Disconnect(string receiverId) {
@@ -79,7 +78,7 @@ namespace NetworkUtilities.Network {
 
             foreach (var cableCloudMessage in cableCloudMessages) {
                 Send(cableCloudMessage);
-                OnUpdateState("Sent: " +cableCloudMessage.ExtractAtmCells().Count + " ATMCells.");
+                OnUpdateState("Sent: " + cableCloudMessage.ExtractAtmCells().Count + " ATMCells.");
             }
         }
 
@@ -105,8 +104,8 @@ namespace NetworkUtilities.Network {
         protected override void Receive(SignallingMessage message) {
             _callingPartyCallController.ReceiveMessage(message);
 
-            if (message.Operation == SignallingMessageOperation.CallConfirmation &&
-                message.DestinationControlPlaneElement == SignallingMessageDestinationControlPlaneElement.CallingPartyCallController) {
+            if (message.Operation == OperationType.CallConfirmation &&
+                message.DestinationControlPlaneElement == ControlPlaneElementType.CPCC) {
                 var snps = message.Payload as SubnetworkPoint;
                 if (snps != null) {
                     OnUpdateState(snps.ToString());

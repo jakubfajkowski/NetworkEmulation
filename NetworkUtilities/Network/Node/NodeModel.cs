@@ -1,6 +1,6 @@
 ﻿using NetworkUtilities.Utilities;
 
-namespace NetworkUtilities.Network.Model {
+namespace NetworkUtilities.Network.Node {
     public class NodeModel {
         public NetworkAddress NetworkAddress { get; set; }
         public int MaxAtmCellsNumberInCableCloudMessage { get; set; }

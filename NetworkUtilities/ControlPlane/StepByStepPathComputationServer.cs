@@ -1,50 +1,56 @@
-﻿using NetworkUtilities.Network;
-using NetworkUtilities.Utilities;
+﻿using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     public class StepByStepPathComputationServer : PathComputationServer {
-        private readonly ConnectionController _connectionController;
-        private readonly NetworkCallController _networkCallController;
-        private readonly RoutingController _routingController;
+        private ConnectionController _connectionController;
+        private NetworkCallController _networkCallController;
+        private RoutingController _routingController;
 
         public StepByStepPathComputationServer(
             NetworkAddress networkAddress,
             string ipAddress,
             int signallingCloudListeningPort) : base(
-                                                networkAddress,
-                                                ipAddress,
-                                                signallingCloudListeningPort) {
+            networkAddress,
+            ipAddress,
+            signallingCloudListeningPort) {
 
             _connectionController = new ConnectionController(networkAddress);
-            _connectionController.UpdateState += (sender, state) => OnUpdateState(state);
-            _connectionController.MessageToSend +=
-                (sender, message) => SendSignallingMessage(message, message.DestinationAddress);
+            Initialize(_connectionController);
 
             _networkCallController = new NetworkCallController(networkAddress);
-            _networkCallController.UpdateState += (sender, state) => OnUpdateState(state);
-            _networkCallController.MessageToSend +=
-                (sender, message) => SendSignallingMessage(message, message.DestinationAddress);
+            Initialize(_networkCallController);
 
             _routingController = new RoutingController(networkAddress);
-            _routingController.UpdateState += (sender, state) => OnUpdateState(state);
-            _routingController.MessageToSend +=
-                (sender, message) => SendSignallingMessage(message, message.DestinationAddress);
+            Initialize(_routingController);
         }
 
         protected override void Receive(SignallingMessage signallingMessage) {
             switch (signallingMessage.DestinationControlPlaneElement) {
-                case SignallingMessageDestinationControlPlaneElement.NetworkCallController:
+                case ControlPlaneElementType.NCC:
                     _networkCallController.ReceiveMessage(signallingMessage);
                     break;
 
-                case SignallingMessageDestinationControlPlaneElement.ConnectionController:
+                case ControlPlaneElementType.CC:
                     _connectionController.ReceiveMessage(signallingMessage);
                     break;
 
-                case SignallingMessageDestinationControlPlaneElement.RoutingController:
+                case ControlPlaneElementType.RC:
                     _routingController.ReceiveMessage(signallingMessage);
                     break;
             }
+        }
+
+        public override void Dispose() {
+            base.Dispose();
+
+            _connectionController = new ConnectionController(NetworkAddress);
+            Initialize(_connectionController);
+
+            _networkCallController = new NetworkCallController(NetworkAddress);
+            Initialize(_networkCallController);
+
+            _routingController = new RoutingController(NetworkAddress);
+            Initialize(_routingController);
         }
     }
 }

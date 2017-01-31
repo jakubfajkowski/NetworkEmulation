@@ -11,31 +11,32 @@ using NetworkUtilities.ControlPlane;
 using NetworkUtilities.DataPlane;
 using NetworkUtilities.Log;
 using NetworkUtilities.ManagementPlane;
+using NetworkUtilities.Network;
 
 namespace NetworkEmulation {
-    public class Simulation {
+    public class Simulation : IDisposable {
         private readonly CableCloud _cableCloud;
-        private readonly SignallingCloud _signallingCloud;
 
         private readonly List<NodeView> _initializableNodes;
         private readonly List<LinkView> _links;
         private readonly NameServer _nameServer;
-        private readonly NetworkManagmentSystem _networkManagmentSystem;
+        private readonly NetworkManagementSystem _networkManagmentSystem;
         private readonly List<PathComputationServer> _pathComputationServers;
 
         private readonly Dictionary<int, Process> _processes;
+        private readonly SignallingCloud _signallingCloud;
 
         public Simulation(TreeNodeCollection networkHierarchy, List<LinkView> links) {
             _cableCloud = new CableCloud(Settings.Default.CableCloudListenerPort);
-            PreapareCableCloudLogForm();
-            _cableCloud.StartListening();
-
             _signallingCloud = new SignallingCloud(Settings.Default.SignallingCloudListeningPort);
-            PreapareSignallingCloudLogForm();
-            _signallingCloud.StartListening();
+            _networkManagmentSystem = new NetworkManagementSystem(Settings.Default.NetworkManagmentSystemListeningPort);
 
-            _networkManagmentSystem = new NetworkManagmentSystem(Settings.Default.NetworkManagmentSystemListeningPort);
-            PrepareNetworkManagmentSystemLogForm();
+
+            var connectionManagers = new List<LogObject>(new LogObject[]{_cableCloud, _signallingCloud, _networkManagmentSystem});
+            ConnectionManagersLogForm = PrepareMultiLogForm(connectionManagers, "Connection Managers Log");
+
+            _cableCloud.StartListening();
+            _signallingCloud.StartListening();
             _networkManagmentSystem.StartListening();
 
             _nameServer = new NameServer(Settings.Default.IpAddress, Settings.Default.SignallingCloudListeningPort);
@@ -47,7 +48,7 @@ namespace NetworkEmulation {
 
             GetNetworkComponentsFromTree(networkHierarchy);
 
-            PreparePathComputationServerMultipleLogForm();
+            PathComputationServersLogForm = PrepareMultiLogForm(_pathComputationServers.Cast<LogObject>().ToList(), "Path Computation Servers Log");
 
             foreach (var pathComputationServer in _pathComputationServers) {
                 pathComputationServer.Initialize();
@@ -57,7 +58,10 @@ namespace NetworkEmulation {
             _links = links;
 
             foreach (var initializableNode in _initializableNodes.OfType<NetworkNodeView>()) {
-                initializableNode.DoubleClick += InitializableNodeOnDoubleClick;
+                if (!initializableNode.DoubleClickEnabled) {
+                    initializableNode.DoubleClick += InitializableNodeOnDoubleClick;
+                    initializableNode.DoubleClickEnabled = true;
+                }
                 initializableNode.Parameters.MaxAtmCellsNumberInCableCloudMessage =
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
             }
@@ -76,11 +80,9 @@ namespace NetworkEmulation {
 
         public bool Running { get; private set; }
 
-        public LogForm CableCloudLogForm { get; private set; }
-        public LogForm SignallingCloudLogForm { get; private set; }
-        public LogForm NetworkManagmentSystemLogForm { get; private set; }
+        public MultiLogForm ConnectionManagersLogForm { get; private set; }
         public LogForm NameServerLogForm { get; private set; }
-        public PathComputationServerLogForm PathComputationServerLogForm { get; private set; }
+        public MultiLogForm PathComputationServersLogForm { get; private set; }
 
         private void GetNetworkComponentsFromTree(TreeNodeCollection nodes) {
             foreach (TreeNode n in nodes) PutNetworkComponentInSuitableList(n);
@@ -99,33 +101,20 @@ namespace NetworkEmulation {
             foreach (TreeNode tn in treeNode.Nodes) PutNetworkComponentInSuitableList(tn);
         }
 
-        private void PreapareCableCloudLogForm() {
-            CableCloudLogForm = new LogForm(_cableCloud);
-            CableCloudLogForm.Text = "Cable Cloud Log";
-            CableCloudLogForm.Show();
-        }
 
-        private void PreapareSignallingCloudLogForm() {
-            SignallingCloudLogForm = new LogForm(_signallingCloud);
-            SignallingCloudLogForm.Text = "Signalling Cloud Log";
-            SignallingCloudLogForm.Show();
-        }
 
-        private void PrepareNetworkManagmentSystemLogForm() {
-            NetworkManagmentSystemLogForm = new LogForm(_networkManagmentSystem);
-            NetworkManagmentSystemLogForm.Text = "Network Managment System Log";
-            NetworkManagmentSystemLogForm.Show();
+        private MultiLogForm PrepareMultiLogForm(List<LogObject> logObjects, string title) {
+            var multiLogForm = new MultiLogForm(logObjects);
+            multiLogForm.Text = title;
+            multiLogForm.Show();
+
+            return multiLogForm;
         }
 
         private void PrepareNameServerLogForm() {
             NameServerLogForm = new LogForm(_nameServer);
             NameServerLogForm.Text = "Name Server Log";
             NameServerLogForm.Show();
-        }
-
-        private void PreparePathComputationServerMultipleLogForm() {
-            PathComputationServerLogForm = new PathComputationServerLogForm(_pathComputationServers);
-            PathComputationServerLogForm.Show();
         }
 
         private void InitializableNodeOnDoubleClick(object sender, EventArgs eventArgs) {
@@ -150,7 +139,8 @@ namespace NetworkEmulation {
         private void InitializeCableCloud() {
             CableCloudMessage.MaxAtmCellsNumber = Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
 
-            foreach (var link in _links) _cableCloud.AddLink(link.Parameters.InputNodePortPair, link.Parameters.OutputNodePortPair);
+            foreach (var link in _links)
+                _cableCloud.AddLink(link.Parameters.InputNodePortPair, link.Parameters.OutputNodePortPair);
         }
 
         private void MarkAsOnline(IMarkable markable) {
@@ -226,8 +216,7 @@ namespace NetworkEmulation {
             MarkAsDeselected(_initializableNodes.OfType<IMarkable>().ToList());
             MarkAsDeselected(_links.OfType<IMarkable>().ToList());
 
-            _cableCloud.Dispose();
-            _networkManagmentSystem.Dispose();
+            Dispose();
 
             KillProcesses();
 
@@ -244,6 +233,19 @@ namespace NetworkEmulation {
 
             if (process.HasExited == false)
                 process.Kill();
+        }
+
+        public void Dispose() {
+            _cableCloud?.Dispose();
+            _nameServer?.Dispose();
+            _networkManagmentSystem?.Dispose();
+            _signallingCloud?.Dispose();
+            foreach (var pathComputationServer in _pathComputationServers) {
+                pathComputationServer?.Dispose();
+            }
+            ConnectionManagersLogForm?.Dispose();
+            NameServerLogForm?.Dispose();
+            PathComputationServersLogForm?.Dispose();
         }
     }
 }

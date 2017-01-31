@@ -1,11 +1,11 @@
 ﻿namespace NetworkUtilities.Utilities {
     public class CommutationTableRow {
-        public int _inPortNumber;
-        public int _inVci;
-        public int _inVpi;
         public readonly int _outPortNumber;
         public readonly int _outVci; // Jeśli wpis nie zawiera VCI to VCI = -1
         public readonly int _outVpi;
+        public int _inPortNumber;
+        public int _inVci;
+        public int _inVpi;
 
         public CommutationTableRow(int inVpi, int inVci, int inPortNumber, int outVpi, int outVci, int outPortNumber) {
             _inVci = inVci;

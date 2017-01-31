@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Xml;
 using NetworkEmulation.Properties;
-using NetworkUtilities;
-using NetworkUtilities.Network.Model;
+using NetworkUtilities.Network.NetworkNode;
 using NetworkUtilities.Utilities.Serialization;
 
 namespace NetworkEmulation.Editor.Element {
@@ -12,6 +11,8 @@ namespace NetworkEmulation.Editor.Element {
             Parameters = new NetworkNodeModel();
             Parameters.CableCloudListeningPort = Settings.Default.CableCloudListenerPort;
         }
+
+        public bool DoubleClickEnabled { get; set; }
 
         public NetworkNodeModel Parameters { get; set; }
 

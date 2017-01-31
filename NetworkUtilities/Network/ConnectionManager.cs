@@ -1,20 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using NetworkUtilities.Log;
 using NetworkUtilities.Utilities;
 using NetworkUtilities.Utilities.Serialization;
 
 namespace NetworkUtilities.Network {
-    public abstract class ConnectionManager : LogObject {
+    public abstract class ConnectionManager : LogObject, IDisposable {
         private readonly Dictionary<NetworkAddress, TcpClient> _nodesTcpClients;
-        private UdpClient _connectionUdpClient;
+        private UdpClient _udpClient;
 
-        protected ConnectionManager(int listeningPort) {
+        public ConnectionManagerType ConnectionManagerType { get; }
+
+        protected ConnectionManager(int listeningPort, ConnectionManagerType connectionManagerType) {
             _nodesTcpClients = new Dictionary<NetworkAddress, TcpClient>();
             ListeningPort = listeningPort;
+            ConnectionManagerType = connectionManagerType;
         }
 
         public int ListeningPort { get; }
@@ -23,39 +28,39 @@ namespace NetworkUtilities.Network {
 
         public void StartListening() {
             var ipEndPoint = new IPEndPoint(IPAddress.Any, ListeningPort);
-            _connectionUdpClient = new UdpClient(ipEndPoint);
+            _udpClient = new UdpClient(ipEndPoint);
 
             ListenForConnectionRequests();
-            OnUpdateState("Rise and shine.");
+            OnUpdateState($"[RISE_AND_SHINE] {ConnectionManagerType}");
         }
 
         private void ListenForConnectionRequests() {
             Task.Run(async () => {
-                using (_connectionUdpClient) {
+                using (_udpClient) {
                     Online = true;
                     while (Online) {
-                        var receivedData = await _connectionUdpClient.ReceiveAsync();
+                        var receivedData = await _udpClient.ReceiveAsync();
                         ConnectToNode(
-                            (NetworkAddressSocketPortPair) BinarySerializer.Deserialize(receivedData.Buffer));
+                            (ConnectionRequestMessage) BinarySerializer.Deserialize(receivedData.Buffer));
                     }
                 }
             });
         }
 
-        private void ConnectToNode(NetworkAddressSocketPortPair initializationMessage) {
+        private void ConnectToNode(ConnectionRequestMessage connectionRequestMessage) {
             var nodeTcpClient = new TcpClient();
 
-            var port = initializationMessage.SocketPort;
-            var networkAddress = initializationMessage.NetworkAddress;
+            var port = connectionRequestMessage.SocketPort;
+            var clientNetworkAddress = connectionRequestMessage.NetworkAddress;
 
             try {
-                EstablishConnection(nodeTcpClient, port, networkAddress);
-                OnUpdateState($"Received connection request from {networkAddress} - accepted");
-                Listen(nodeTcpClient, networkAddress).Start();
+                EstablishConnection(nodeTcpClient, port, clientNetworkAddress);
+                OnUpdateState($"[ACCEPTED] {clientNetworkAddress}");
+                Listen(nodeTcpClient, clientNetworkAddress).Start();
             }
             catch (SocketException e) {
-                DeleteConnection(networkAddress);
-                OnUpdateState($"Connection to {networkAddress} - failed");
+                DeleteConnection(clientNetworkAddress);
+                OnUpdateState($"[FAILED] {clientNetworkAddress}");
                 OnUpdateState(e.Message);
             }
         }
@@ -73,17 +78,20 @@ namespace NetworkUtilities.Network {
             _nodesTcpClients.Remove(networkAddress);
         }
 
-        private Task Listen(TcpClient nodeTcpClient, NetworkAddress inputNetworkAddress) {
+        private Task Listen(TcpClient nodeTcpClient, NetworkAddress clientNetworkAddress) {
             return new Task(() => {
                 try {
                     while (Online) {
                         var receivedObject = Receive(nodeTcpClient.GetStream());
-                        HandleReceivedObject(receivedObject, inputNetworkAddress);
+                        HandleReceivedObject(receivedObject, clientNetworkAddress);
                     }
                 }
                 catch (IOException) {
-                    OnUpdateState($"Connection to {inputNetworkAddress} - closed");
-                    DeleteConnection(inputNetworkAddress);
+                    OnUpdateState($"[CLOSED] {clientNetworkAddress}");
+                    DeleteConnection(clientNetworkAddress);
+                }
+                catch (SerializationException) {
+                    OnUpdateState($"[READING_ERROR] {clientNetworkAddress}");
                 }
             });
         }
@@ -92,7 +100,7 @@ namespace NetworkUtilities.Network {
             return BinarySerializer.DeserializeFromStream(networkStream);
         }
 
-        protected abstract void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress);
+        protected abstract void HandleReceivedObject(object receivedObject, NetworkAddress inputNetworkAddress);
 
         protected void Send(object objectToSend, NetworkAddress outputNetworkAddress) {
             var tcpClient = _nodesTcpClients[outputNetworkAddress];
@@ -102,9 +110,10 @@ namespace NetworkUtilities.Network {
         }
 
         public void Dispose() {
-            OnUpdateState("Hello darkness my old friend...");
+            OnUpdateState($"[HELLO_DARKNESS_MY_OLD_FRIEND] {ConnectionManagerType}");
             Online = false;
-            _connectionUdpClient.Close();
+            _udpClient.Close();
+            Online = false;
         }
     }
 }

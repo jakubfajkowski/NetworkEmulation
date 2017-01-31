@@ -1,25 +1,34 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using NetworkUtilities.Log;
 using NetworkUtilities.Utilities;
 using NetworkUtilities.Utilities.Serialization;
 
 namespace NetworkUtilities.Network {
-    public class ConnectionComponent : LogObject {
+    public class ConnectionComponent : LogObject, IDisposable {
+        public delegate void ObjectHandler(object sender, object receivedObject);
+        public delegate void ConnectionHandler(object sender, EventArgs args);
+
         private readonly int _connectionManagerListeningPort;
-        private readonly NetworkAddressSocketPortPair _handshakeMessage;
+        private readonly ConnectionManagerType _connectionManagerType;
+        private readonly ConnectionRequestMessage _handshakeMessage;
         private readonly IPAddress _ipAddress;
 
-        private TcpListener _connectionManagerTcpListener;
+        private TcpListener _tcpListener;
         private TcpClient _tcpClient;
+        private UdpClient _udpClient;
 
         public ConnectionComponent(NetworkAddress networkAddress, string connectionManagerIpAddress,
-            int connectionManagerListeningPort) {
+            int connectionManagerListeningPort, ConnectionManagerType connectionManagerType) {
             _ipAddress = IPAddress.Parse(connectionManagerIpAddress);
             _connectionManagerListeningPort = connectionManagerListeningPort;
-            _handshakeMessage = new NetworkAddressSocketPortPair(networkAddress, PortRandomizer.RandomFreePort());
+            _connectionManagerType = connectionManagerType;
+            _handshakeMessage = new ConnectionRequestMessage(networkAddress, PortRandomizer.RandomFreePort());
+            _connectionManagerType = connectionManagerType;
         }
 
         public bool Online { get; private set; }
@@ -27,8 +36,8 @@ namespace NetworkUtilities.Network {
         public event ConnectionHandler ConnectionEstablished;
 
         public void Initialize() {
-            _connectionManagerTcpListener = CreateTcpListener(_ipAddress, _handshakeMessage.SocketPort);
-            ListenForConnectRequest(_connectionManagerTcpListener);
+            _tcpListener = CreateTcpListener(_ipAddress, _handshakeMessage.SocketPort);
+            ListenForConnectRequest(_tcpListener);
             EstabilishConnection();
         }
 
@@ -38,7 +47,7 @@ namespace NetworkUtilities.Network {
                 tcpListener = new TcpListener(ipAddress, port);
             }
             catch (Exception e) {
-                OnUpdateState($"Sent connection request - rejected");
+                OnUpdateState($"[CONNECTION_REQUEST] {_connectionManagerType} Rejected");
             }
 
             return tcpListener;
@@ -50,28 +59,37 @@ namespace NetworkUtilities.Network {
         }
 
         private void SendHandshakeMessage(IPEndPoint ipEndPoint) {
-            var udpClient = new UdpClient();
+            _udpClient = new UdpClient();
             var bytesToSend = BinarySerializer.Serialize(_handshakeMessage);
-            udpClient.Send(bytesToSend, bytesToSend.Length, ipEndPoint);
+            _udpClient.Send(bytesToSend, bytesToSend.Length, ipEndPoint);
         }
 
         private void ListenForConnectRequest(TcpListener tcpListener) {
             tcpListener.Start();
             Task.Run(async () => {
-                OnUpdateState($"Sent connection request - waiting for response");
+                OnUpdateState($"[CONNECTION_REQUEST] {_connectionManagerType} Waiting");
                 _tcpClient = await tcpListener.AcceptTcpClientAsync();
                 Online = true;
 
-                OnUpdateState($"Sent connection request - accepted");
+                OnUpdateState($"[CONNECTION_REQUEST] {_connectionManagerType} Accepted");
                 OnConnectionEstablished();
+                tcpListener.Stop();
                 ListenForMessages();
             });
         }
 
         private void ListenForMessages() {
             while (Online) {
-                var receivedObject = Receive();
-                OnObjectReceived(receivedObject);
+                try {
+                    var receivedObject = Receive();
+                    OnObjectReceived(receivedObject);
+                }
+                catch (IOException) {
+                    OnUpdateState($"[CLOSED] {_connectionManagerType}");
+                }
+                catch (SerializationException) {
+                    OnUpdateState($"[READING_ERROR] {_connectionManagerType}");
+                }
             }
         }
 
@@ -93,8 +111,10 @@ namespace NetworkUtilities.Network {
             BinarySerializer.SerializeToStream(objectToSend, networkStream);
         }
 
-        public delegate void ObjectHandler(object sender, object receivedObject);
+        public void Dispose() {
+            _udpClient?.Dispose();
+            _tcpClient?.Dispose();
+            Online = false;
+        }
     }
-
-    public delegate void ConnectionHandler(object sender, EventArgs args);
 }

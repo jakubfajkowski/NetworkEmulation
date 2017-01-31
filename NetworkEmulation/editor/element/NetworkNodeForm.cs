@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using NetworkEmulation.Properties;
-using NetworkUtilities.Network.Model;
+using NetworkUtilities.Network.NetworkNode;
 
 namespace NetworkEmulation.Editor.Element {
     public partial class NetworkNodeForm : Form {

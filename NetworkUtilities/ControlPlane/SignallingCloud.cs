@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NetworkUtilities.Network;
+﻿using NetworkUtilities.Network;
 using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     public class SignallingCloud : ConnectionManager {
-        public SignallingCloud(int listeningPort) : base(listeningPort) {}
+        public SignallingCloud(int listeningPort) : 
+            base(listeningPort, ConnectionManagerType.SignallingCloud) {}
 
-        protected override void HandleReceivedObject(object receivedObject, NetworkAddress networkAddress) {
+        protected override void HandleReceivedObject(object receivedObject, NetworkAddress inputNetworkAddress) {
             var signallingMessage = (SignallingMessage) receivedObject;
             Send(signallingMessage, signallingMessage.DestinationAddress);
         }
