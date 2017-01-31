@@ -12,6 +12,10 @@ namespace NetworkEmulation.Editor.Element {
             Parameters.CableCloudListeningPort = Settings.Default.CableCloudListenerPort;
         }
 
+        public int GetFreePort() {
+            return ++Parameters.NumberOfPorts;
+        }
+
         public bool DoubleClickEnabled { get; set; }
 
         public NetworkNodeModel Parameters { get; set; }

@@ -10,18 +10,12 @@ namespace NetworkEmulation.Editor.Element {
         public NetworkNodeForm(NetworkNodeView networkNodeView) {
             InitializeComponent();
             _parameters = networkNodeView.Parameters;
-
-            textBoxIpAddress.Text = Settings.Default.IpAddress;
-            textBoxCloudPort.Text = Settings.Default.CableCloudListenerPort.ToString();
-            textBoxNMSPort.Text = Settings.Default.NetworkManagmentSystemListeningPort.ToString();
         }
 
         private void buttonOK_Click(object sender, EventArgs e) {
-            _parameters.IpAddress = textBoxIpAddress.Text;
-            _parameters.CableCloudListeningPort = int.Parse(textBoxCloudPort.Text);
-            _parameters.NetworkManagmentSystemListeningPort = int.Parse(textBoxNMSPort.Text);
-            _parameters.NumberOfPorts = int.Parse(textBoxNumberOfPorts.Text);
-            //TODO
+            _parameters.IpAddress = Settings.Default.IpAddress;
+            _parameters.CableCloudListeningPort = Settings.Default.CableCloudListenerPort;
+            _parameters.NetworkManagmentSystemListeningPort = Settings.Default.NetworkManagmentSystemListeningPort;
             _parameters.SignallingCloudListeningPort = Settings.Default.SignallingCloudListeningPort;
 
             Close();

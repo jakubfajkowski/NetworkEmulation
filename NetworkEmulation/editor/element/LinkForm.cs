@@ -9,23 +9,19 @@ namespace NetworkEmulation.Editor.Element {
         public LinkForm(LinkView link) {
             InitializeComponent();
             _link = link;
-            FillPortComboBoxes();
-        }
-
-        public void AddPortToComboBox(ComboBox cb, int port) {
-            cb.Items.Add(port);
-        }
-
-        public void FillPortComboBoxes() {
-            for (var i = 1; i < 8; i++) {
-                AddPortToComboBox(comboBoxInputPort, i);
-                AddPortToComboBox(comboBoxOutputPort, i);
-            }
         }
 
         private void OkClick(object sender, EventArgs e) {
-            var inputNodePort = int.Parse(comboBoxInputPort.Text);
-            var outputNodePort = int.Parse(comboBoxOutputPort.Text);
+            var inputNodePort = 1;
+            if (_link.BeginNodeView is NetworkNodeView) {
+                ((NetworkNodeView)_link.BeginNodeView).GetFreePort();
+            }
+
+
+            var outputNodePort = 1;
+            if (_link.EndNodeView is NetworkNodeView) {
+                ((NetworkNodeView)_link.EndNodeView).GetFreePort();
+            }
 
             var inputNetworkAddress = _link.BeginNodeView.NetworkAddress;
             var outputNetworkAddress = _link.EndNodeView.NetworkAddress;

@@ -10,16 +10,12 @@ namespace NetworkEmulation.Editor.Element {
         public ClientNodeForm(ClientNodeView clientNodeView) {
             InitializeComponent();
             _parameters = clientNodeView.Parameters;
-
-            textBoxIpAddress.Text = Settings.Default.IpAddress;
-            textBoxCloudPort.Text = Settings.Default.CableCloudListenerPort.ToString();
         }
 
         private void buttonOK_Click(object sender, EventArgs e) {
-            _parameters.IpAddress = textBoxIpAddress.Text;
+            _parameters.IpAddress = Settings.Default.IpAddress;
             _parameters.ClientName = textBoxClientName.Text;
-            _parameters.CableCloudListeningPort = int.Parse(textBoxCloudPort.Text);
-            //TODO
+            _parameters.CableCloudListeningPort = Settings.Default.CableCloudListenerPort;
             _parameters.SignallingCloudListeningPort = Settings.Default.SignallingCloudListeningPort;
 
             Close();
