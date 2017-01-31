@@ -23,6 +23,7 @@ namespace NetworkUtilities.Utilities {
         }
 
         public int Levels => _value.Split(Separator).Length;
+        public int DomainId => GetId(0);
 
         public NetworkAddress Append(int number) {
             var value = _value + Separator + number;

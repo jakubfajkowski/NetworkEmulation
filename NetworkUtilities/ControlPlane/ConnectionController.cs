@@ -29,7 +29,7 @@ namespace NetworkUtilities.ControlPlane {
                     SendRouteTableQuery(message);
                     break;
 
-                case OperationType.RouteTableQueryResponse:
+                case OperationType.RouteTableQuery:
                     HandleRouteTableQueryResponse(message);
                     break;
 
@@ -155,7 +155,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleRouteTableQueryResponse(SignallingMessage msg) {
-            if (msg.Operation.Equals(OperationType.RouteTableQueryResponse))
+            if (msg.Operation.Equals(OperationType.RouteTableQuery))
                 _snpPools = msg.Payload as Queue<SubnetworkPointPool>;
             if (_snpPools.Count > 0) {
                 var snpps = new[] {

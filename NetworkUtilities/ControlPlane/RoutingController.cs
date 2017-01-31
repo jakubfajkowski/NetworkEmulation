@@ -21,8 +21,6 @@ namespace NetworkUtilities.ControlPlane {
                     break;
                 case OperationType.LocalTopology:
                     HandleLocalTopology(message);
-                    if (Address.Levels > 1)
-                        SendNetworkTopology(message);
                     break;
                 case OperationType.NetworkTopology:
                     HandleNetworkTopology(message);
@@ -32,27 +30,59 @@ namespace NetworkUtilities.ControlPlane {
             }
         }
 
-        private void SendNetworkTopology(SignallingMessage message) {
-            message.Operation = OperationType.NetworkTopology;
-            message.DestinationAddress = Address.GetParentsAddress();
-            message.DestinationControlPlaneElement =
-                ControlPlaneElementType.RC;
-            SendMessage(message);
-        }
-
         private void HandleRouteTableQuery(SignallingMessage message) {
             var snpps = (SubnetworkPointPool[]) message.Payload;
             var beginSnpp = snpps[0];
             var endSnpp = snpps[1];
             var demandedCapacity = message.DemandedCapacity;
 
-            message.Operation = OperationType.RouteTableQueryResponse;
             message.Payload = CalculateShortestPath(beginSnpp, endSnpp, demandedCapacity);
+
+            SendRouteTableQueryResponse(message);
+        }
+
+        private void HandleLocalTopology(SignallingMessage message) {
+            UpdateLinkList(message);
+
+            if (Address.Levels == 1) {
+                SendNetworkTopology(message);
+            }
+            else if (IsBetweenSubnetworks((Link) message.Payload))
+                SendLocalTopology(message);
+        }
+
+        private void HandleNetworkTopology(SignallingMessage message) {
+            UpdateLinkList(message);
+        }
+
+        private void SendLocalTopology(SignallingMessage message) {
+            message.Operation = OperationType.LocalTopology;
+            message.DestinationAddress = Address.GetParentsAddress();
+            message.DestinationControlPlaneElement =
+                ControlPlaneElementType.RC;
+
+            SendMessage(message);
+            EndSession(message.SessionId);
+        }
+
+        private void SendNetworkTopology(SignallingMessage message) {
+            message.Operation = OperationType.NetworkTopology;
+            message.DestinationAddress = GetOtherDomainAddress(Address);
+            message.DestinationControlPlaneElement =
+                ControlPlaneElementType.RC;
+
+            SendMessage(message);
+            EndSession(message.SessionId);
+        }
+
+        private void SendRouteTableQueryResponse(SignallingMessage message) {
+            message.Operation = OperationType.RouteTableQuery;
             message.DestinationAddress = message.SourceAddress;
             message.DestinationControlPlaneElement =
                 ControlPlaneElementType.CC;
 
             SendMessage(message);
+            EndSession(message.SessionId);
         }
 
         private Queue<SubnetworkPointPool> CalculateShortestPath(SubnetworkPointPool beginSnpp,
@@ -68,6 +98,7 @@ namespace NetworkUtilities.ControlPlane {
                 return Convert(shortestPath);
             }
             catch (Exception) {
+                OnUpdateState("[NO_AVAILABLE_ROUTE]");
                 return new Queue<SubnetworkPointPool>();
             }
         }
@@ -88,20 +119,39 @@ namespace NetworkUtilities.ControlPlane {
         private Queue<SubnetworkPointPool> Convert(LinkedList<Path<NetworkAddress>> paths) {
             var subnetworkPointPools = new Queue<SubnetworkPointPool>();
 
+            OnUpdateState("[AVAILABLE_ROUTE]");
             foreach (var path in paths) {
                 subnetworkPointPools.Enqueue(path.Link.BeginSubnetworkPointPool);
                 subnetworkPointPools.Enqueue(path.Link.EndSubnetworkPointPool);
+
+                OnUpdateState($"                   {path.Link}");
             }
 
             return subnetworkPointPools;
         }
 
-        private void HandleLocalTopology(SignallingMessage message) {
-            _links.Add((Link) message.Payload);
+        private bool IsBetweenSubnetworks(Link link) {
+            var snppA = link.BeginSubnetworkPointPool.NetworkAddress;
+            var snppB = link.EndSubnetworkPointPool.NetworkAddress;
+
+            return snppA.GetId(Address.Levels - 1) != snppB.GetId(Address.Levels - 1);
         }
 
-        private void HandleNetworkTopology(SignallingMessage message) {
-            _links.Add((Link) message.Payload);
+        private NetworkAddress GetOtherDomainAddress(NetworkAddress localAddress) {
+            if (localAddress.DomainId == 1) {
+                return new NetworkAddress(2);
+            }
+            if (localAddress.DomainId == 2) {
+                return new NetworkAddress(1);
+            }
+            return null;
+        }
+
+        private void UpdateLinkList(SignallingMessage message) {
+            var receivedLink = (Link)message.Payload;
+
+            if (_links.Contains(receivedLink)) _links.Remove(receivedLink);
+            _links.Add(receivedLink);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         public virtual void ReceiveMessage(SignallingMessage message) {
-            OnUpdateState("[IN] " + message);
+            OnUpdateState("[IN]  " + message);
             var sessionId = message.SessionId;
             if (!IsCurrentlyHandled(sessionId)) StartSession(sessionId);
         }

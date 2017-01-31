@@ -21,8 +21,25 @@ namespace NetworkUtilities.Network {
         public SubnetworkPointPool EndSubnetworkPointPool { get; private set; }
         public int CapacityLeft { get; private set; }
 
-        public static Link Reverse(Link link) {
-            return new Link(link.EndSubnetworkPointPool, link.BeginSubnetworkPointPool);
+        public Link Reverse() {
+            return new Link(EndSubnetworkPointPool, BeginSubnetworkPointPool);
+        }
+
+        protected bool Equals(Link other) {
+            return Equals(BeginSubnetworkPointPool, other.BeginSubnetworkPointPool) && Equals(EndSubnetworkPointPool, other.EndSubnetworkPointPool);
+        }
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Link) obj);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                return ((BeginSubnetworkPointPool != null ? BeginSubnetworkPointPool.GetHashCode() : 0) * 397) ^ (EndSubnetworkPointPool != null ? EndSubnetworkPointPool.GetHashCode() : 0);
+            }
         }
 
         public override string ToString() {

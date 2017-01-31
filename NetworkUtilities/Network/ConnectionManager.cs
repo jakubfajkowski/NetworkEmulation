@@ -116,6 +116,11 @@ namespace NetworkUtilities.Network {
             Online = false;
         }
 
+        public bool AreConnected(List<NetworkAddress> networkAddresses) {
+            foreach (var address in networkAddresses) if (!IsConnected(address)) return false;
+            return true;
+        }
+
         public bool IsConnected(NetworkAddress networkAddress) {
             return _nodesTcpClients.ContainsKey(networkAddress);
         }

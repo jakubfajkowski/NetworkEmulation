@@ -70,10 +70,5 @@ namespace NetworkUtilities.ManagementPlane {
             Send(message, link.BeginSubnetworkPointPool.NetworkNodeAddress);
             OnUpdateState($"[CONFIGURATION] {link}");
         }
-
-        public bool AreConnected(List<NetworkAddress> networkAddresses) {
-            foreach (var address in networkAddresses) if (!IsConnected(address)) return false;
-            return true;
-        }
     }
 }

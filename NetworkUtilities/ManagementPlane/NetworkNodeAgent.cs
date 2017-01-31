@@ -39,7 +39,7 @@ namespace NetworkUtilities.ManagementPlane {
         private void StartSendingKeepAliveMessages() {
             var timer = new Timer {
                 AutoReset = true,
-                Interval = 5000,
+                Interval = 10000,
                 Enabled = true
             };
 

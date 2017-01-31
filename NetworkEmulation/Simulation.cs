@@ -170,13 +170,13 @@ namespace NetworkEmulation {
 
         private void InitializeNetworkManagmentSystem() {
             WaitForNetworkNodesConnected();
-            Thread.Sleep(1000);
             MarkAsOnline(_initializableNodes.OfType<IMarkable>().ToList());
 
             foreach (var linkView in _links) {
                 if (!(linkView.BeginNodeView is ClientNodeView) && !(linkView.EndNodeView is ClientNodeView)) {
                     var link = new Link(linkView.Parameters);
                     _networkManagmentSystem.SendConfigurationMessage(link);
+                    _networkManagmentSystem.SendConfigurationMessage(link.Reverse());
                 }
                 linkView.MarkAsOnline();
             }
@@ -184,12 +184,12 @@ namespace NetworkEmulation {
 
         private void WaitForNetworkNodesConnected() {
             while (!NetworkNodesOnline())
-                Thread.Sleep(10);
+                Thread.Sleep(100);
         }
 
         private bool NetworkNodesOnline() {
-            return _networkManagmentSystem.AreConnected(
-                _initializableNodes.OfType<NetworkNodeView>().Select(view => view.NetworkAddress).ToList());
+            var nodes = _initializableNodes.OfType<NetworkNodeView>().Select(view => view.NetworkAddress).ToList();
+            return _networkManagmentSystem.AreConnected(nodes) && _signallingCloud.AreConnected(nodes);
         }
 
         public void Run() {

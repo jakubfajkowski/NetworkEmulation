@@ -26,7 +26,6 @@
         SNPLinkConnectionRequest,
         SNPLinkConnectionDeallocation,
         RouteTableQuery, // CC       -> RC
-        RouteTableQueryResponse, // RC       -> CC
         SetLabels, // LRM(NN)  -> CC(NN)
         GetLabelsFromLRM, // CC(HPCS) -> CC(NN)
         ConnectionConfirmation, // CC       -> CC

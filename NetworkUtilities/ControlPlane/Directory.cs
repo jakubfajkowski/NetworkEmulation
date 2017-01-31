@@ -5,7 +5,7 @@ using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     public class Directory : ControlPlaneElement {
-        private static readonly Dictionary<string, NetworkAddress> _clientAdderssDictionary =
+        private static readonly Dictionary<string, NetworkAddress> _clientAddressDictionary =
             new Dictionary<string, NetworkAddress>();
 
         private static readonly Dictionary<string, SubnetworkPointPool> _snppDictionary =
@@ -35,8 +35,8 @@ namespace NetworkUtilities.ControlPlane {
 
             NetworkAddress[] clientAddresses = null;
             try {
-                var clientAddressA = _clientAdderssDictionary[clientNames[0]];
-                var clientAddressZ = _clientAdderssDictionary[clientNames[1]];
+                var clientAddressA = _clientAddressDictionary[clientNames[0]];
+                var clientAddressZ = _clientAddressDictionary[clientNames[1]];
                 clientAddresses = new[] {clientAddressA, clientAddressZ};
                 OnUpdateState($"[FOUND] {clientNames[1]}");
             }
@@ -57,8 +57,8 @@ namespace NetworkUtilities.ControlPlane {
         private void SendDirectoryNameResponse(SignallingMessage message) {
             var clientAddress = (NetworkAddress[]) message.Payload;
 
-            var clientNameA = _clientAdderssDictionary.FirstOrDefault(x => x.Value == clientAddress[0]).Key;
-            var clientNameZ = _clientAdderssDictionary.FirstOrDefault(x => x.Value == clientAddress[1]).Key;
+            var clientNameA = _clientAddressDictionary.FirstOrDefault(x => x.Value == clientAddress[0]).Key;
+            var clientNameZ = _clientAddressDictionary.FirstOrDefault(x => x.Value == clientAddress[1]).Key;
 
             string[] clientName = {clientNameA, clientNameZ};
 
@@ -96,7 +96,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         public void UpdateDirectory(string clientName, SubnetworkPointPool snpp) {
-            _clientAdderssDictionary.Add(clientName, snpp.NetworkAddress.GetParentsAddress());
+            _clientAddressDictionary.Add(clientName, snpp.NetworkNodeAddress);
             _snppDictionary.Add(clientName, snpp);
             OnUpdateState($"[ADDED] Client {clientName} is {snpp}");
         }
