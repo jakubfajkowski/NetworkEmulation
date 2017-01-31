@@ -23,11 +23,6 @@ namespace NetworkUtilities.Network.NetworkNode {
                 parameters.SignallingCloudListeningPort) {
             CableCloudMessage.MaxAtmCellsNumber = parameters.MaxAtmCellsNumberInCableCloudMessage;
 
-            NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkAddress, parameters.IpAddress,
-                parameters.NetworkManagmentSystemListeningPort);
-            NetworkNodeAgent.UpdateState += (sender, state) => OnUpdateState(state);
-
-
             CommutationMatrix = new CommutationMatrix(new CommutationTable(), parameters.NumberOfPorts);
             CommutationMatrix.UpdateState += (sender, state) => OnUpdateState(state);
 
@@ -41,7 +36,23 @@ namespace NetworkUtilities.Network.NetworkNode {
             _linkResourceManager.UpdateState += (sender, state) => OnUpdateState(state);
             _linkResourceManager.MessageToSend += (sender, message) => Send(message);
 
+            NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkAddress, parameters.IpAddress,
+                parameters.NetworkManagmentSystemListeningPort);
+            NetworkNodeAgent.UpdateState += (sender, state) => OnUpdateState(state);
+            NetworkNodeAgent.ConfigurationReceived += NetworkNodeAgentOnConfigurationReceived;
+
             StartThread();
+        }
+
+        private void NetworkNodeAgentOnConfigurationReceived(object sender, Link link) {
+            var configurationMessage = new SignallingMessage {
+                Payload = link,
+                Operation = OperationType.Configuration,
+                DestinationAddress = NetworkAddress,
+                DestinationControlPlaneElement = ControlPlaneElementType.LRM
+            };
+
+            Receive(configurationMessage);
         }
 
         // Czas po jakim komórki ATM zostaną spakowane w CCM

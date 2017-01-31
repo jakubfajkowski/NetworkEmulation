@@ -115,5 +115,9 @@ namespace NetworkUtilities.Network {
             _udpClient.Close();
             Online = false;
         }
+
+        public bool IsConnected(NetworkAddress networkAddress) {
+            return _nodesTcpClients.ContainsKey(networkAddress);
+        }
     }
 }

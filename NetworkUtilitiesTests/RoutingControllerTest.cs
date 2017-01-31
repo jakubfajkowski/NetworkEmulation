@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.ControlPlane.GraphAlgorithm;
+using NetworkUtilities.Network;
 using NetworkUtilities.Utilities;
 
 namespace NetworkUtilitiesTests {

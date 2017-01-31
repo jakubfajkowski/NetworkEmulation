@@ -70,7 +70,7 @@
     <Compile Include="ManagementPlane\NodeConnectionInformation.cs" />
     <Compile Include="Network\LinkModel.cs" />
     <Compile Include="ControlPlane\GraphAlgorithm\Engine.cs" />
-    <Compile Include="ControlPlane\GraphAlgorithm\Link.cs" />
+    <Compile Include="Network\Link.cs" />
     <Compile Include="ControlPlane\GraphAlgorithm\Path.cs" />
     <Compile Include="Log\MultiLogForm.cs">
       <SubType>Form</SubType>

@@ -1,4 +1,6 @@
-﻿namespace NetworkUtilities.ControlPlane.GraphAlgorithm {
+﻿using NetworkUtilities.Network;
+
+namespace NetworkUtilities.ControlPlane.GraphAlgorithm {
     public class Path<T1> {
         public T1 Source { get; set; }
         public T1 Destination { get; set; }

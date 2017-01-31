@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NetworkUtilities.ControlPlane.GraphAlgorithm;
 using NetworkUtilities.DataPlane;
+using NetworkUtilities.Network;
 using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
@@ -55,8 +56,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleConfiguration(SignallingMessage message) {
-
-
+            SendLocalTopology(message);
         }
 
         private void HandleSnpNegotiation(SignallingMessage message) {
@@ -90,7 +90,11 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void SendLocalTopology(SignallingMessage message) {
-
+            message.Operation = OperationType.LocalTopology;
+            message.DestinationAddress = message.DestinationAddress.GetParentsAddress();
+            message.DestinationControlPlaneElement = ControlPlaneElementType.RC;
+            
+            SendMessage(message);
         }
 
         private void SendSnpLinkConnectionRequest(SignallingMessage message) {

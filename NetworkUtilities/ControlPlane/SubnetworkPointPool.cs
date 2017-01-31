@@ -8,6 +8,11 @@ namespace NetworkUtilities.ControlPlane {
             NetworkAddress = networkAddress;
         }
 
+        public SubnetworkPointPool(NetworkAddressNodePortPair pair, int capacityLeft) :
+            this(pair.NetworkAddress.Append(pair.NodePortNumber)) {
+            CapacityLeft = capacityLeft;
+        }
+
         public NetworkAddress NetworkAddress { get; }
         public int CapacityLeft { get; private set; }
 

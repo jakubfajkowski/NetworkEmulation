@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
+using NetworkUtilities.ControlPlane.GraphAlgorithm;
 using NetworkUtilities.Network;
 using NetworkUtilities.Utilities;
 
@@ -32,10 +33,6 @@ namespace NetworkUtilities.ManagementPlane {
                     case ManagementMessageType.KeepAlive:
                     HandleKeepAlive(inputNetworkAddress);
                     break;
-
-                    case ManagementMessageType.Configuration:
-                    HandlePlugIn(message);
-                    break;
             }
         }
 
@@ -46,10 +43,6 @@ namespace NetworkUtilities.ManagementPlane {
             }
 
             _keepAliveDictionary[inputNetworkAddress] = DateTime.Now;
-        }
-
-        private void HandlePlugIn(ManagementMessage message) {
-            throw new NotImplementedException();
         }
 
         private void OnTimedEvent(object source, ElapsedEventArgs e) {
@@ -72,12 +65,14 @@ namespace NetworkUtilities.ManagementPlane {
             }
         }
 
-        public bool IsNetworkNodeOnline(NetworkAddress networkAddress) {
-            return _keepAliveDictionary.ContainsKey(networkAddress);
+        public void SendConfigurationMessage(Link link) {
+            var message = new ManagementMessage(ManagementMessageType.Configuration, link);
+            Send(message, link.BeginSubnetworkPointPool.NetworkNodeAddress);
+            OnUpdateState($"[CONFIGURATION] {link}");
         }
 
-        public bool AreOnline(List<NetworkAddress> networkAddresses) {
-            foreach (var address in networkAddresses) if (!IsNetworkNodeOnline(address)) return false;
+        public bool AreConnected(List<NetworkAddress> networkAddresses) {
+            foreach (var address in networkAddresses) if (!IsConnected(address)) return false;
             return true;
         }
     }

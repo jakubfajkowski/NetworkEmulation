@@ -21,6 +21,9 @@ namespace NetworkUtilities.ControlPlane {
         public object Payload { get; set; }
 
         public override string ToString() {
+            if (SourceAddress == null) {
+                return $"NMS->{DestinationAddress}.{DestinationControlPlaneElement} {Operation}";
+            }
             return
                 $"{SourceAddress}.{SourceControlPlaneElement}->{DestinationAddress}.{DestinationControlPlaneElement} {Operation}";
         }

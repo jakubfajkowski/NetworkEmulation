@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NetworkUtilities.ControlPlane.GraphAlgorithm;
+using NetworkUtilities.Network;
 using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
