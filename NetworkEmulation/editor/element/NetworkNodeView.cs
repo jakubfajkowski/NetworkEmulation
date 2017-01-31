@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Xml;
 using NetworkEmulation.Properties;
 using NetworkUtilities.Network.NetworkNode;
@@ -12,8 +13,17 @@ namespace NetworkEmulation.Editor.Element {
             Parameters.CableCloudListeningPort = Settings.Default.CableCloudListenerPort;
         }
 
-        public int GetFreePort() {
-            return ++Parameters.NumberOfPorts;
+        private int _freeInputPorts;
+        public int GetFreeInputPort() {
+            _freeInputPorts++;
+            Parameters.NumberOfPorts = Math.Max(_freeInputPorts, _freeOutputPorts);
+            return _freeInputPorts;
+        }
+        private int _freeOutputPorts;
+        public int GetFreeOutputPort() {
+            _freeOutputPorts++;
+            Parameters.NumberOfPorts = Math.Max(_freeInputPorts, _freeOutputPorts);
+            return _freeOutputPorts;
         }
 
         public bool DoubleClickEnabled { get; set; }

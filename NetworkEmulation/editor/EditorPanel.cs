@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using NetworkEmulation.Editor.Element;
+using NetworkEmulation.Properties;
 
 namespace NetworkEmulation.Editor {
     public enum Mode {
@@ -68,7 +69,12 @@ namespace NetworkEmulation.Editor {
                 case Mode.AddNetworkNode:
                     var networkNodeView = new NetworkNodeView();
                     _selectedNodeView = networkNodeView;
-                    new NetworkNodeForm(networkNodeView).ShowDialog(this);
+
+                    var parameters = networkNodeView.Parameters;
+                    parameters.IpAddress = Settings.Default.IpAddress;
+                    parameters.CableCloudListeningPort = Settings.Default.CableCloudListenerPort;
+                    parameters.NetworkManagmentSystemListeningPort = Settings.Default.NetworkManagmentSystemListeningPort;
+                    parameters.SignallingCloudListeningPort = Settings.Default.SignallingCloudListeningPort;
                     break;
 
                 default:

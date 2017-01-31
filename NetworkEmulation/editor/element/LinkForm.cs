@@ -14,13 +14,13 @@ namespace NetworkEmulation.Editor.Element {
         private void OkClick(object sender, EventArgs e) {
             var inputNodePort = 1;
             if (_link.BeginNodeView is NetworkNodeView) {
-                ((NetworkNodeView)_link.BeginNodeView).GetFreePort();
+                inputNodePort = ((NetworkNodeView)_link.BeginNodeView).GetFreeInputPort();
             }
 
 
             var outputNodePort = 1;
             if (_link.EndNodeView is NetworkNodeView) {
-                ((NetworkNodeView)_link.EndNodeView).GetFreePort();
+                outputNodePort = ((NetworkNodeView) _link.EndNodeView).GetFreeOutputPort();
             }
 
             var inputNetworkAddress = _link.BeginNodeView.NetworkAddress;

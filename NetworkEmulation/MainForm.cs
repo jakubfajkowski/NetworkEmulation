@@ -33,17 +33,19 @@ namespace NetworkEmulation {
         private void NewProject() {
             editorPanel.Clear();
             networkHierarchyTreeView.Nodes.Clear();
-            AddTopTwoSubnetworks();
+            AddTopTwoDomains();
             parametersListView.Items.Clear();
         }
 
-        private void AddTopTwoSubnetworks() {
+        private void AddTopTwoDomains() {
             AddSubnetworkNode();
             networkHierarchyTreeView.Nodes[0].Tag = new StepByStepPathComputationServer(new NetworkAddress(1),
                 "127.0.0.1", Settings.Default.SignallingCloudListeningPort);
             AddSubnetworkNode();
             networkHierarchyTreeView.Nodes[1].Tag = new StepByStepPathComputationServer(new NetworkAddress(2),
                 "127.0.0.1", Settings.Default.SignallingCloudListeningPort);
+
+            networkHierarchyTreeView.SelectedNode = networkHierarchyTreeView.Nodes[0];
         }
 
         private void editorPanel_ControlAdded(object sender, ControlEventArgs e) {
@@ -209,6 +211,10 @@ namespace NetworkEmulation {
                 var childAddress = new NetworkAddress(childIndex);
                 subnetworkNode.Text = childAddress.ToString();
             }
+
+
+            subnetworkNode.Tag = new HierarchicalPathComputationServer(new NetworkAddress(subnetworkNode.Text),
+                             "127.0.0.1", Settings.Default.SignallingCloudListeningPort);
         }
 
         private void moveToolStripMenuItem_Click(object sender, EventArgs e) {

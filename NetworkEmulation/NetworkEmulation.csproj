@@ -65,12 +65,6 @@
     <Compile Include="Editor\Element\LinkForm.Designer.cs">
       <DependentUpon>LinkForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editor\Element\NetworkNodeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Editor\Element\NetworkNodeForm.Designer.cs">
-      <DependentUpon>NetworkNodeForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Editor\IInitializable.cs" />
     <Compile Include="Editor\IMarkable.cs" />
     <Compile Include="Editor\ClippedPictureBox.cs">
@@ -108,9 +102,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editor\Element\LinkForm.resx">
       <DependentUpon>LinkForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Editor\Element\NetworkNodeForm.resx">
-      <DependentUpon>NetworkNodeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
