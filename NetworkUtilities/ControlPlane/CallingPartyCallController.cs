@@ -15,9 +15,8 @@ namespace NetworkUtilities.ControlPlane {
 
             switch (message.Operation) {
                 case OperationType.CallAccept:
-                    //SendCallAcceptResponse(message);
                     _callConfirmed = true;
-                    SendCallConfirmation(message, _callConfirmed);
+                    SendCallAccept(message, _callConfirmed);
                     break;
 
                 case OperationType.CallTeardown:
@@ -61,13 +60,14 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callTeardown);
         }
 
-        private void SendCallConfirmation(SignallingMessage message, bool confirmation) {
+        private void SendCallAccept(SignallingMessage message, bool confirmation) {
             var callConfirmation = message;
-            callConfirmation.Operation = OperationType.CallConfirmation;
+            callConfirmation.Operation = OperationType.CallAccept;
             callConfirmation.Payload = confirmation;
             callConfirmation.DestinationAddress = message.SourceAddress;
             callConfirmation.DestinationControlPlaneElement =
                 ControlPlaneElementType.NCC;
+
             SendMessage(callConfirmation);
         }
 

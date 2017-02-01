@@ -12,7 +12,7 @@ namespace NetworkUtilities.ControlPlane {
 
         private void SendPolicyResponse(SignallingMessage message) {
             var policyResponse = message;
-            policyResponse.Operation = OperationType.PolicyResponse;
+            policyResponse.Operation = OperationType.PolicyRequest;
             policyResponse.Payload = true;
             policyResponse.DestinationAddress = message.SourceAddress;
             policyResponse.DestinationControlPlaneElement = ControlPlaneElementType.NCC;

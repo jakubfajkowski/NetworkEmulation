@@ -91,33 +91,46 @@ namespace NetworkEmulation {
         }
 
         private void RestoreToNetworkHierarchyTreeView(NetworkAddress address, NodeView node) {
-            var nodes = networkHierarchyTreeView.Nodes;
-            TreeNode parent = null;
+            TreeNode parent = networkHierarchyTreeView.Nodes[address.GetId(0) - 1];
+            var nodes = parent.Nodes;
             var currentAddress = new NetworkAddress(address.GetId(0));
 
-            for (var i = 0; i < address.Levels - 1; i++) {
+            for (var i = 1; i < address.Levels - 1; i++) {
                 var id = address.GetId(i);
 
-                if (nodes.Count < id)
-                    while (nodes.Count < id) {
-                        var subnetworkNode = new TreeNode();
-                        nodes.Add(subnetworkNode);
-                        currentAddress = currentAddress.GetParentsAddress().Append(nodes.Count);
-                        subnetworkNode.Text = currentAddress.ToString();
-                        subnetworkNode.Tag = new HierarchicalPathComputationServer(currentAddress,
-                            "127.0.0.1", Settings.Default.SignallingCloudListeningPort);
-                    }
+                
+                var subnetworkNode = new TreeNode();
+                currentAddress = currentAddress.Append(id);
+                subnetworkNode.Text = currentAddress.ToString();
+                subnetworkNode.Name = currentAddress.ToString();
+                subnetworkNode.Tag = new HierarchicalPathComputationServer(currentAddress,
+                    "127.0.0.1", Settings.Default.SignallingCloudListeningPort);
 
-                parent = nodes[id - 1];
-                nodes = parent.Nodes;
-                currentAddress = currentAddress.Append(parent.Index + 1);
+                if (!nodes.ContainsKey(subnetworkNode.Name)) {
+                    nodes.Add(subnetworkNode);
+                    parent = subnetworkNode;
+                    nodes = parent.Nodes;
+                }
+                else {
+                    parent = nodes[subnetworkNode.Name];
+                    nodes = parent.Nodes;
+                }
+                    
             }
 
+
             var treeNode = new TreeNode {
-                Tag = node
+                Tag = node,
+                Text = address.ToString(),
+                Name = address.ToString()
             };
-            treeNode.Text = address.ToString();
-            parent.Nodes.Add(treeNode);
+
+            if (!nodes.ContainsKey(treeNode.Name)) {
+                nodes.Add(treeNode);
+            }
+            else {
+                nodes[treeNode.Name].Tag = treeNode.Tag;
+            }
         }
 
         private NetworkAddress AddToTreeView(TreeNode treeNode) {
@@ -147,7 +160,7 @@ namespace NetworkEmulation {
                 return;
             }
 
-            if (e.Node.Tag is NodeView) networkHierarchyTreeView.SelectedNode = e.Node.Parent;
+            if (e.Node.Tag is ClientNodeView) networkHierarchyTreeView.SelectedNode = e.Node.Parent;
         }
 
         private void networkHierarchyTreeView_MouseDoubleClick(object sender, MouseEventArgs e) {

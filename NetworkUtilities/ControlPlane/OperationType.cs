@@ -9,13 +9,9 @@
         CallTeardownResponse,
         //NCC operations
         PolicyRequest,
-        PolicyResponse,
         DirectoryAddressRequest,
-        DirectoryAddressResponse,
         DirectoryNameRequest,
-        DirectoryNameResponse,
         DirectorySnppRequest,
-        DirectorySnppResponse,
         CallCoordination,
         CallCoordinationResponse,
         ConnectionRequest, // CC(NCC)   -> CC

@@ -21,9 +21,11 @@ namespace NetworkUtilities.ControlPlane {
                 case OperationType.DirectoryAddressRequest:
                     SendDirectoryAddressResponse(message);
                     break;
+
                 case OperationType.DirectoryNameRequest:
                     SendDirectoryNameResponse(message);
                     break;
+
                 case OperationType.DirectorySnppRequest:
                     SendDirectorySnppResponse(message);
                     break;
@@ -46,7 +48,7 @@ namespace NetworkUtilities.ControlPlane {
 
 
             var directioryResponse = message;
-            directioryResponse.Operation = OperationType.DirectoryAddressResponse;
+            directioryResponse.Operation = OperationType.DirectoryAddressRequest;
             directioryResponse.Payload = clientAddresses;
             directioryResponse.DestinationAddress = message.SourceAddress;
             directioryResponse.DestinationControlPlaneElement =
@@ -63,7 +65,7 @@ namespace NetworkUtilities.ControlPlane {
             string[] clientName = {clientNameA, clientNameZ};
 
             var directioryResponse = message;
-            directioryResponse.Operation = OperationType.DirectoryNameResponse;
+            directioryResponse.Operation = OperationType.DirectoryNameRequest;
             directioryResponse.Payload = clientName;
             directioryResponse.DestinationAddress = message.SourceAddress;
             directioryResponse.DestinationControlPlaneElement =
@@ -87,7 +89,7 @@ namespace NetworkUtilities.ControlPlane {
             }
 
             var directioryResponse = message;
-            directioryResponse.Operation = OperationType.DirectorySnppResponse;
+            directioryResponse.Operation = OperationType.DirectorySnppRequest;
             directioryResponse.Payload = snpp;
             directioryResponse.DestinationAddress = message.SourceAddress;
             directioryResponse.DestinationControlPlaneElement =
