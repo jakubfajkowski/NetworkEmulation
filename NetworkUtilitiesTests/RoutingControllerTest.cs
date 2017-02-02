@@ -16,9 +16,9 @@ namespace NetworkUtilitiesTests {
             var snpp5 = new SubnetworkPointPool(new NetworkAddress("1.3.1"));
             var snpp6 = new SubnetworkPointPool(new NetworkAddress("1.3.1"));
 
-            var link13 = new Link(snpp1, snpp3);
-            var link24 = new Link(snpp2, snpp4);
-            var link46 = new Link(snpp4, snpp6);
+            var link13 = new Link(snpp1, snpp3, 5, false);
+            var link24 = new Link(snpp2, snpp4, 5, false);
+            var link46 = new Link(snpp4, snpp6, 5, false);
 
             var result = Engine.CalculateShortestPathBetween(
                 snpp1,

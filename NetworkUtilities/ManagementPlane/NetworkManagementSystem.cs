@@ -70,5 +70,25 @@ namespace NetworkUtilities.ManagementPlane {
             Send(message, link.BeginSubnetworkPointPool.NetworkNodeAddress);
             OnUpdateState($"[CONFIGURATION] {link}");
         }
+
+        public void SendConnectClientMessage(Link link, NetworkAddress clientAddress) {
+            var payload = new object[] {
+                link,
+                clientAddress
+            };
+
+            var message = new ManagementMessage(ManagementMessageType.ConnectClient, payload);
+
+            NetworkAddress destinationAddress;
+            if (link.BeginSubnetworkPointPool.NetworkNodeAddress.Equals(clientAddress)) {
+                destinationAddress = link.EndSubnetworkPointPool.NetworkNodeAddress;
+            }
+            else {
+                destinationAddress = link.BeginSubnetworkPointPool.NetworkNodeAddress;
+            }
+
+            Send(message, destinationAddress);
+            OnUpdateState($"[CONNECT_CLIENT] {clientAddress} {link}");
+        }
     }
 }

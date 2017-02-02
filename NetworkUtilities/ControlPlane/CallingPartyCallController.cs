@@ -36,7 +36,8 @@ namespace NetworkUtilities.ControlPlane {
                 Payload = clientNames,
                 DemandedCapacity = capacity,
                 DestinationAddress = _nccAddress,
-                DestinationControlPlaneElement = ControlPlaneElementType.NCC
+                DestinationControlPlaneElement = ControlPlaneElementType.NCC,
+                SourceClientAddress = LocalAddress
             };
             SendMessage(callRequest);
         }

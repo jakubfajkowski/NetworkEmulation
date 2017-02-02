@@ -7,6 +7,7 @@ using NetworkUtilities.Utilities;
 namespace NetworkUtilities.ManagementPlane {
     public class NetworkNodeAgent : LogObject {
         public delegate void ConfigurationHandler(object sender, Link link);
+        public delegate void ConnectClientHandler(object sender, Link link, NetworkAddress clientAddress);
 
         private readonly ConnectionComponent _managmentPlaneConnectionComponent;
 
@@ -19,13 +20,36 @@ namespace NetworkUtilities.ManagementPlane {
         }
 
         private void Receive(object sender, object receivedObject) {
-            var message = (ManagementMessage) receivedObject;
-            var link = (Link) message.Payload;
+            var message = (ManagementMessage)receivedObject;
+
+            switch (message.Type) {
+                case ManagementMessageType.Configuration:
+                    HandleConfiguration(message);
+                    break;
+
+                case ManagementMessageType.ConnectClient:
+                    HandleConnectClient(message);
+                    break;
+            }
+        }
+
+        private void HandleConfiguration(ManagementMessage message) {
+            var link = (Link)message.Payload;
             OnUpdateState($"[CONFIGURATION] {link}");
             OnConfigurationReceived(link);
         }
 
+        private void HandleConnectClient(ManagementMessage message) {
+            var payload = (object[]) message.Payload;
+            var link = (Link) payload[0];
+            var clientAddress = (NetworkAddress) payload[1];
+
+            OnUpdateState($"[CONNECT_CLIENT] {clientAddress} {link}");
+            OnConnectClientReceived(link, clientAddress);
+        }
+
         public event ConfigurationHandler ConfigurationReceived;
+        public event ConnectClientHandler ConnectClientReceived;
 
         protected virtual void OnConfigurationReceived(Link link) {
             ConfigurationReceived?.Invoke(this, link);
@@ -52,6 +76,10 @@ namespace NetworkUtilities.ManagementPlane {
                 _managmentPlaneConnectionComponent.Send(message);
                 //OnUpdateState("[SENT] [KEEP_ALIVE]");
             }
+        }
+
+        protected virtual void OnConnectClientReceived(Link link, NetworkAddress networkaddress) {
+            ConnectClientReceived?.Invoke(this, link, networkaddress);
         }
     }
 }

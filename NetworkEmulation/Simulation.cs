@@ -12,6 +12,7 @@ using NetworkUtilities.DataPlane;
 using NetworkUtilities.Log;
 using NetworkUtilities.ManagementPlane;
 using NetworkUtilities.Network;
+using NetworkUtilities.Utilities;
 
 namespace NetworkEmulation {
     public class Simulation : IDisposable {
@@ -174,9 +175,24 @@ namespace NetworkEmulation {
 
             foreach (var linkView in _links) {
                 if (!(linkView.BeginNodeView is ClientNodeView) && !(linkView.EndNodeView is ClientNodeView)) {
-                    var link = new Link(linkView.Parameters);
+                    var link = new Link(linkView.Parameters, false);
                     _networkManagmentSystem.SendConfigurationMessage(link);
                     _networkManagmentSystem.SendConfigurationMessage(link.Reverse());
+                }
+                else {
+                    var link = new Link(linkView.Parameters, true);
+
+                    NetworkAddress clientAddress = null;
+
+                    if (link.BeginSubnetworkPointPool.NetworkNodeAddress.Levels >
+                        link.EndSubnetworkPointPool.NetworkNodeAddress.Levels) {
+                        clientAddress = link.BeginSubnetworkPointPool.NetworkNodeAddress;
+                    }
+                    else {
+                        clientAddress = link.EndSubnetworkPointPool.NetworkNodeAddress;
+                    }
+
+                    _networkManagmentSystem.SendConnectClientMessage(link, clientAddress);
                 }
                 linkView.MarkAsOnline();
             }

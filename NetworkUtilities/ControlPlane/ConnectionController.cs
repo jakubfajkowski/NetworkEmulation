@@ -106,7 +106,16 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleSNPLinkConnectionRequest(SignallingMessage message) {
+            var r = (RecentSnp[]) message.Payload;
 
+            var rowToAdd = new CommutationTableRow(r[0].SubnetworkPoint.Vpi,
+                                                   r[0].SubnetworkPoint.Vci,
+                                                   r[0].Port,
+                                                   r[1].SubnetworkPoint.Vpi,
+                                                   r[1].SubnetworkPoint.Vci,
+                                                   r[1].Port);
+
+            OnCommutationCommand(new CommutationHandlerArgs(rowToAdd));
         }
 
         private void SendRouteTableQuery(SignallingMessage message) {

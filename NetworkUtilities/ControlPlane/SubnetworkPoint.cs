@@ -5,15 +5,15 @@ namespace NetworkUtilities.ControlPlane {
     public class SubnetworkPoint {
         private static readonly Random Random = new Random();
 
-        private SubnetworkPoint(int vpi, int vci, int capacity) {
+        private SubnetworkPoint(int vpi, int vci, int usedCapacity) {
             Vpi = vpi;
             Vci = vci;
-            Capacity = capacity;
+            UsedCapacity = usedCapacity;
         }
 
         public int Vpi { get; }
         public int Vci { get; }
-        public int Capacity { get; }
+        public int UsedCapacity { get; }
 
         public static SubnetworkPoint GenerateRandom(int capacity) {
             var vpi = Random.Next(4096);
@@ -23,7 +23,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         public override string ToString() {
-            return $"{nameof(Vpi)}: {Vpi}, {nameof(Vci)}: {Vci}, {nameof(Capacity)}: {Capacity}";
+            return $"{nameof(Vpi)}: {Vpi}, {nameof(Vci)}: {Vci}, {nameof(UsedCapacity)}: {UsedCapacity}";
         }
 
         protected bool Equals(SubnetworkPoint other) {

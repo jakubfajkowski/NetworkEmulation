@@ -4,25 +4,33 @@ using NetworkUtilities.ControlPlane;
 namespace NetworkUtilities.Network {
     [Serializable]
     public class Link {
-        public Link(SubnetworkPointPool beginSubnetworkPointPool, SubnetworkPointPool endSubnetworkPointPool) {
-            if (beginSubnetworkPointPool.CapacityLeft != endSubnetworkPointPool.CapacityLeft)
-                throw new ArgumentException("Link's SubnetworkPointPools are not compatible.");
+        public bool IsClientLink { get; }
 
+        public Link(SubnetworkPointPool beginSubnetworkPointPool, SubnetworkPointPool endSubnetworkPointPool, int capacity, bool isClientLink) {
             BeginSubnetworkPointPool = beginSubnetworkPointPool;
             EndSubnetworkPointPool = endSubnetworkPointPool;
-            CapacityLeft = BeginSubnetworkPointPool.CapacityLeft;
+            CapacityLeft = capacity;
         }
 
-        public Link(LinkModel model) :
-            this(new SubnetworkPointPool(model.InputNodePortPair, model.Capacity), 
-                new SubnetworkPointPool(model.OutputNodePortPair, model.Capacity)) {}
+        public Link(LinkModel model, bool isClientLink) : 
+            this(new SubnetworkPointPool(model.InputNodePortPair), new SubnetworkPointPool(model.OutputNodePortPair), model.Capacity, isClientLink) {
+            IsClientLink = isClientLink;
+        }
 
         public SubnetworkPointPool BeginSubnetworkPointPool { get; }
         public SubnetworkPointPool EndSubnetworkPointPool { get; private set; }
         public int CapacityLeft { get; private set; }
 
+        public void ReserveCapacity(int demandedCapacity) {
+            CapacityLeft -= demandedCapacity;
+        }
+
+        public void ReleaseCapacity(int releasedCapacity) {
+            CapacityLeft += releasedCapacity;
+        }
+
         public Link Reverse() {
-            return new Link(EndSubnetworkPointPool, BeginSubnetworkPointPool);
+            return new Link(EndSubnetworkPointPool, BeginSubnetworkPointPool, CapacityLeft, IsClientLink);
         }
 
         protected bool Equals(Link other) {
@@ -43,7 +51,7 @@ namespace NetworkUtilities.Network {
         }
 
         public override string ToString() {
-            return $"{BeginSubnetworkPointPool}->{EndSubnetworkPointPool}, Capacity: {CapacityLeft}";
+            return $"{BeginSubnetworkPointPool}->{EndSubnetworkPointPool}, Capacity: {CapacityLeft} {IsClientLink}";
         }
     }
 }

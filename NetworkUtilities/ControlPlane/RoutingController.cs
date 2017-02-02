@@ -43,11 +43,13 @@ namespace NetworkUtilities.ControlPlane {
 
         private void HandleLocalTopology(SignallingMessage message) {
             UpdateLinkList(message);
+            var link = (Link) message.Payload;
+            OnUpdateState($"[RECEIVED_LINK_UPDATE] {link}");
 
             if (LocalAddress.Levels == 1) {
                 SendNetworkTopology(message);
             }
-            else if (IsBetweenSubnetworks((Link) message.Payload))
+            else if (IsBetweenSubnetworks(link) || link.IsClientLink)
                 SendLocalTopology(message);
         }
 

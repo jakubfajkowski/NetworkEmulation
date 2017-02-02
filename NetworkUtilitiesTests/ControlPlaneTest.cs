@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetworkUtilities.ControlPlane;
+using NetworkUtilities.Network;
 using NetworkUtilities.Utilities;
 
 namespace NetworkUtilitiesTests {
@@ -72,6 +73,63 @@ namespace NetworkUtilitiesTests {
             cpccA.SendCallRequest("A", "B", 20);
 
             Thread.Sleep(10000);
+        }
+
+        [TestMethod]
+        public void TestLRM() {
+            var cc1Address = new NetworkAddress("1.1");
+            var cc1 = new ConnectionController(cc1Address);
+            _controlPlaneElements.Add(new Row(cc1Address, ControlPlaneElementType.CC), cc1);
+
+            var lrm1Address = new NetworkAddress("1.1");
+            var lrm1 = new LinkResourceManager(lrm1Address);
+            _controlPlaneElements.Add(new Row(lrm1Address, ControlPlaneElementType.LRM), lrm1);
+
+            var lrm2Address = new NetworkAddress("1.2");
+            var lrm2 = new LinkResourceManager(lrm2Address);
+            _controlPlaneElements.Add(new Row(lrm2Address, ControlPlaneElementType.LRM), lrm2);
+
+            var clientAddress = new NetworkAddress("1.1.1");
+            var clientOutSnpp = new SubnetworkPointPool(clientAddress.Append(1));
+            var clientInSnpp = new SubnetworkPointPool(lrm1Address.Append(2));
+
+            lrm1.ConnectClient(null, new Link(clientOutSnpp, clientInSnpp, 5, true), clientAddress);
+
+            cc1.MessageToSend += PassMessage;
+            lrm1.MessageToSend += PassMessage;
+            lrm2.MessageToSend += PassMessage;
+
+            cc1.UpdateState += UpdateState;
+            lrm1.UpdateState += UpdateState;
+            lrm2.UpdateState += UpdateState;
+
+            lrm1.ReceiveMessage(new SignallingMessage {
+                Operation = OperationType.Configuration,
+                Payload = new Link(new SubnetworkPointPool(lrm1Address.Append(1)), new SubnetworkPointPool(lrm2Address.Append(1)), 10, false),
+                DestinationAddress = lrm1Address,
+                DestinationControlPlaneElement = ControlPlaneElementType.LRM
+            });
+
+            lrm2.ReceiveMessage(new SignallingMessage {
+                Operation = OperationType.Configuration,
+                Payload = new Link(new SubnetworkPointPool(lrm1Address.Append(1)), new SubnetworkPointPool(lrm2Address.Append(1)), 10, false).Reverse(),
+                DestinationAddress = lrm2Address,
+                DestinationControlPlaneElement = ControlPlaneElementType.LRM
+            }); ;
+
+            cc1.ReceiveMessage(new SignallingMessage {
+                DemandedCapacity = 5,
+                DestinationAddress = cc1Address,
+                DestinationControlPlaneElement = ControlPlaneElementType.CC,
+                Operation = OperationType.RouteTableQuery,
+                Payload = new Queue<SubnetworkPointPool>(new[] {
+                    new SubnetworkPointPool(lrm1Address.Append(1)),
+                    new SubnetworkPointPool(lrm2Address.Append(1))
+                }),
+                SourceAddress = new NetworkAddress("0"),
+                SourceClientAddress = clientAddress,
+                SourceControlPlaneElement = ControlPlaneElementType.RC
+            });
         }
 
         private void UpdateState(object sender, string state) {
