@@ -95,6 +95,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleLinkConnectionResponse(SignallingMessage message) {
+
         }
 
         private void SendRouteTableQuery(SignallingMessage message) {
