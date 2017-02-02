@@ -38,8 +38,8 @@ namespace NetworkUtilities.ControlPlane {
                     HandleConnectionRequestResponse(message);
                     break;
 
-                case OperationType.LinkConnectionResponse:
-                    HandleLinkConnectionResponse(message);
+                case OperationType.SNPLinkConnectionRequest:
+                    HandleSNPLinkConnectionRequest(message);
                     break;
             }
         }
@@ -105,7 +105,7 @@ namespace NetworkUtilities.ControlPlane {
                 SendConnectionRequestResponse(message, true);
         }
 
-        private void HandleLinkConnectionResponse(SignallingMessage message) {
+        private void HandleSNPLinkConnectionRequest(SignallingMessage message) {
 
         }
 
