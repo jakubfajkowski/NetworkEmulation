@@ -85,12 +85,12 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleDirectoryAddressRequest(SignallingMessage message) {
-            var networkAdress = (NetworkAddress[])message.Payload;
+            var networkAddress = (NetworkAddress[])message.Payload;
 
             try {
-                _networkAddressDictionary.Add(message.SessionId, networkAdress);
+                _networkAddressDictionary.Add(message.SessionId, networkAddress);
 
-                if (networkAdress[0].GetId(0) == networkAdress[1].GetId(0))
+                if (networkAddress[0].GetId(0) == networkAddress[1].GetId(0))
                     SendCallAccept(message);
                 else
                     SendCallCoordination(message);

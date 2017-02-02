@@ -49,7 +49,7 @@ namespace NetworkUtilities.ControlPlane {
             if (LocalAddress.Levels == 1) {
                 SendNetworkTopology(message);
             }
-            else if (IsBetweenSubnetworks(link) || link.IsClientLink)
+            else if (IsBetweenSubnetworks(link))
                 SendLocalTopology(message);
         }
 
@@ -97,7 +97,7 @@ namespace NetworkUtilities.ControlPlane {
 
                 var shortestPath = Engine.CalculateShortestPathBetween(beginNode, endNode, preparedPaths);
 
-                return Convert(shortestPath);
+                return Convert(beginSnpp, shortestPath, endSnpp);
             }
             catch (Exception) {
                 OnUpdateState("[NO_AVAILABLE_ROUTE]");
@@ -118,16 +118,25 @@ namespace NetworkUtilities.ControlPlane {
             return paths;
         }
 
-        private Queue<SubnetworkPointPool> Convert(LinkedList<Path<NetworkAddress>> paths) {
+        private Queue<SubnetworkPointPool> Convert(SubnetworkPointPool beginSnpp, LinkedList<Path<NetworkAddress>> paths, SubnetworkPointPool endSnpp) {
             var subnetworkPointPools = new Queue<SubnetworkPointPool>();
 
             OnUpdateState("[AVAILABLE_ROUTE]");
+            subnetworkPointPools.Enqueue(beginSnpp);
+            subnetworkPointPools.Enqueue(paths.First.Value.Link.BeginSubnetworkPointPool);
+            OnUpdateState($"                   {beginSnpp}");
+
             foreach (var path in paths) {
                 subnetworkPointPools.Enqueue(path.Link.BeginSubnetworkPointPool);
                 subnetworkPointPools.Enqueue(path.Link.EndSubnetworkPointPool);
 
                 OnUpdateState($"                   {path.Link}");
             }
+
+            var lastLink = new Link(paths.Last.Value.Link.EndSubnetworkPointPool, endSnpp, 0, true);
+            subnetworkPointPools.Enqueue(lastLink.BeginSubnetworkPointPool);
+            subnetworkPointPools.Enqueue(lastLink.EndSubnetworkPointPool);
+            OnUpdateState($"                   {lastLink}");
 
             return subnetworkPointPools;
         }

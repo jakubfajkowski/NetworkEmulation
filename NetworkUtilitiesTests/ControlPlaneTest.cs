@@ -31,12 +31,12 @@ namespace NetworkUtilitiesTests {
             var cpccAAddress = new NetworkAddress("1.1.1");
             var cpccA = new CallingPartyCallController(cpccAAddress);
             _controlPlaneElements.Add(new Row(cpccAAddress, ControlPlaneElementType.CPCC), cpccA);
-            directory.UpdateDirectory("A", new SubnetworkPointPool(cpccAAddress.Append(1)));
+            directory.UpdateDirectory("A", cpccAAddress, new SubnetworkPointPool(cpccAAddress.Append(1)));
 
             var cpccBAddress = new NetworkAddress("2.1.2");
             var cpccB = new CallingPartyCallController(cpccBAddress);
             _controlPlaneElements.Add(new Row(cpccBAddress, ControlPlaneElementType.CPCC), cpccB);
-            directory.UpdateDirectory("B", new SubnetworkPointPool(cpccBAddress.Append(1)));
+            directory.UpdateDirectory("B", cpccBAddress, new SubnetworkPointPool(cpccBAddress.Append(1)));
 
             var cc1Address = new NetworkAddress("1");
             var cc1 = new ConnectionController(cc1Address);

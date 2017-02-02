@@ -97,10 +97,10 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(directioryResponse);
         }
 
-        public void UpdateDirectory(string clientName, SubnetworkPointPool snpp) {
-            _clientAddressDictionary.Add(clientName, snpp.NetworkNodeAddress);
-            _snppDictionary.Add(clientName, snpp);
-            OnUpdateState($"[ADDED] Client {clientName} is {snpp}");
+        public void UpdateDirectory(string clientName, NetworkAddress clientNetworkAddress, SubnetworkPointPool networkNodeSnpp) {
+            _clientAddressDictionary.Add(clientName, clientNetworkAddress);
+            _snppDictionary.Add(clientName, networkNodeSnpp);
+            OnUpdateState($"[ADDED] Client {clientName} is {networkNodeSnpp}");
         }
     }
 }

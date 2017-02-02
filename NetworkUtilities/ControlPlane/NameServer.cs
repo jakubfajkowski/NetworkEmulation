@@ -34,8 +34,8 @@ namespace NetworkUtilities.ControlPlane {
             _controlPlaneConnectionComponent.Initialize();
         }
 
-        public void UpdateDirectory(string clientName, SubnetworkPointPool snpp) {
-            _directory.UpdateDirectory(clientName, snpp);
+        public void UpdateDirectory(string clientName, NetworkAddress clientNetworkAddress, SubnetworkPointPool networkNodeSnpp) {
+            _directory.UpdateDirectory(clientName, clientNetworkAddress, networkNodeSnpp);
         }
 
         private void OnSignallingMessageReceived(object sender, object receivedObject) {

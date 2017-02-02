@@ -69,7 +69,7 @@ namespace NetworkEmulationTest {
             //clientNodeA.OnMessageReceived += (sender, state) => Console.WriteLine(state);
             clientNodeA.UpdateState += (sender, state) => Console.WriteLine("ClientNode A: " + state);
             clientNodeA.Initialize();
-            nameServer.UpdateDirectory("A", new SubnetworkPointPool(clientNodeA.NetworkAddress.Append(1)));
+            nameServer.UpdateDirectory("A", clientNodeA.NetworkAddress, new SubnetworkPointPool(clientNodeA.NetworkAddress.Append(1)));
 
             var clientNodeB = new ClientNode(new ClientNodeModel {
                 NetworkAddress = new NetworkAddress("2.2"),
@@ -82,7 +82,7 @@ namespace NetworkEmulationTest {
             //clientNodeB.OnMessageReceived += (sender, state) => Console.WriteLine(state);
             clientNodeB.UpdateState += (sender, state) => Console.WriteLine("ClientNode B: " + state);
             clientNodeB.Initialize();
-            nameServer.UpdateDirectory("B", new SubnetworkPointPool(clientNodeB.NetworkAddress.Append(1)));
+            nameServer.UpdateDirectory("B", clientNodeB.NetworkAddress, new SubnetworkPointPool(clientNodeB.NetworkAddress.Append(1)));
 
             var networkNode1 = new NetworkNode(new NetworkNodeModel {
                 NetworkAddress = new NetworkAddress("1.2"),

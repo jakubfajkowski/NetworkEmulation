@@ -69,8 +69,23 @@ namespace NetworkEmulation {
             foreach (var initializableNode in _initializableNodes.OfType<ClientNodeView>()) {
                 initializableNode.Parameters.MaxAtmCellsNumberInCableCloudMessage =
                     Settings.Default.MaxAtmCellsNumberInCableCloudMessage;
-                _nameServer.UpdateDirectory(initializableNode.Parameters.ClientName,
-                    new SubnetworkPointPool(initializableNode.NetworkAddress.Append(1)));
+
+
+                var link =
+                    _links.First(
+                        view =>
+                            view.Parameters.InputNodePortPair.NetworkAddress.Equals(initializableNode.NetworkAddress) ||
+                            view.Parameters.OutputNodePortPair.NetworkAddress.Equals(initializableNode.NetworkAddress));
+
+                SubnetworkPointPool networkNodeSnpp;
+                if (link.Parameters.InputNodePortPair.NetworkAddress.Equals(initializableNode.NetworkAddress)) {
+                    networkNodeSnpp = new SubnetworkPointPool(link.Parameters.OutputNodePortPair);
+                }
+                else {
+                    networkNodeSnpp = new SubnetworkPointPool(link.Parameters.InputNodePortPair);
+                }
+
+                _nameServer.UpdateDirectory(initializableNode.Parameters.ClientName, initializableNode.NetworkAddress, new SubnetworkPointPool(initializableNode.NetworkAddress.Append(1)));
             }
 
             _processes = new Dictionary<int, Process>();
