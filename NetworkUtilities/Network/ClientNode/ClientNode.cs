@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Forms;
 using NetworkUtilities.ControlPlane;
 using NetworkUtilities.DataPlane;
 using NetworkUtilities.Utilities;
@@ -7,6 +8,7 @@ namespace NetworkUtilities.Network.ClientNode {
     public class ClientNode : Node.Node {
         private readonly CallingPartyCallController _callingPartyCallController;
         public List<ClientTableRow> ClientTableList = new List<ClientTableRow>();
+        private bool callConfirmation;
 
         public ClientNode(ClientNodeModel parameters)
             : base(
@@ -104,7 +106,7 @@ namespace NetworkUtilities.Network.ClientNode {
         protected override void Receive(SignallingMessage message) {
             _callingPartyCallController.ReceiveMessage(message);
 
-            if (message.Operation == OperationType.CallConfirmation &&
+            if (message.Operation == OperationType.CallRequestResponse &&
                 message.DestinationControlPlaneElement == ControlPlaneElementType.CPCC) {
                 var snps = message.Payload as SubnetworkPoint;
                 if (snps != null) {
@@ -114,6 +116,17 @@ namespace NetworkUtilities.Network.ClientNode {
                     OnUpdateState("Connection request rejected");
                     ClientTableRowAdded(null);
                 }
+             }
+            else if (message.Operation == OperationType.CallAccept) {
+                var result = MessageBox.Show("Connection incoming from " + ((string[]) message.Payload)[0], "Connection", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk);
+                if (result == DialogResult.No) {
+                    callConfirmation = false;
+                }
+                else if(result == DialogResult.Yes) {
+                    callConfirmation = true;
+                }
+                
+                _callingPartyCallController.SendCallAccept(message, callConfirmation);
             }
         }
     }
