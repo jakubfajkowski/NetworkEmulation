@@ -117,10 +117,13 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleCallAccept(SignallingMessage message) {
-            if (_networkAddressDictionary[message.SessionId][0].DomainId == LocalAddress.DomainId)
-                SendConnectionRequest(message);
-            else
-                SendCallCoordinationResponse(message);
+            if ((bool)message.Payload) {
+                if (_networkAddressDictionary[message.SessionId][0].DomainId == LocalAddress.DomainId)
+                    SendConnectionRequest(message);
+                else
+                    SendCallCoordinationResponse(message);
+            }
+           SendCallRequestResponse(message);
         }
 
         private void HandleCallCoordinationResponse(SignallingMessage message) {
