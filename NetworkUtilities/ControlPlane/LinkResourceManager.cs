@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using NetworkUtilities.ControlPlane.GraphAlgorithm;
-using NetworkUtilities.DataPlane;
 using NetworkUtilities.Network;
 using NetworkUtilities.Utilities;
 
@@ -8,10 +6,11 @@ namespace NetworkUtilities.ControlPlane {
     public class LinkResourceManager : ControlPlaneElement {
         private readonly List<Link> _links;
         private readonly List<SubnetworkPoint> _usedSubnetworkPoints;
+        //TODO Rozróżnianie po SNPP.
 
 
-        public LinkResourceManager(NetworkAddress networkAddress) : 
-            base(networkAddress, ControlPlaneElementType.LRM) {
+        public LinkResourceManager(NetworkAddress localAddress) : 
+            base(localAddress, ControlPlaneElementType.LRM) {
 
             _links = new List<Link>();
             _usedSubnetworkPoints = new List<SubnetworkPoint>();

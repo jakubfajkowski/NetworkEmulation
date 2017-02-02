@@ -24,6 +24,7 @@ namespace NetworkUtilities.Utilities {
 
         public int Levels => _value.Split(Separator).Length;
         public int DomainId => GetId(0);
+        public bool IsDomain => Levels == 1;
 
         public NetworkAddress Append(int number) {
             var value = _value + Separator + number;
@@ -64,6 +65,10 @@ namespace NetworkUtilities.Utilities {
             var ids = _value.Split(Separator);
             var value = string.Join(Separator.ToString(), ids.Take(ids.Length - level));
             return new NetworkAddress(value);
+        }
+
+        public bool Contains(NetworkAddress other) {
+            return _value.Contains(other._value);
         }
 
         public override string ToString() {

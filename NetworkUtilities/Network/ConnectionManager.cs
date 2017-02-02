@@ -103,10 +103,15 @@ namespace NetworkUtilities.Network {
         protected abstract void HandleReceivedObject(object receivedObject, NetworkAddress inputNetworkAddress);
 
         protected void Send(object objectToSend, NetworkAddress outputNetworkAddress) {
-            var tcpClient = _nodesTcpClients[outputNetworkAddress];
-            var networkStream = tcpClient.GetStream();
+            try {
+                var tcpClient = _nodesTcpClients[outputNetworkAddress];
+                var networkStream = tcpClient.GetStream();
 
-            BinarySerializer.SerializeToStream(objectToSend, networkStream);
+                BinarySerializer.SerializeToStream(objectToSend, networkStream);
+            }
+            catch (KeyNotFoundException) {
+                OnUpdateState($"[ADDRESS_NOT_FOUND] {outputNetworkAddress}");
+            }
         }
 
         public void Dispose() {

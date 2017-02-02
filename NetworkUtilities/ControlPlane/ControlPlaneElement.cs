@@ -10,10 +10,10 @@ namespace NetworkUtilities.ControlPlane {
 
         private readonly List<UniqueId> _currentlyHandledSessions = new List<UniqueId>();
 
-        public readonly NetworkAddress Address;
+        public readonly NetworkAddress LocalAddress;
 
-        protected ControlPlaneElement(NetworkAddress networkAddress, ControlPlaneElementType controlPlaneElementType) {
-            Address = networkAddress;
+        protected ControlPlaneElement(NetworkAddress localAddress, ControlPlaneElementType controlPlaneElementType) {
+            LocalAddress = localAddress;
             ControlPlaneElementType = controlPlaneElementType;
         }
 
@@ -28,7 +28,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         protected void SendMessage(SignallingMessage message) {
-            message.SourceAddress = Address;
+            message.SourceAddress = LocalAddress;
             message.SourceControlPlaneElement = ControlPlaneElementType;
 
             OnUpdateState("[OUT] " + message);

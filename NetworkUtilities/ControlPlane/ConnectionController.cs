@@ -13,14 +13,17 @@ namespace NetworkUtilities.ControlPlane {
         private readonly Dictionary<UniqueId, Queue<SubnetworkPointPool>> _snppDictionary =
             new Dictionary<UniqueId, Queue<SubnetworkPointPool>>();
 
-        public ConnectionController(NetworkAddress networkAddress) : base(networkAddress, ControlPlaneElementType.CC) {}
+        public ConnectionController(NetworkAddress localAddress) : base(localAddress, ControlPlaneElementType.CC) {}
 
         public override void ReceiveMessage(SignallingMessage message) {
             base.ReceiveMessage(message);
 
             switch (message.Operation) {
                 case OperationType.ConnectionRequest:
-                    HandleConnectionRequestFromNCC(message);
+                    if (message.SourceControlPlaneElement.Equals(ControlPlaneElementType.NCC))
+                        HandleConnectionRequestFromNCC(message);
+                    else if (message.SourceControlPlaneElement.Equals(ControlPlaneElementType.CC))
+                        HandleConnectionRequestFromCC(message);
                     break;
 
                 case OperationType.PeerCoordination:
@@ -42,12 +45,24 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleConnectionRequestFromNCC(SignallingMessage message) {
-            var clientAddresses = (SubnetworkPointPool[]) message.Payload;
+            SendRouteTableQuery(message);
+        }
 
-            if (clientAddresses[1].NetworkAddress.DomainId != Address.DomainId) 
-                SendPeerCoordination(message);
-            else
-                SendRouteTableQuery(message);
+        private void HandleConnectionRequestFromCC(SignallingMessage message) {
+            if (message.Payload is bool) {
+                var succeeded = (bool) message.Payload;
+                SendConnectionRequestResponse(message, succeeded);
+            }
+            else {
+                var snpps = (SubnetworkPointPool[]) message.Payload;
+
+                if (snpps[0].NetworkNodeAddress.Equals(LocalAddress)) {
+                    SendLinkConnectionRequest(message);
+                }
+                else {
+                    SendRouteTableQuery(message);
+                }
+            }
         }
 
         private void HandlePeerCoordination(SignallingMessage message) {
@@ -74,12 +89,9 @@ namespace NetworkUtilities.ControlPlane {
                 };
 
                 message.Payload = snpps;
-                if (snpps[0].NetworkNodeAddress.Levels - Address.Levels != 1) {
-                    SendConnectionRequest(message, snpps[0].NetworkNodeAddress);
-                }
-                else {
-                    SendLinkConnectionRequest(message, snpps[0].NetworkNodeAddress);
-                }
+
+                var childAddress = snpps[0].NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
+                SendConnectionRequest(message, childAddress);
             }
             else {
                 SendConnectionRequestResponse(message, false);
@@ -91,7 +103,6 @@ namespace NetworkUtilities.ControlPlane {
 
             if (succeeded)
                 SendConnectionRequestResponse(message, true);
-
         }
 
         private void HandleLinkConnectionResponse(SignallingMessage message) {
@@ -100,7 +111,7 @@ namespace NetworkUtilities.ControlPlane {
         private void SendRouteTableQuery(SignallingMessage message) {
             var routeTableQuery = message;
             routeTableQuery.Operation = OperationType.RouteTableQuery;
-            routeTableQuery.DestinationAddress = Address;
+            routeTableQuery.DestinationAddress = LocalAddress;
             routeTableQuery.DestinationControlPlaneElement = ControlPlaneElementType.RC;
 
             SendMessage(routeTableQuery);
@@ -115,10 +126,10 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(connectionRequest);
         }
 
-        private void SendLinkConnectionRequest(SignallingMessage message, NetworkAddress destinationAddress) {
+        private void SendLinkConnectionRequest(SignallingMessage message) {
             var linkConnectionRequest = message;
             linkConnectionRequest.Operation = OperationType.SNPLinkConnectionRequest;
-            linkConnectionRequest.DestinationAddress = destinationAddress;
+            linkConnectionRequest.DestinationAddress = LocalAddress;
             linkConnectionRequest.DestinationControlPlaneElement = ControlPlaneElementType.LRM;
 
             SendMessage(linkConnectionRequest);
@@ -129,35 +140,21 @@ namespace NetworkUtilities.ControlPlane {
             connectionRequest.Payload = succeeded;
             connectionRequest.Operation = OperationType.ConnectionRequest;
 
-            if (Address.Levels > 2) {
-                connectionRequest.DestinationAddress = Address.GetParentsAddress();
-                connectionRequest.DestinationControlPlaneElement = ControlPlaneElementType.CC;
+            if (LocalAddress.IsDomain) {
+                connectionRequest.DestinationAddress = LocalAddress;
+                connectionRequest.DestinationControlPlaneElement = ControlPlaneElementType.NCC;
             }
             else {
-                connectionRequest.DestinationAddress = Address;
-                connectionRequest.DestinationControlPlaneElement = ControlPlaneElementType.NCC;
+                connectionRequest.DestinationAddress = LocalAddress.GetParentsAddress();
+                connectionRequest.DestinationControlPlaneElement = ControlPlaneElementType.CC;
             }
 
             SendMessage(message);
         }
 
-        //private void HandleSetSnp(SignallingMessage message) {
-        //    //snPoint = message.Payload as SubnetworkPoint;
-        //    //Port = message.SourceAddress.GetLastId();
-        //}
-
-
-
-
-        //public void SendGetLabelsMessage() {
-        //    //SendMessage(new SignallingMessage(SignallingMessageOperation.SNPLinkConnectionDeallocation, 1));
-        //}
-
-
-
         public NetworkAddress OtherDomainAddress() {
-            if (Address.DomainId == 1) return new NetworkAddress(2);
-            if (Address.DomainId == 2) return new NetworkAddress(1);
+            if (LocalAddress.DomainId == 1) return new NetworkAddress(2);
+            if (LocalAddress.DomainId == 2) return new NetworkAddress(1);
             return null;
         }
 

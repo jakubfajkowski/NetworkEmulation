@@ -5,9 +5,9 @@ namespace NetworkUtilities.ControlPlane {
         private readonly NetworkAddress _nccAddress;
         private bool _callConfirmed;
 
-        public CallingPartyCallController(NetworkAddress networkAddress)
-            : base(networkAddress, ControlPlaneElementType.CPCC) {
-            _nccAddress = networkAddress.GetRootFromBeginning(1);
+        public CallingPartyCallController(NetworkAddress localAddress)
+            : base(localAddress, ControlPlaneElementType.CPCC) {
+            _nccAddress = localAddress.GetRootFromBeginning(1);
         }
 
         public override void ReceiveMessage(SignallingMessage message) {
@@ -19,20 +19,12 @@ namespace NetworkUtilities.ControlPlane {
                     SendCallAccept(message, _callConfirmed);
                     break;
 
+                case OperationType.CallConfirmation:
+                    //TODO
+                    break;
+
                 case OperationType.CallTeardown:
                     SendCallTeardownResponse(message);
-                    break;
-
-                case OperationType.CallConfirmation:
-
-                    break;
-
-                case OperationType.CallRequestResponse:
-
-                    break;
-
-                case OperationType.CallTeardownResponse:
-
                     break;
             }
         }
@@ -49,17 +41,6 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callRequest);
         }
 
-        public void SendCallTeardown(string clientA, string clientZ) {
-            string[] clientNames = {clientA, clientZ};
-            var callTeardown = new SignallingMessage {
-                Operation = OperationType.CallTeardown,
-                Payload = clientNames,
-                DestinationAddress = _nccAddress,
-                DestinationControlPlaneElement = ControlPlaneElementType.NCC
-            };
-            SendMessage(callTeardown);
-        }
-
         private void SendCallAccept(SignallingMessage message, bool confirmation) {
             var callConfirmation = message;
             callConfirmation.Operation = OperationType.CallAccept;
@@ -71,22 +52,18 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callConfirmation);
         }
 
-        private void SendCallAcceptResponse(SignallingMessage message) {
-            var callAcceptResponse = message;
-            callAcceptResponse.Operation = OperationType.CallAcceptResponse;
-            callAcceptResponse.Payload = true;
-            callAcceptResponse.DestinationAddress = message.SourceAddress;
-            SendMessage(callAcceptResponse);
+        public void SendCallTeardown(string clientA, string clientZ) {
+            string[] clientNames = {clientA, clientZ};
+            var callTeardown = new SignallingMessage {
+                Operation = OperationType.CallTeardown,
+                Payload = clientNames,
+                DestinationAddress = _nccAddress,
+                DestinationControlPlaneElement = ControlPlaneElementType.NCC
+            };
+            SendMessage(callTeardown);
         }
 
         private void SendCallTeardownResponse(SignallingMessage message) {
-            var callTeardownResponse = message;
-            callTeardownResponse.Operation = OperationType.CallTeardownResponse;
-            callTeardownResponse.Payload = true;
-            callTeardownResponse.DestinationAddress = _nccAddress;
-            SendMessage(callTeardownResponse);
         }
-
-        
     }
 }

@@ -7,6 +7,7 @@ namespace NetworkUtilities.Utilities.Serialization {
 
         public static void SerializeToStream(object anySerializableObject, Stream stream) {
             new BinaryFormatter().Serialize(stream, anySerializableObject);
+            stream.Flush();
         }
 
         public static byte[] Serialize(object anySerializableObject) {

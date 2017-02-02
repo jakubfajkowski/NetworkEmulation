@@ -14,8 +14,8 @@ namespace NetworkUtilities.ControlPlane {
             new Dictionary<UniqueId, SubnetworkPointPool[]>();
 
 
-        public NetworkCallController(NetworkAddress networkAddress) : 
-            base(networkAddress, ControlPlaneElementType.NCC) {}
+        public NetworkCallController(NetworkAddress localAddress) : 
+            base(localAddress, ControlPlaneElementType.NCC) {}
 
         public override void ReceiveMessage(SignallingMessage message) {
             base.ReceiveMessage(message);
@@ -130,7 +130,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleCallAccept(SignallingMessage message) {
-            if (_networkAddressDictionary[message.SessionId][0].DomainId == Address.DomainId)
+            if (_networkAddressDictionary[message.SessionId][0].DomainId == LocalAddress.DomainId)
                 SendConnectionRequest(message);
             else
                 SendCallConfirmationToNCC(message);
@@ -199,8 +199,6 @@ namespace NetworkUtilities.ControlPlane {
             var snpp = _snppDictionary[message.SessionId];
             connectionRequest.Operation = OperationType.ConnectionRequest;
             connectionRequest.Payload = snpp;
-            connectionRequest.DestinationAddress =
-                _networkAddressDictionary[message.SessionId][1].GetRootFromBeginning(1);
             connectionRequest.DestinationControlPlaneElement =
                 ControlPlaneElementType.CC;
 
@@ -267,8 +265,8 @@ namespace NetworkUtilities.ControlPlane {
         //}
 
         public NetworkAddress OtherDomainAddress() {
-            if (Address.DomainId == 1) return new NetworkAddress(2);
-            if (Address.DomainId == 2) return new NetworkAddress(1);
+            if (LocalAddress.DomainId == 1) return new NetworkAddress(2);
+            if (LocalAddress.DomainId == 2) return new NetworkAddress(1);
             return null;
         }
     }
