@@ -2,7 +2,7 @@
 
 namespace NetworkUtilities.ControlPlane {
     public class Policy : ControlPlaneElement {
-        public Policy(NetworkAddress networkAddress) : base(networkAddress, ControlPlaneElementType.Policy) {
+        public Policy(NetworkAddress localAddress) : base(localAddress, ControlPlaneElementType.Policy) {
         }
 
         public override void ReceiveMessage(SignallingMessage message) {

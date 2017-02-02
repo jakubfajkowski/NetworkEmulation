@@ -11,7 +11,7 @@ namespace NetworkUtilities.ControlPlane {
         private static readonly Dictionary<string, SubnetworkPointPool> _snppDictionary =
             new Dictionary<string, SubnetworkPointPool>();
 
-        public Directory(NetworkAddress networkAddress) : base(networkAddress, ControlPlaneElementType.Directory) {
+        public Directory(NetworkAddress localAddress) : base(localAddress, ControlPlaneElementType.Directory) {
         }
 
         public override void ReceiveMessage(SignallingMessage message) {

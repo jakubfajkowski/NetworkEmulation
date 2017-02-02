@@ -9,7 +9,7 @@ namespace NetworkUtilities.ControlPlane {
     public class RoutingController : ControlPlaneElement {
         private readonly List<Link> _links = new List<Link>();
 
-        public RoutingController(NetworkAddress networkAddress) : base(networkAddress, ControlPlaneElementType.RC) {
+        public RoutingController(NetworkAddress localAddress) : base(localAddress, ControlPlaneElementType.RC) {
         }
 
         public override void ReceiveMessage(SignallingMessage message) {
@@ -44,7 +44,7 @@ namespace NetworkUtilities.ControlPlane {
         private void HandleLocalTopology(SignallingMessage message) {
             UpdateLinkList(message);
 
-            if (Address.Levels == 1) {
+            if (LocalAddress.Levels == 1) {
                 SendNetworkTopology(message);
             }
             else if (IsBetweenSubnetworks((Link) message.Payload))
@@ -57,7 +57,7 @@ namespace NetworkUtilities.ControlPlane {
 
         private void SendLocalTopology(SignallingMessage message) {
             message.Operation = OperationType.LocalTopology;
-            message.DestinationAddress = Address.GetParentsAddress();
+            message.DestinationAddress = LocalAddress.GetParentsAddress();
             message.DestinationControlPlaneElement =
                 ControlPlaneElementType.RC;
 
@@ -67,7 +67,7 @@ namespace NetworkUtilities.ControlPlane {
 
         private void SendNetworkTopology(SignallingMessage message) {
             message.Operation = OperationType.NetworkTopology;
-            message.DestinationAddress = GetOtherDomainAddress(Address);
+            message.DestinationAddress = GetOtherDomainAddress(LocalAddress);
             message.DestinationControlPlaneElement =
                 ControlPlaneElementType.RC;
 
@@ -88,8 +88,8 @@ namespace NetworkUtilities.ControlPlane {
         private Queue<SubnetworkPointPool> CalculateShortestPath(SubnetworkPointPool beginSnpp,
             SubnetworkPointPool endSnpp, int demandedCapacity) {
             try {
-                var beginNode = beginSnpp.NetworkNodeAddress;
-                var endNode = endSnpp.NetworkNodeAddress;
+                var beginNode = beginSnpp.NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
+                var endNode = endSnpp.NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
                 var availableLinks = _links.Where(link => link.CapacityLeft >= demandedCapacity).ToList();
                 var preparedPaths = Convert(availableLinks);
 
@@ -108,8 +108,8 @@ namespace NetworkUtilities.ControlPlane {
 
             foreach (var link in links)
                 paths.Add(new Path<NetworkAddress> {
-                    Source = link.BeginSubnetworkPointPool.NetworkNodeAddress,
-                    Destination = link.EndSubnetworkPointPool.NetworkNodeAddress,
+                    Source = link.BeginSubnetworkPointPool.NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1),
+                    Destination = link.EndSubnetworkPointPool.NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1),
                     Link = link
                 });
 
@@ -134,7 +134,7 @@ namespace NetworkUtilities.ControlPlane {
             var snppA = link.BeginSubnetworkPointPool.NetworkAddress;
             var snppB = link.EndSubnetworkPointPool.NetworkAddress;
 
-            return snppA.GetId(Address.Levels - 1) != snppB.GetId(Address.Levels - 1);
+            return snppA.GetId(LocalAddress.Levels - 1) != snppB.GetId(LocalAddress.Levels - 1);
         }
 
         private NetworkAddress GetOtherDomainAddress(NetworkAddress localAddress) {
