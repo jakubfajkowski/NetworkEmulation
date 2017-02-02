@@ -49,8 +49,8 @@ namespace NetworkUtilities.ControlPlane {
                     HandleCallAccept(message);
                     break;
 
-                case OperationType.CallConfirmation:
-                    HandleCallConfirmation(message);
+                case OperationType.CallCoordinationResponse:
+                    HandleCallCoordinationResponse(message);
                     break;
 
                 case OperationType.ConnectionRequest:
@@ -58,21 +58,8 @@ namespace NetworkUtilities.ControlPlane {
                     break;
 
                 case OperationType.CallTeardown:
-                    //SendCallTeardownResponse(message);
+                    //SendCallTeardown(message);
                     break;
-
-                case OperationType.CallTeardownResponse:
-
-                    break;
-
-                case OperationType.CallCoordinationResponse:
-
-                    break;
-
-                case OperationType.CallAcceptResponse:
-
-                    break;
-
                 case OperationType.ConnectionConfirmationToNCC:
                     break;
             }
@@ -109,7 +96,7 @@ namespace NetworkUtilities.ControlPlane {
                     SendCallCoordination(message);
             }
             catch (ArgumentOutOfRangeException) {
-                SendCallConfirmationToCPCC(message);
+                SendCallRequestResponse(message);
             }
         }
 
@@ -130,18 +117,21 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleCallAccept(SignallingMessage message) {
-            if (_networkAddressDictionary[message.SessionId][0].DomainId == LocalAddress.DomainId)
-                SendConnectionRequest(message);
-            else
-                SendCallConfirmationToNCC(message);
+            if ((bool)message.Payload) {
+                if (_networkAddressDictionary[message.SessionId][0].DomainId == LocalAddress.DomainId)
+                    SendConnectionRequest(message);
+                else
+                    SendCallCoordinationResponse(message);
+            }
+           SendCallRequestResponse(message);
         }
 
-        private void HandleCallConfirmation(SignallingMessage message) {
+        private void HandleCallCoordinationResponse(SignallingMessage message) {
             SendConnectionRequest(message);
         }
 
         private void HandleConnectionRequest(SignallingMessage message) {
-            SendCallConfirmationToCPCC(message);
+            SendCallRequestResponse(message);
         }
 
         private void SendPolicyRequest(SignallingMessage message) {
@@ -217,9 +207,9 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callAccept);
         }
 
-        private void SendCallConfirmationToNCC(SignallingMessage message) {
+        private void SendCallCoordinationResponse(SignallingMessage message) {
             var callConfirmation = message;
-            callConfirmation.Operation = OperationType.CallConfirmation;
+            callConfirmation.Operation = OperationType.CallCoordinationResponse;
             callConfirmation.DestinationAddress = OtherDomainAddress();
             callConfirmation.DestinationControlPlaneElement =
                 ControlPlaneElementType.NCC;
@@ -227,42 +217,15 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callConfirmation);
         }
 
-        private void SendCallConfirmationToCPCC(SignallingMessage message) {
+        private void SendCallRequestResponse(SignallingMessage message) {
             var callConfirmation = message;
-            callConfirmation.Operation = OperationType.CallConfirmation;
+            callConfirmation.Operation = OperationType.CallRequestResponse;
             callConfirmation.DestinationAddress = _networkAddressDictionary[message.SessionId][0];
             callConfirmation.DestinationControlPlaneElement =
                 ControlPlaneElementType.CPCC;
 
             SendMessage(callConfirmation);
         }
-
-        //private void SendCallCoordinationResponse(SignallingMessage message) {
-        //    var callCoordinationResponse = message;
-        //    callCoordinationResponse.Operation = OperationType.CallCoordinationResponse;
-        //    callCoordinationResponse.Payload = true;
-        //    callCoordinationResponse.DestinationAddress = message.SourceAddress;
-
-        //    SendMessage(callCoordinationResponse);
-        //}
-
-        //private void SendCallRequestResponse(SignallingMessage message) {
-        //    var callRequestResponse = message;
-        //    callRequestResponse.Operation = OperationType.CallRequestResponse;
-        //    callRequestResponse.Payload = true;
-        //    callRequestResponse.DestinationAddress = message.SourceAddress;
-
-        //    SendMessage(callRequestResponse);
-        //}
-
-        //private void SendCallTeardownResponse(SignallingMessage message) {
-        //    var callTeardownResponse = message;
-        //    callTeardownResponse.Operation = OperationType.CallTeardownResponse;
-        //    callTeardownResponse.Payload = true;
-        //    callTeardownResponse.DestinationAddress = message.SourceAddress;
-
-        //    SendMessage(callTeardownResponse);
-        //}
 
         public NetworkAddress OtherDomainAddress() {
             if (LocalAddress.DomainId == 1) return new NetworkAddress(2);

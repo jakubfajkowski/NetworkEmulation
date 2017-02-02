@@ -3,7 +3,6 @@
 namespace NetworkUtilities.ControlPlane {
     public class CallingPartyCallController : ControlPlaneElement {
         private readonly NetworkAddress _nccAddress;
-        private bool _callConfirmed;
 
         public CallingPartyCallController(NetworkAddress localAddress)
             : base(localAddress, ControlPlaneElementType.CPCC) {
@@ -14,12 +13,8 @@ namespace NetworkUtilities.ControlPlane {
             base.ReceiveMessage(message);
 
             switch (message.Operation) {
-                case OperationType.CallAccept:
-                    _callConfirmed = true;
-                    SendCallAccept(message, _callConfirmed);
-                    break;
 
-                case OperationType.CallConfirmation:
+                case OperationType.CallRequestResponse:
                     //TODO
                     break;
 
@@ -42,7 +37,7 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(callRequest);
         }
 
-        private void SendCallAccept(SignallingMessage message, bool confirmation) {
+        public void SendCallAccept(SignallingMessage message, bool confirmation) {
             var callConfirmation = message;
             callConfirmation.Operation = OperationType.CallAccept;
             callConfirmation.Payload = confirmation;
