@@ -63,11 +63,13 @@ namespace NetworkUtilities.ControlPlane {
 
         private void HandleSnpNegotiation(SignallingMessage message) {
             var snpps = message.Payload as SubnetworkPointPool[];
-            var port = snpps[0].Id;
-            var snp = GenerateSnp(port, message.DemandedCapacity);
-            _recentSnp = new RecentSnp(snp, snpps[1].Id);
-            _usedSubnetworkPoints[snpps[1].Id].Add(snp);
-            SendSnpNegotiationResponse(message, snp, port);
+            if (snpps != null) {
+                var port = snpps[0].Id;
+                var snp = GenerateSnp(port, message.DemandedCapacity);
+                _recentSnp = new RecentSnp(snp, snpps[1].Id);
+                _usedSubnetworkPoints[snpps[1].Id].Add(snp);
+                SendSnpNegotiationResponse(message, snp, port);
+            }
         }
 
         private void SendSnpNegotiationResponse(SignallingMessage message, SubnetworkPoint subnetworkPoint, int port) {
@@ -94,15 +96,17 @@ namespace NetworkUtilities.ControlPlane {
         private void HandleSnpNegotiationResponse(SignallingMessage message) {
             //var success = false;
             var payload = message.Payload as object[];
-            var msg = message;
+            //var msg = message;
             var subnetworkPointPools = payload[0] as SubnetworkPointPool[];
-            var recentSnps = payload[1] as RecentSnp[]; 
-
-
+            var recentSnp = payload[1] as RecentSnp;
+            message.Payload = subnetworkPointPools;
+            SendLocalTopology(message);
+            message.Payload =new[] {_recentSnp, recentSnp};
+            SendSnpLinkConnectionRequest(message);
             //if (success) {
-            //    SendLocalTopology(message);
+
             //}
-            //SendSnpLinkConnectionRequest(message);
+
         }
 
         private void HandleSnpRelease(SignallingMessage message) {
@@ -129,7 +133,10 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void SendSnpLinkConnectionRequest(SignallingMessage message) {
-
+            message.DestinationAddress = message.DestinationAddress.GetParentsAddress();
+            message.DestinationControlPlaneElement= ControlPlaneElementType.CC;
+            message.Operation = OperationType.SNPLinkConnectionRequest;
+            SendMessage(message);
         }
 
         private void SendSnpNegotiation(SignallingMessage message) {
