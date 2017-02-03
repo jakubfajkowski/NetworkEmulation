@@ -7,7 +7,7 @@ using NetworkUtilities.Utilities;
 namespace NetworkUtilities.ManagementPlane {
     public class NetworkNodeAgent : LogObject {
         public delegate void ConfigurationHandler(object sender, Link link);
-        public delegate void ConnectClientHandler(object sender, Link link, NetworkAddress clientAddress);
+        public delegate void ConnectClientHandler(object sender, Link linkIn, Link linkOut, NetworkAddress clientAddress);
 
         private readonly ConnectionComponent _managmentPlaneConnectionComponent;
 
@@ -41,11 +41,13 @@ namespace NetworkUtilities.ManagementPlane {
 
         private void HandleConnectClient(ManagementMessage message) {
             var payload = (object[]) message.Payload;
-            var link = (Link) payload[0];
-            var clientAddress = (NetworkAddress) payload[1];
+            var linkIn = (Link) payload[0];
+            var linkOut = (Link) payload[1];
+            var clientAddress = (NetworkAddress) payload[2];
 
-            OnUpdateState($"[CONNECT_CLIENT] {clientAddress} {link}");
-            OnConnectClientReceived(link, clientAddress);
+            OnUpdateState($"[CONNECT_CLIENT] [IN]  {clientAddress} {linkIn}");
+            OnUpdateState($"[CONNECT_CLIENT] [OUT]{clientAddress} {linkOut}");
+            OnConnectClientReceived(linkIn, linkOut, clientAddress);
         }
 
         public event ConfigurationHandler ConfigurationReceived;
@@ -78,8 +80,8 @@ namespace NetworkUtilities.ManagementPlane {
             }
         }
 
-        protected virtual void OnConnectClientReceived(Link link, NetworkAddress networkaddress) {
-            ConnectClientReceived?.Invoke(this, link, networkaddress);
+        protected virtual void OnConnectClientReceived(Link linkIn, Link linkOut, NetworkAddress clientAddress) {
+            ConnectClientReceived?.Invoke(this, linkIn, linkOut, clientAddress);
         }
     }
 }

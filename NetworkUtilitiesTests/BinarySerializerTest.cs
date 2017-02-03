@@ -12,10 +12,10 @@ namespace NetworkUtilitiesTests {
     public class BinarySerializerTest {
         [TestMethod]
         public void SerializeCableCloudMessageTest() {
-            var message = new CableCloudMessage(1, AtmCell.Generate(1, 1, "TEST"));
+            var message = new CableCloudMessage(1, true, AtmCell.Generate(1, 1, "TEST"));
             var data = BinarySerializer.Serialize(message);
             var obj = BinarySerializer.Deserialize(data);
-            var msg = new CableCloudMessage(1, AtmCell.Generate(1, 1, "TEST"));
+            var msg = new CableCloudMessage(1, true, AtmCell.Generate(1, 1, "TEST"));
             Debug.WriteLine(msg.PortNumber);
             if (obj is CableCloudMessage)
                 msg = (CableCloudMessage) obj;
@@ -34,7 +34,7 @@ namespace NetworkUtilitiesTests {
             var client2 = acceptTask.Result;
 
 
-            var expected = new CableCloudMessage(1, AtmCell.Generate(1, 1, "TEST"));
+            var expected = new CableCloudMessage(1, true, AtmCell.Generate(1, 1, "TEST"));
 
             BinarySerializer.SerializeToStream(expected, client1.GetStream());
             var actual = (CableCloudMessage) BinarySerializer.DeserializeFromStream(client2.GetStream());

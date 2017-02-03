@@ -93,7 +93,7 @@ namespace NetworkUtilitiesTests {
             var clientOutSnpp = new SubnetworkPointPool(clientAddress.Append(1));
             var clientInSnpp = new SubnetworkPointPool(lrm1Address.Append(2));
 
-            lrm1.ConnectClient(null, new Link(clientOutSnpp, clientInSnpp, 5, true), clientAddress);
+            lrm1.ConnectClient(null, new Link(clientOutSnpp, clientInSnpp, 5, true), new Link(clientOutSnpp, clientInSnpp, 5, true).Reverse(), clientAddress);
 
             cc1.MessageToSend += PassMessage;
             lrm1.MessageToSend += PassMessage;

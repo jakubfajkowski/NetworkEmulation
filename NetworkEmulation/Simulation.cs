@@ -198,16 +198,22 @@ namespace NetworkEmulation {
                     var link = new Link(linkView.Parameters, true);
 
                     NetworkAddress clientAddress = null;
+                    Link linkIn;
+                    Link linkOut;
 
                     if (link.BeginSubnetworkPointPool.NetworkNodeAddress.Levels >
                         link.EndSubnetworkPointPool.NetworkNodeAddress.Levels) {
                         clientAddress = link.BeginSubnetworkPointPool.NetworkNodeAddress;
+                        linkIn = link;
+                        linkOut = link.Reverse();
                     }
                     else {
                         clientAddress = link.EndSubnetworkPointPool.NetworkNodeAddress;
+                        linkOut = link;
+                        linkIn = link.Reverse();
                     }
 
-                    _networkManagmentSystem.SendConnectClientMessage(link, clientAddress);
+                    _networkManagmentSystem.SendConnectClientMessage(linkIn, linkOut, clientAddress, linkIn.EndSubnetworkPointPool.NetworkNodeAddress);
                 }
                 linkView.MarkAsOnline();
             }

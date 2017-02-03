@@ -93,9 +93,8 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleSNPLinkConnectionRequest(SignallingMessage message) {
-            OnUpdateState("7");
             var r = (SubnetworkPointPortPair[]) message.Payload;
-            OnUpdateState($"{r[0].SubnetworkPoint}{r[0].Port}->{r[1].SubnetworkPoint}{r[1].Port}");
+            OnUpdateState($"{r[0].SubnetworkPoint}:{r[0].Port}->{r[1].SubnetworkPoint}:{r[1].Port}");
 
             var rowToAdd = new CommutationTableRow(r[0].SubnetworkPoint.Vpi,
                                                    r[0].SubnetworkPoint.Vci,

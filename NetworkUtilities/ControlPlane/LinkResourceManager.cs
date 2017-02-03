@@ -8,6 +8,7 @@ namespace NetworkUtilities.ControlPlane {
     public class LinkResourceManager : ControlPlaneElement {
         private readonly List<Link> _nodeLinks;
         private readonly Dictionary<NetworkAddress, SubnetworkPointPool> _clientInSnpps;
+        private readonly Dictionary<NetworkAddress, SubnetworkPointPool> _clientOutSnpps;
         private readonly Dictionary<SubnetworkPointPool, List<SubnetworkPoint>> _usedSubnetworkPoints;
         private readonly Dictionary<UniqueId, SubnetworkPointPortPair> _recentSnps;
 
@@ -17,6 +18,7 @@ namespace NetworkUtilities.ControlPlane {
             _nodeLinks = new List<Link>();
             _usedSubnetworkPoints = new Dictionary<SubnetworkPointPool, List<SubnetworkPoint>>();
             _clientInSnpps = new Dictionary<NetworkAddress, SubnetworkPointPool>();
+            _clientOutSnpps = new Dictionary<NetworkAddress, SubnetworkPointPool>();
             _recentSnps = new Dictionary<UniqueId, SubnetworkPointPortPair>();
         }
 
@@ -62,18 +64,35 @@ namespace NetworkUtilities.ControlPlane {
         private void HandleSnpNegotiation(SignallingMessage message) {
             var snpps = (SubnetworkPointPool[]) message.Payload;
 
-            SubnetworkPointPortPair pair = null;
+            SubnetworkPointPortPair pair;
             if (_recentSnps.ContainsKey(message.SessionId)) {
                 OnUpdateState("1");
                 pair = _recentSnps[message.SessionId];
                 //message.DestinationAddress;
             }
             else {
-                OnUpdateState("2");
                 var snp = GenerateSnp(snpps[1], message.DemandedCapacity);
                 pair = new SubnetworkPointPortPair(snp, snpps[1].Id);
                 _recentSnps.Add(message.SessionId, pair);
                 _usedSubnetworkPoints[snpps[1]].Add(snp);
+
+
+                if (_clientOutSnpps.ContainsKey(message.DestinationClientAddress)) {
+                    if (_clientOutSnpps[message.SourceClientAddress].NetworkNodeAddress.Equals(LocalAddress)) {
+                        OnUpdateState("DUPA!");
+                        var snppOut = _clientOutSnpps[message.DestinationClientAddress];
+                        var snpOut = GenerateSnp(snppOut, message.DemandedCapacity);
+                        OnUpdateState("DUPA!");
+                        var pairOut = new SubnetworkPointPortPair(snpOut, snppOut.Id);
+                        OnUpdateState("DUPA!");
+                        SendMessage(new SignallingMessage {
+                            DestinationAddress = LocalAddress,
+                            DestinationControlPlaneElement = ControlPlaneElementType.CC,
+                            Operation = OperationType.SNPLinkConnectionRequest,
+                            Payload = new[] { pair, pairOut }
+                        });
+                    }
+                }
             }
 
             
@@ -104,9 +123,24 @@ namespace NetworkUtilities.ControlPlane {
             SendLocalTopology(message);
 
             OnUpdateState("5");
-            var newSnp = GenerateSnp(snpps[0], message.DemandedCapacity);
-            _usedSubnetworkPoints[snpps[0]].Add(newSnp);
-            var pair1 = new SubnetworkPointPortPair(newSnp, snpps[0].Id);
+            
+
+            SubnetworkPointPortPair pair1 = null;
+            if (_clientInSnpps.ContainsKey(message.SourceClientAddress)) {
+                if (_clientInSnpps[message.SourceClientAddress].NetworkNodeAddress.Equals(LocalAddress)) {
+                    var routerSnpp = _clientInSnpps[message.SourceClientAddress];
+                    OnUpdateState(routerSnpp.ToString());
+                    var newSnp = GenerateSnp(routerSnpp, message.DemandedCapacity);
+                    OnUpdateState(newSnp.ToString());
+                    _usedSubnetworkPoints[routerSnpp].Add(newSnp);
+                    pair1 = new SubnetworkPointPortPair(newSnp, routerSnpp.Id);
+                }
+            }
+            else {
+                var newSnp = GenerateSnp(snpps[0], message.DemandedCapacity);
+                _usedSubnetworkPoints[snpps[0]].Add(newSnp);
+                pair1 = new SubnetworkPointPortPair(newSnp, snpps[0].Id);
+            }
             _recentSnps.Add(message.SessionId, pair1);
 
             message.Payload = new SubnetworkPointPortPair[] {
@@ -116,8 +150,7 @@ namespace NetworkUtilities.ControlPlane {
 
             OnUpdateState(pair1.ToString());
             OnUpdateState(pair2.ToString());
-
-            OnUpdateState("6");
+            
             SendSnpLinkConnectionRequest(message);
         }
 
@@ -186,17 +219,14 @@ namespace NetworkUtilities.ControlPlane {
             
         }
 
-        public void ConnectClient(object sender, Link link, NetworkAddress clientAddress) {
-            if (link.BeginSubnetworkPointPool.NetworkNodeAddress.Equals(clientAddress)) {
-                _nodeLinks.Add(link);
-                _usedSubnetworkPoints.Add(link.EndSubnetworkPointPool, new List<SubnetworkPoint>());
-                _clientInSnpps.Add(clientAddress, link.EndSubnetworkPointPool);
-            }
-            else {
-                _nodeLinks.Add(link);
-                _usedSubnetworkPoints.Add(link.BeginSubnetworkPointPool, new List<SubnetworkPoint>());
-                _clientInSnpps.Add(clientAddress, link.BeginSubnetworkPointPool);
-            }
+        public void ConnectClient(object sender, Link linkIn, Link linkOut, NetworkAddress clientAddress) {
+            _nodeLinks.Add(linkIn);
+            _usedSubnetworkPoints.Add(linkIn.EndSubnetworkPointPool, new List<SubnetworkPoint>());
+            _clientInSnpps.Add(clientAddress, linkIn.EndSubnetworkPointPool);
+
+            _nodeLinks.Add(linkOut);
+            _usedSubnetworkPoints.Add(linkOut.BeginSubnetworkPointPool, new List<SubnetworkPoint>());
+            _clientOutSnpps.Add(clientAddress, linkOut.BeginSubnetworkPointPool);
         }
     }
 }

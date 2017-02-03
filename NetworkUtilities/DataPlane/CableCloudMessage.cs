@@ -13,14 +13,16 @@ namespace NetworkUtilities.DataPlane {
             Data = data;
         }
 
-        public CableCloudMessage(int portNumber, List<AtmCell> atmCells) {
+        public CableCloudMessage(int portNumber, bool isInputPort, List<AtmCell> atmCells) {
             PortNumber = portNumber;
             Data = BinarySerializer.Serialize(Fill(atmCells));
+            IsInputPort = isInputPort;
         }
 
         public byte[] Data { get; }
 
         public int PortNumber { get; set; }
+        public bool IsInputPort { get; set; }
 
 
         private static List<AtmCell> Fill(List<AtmCell> atmCells) {

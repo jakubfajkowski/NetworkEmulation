@@ -84,7 +84,7 @@ namespace NetworkUtilities.DataPlane {
                 if (row.GetOutVci() != -1)
                     cell.Vci = row.GetOutVci();
             }
-            return new CableCloudMessage(row.GetOutPort(), cells);
+            return new CableCloudMessage(row.GetOutPort(), false, cells);
         }
 
         /* Metoda zmieniająca VPI, VCI na podstawie tabeli */

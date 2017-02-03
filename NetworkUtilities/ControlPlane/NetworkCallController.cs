@@ -87,6 +87,9 @@ namespace NetworkUtilities.ControlPlane {
         private void HandleDirectoryAddressRequest(SignallingMessage message) {
             var networkAddress = (NetworkAddress[])message.Payload;
 
+            message.SourceClientAddress = networkAddress[0];
+            message.DestinationClientAddress = networkAddress[1];
+
             try {
                 _networkAddressDictionary.Add(message.SessionId, networkAddress);
 
@@ -223,6 +226,7 @@ namespace NetworkUtilities.ControlPlane {
             callConfirmation.DestinationAddress = _networkAddressDictionary[message.SessionId][0];
             callConfirmation.DestinationControlPlaneElement =
                 ControlPlaneElementType.CPCC;
+            message.ClientName = _nameDictionary[message.SessionId][1];
 
             SendMessage(callConfirmation);
         }
