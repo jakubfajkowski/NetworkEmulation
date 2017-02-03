@@ -10,5 +10,9 @@ namespace NetworkUtilities.ControlPlane {
             SubnetworkPoint = subnetworkPoint;
             Port = port;
         }
+
+        public override string ToString() {
+            return $"SubnetworkPoint: {SubnetworkPoint}, Port: {Port}";
+        }
     }
 }

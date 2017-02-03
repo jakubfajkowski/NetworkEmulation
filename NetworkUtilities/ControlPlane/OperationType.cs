@@ -15,7 +15,6 @@
         CallCoordination,
         CallCoordinationResponse,
         ConnectionRequest, // CC(NCC)   -> CC
-        ConnectionRequestResponse, // CC       -> CC(NCC)
         CallConfirmation,
         CallConfirmationFromNCC,
         //CC operations

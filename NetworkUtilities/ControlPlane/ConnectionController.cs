@@ -10,7 +10,7 @@ namespace NetworkUtilities.ControlPlane {
 
         private readonly Dictionary<UniqueId, NetworkAddress[]> _clientAddressDictionary =
             new Dictionary<UniqueId, NetworkAddress[]>();
-        private readonly Dictionary<UniqueId, Queue<SubnetworkPointPool>> _snppDictionary =
+        private readonly Dictionary<UniqueId, Queue<SubnetworkPointPool>> _snppQueues =
             new Dictionary<UniqueId, Queue<SubnetworkPointPool>>();
 
         public ConnectionController(NetworkAddress localAddress) : base(localAddress, ControlPlaneElementType.CC) {}
@@ -34,10 +34,6 @@ namespace NetworkUtilities.ControlPlane {
                     HandleRouteTableQuery(message);
                     break;
 
-                case OperationType.ConnectionRequestResponse:
-                    HandleConnectionRequestResponse(message);
-                    break;
-
                 case OperationType.SNPLinkConnectionRequest:
                     HandleSNPLinkConnectionRequest(message);
                     break;
@@ -49,24 +45,21 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleConnectionRequestFromCC(SignallingMessage message) {
-            if (message.Payload is bool) {
-                var succeeded = (bool) message.Payload;
-
-                if (_snppDictionary[message.SessionId].Count > 0) {
-                    ProcessNextSnppPair(message);
-                }
-                else {
-                    SendConnectionRequestResponse(message, succeeded);
-                }
+            if (message.Payload == null) {
+                SendConnectionRequestResponse(message, null);
             }
             else {
-                var snpps = (SubnetworkPointPool[]) message.Payload;
-
-                if (snpps[0].NetworkNodeAddress.Equals(LocalAddress)) {
-                    SendLinkConnectionRequest(message);
+                if (message.Payload is SubnetworkPoint) {
+                    ProcessNextSnppPair(message);
                 }
-                else {
-                    SendRouteTableQuery(message);
+                else if (message.Payload is SubnetworkPointPool[]) {
+                    var snpps = (SubnetworkPointPool[])message.Payload;
+                    if (snpps[0].NetworkNodeAddress.Equals(LocalAddress)) {
+                        SendLinkConnectionRequest(message);
+                    }
+                    else {
+                        SendRouteTableQuery(message);
+                    }
                 }
             }
         }
@@ -87,27 +80,22 @@ namespace NetworkUtilities.ControlPlane {
         private void HandleRouteTableQuery(SignallingMessage message) {
             var snppQueue = (Queue<SubnetworkPointPool>) message.Payload;
 
-            if (_snppDictionary.ContainsKey(message.SessionId)) {
+            if (_snppQueues.ContainsKey(message.SessionId)) {
                 while (snppQueue.Count > 0) {
-                    _snppDictionary[message.SessionId].Enqueue(snppQueue.Dequeue());
+                    _snppQueues[message.SessionId].Enqueue(snppQueue.Dequeue());
                 }
             }
             else {
-                _snppDictionary.Add(message.SessionId, snppQueue);
+                _snppQueues.Add(message.SessionId, snppQueue);
             }
 
             ProcessNextSnppPair(message);
         }
 
-        private void HandleConnectionRequestResponse(SignallingMessage message) {
-            var succeeded = (bool)message.Payload;
-
-            if (succeeded)
-                SendConnectionRequestResponse(message, true);
-        }
-
         private void HandleSNPLinkConnectionRequest(SignallingMessage message) {
+            OnUpdateState("7");
             var r = (SubnetworkPointPortPair[]) message.Payload;
+            OnUpdateState($"{r[0].SubnetworkPoint}{r[0].Port}->{r[1].SubnetworkPoint}{r[1].Port}");
 
             var rowToAdd = new CommutationTableRow(r[0].SubnetworkPoint.Vpi,
                                                    r[0].SubnetworkPoint.Vci,
@@ -118,7 +106,7 @@ namespace NetworkUtilities.ControlPlane {
 
             OnCommutationCommand(new CommutationHandlerArgs(rowToAdd));
 
-            SendConnectionRequestResponse(message, true);
+            SendConnectionRequestResponse(message, r[0].SubnetworkPoint);
         }
 
         private void SendRouteTableQuery(SignallingMessage message) {
@@ -131,6 +119,9 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void SendConnectionRequest(SignallingMessage message, NetworkAddress destinationAddress) {
+            var snpps = (SubnetworkPointPool[]) message.Payload;
+            OnUpdateState($"{snpps[0]}->{snpps[1]}");
+
             var connectionRequest = message; 
             connectionRequest.Operation = OperationType.ConnectionRequest;
             connectionRequest.DestinationAddress = destinationAddress;
@@ -148,9 +139,9 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(linkConnectionRequest);
         }
 
-        private void SendConnectionRequestResponse(SignallingMessage message, bool succeeded) {
+        private void SendConnectionRequestResponse(SignallingMessage message, SubnetworkPoint snp) {
             var connectionRequest = message;
-            connectionRequest.Payload = succeeded;
+            connectionRequest.Payload = snp;
             connectionRequest.Operation = OperationType.ConnectionRequest;
 
             if (LocalAddress.IsDomain) {
@@ -172,7 +163,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void ProcessNextSnppPair(SignallingMessage message) {
-            var snppQueue = _snppDictionary[message.SessionId];
+            var snppQueue = _snppQueues[message.SessionId];
 
             if (snppQueue.Count > 0) {
                 var snpps = new[] {
@@ -186,7 +177,7 @@ namespace NetworkUtilities.ControlPlane {
                 SendConnectionRequest(message, childAddress);
             }
             else {
-                SendConnectionRequestResponse(message, false);
+                SendConnectionRequestResponse(message, (SubnetworkPoint) message.Payload);
             }
         }
 
