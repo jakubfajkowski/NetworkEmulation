@@ -53,6 +53,9 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleSnpLinkConnectionRequest(SignallingMessage message) {
+            var snpps = (SubnetworkPointPool[]) message.Payload;
+            OnUpdateState($"[RECEIVED_SNPP] {snpps[0]}---{snpps[1]}");
+
             SendSnpNegotiation(message);
         }
 
@@ -85,12 +88,6 @@ namespace NetworkUtilities.ControlPlane {
                 };
             }
             else {
-                OnUpdateState(message.SourceClientAddress.ToString());
-
-                foreach (var key in _clientInSnpps.Keys) {
-                    OnUpdateState(key.ToString());
-                }
-
                 var clientInSnpp = _clientInSnpps[message.SourceClientAddress];
                 var randomSnp = GenerateSnp(clientInSnpp, message.DemandedCapacity);
                 message.Payload = new[] {

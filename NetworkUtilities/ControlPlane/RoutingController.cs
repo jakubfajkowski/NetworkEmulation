@@ -129,6 +129,7 @@ namespace NetworkUtilities.ControlPlane {
                 OnUpdateState($"                   {beginSnpp}");
             }
 
+
             foreach (var path in paths) {
                 subnetworkPointPools.Enqueue(path.Link.BeginSubnetworkPointPool);
                 subnetworkPointPools.Enqueue(path.Link.EndSubnetworkPointPool);

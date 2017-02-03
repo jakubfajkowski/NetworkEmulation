@@ -86,7 +86,15 @@ namespace NetworkUtilities.ControlPlane {
 
         private void HandleRouteTableQuery(SignallingMessage message) {
             var snppQueue = (Queue<SubnetworkPointPool>) message.Payload;
-            _snppDictionary.Add(message.SessionId, snppQueue);
+
+            if (_snppDictionary.ContainsKey(message.SessionId)) {
+                while (snppQueue.Count > 0) {
+                    _snppDictionary[message.SessionId].Enqueue(snppQueue.Dequeue());
+                }
+            }
+            else {
+                _snppDictionary.Add(message.SessionId, snppQueue);
+            }
 
             ProcessNextSnppPair(message);
         }
