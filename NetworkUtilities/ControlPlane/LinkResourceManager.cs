@@ -192,7 +192,7 @@ namespace NetworkUtilities.ControlPlane {
             var message = new SignallingMessage {
                 Payload = link
             };
-            SendLocalTopology(message);
+            //SendLocalTopology(message);
         }
     }
 }

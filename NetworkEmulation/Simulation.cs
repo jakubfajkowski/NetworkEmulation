@@ -85,7 +85,7 @@ namespace NetworkEmulation {
                     networkNodeSnpp = new SubnetworkPointPool(link.Parameters.InputNodePortPair);
                 }
 
-                _nameServer.UpdateDirectory(initializableNode.Parameters.ClientName, initializableNode.NetworkAddress, new SubnetworkPointPool(initializableNode.NetworkAddress.Append(1)));
+                _nameServer.UpdateDirectory(initializableNode.Parameters.ClientName, initializableNode.NetworkAddress, networkNodeSnpp);
             }
 
             _processes = new Dictionary<int, Process>();

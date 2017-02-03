@@ -122,9 +122,12 @@ namespace NetworkUtilities.ControlPlane {
             var subnetworkPointPools = new Queue<SubnetworkPointPool>();
 
             OnUpdateState("[AVAILABLE_ROUTE]");
-            subnetworkPointPools.Enqueue(beginSnpp);
-            subnetworkPointPools.Enqueue(paths.First.Value.Link.BeginSubnetworkPointPool);
-            OnUpdateState($"                   {beginSnpp}");
+
+            if (beginSnpp.NetworkAddress.Levels != LocalAddress.Levels + 2) {
+                subnetworkPointPools.Enqueue(beginSnpp);
+                subnetworkPointPools.Enqueue(paths.First.Value.Link.BeginSubnetworkPointPool);
+                OnUpdateState($"                   {beginSnpp}");
+            }
 
             foreach (var path in paths) {
                 subnetworkPointPools.Enqueue(path.Link.BeginSubnetworkPointPool);
@@ -133,10 +136,11 @@ namespace NetworkUtilities.ControlPlane {
                 OnUpdateState($"                   {path.Link}");
             }
 
-            var lastLink = new Link(paths.Last.Value.Link.EndSubnetworkPointPool, endSnpp, 0, true);
-            subnetworkPointPools.Enqueue(lastLink.BeginSubnetworkPointPool);
-            subnetworkPointPools.Enqueue(lastLink.EndSubnetworkPointPool);
-            OnUpdateState($"                   {lastLink}");
+            if (beginSnpp.NetworkAddress.Levels != LocalAddress.Levels + 2) {
+                subnetworkPointPools.Enqueue(paths.Last.Value.Link.EndSubnetworkPointPool);
+                subnetworkPointPools.Enqueue(endSnpp);
+                OnUpdateState($"                   {endSnpp}");
+            }
 
             return subnetworkPointPools;
         }
