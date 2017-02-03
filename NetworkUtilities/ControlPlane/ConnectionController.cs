@@ -51,7 +51,13 @@ namespace NetworkUtilities.ControlPlane {
         private void HandleConnectionRequestFromCC(SignallingMessage message) {
             if (message.Payload is bool) {
                 var succeeded = (bool) message.Payload;
-                SendConnectionRequestResponse(message, succeeded);
+
+                if (_snppDictionary[message.SessionId].Count > 0) {
+                    ProcessNextSnppPair(message);
+                }
+                else {
+                    SendConnectionRequestResponse(message, succeeded);
+                }
             }
             else {
                 var snpps = (SubnetworkPointPool[]) message.Payload;
@@ -82,20 +88,7 @@ namespace NetworkUtilities.ControlPlane {
             var snppQueue = (Queue<SubnetworkPointPool>) message.Payload;
             _snppDictionary.Add(message.SessionId, snppQueue);
 
-            if (snppQueue.Count > 0) {
-                var snpps = new[] {
-                    snppQueue.Dequeue(),
-                    snppQueue.Dequeue()
-                };
-
-                message.Payload = snpps;
-
-                var childAddress = snpps[0].NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
-                SendConnectionRequest(message, childAddress);
-            }
-            else {
-                SendConnectionRequestResponse(message, false);
-            }
+            ProcessNextSnppPair(message);
         }
 
         private void HandleConnectionRequestResponse(SignallingMessage message) {
@@ -106,7 +99,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleSNPLinkConnectionRequest(SignallingMessage message) {
-            var r = (RecentSnp[]) message.Payload;
+            var r = (SubnetworkPointPortPair[]) message.Payload;
 
             var rowToAdd = new CommutationTableRow(r[0].SubnetworkPoint.Vpi,
                                                    r[0].SubnetworkPoint.Vci,
@@ -116,6 +109,8 @@ namespace NetworkUtilities.ControlPlane {
                                                    r[1].Port);
 
             OnCommutationCommand(new CommutationHandlerArgs(rowToAdd));
+
+            SendConnectionRequestResponse(message, true);
         }
 
         private void SendRouteTableQuery(SignallingMessage message) {
@@ -166,6 +161,25 @@ namespace NetworkUtilities.ControlPlane {
             if (LocalAddress.DomainId == 1) return new NetworkAddress(2);
             if (LocalAddress.DomainId == 2) return new NetworkAddress(1);
             return null;
+        }
+
+        private void ProcessNextSnppPair(SignallingMessage message) {
+            var snppQueue = _snppDictionary[message.SessionId];
+
+            if (snppQueue.Count > 0) {
+                var snpps = new[] {
+                    snppQueue.Dequeue(),
+                    snppQueue.Dequeue()
+                };
+
+                message.Payload = snpps;
+
+                var childAddress = snpps[0].NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
+                SendConnectionRequest(message, childAddress);
+            }
+            else {
+                SendConnectionRequestResponse(message, false);
+            }
         }
 
         public event CommutationHandler CommutationCommand;

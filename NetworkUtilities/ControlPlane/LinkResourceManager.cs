@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using NetworkUtilities.Network;
 using NetworkUtilities.Utilities;
 
@@ -8,7 +9,7 @@ namespace NetworkUtilities.ControlPlane {
         private readonly List<Link> _nodeLinks;
         private readonly Dictionary<NetworkAddress, SubnetworkPointPool> _clientInSnpps;
         private readonly Dictionary<SubnetworkPointPool, List<SubnetworkPoint>> _usedSubnetworkPoints;
-        private Dictionary<UniqueId, RecentSnp> _recentSnps;
+        private Dictionary<UniqueId, SubnetworkPointPortPair> _recentSnps;
 
         public LinkResourceManager(NetworkAddress networkAddress) : 
             base(networkAddress, ControlPlaneElementType.LRM) {
@@ -16,7 +17,7 @@ namespace NetworkUtilities.ControlPlane {
             _nodeLinks = new List<Link>();
             _usedSubnetworkPoints = new Dictionary<SubnetworkPointPool, List<SubnetworkPoint>>();
             _clientInSnpps = new Dictionary<NetworkAddress, SubnetworkPointPool>();
-            _recentSnps = new Dictionary<UniqueId, RecentSnp>();
+            _recentSnps = new Dictionary<UniqueId, SubnetworkPointPortPair>();
         }
 
         public override void ReceiveMessage(SignallingMessage message) {
@@ -59,7 +60,7 @@ namespace NetworkUtilities.ControlPlane {
             var snpps = message.Payload as SubnetworkPointPool[];
 
             var snp = GenerateSnp(snpps[1], message.DemandedCapacity);
-            _recentSnps.Add(message.SessionId, new RecentSnp(snp, snpps[1].Id));
+            _recentSnps.Add(message.SessionId, new SubnetworkPointPortPair(snp, snpps[1].Id));
             _usedSubnetworkPoints[snpps[1]].Add(snp);
 
             SendSnpNegotiationResponse(message, snp);
@@ -76,31 +77,28 @@ namespace NetworkUtilities.ControlPlane {
             message.Payload = modifiedLink;
             OnUpdateState($"[MODIFIED_LINK] {modifiedLink}");
             SendLocalTopology(message);
-            OnUpdateState("BIFOR");
+
             if (_recentSnps.ContainsKey(message.SessionId)) {
-                OnUpdateState("1");
                 message.Payload = new[] {
                     _recentSnps[message.SessionId],
-                    new RecentSnp(snp, snpps[0].Id)
+                    new SubnetworkPointPortPair(snp, snpps[0].Id)
                 };
             }
             else {
-                OnUpdateState("2");
                 OnUpdateState(message.SourceClientAddress.ToString());
+
                 foreach (var key in _clientInSnpps.Keys) {
                     OnUpdateState(key.ToString());
                 }
+
                 var clientInSnpp = _clientInSnpps[message.SourceClientAddress];
                 var randomSnp = GenerateSnp(clientInSnpp, message.DemandedCapacity);
-                OnUpdateState("3");
                 message.Payload = new[] {
-                    new RecentSnp(randomSnp, clientInSnpp.Id),
-                    new RecentSnp(snp, snpps[0].Id)
+                    new SubnetworkPointPortPair(randomSnp, clientInSnpp.Id),
+                    new SubnetworkPointPortPair(snp, snpps[0].Id)
                 };
-                OnUpdateState("4");
             }
 
-            OnUpdateState("AFTER");
             SendSnpLinkConnectionRequest(message);
         }
 
@@ -170,6 +168,7 @@ namespace NetworkUtilities.ControlPlane {
             message.DestinationAddress = LocalAddress;
             message.DestinationControlPlaneElement= ControlPlaneElementType.CC;
             message.Operation = OperationType.SNPLinkConnectionRequest;
+
             SendMessage(message);
         }
 

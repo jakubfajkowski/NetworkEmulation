@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControlPlane\LinkResourceManager.cs" />
-    <Compile Include="ControlPlane\RecentSnp.cs" />
+    <Compile Include="Utilities\SubnetworkPointPortPair.cs" />
     <Compile Include="DataPlane\CommutationMatrix.cs" />
     <Compile Include="DataPlane\CommutationTable.cs" />
     <Compile Include="DataPlane\Port.cs" />
