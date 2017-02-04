@@ -44,7 +44,6 @@ namespace NetworkUtilities.ControlPlane {
         private void HandleLocalTopology(SignallingMessage message) {
             UpdateLinkList(message);
             var link = (Link) message.Payload;
-            OnUpdateState($"[RECEIVED_LINK_UPDATE] {link}");
 
             if (LocalAddress.Levels == 1) {
                 SendNetworkTopology(message);
@@ -126,7 +125,7 @@ namespace NetworkUtilities.ControlPlane {
             if (beginSnpp.NetworkAddress.Levels != LocalAddress.Levels + 2) {
                 subnetworkPointPools.Enqueue(paths.Last.Value.Link.EndSubnetworkPointPool);
                 subnetworkPointPools.Enqueue(endSnpp);
-                OnUpdateState($"                   {new Link(paths.Last.Value.Link.EndSubnetworkPointPool, endSnpp, 0, true)}");
+                OnUpdateState($"                   BEGIN: {paths.Last.Value.Link.EndSubnetworkPointPool}");
             }
 
 
@@ -140,7 +139,7 @@ namespace NetworkUtilities.ControlPlane {
             if (beginSnpp.NetworkAddress.Levels != LocalAddress.Levels + 2) {
                 subnetworkPointPools.Enqueue(beginSnpp);
                 subnetworkPointPools.Enqueue(paths.First.Value.Link.BeginSubnetworkPointPool);
-                OnUpdateState($"                   {new Link(beginSnpp, paths.Last.Value.Link.BeginSubnetworkPointPool, 0, true)}");
+                OnUpdateState($"                   END: {beginSnpp}");
             }
 
             return subnetworkPointPools;
@@ -165,6 +164,7 @@ namespace NetworkUtilities.ControlPlane {
 
         private void UpdateLinkList(SignallingMessage message) {
             var receivedLink = (Link)message.Payload;
+            OnUpdateState($"[TOPOLOGY_UPDATE] {receivedLink}");
 
             if (_links.Contains(receivedLink)) _links.Remove(receivedLink);
             _links.Add(receivedLink);

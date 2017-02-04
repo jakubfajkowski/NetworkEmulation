@@ -82,7 +82,7 @@ namespace NetworkUtilities.ControlPlane {
 
             if (_snppQueues.ContainsKey(message.SessionId)) {
                 while (snppQueue.Count > 0) {
-                    _snppQueues[message.SessionId].Enqueue(snppQueue.Dequeue());
+                    _snppQueues[message.SessionId].Enqueue(snppQueue.Dequeue()); //TODO?
                 }
             }
             else {

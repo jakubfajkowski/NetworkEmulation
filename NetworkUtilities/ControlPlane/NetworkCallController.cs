@@ -124,11 +124,14 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleCallAccept(SignallingMessage message) {
-            if ((bool)message.Payload) {
+            if ((bool) message.Payload) {
                 if (_networkAddressDictionary[message.SessionId][0].DomainId == LocalAddress.DomainId)
                     SendConnectionRequest(message);
                 else
                     SendCallCoordinationResponse(message);
+            }
+            else {
+                SendCallRequestResponse(message);
             }
         }
 

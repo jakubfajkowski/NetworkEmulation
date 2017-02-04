@@ -166,9 +166,8 @@ namespace NetworkUtilities.ControlPlane {
                     _clientOutSnpps.Add(clientAddress, clientConnectedLocalSnpp);
                 }
             }
-            else {
-                SendLocalTopology(message);
-            }
+
+            SendLocalTopology(message);
         }
 
         private SubnetworkPoint GenerateSnp(SubnetworkPointPool snpp, int demandedCapacity) {
