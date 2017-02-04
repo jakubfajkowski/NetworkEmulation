@@ -110,7 +110,7 @@ namespace NetworkUtilities.Network.ClientNode {
                 message.DestinationControlPlaneElement == ControlPlaneElementType.CPCC) {
                 var snps = message.Payload as SubnetworkPoint;
                 if (snps != null) {
-                    AddClient(new ClientTableRow(message.ClientName, 1, snps.Vpi, snps.Vci));
+                    AddClient(new ClientTableRow(message.SourceClientName, 1, snps.Vpi, snps.Vci));
                     OnUpdateState(snps.ToString());
                 }
                 else {

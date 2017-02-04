@@ -19,20 +19,20 @@ namespace NetworkUtilities.ControlPlane {
 
             switch (message.Operation) {
                 case OperationType.DirectoryAddressRequest:
-                    SendDirectoryAddressResponse(message);
+                    SendDirectoryAddressRequestResponse(message);
                     break;
 
                 case OperationType.DirectoryNameRequest:
-                    SendDirectoryNameResponse(message);
+                    SendDirectoryNameRequestResponse(message);
                     break;
 
                 case OperationType.DirectorySnppRequest:
-                    SendDirectorySnppResponse(message);
+                    SendDirectorySnppRequestResponse(message);
                     break;
             }
         }
 
-        private void SendDirectoryAddressResponse(SignallingMessage message) {
+        private void SendDirectoryAddressRequestResponse(SignallingMessage message) {
             var clientNames = (string[]) message.Payload;
 
             NetworkAddress[] clientAddresses = null;
@@ -53,10 +53,12 @@ namespace NetworkUtilities.ControlPlane {
             directioryResponse.DestinationAddress = message.SourceAddress;
             directioryResponse.DestinationControlPlaneElement =
                 ControlPlaneElementType.NCC;
+
             SendMessage(directioryResponse);
+            EndSession(message.SessionId);
         }
 
-        private void SendDirectoryNameResponse(SignallingMessage message) {
+        private void SendDirectoryNameRequestResponse(SignallingMessage message) {
             var clientAddress = (NetworkAddress[]) message.Payload;
 
             var clientNameA = _clientAddressDictionary.FirstOrDefault(x => x.Value == clientAddress[0]).Key;
@@ -70,10 +72,12 @@ namespace NetworkUtilities.ControlPlane {
             directioryResponse.DestinationAddress = message.SourceAddress;
             directioryResponse.DestinationControlPlaneElement =
                 ControlPlaneElementType.NCC;
+
             SendMessage(directioryResponse);
+            EndSession(message.SessionId);
         }
 
-        private void SendDirectorySnppResponse(SignallingMessage message) {
+        private void SendDirectorySnppRequestResponse(SignallingMessage message) {
             var clientNames = (string[]) message.Payload;
 
             SubnetworkPointPool[] snpp = null;
@@ -94,13 +98,15 @@ namespace NetworkUtilities.ControlPlane {
             directioryResponse.DestinationAddress = message.SourceAddress;
             directioryResponse.DestinationControlPlaneElement =
                 ControlPlaneElementType.NCC;
+
             SendMessage(directioryResponse);
+            EndSession(message.SessionId);
         }
 
         public void UpdateDirectory(string clientName, NetworkAddress clientNetworkAddress, SubnetworkPointPool networkNodeSnpp) {
             _clientAddressDictionary.Add(clientName, clientNetworkAddress);
             _snppDictionary.Add(clientName, networkNodeSnpp);
-            OnUpdateState($"[ADDED] Client {clientName} is {networkNodeSnpp}");
+            OnUpdateState($"[ADDED] Client {clientName} is connected to {networkNodeSnpp}");
         }
     }
 }

@@ -65,24 +65,10 @@ namespace NetworkUtilities.ManagementPlane {
             }
         }
 
-        public void SendConfigurationMessage(Link link) {
+        public void SendConfigurationMessage(Link link, NetworkAddress destinationAddress) {
             var message = new ManagementMessage(ManagementMessageType.Configuration, link);
-            Send(message, link.BeginSubnetworkPointPool.NetworkNodeAddress);
-            OnUpdateState($"[CONFIGURATION] {link}");
-        }
-
-        public void SendConnectClientMessage(Link linkIn, Link linkOut, NetworkAddress clientAddress, NetworkAddress destinationAddress) {
-            var payload = new object[] {
-                linkIn,
-                linkOut,
-                clientAddress
-            };
-
-            var message = new ManagementMessage(ManagementMessageType.ConnectClient, payload);
-
             Send(message, destinationAddress);
-            OnUpdateState($"[CONNECT_CLIENT] [IN]  {clientAddress} {linkIn}");
-            OnUpdateState($"[CONNECT_CLIENT] [OUT] {clientAddress} {linkOut}");
+            OnUpdateState($"[CONFIGURATION] {link}");
         }
     }
 }

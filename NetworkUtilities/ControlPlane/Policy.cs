@@ -16,7 +16,9 @@ namespace NetworkUtilities.ControlPlane {
             policyResponse.Payload = true;
             policyResponse.DestinationAddress = message.SourceAddress;
             policyResponse.DestinationControlPlaneElement = ControlPlaneElementType.NCC;
+
             SendMessage(policyResponse);
+            EndSession(message.SessionId);
         }
     }
 }

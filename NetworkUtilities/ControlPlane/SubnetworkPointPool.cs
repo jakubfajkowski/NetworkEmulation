@@ -13,7 +13,7 @@ namespace NetworkUtilities.ControlPlane {
 
         public NetworkAddress NetworkAddress { get; }
 
-        public NetworkAddress NetworkNodeAddress => NetworkAddress.GetParentsAddress();
+        public NetworkAddress NodeAddress => NetworkAddress.GetParentsAddress();
         public int Id => NetworkAddress.GetLastId();
 
         protected bool Equals(SubnetworkPointPool other) {
@@ -34,7 +34,7 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         public override string ToString() {
-            return $"{NetworkNodeAddress}:{Id}";
+            return $"{NodeAddress}:{Id}";
         }
     }
 }

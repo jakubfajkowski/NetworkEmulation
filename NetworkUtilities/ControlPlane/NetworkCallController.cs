@@ -80,7 +80,10 @@ namespace NetworkUtilities.ControlPlane {
 
         private void HandleDirectorySnppRequest(SignallingMessage message) {
             var snpp = (SubnetworkPointPool[])message.Payload;
+
             _snppDictionary.Add(message.SessionId, snpp);
+
+
             SendDirectoryAddressRequest(message);
         }
 
@@ -93,12 +96,13 @@ namespace NetworkUtilities.ControlPlane {
             try {
                 _networkAddressDictionary.Add(message.SessionId, networkAddress);
 
-                if (networkAddress[0].GetId(0) == networkAddress[1].GetId(0))
+                if (networkAddress[0].DomainId == networkAddress[1].DomainId)
                     SendCallAccept(message);
                 else
                     SendCallCoordination(message);
             }
             catch (ArgumentOutOfRangeException) {
+                message.Payload = "NO_CLIENT_FOUND";
                 SendCallRequestResponse(message);
             }
         }
@@ -126,7 +130,6 @@ namespace NetworkUtilities.ControlPlane {
                 else
                     SendCallCoordinationResponse(message);
             }
-           SendCallRequestResponse(message);
         }
 
         private void HandleCallCoordinationResponse(SignallingMessage message) {
@@ -226,7 +229,7 @@ namespace NetworkUtilities.ControlPlane {
             callConfirmation.DestinationAddress = _networkAddressDictionary[message.SessionId][0];
             callConfirmation.DestinationControlPlaneElement =
                 ControlPlaneElementType.CPCC;
-            message.ClientName = _nameDictionary[message.SessionId][1];
+            message.SourceClientName = _nameDictionary[message.SessionId][1];
 
             SendMessage(callConfirmation);
         }

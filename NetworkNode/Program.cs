@@ -6,6 +6,7 @@ namespace NetworkNode {
     internal class Program {
         private static void Main(string[] args) {
             var xmlArgs = string.Join(" ", args);
+
             Console.WriteLine(XmlSerializer.FormatXml(xmlArgs));
 
             var parameters =
@@ -15,8 +16,13 @@ namespace NetworkNode {
                 $"Network Node ({parameters.NetworkAddress})";
 
             var networkNode = new NetworkUtilities.Network.NetworkNode.NetworkNode(parameters);
-            networkNode.UpdateState += (sender, state) => Console.WriteLine(state);
+            networkNode.UpdateState += (sender, state) => Console.Write(CreateLogLine(state));
             networkNode.Initialize();
+        }
+
+        private static string CreateLogLine(string text) {
+            var datetime = DateTime.Now;
+            return $"[{datetime}.{datetime.Millisecond}] {text}\n";
         }
     }
 }

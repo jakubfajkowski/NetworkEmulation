@@ -18,7 +18,8 @@ namespace NetworkUtilities.ControlPlane {
         public OperationType Operation { get; set; }
         public NetworkAddress SourceClientAddress { get; set; }
         public NetworkAddress DestinationClientAddress { get; set; }
-        public string ClientName { get; set; }
+        public string SourceClientName { get; set; }
+        public string DestinationClientName { get; set; }
         public int DemandedCapacity { get; set; }
 
         public object Payload { get; set; }

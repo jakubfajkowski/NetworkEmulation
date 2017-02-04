@@ -54,7 +54,7 @@ namespace NetworkUtilities.ControlPlane {
                 }
                 else if (message.Payload is SubnetworkPointPool[]) {
                     var snpps = (SubnetworkPointPool[])message.Payload;
-                    if (snpps[0].NetworkNodeAddress.Equals(LocalAddress)) {
+                    if (snpps[0].NodeAddress.Equals(LocalAddress)) {
                         SendLinkConnectionRequest(message);
                     }
                     else {
@@ -172,7 +172,7 @@ namespace NetworkUtilities.ControlPlane {
 
                 message.Payload = snpps;
 
-                var childAddress = snpps[0].NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
+                var childAddress = snpps[0].NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
                 SendConnectionRequest(message, childAddress);
             }
             else {

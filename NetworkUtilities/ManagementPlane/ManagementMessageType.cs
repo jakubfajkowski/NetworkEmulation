@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace NetworkUtilities.ManagementPlane {
     enum ManagementMessageType {
         KeepAlive,
-        Configuration,
-        ConnectClient
+        Configuration
     }
 }

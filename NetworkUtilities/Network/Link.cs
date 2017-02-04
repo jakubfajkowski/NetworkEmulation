@@ -10,15 +10,14 @@ namespace NetworkUtilities.Network {
             BeginSubnetworkPointPool = beginSubnetworkPointPool;
             EndSubnetworkPointPool = endSubnetworkPointPool;
             CapacityLeft = capacity;
-        }
-
-        public Link(LinkModel model, bool isClientLink) : 
-            this(new SubnetworkPointPool(model.InputNodePortPair), new SubnetworkPointPool(model.OutputNodePortPair), model.Capacity, isClientLink) {
             IsClientLink = isClientLink;
         }
 
+        public Link(LinkModel model, bool isClientLink) : 
+            this(new SubnetworkPointPool(model.InputNodePortPair), new SubnetworkPointPool(model.OutputNodePortPair), model.Capacity, isClientLink) {}
+
         public SubnetworkPointPool BeginSubnetworkPointPool { get; }
-        public SubnetworkPointPool EndSubnetworkPointPool { get; private set; }
+        public SubnetworkPointPool EndSubnetworkPointPool { get; }
         public int CapacityLeft { get; private set; }
 
         public void ReserveCapacity(int demandedCapacity) {
@@ -51,7 +50,7 @@ namespace NetworkUtilities.Network {
         }
 
         public override string ToString() {
-            return $"{BeginSubnetworkPointPool}->{EndSubnetworkPointPool}, Capacity: {CapacityLeft} {IsClientLink}";
+            return $"{BeginSubnetworkPointPool}->{EndSubnetworkPointPool}, Capacity: {CapacityLeft}, IsClientLink: {IsClientLink}";
         }
     }
 }

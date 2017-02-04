@@ -36,9 +36,7 @@ namespace NetworkEmulation {
             var connectionManagers = new List<LogObject>(new LogObject[]{_cableCloud, _signallingCloud, _networkManagmentSystem});
             ConnectionManagersLogForm = PrepareMultiLogForm(connectionManagers, "Connection Managers Log");
 
-            _cableCloud.StartListening();
-            _signallingCloud.StartListening();
-            _networkManagmentSystem.StartListening();
+            StartConnectionManagers();
 
             _nameServer = new NameServer(Settings.Default.IpAddress, Settings.Default.SignallingCloudListeningPort);
             PrepareNameServerLogForm();
@@ -91,6 +89,12 @@ namespace NetworkEmulation {
             _processes = new Dictionary<int, Process>();
 
             Run();
+        }
+
+        private void StartConnectionManagers() {
+            _cableCloud.StartListening();
+            _signallingCloud.StartListening();
+            _networkManagmentSystem.StartListening();
         }
 
         public bool Running { get; private set; }
@@ -189,32 +193,25 @@ namespace NetworkEmulation {
             MarkAsOnline(_initializableNodes.OfType<IMarkable>().ToList());
 
             foreach (var linkView in _links) {
+                Link linkConfiguration;
+                NetworkAddress destinationAddress;
+
                 if (!(linkView.BeginNodeView is ClientNodeView) && !(linkView.EndNodeView is ClientNodeView)) {
-                    var link = new Link(linkView.Parameters, false);
-                    _networkManagmentSystem.SendConfigurationMessage(link);
-                    _networkManagmentSystem.SendConfigurationMessage(link.Reverse());
+                    linkConfiguration = new Link(linkView.Parameters, false);
+                    destinationAddress = linkConfiguration.BeginSubnetworkPointPool.NodeAddress;
                 }
                 else {
-                    var link = new Link(linkView.Parameters, true);
+                    linkConfiguration = new Link(linkView.Parameters, true);
 
-                    NetworkAddress clientAddress = null;
-                    Link linkIn;
-                    Link linkOut;
+                    var beginNodeAddress = linkConfiguration.BeginSubnetworkPointPool.NodeAddress;
+                    var endNodeAddress = linkConfiguration.EndSubnetworkPointPool.NodeAddress;
 
-                    if (link.BeginSubnetworkPointPool.NetworkNodeAddress.Levels >
-                        link.EndSubnetworkPointPool.NetworkNodeAddress.Levels) {
-                        clientAddress = link.BeginSubnetworkPointPool.NetworkNodeAddress;
-                        linkIn = link;
-                        linkOut = link.Reverse();
-                    }
-                    else {
-                        clientAddress = link.EndSubnetworkPointPool.NetworkNodeAddress;
-                        linkOut = link;
-                        linkIn = link.Reverse();
-                    }
-
-                    _networkManagmentSystem.SendConnectClientMessage(linkIn, linkOut, clientAddress, linkIn.EndSubnetworkPointPool.NetworkNodeAddress);
+                    destinationAddress = beginNodeAddress.Levels < endNodeAddress.Levels ? beginNodeAddress : endNodeAddress;
                 }
+
+                _networkManagmentSystem.SendConfigurationMessage(linkConfiguration, destinationAddress);
+                _networkManagmentSystem.SendConfigurationMessage(linkConfiguration.Reverse(), destinationAddress);
+
                 linkView.MarkAsOnline();
             }
         }

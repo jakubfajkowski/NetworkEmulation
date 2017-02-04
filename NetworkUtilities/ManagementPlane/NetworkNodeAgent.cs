@@ -26,10 +26,6 @@ namespace NetworkUtilities.ManagementPlane {
                 case ManagementMessageType.Configuration:
                     HandleConfiguration(message);
                     break;
-
-                case ManagementMessageType.ConnectClient:
-                    HandleConnectClient(message);
-                    break;
             }
         }
 

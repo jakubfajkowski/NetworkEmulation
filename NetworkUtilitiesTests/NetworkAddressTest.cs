@@ -28,13 +28,13 @@ namespace NetworkUtilitiesTests {
             var snpp4 = new SubnetworkPointPool(new NetworkAddress("1.1.1.2"));
 
             var expected = n2;
-            var actual = snpp1.NetworkNodeAddress.GetRootFromBeginning(n1.Levels + 1);
+            var actual = snpp1.NodeAddress.GetRootFromBeginning(n1.Levels + 1);
             Assert.AreEqual(expected, actual);
-            actual = snpp2.NetworkNodeAddress.GetRootFromBeginning(n1.Levels + 1);
+            actual = snpp2.NodeAddress.GetRootFromBeginning(n1.Levels + 1);
             Assert.AreEqual(expected, actual);
-            actual = snpp3.NetworkNodeAddress.GetRootFromBeginning(n1.Levels + 1);
+            actual = snpp3.NodeAddress.GetRootFromBeginning(n1.Levels + 1);
             Assert.AreEqual(expected, actual);
-            actual = snpp4.NetworkNodeAddress.GetRootFromBeginning(n1.Levels + 1);
+            actual = snpp4.NodeAddress.GetRootFromBeginning(n1.Levels + 1);
             Assert.AreEqual(expected, actual);
         }
     }

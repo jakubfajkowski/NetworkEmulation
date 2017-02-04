@@ -40,7 +40,6 @@ namespace NetworkUtilities.Network.NetworkNode {
                 parameters.NetworkManagmentSystemListeningPort);
             NetworkNodeAgent.UpdateState += (sender, state) => OnUpdateState(state);
             NetworkNodeAgent.ConfigurationReceived += NetworkNodeAgentOnConfigurationReceived;
-            NetworkNodeAgent.ConnectClientReceived += _linkResourceManager.ConnectClient;
 
             StartThread();
         }

@@ -90,8 +90,8 @@ namespace NetworkUtilities.ControlPlane {
         private Queue<SubnetworkPointPool> CalculateShortestPath(SubnetworkPointPool beginSnpp,
             SubnetworkPointPool endSnpp, int demandedCapacity) {
             try {
-                var beginNode = beginSnpp.NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
-                var endNode = endSnpp.NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
+                var beginNode = beginSnpp.NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
+                var endNode = endSnpp.NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
                 var availableLinks = _links.Where(link => link.CapacityLeft >= demandedCapacity).ToList();
                 var preparedPaths = Convert(availableLinks);
 
@@ -110,8 +110,8 @@ namespace NetworkUtilities.ControlPlane {
 
             foreach (var link in links)
                 paths.Add(new Path<NetworkAddress> {
-                    Source = link.BeginSubnetworkPointPool.NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1),
-                    Destination = link.EndSubnetworkPointPool.NetworkNodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1),
+                    Source = link.BeginSubnetworkPointPool.NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1),
+                    Destination = link.EndSubnetworkPointPool.NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1),
                     Link = link
                 });
 
