@@ -18,7 +18,7 @@
         CallConfirmation,
         CallConfirmationFromNCC,
         //CC operations
-        SNPLinkConnectionRequest,
+        SNPLinkConnectionAllocation,
         SNPLinkConnectionDeallocation,
         RouteTableQuery, // CC       -> RC
         SetLabels, // LRM(NN)  -> CC(NN)

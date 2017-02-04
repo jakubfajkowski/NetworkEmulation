@@ -26,8 +26,8 @@ namespace NetworkUtilities.ControlPlane {
             base.ReceiveMessage(message);
 
             switch (message.Operation) {
-                case OperationType.SNPLinkConnectionRequest:
-                    HandleSnpLinkConnectionRequest(message);
+                case OperationType.SNPLinkConnectionAllocation:
+                    HandleSnpLinkConnectionAllocation(message);
                     break;
 
                 case OperationType.SNPNegotiation:
@@ -54,7 +54,7 @@ namespace NetworkUtilities.ControlPlane {
             }
         }
 
-        private void HandleSnpLinkConnectionRequest(SignallingMessage message) {
+        private void HandleSnpLinkConnectionAllocation(SignallingMessage message) {
             var snpps = (SubnetworkPointPool[]) message.Payload;
             OnUpdateState($"[RECEIVED_SNPP] {snpps[0]}---{snpps[1]}");
 
@@ -70,21 +70,23 @@ namespace NetworkUtilities.ControlPlane {
                 //message.DestinationAddress;
             }
             else {
+                OnUpdateState("1");
                 var snp = GenerateSnp(snpps[1], message.DemandedCapacity);
                 pair = new SubnetworkPointPortPair(snp, snpps[1].Id);
                 _recentSnps.Add(message.SessionId, pair);
                 _usedSubnetworkPoints[snpps[1]].Add(snp);
 
-
                 if (_clientOutSnpps.ContainsKey(message.DestinationClientAddress)) {
                     if (_clientOutSnpps[message.SourceClientAddress].NodeAddress.Equals(LocalAddress)) {
+                        OnUpdateState("[DESTINATION_CLIENT_LOCATED]");
                         var snppOut = _clientOutSnpps[message.DestinationClientAddress];
+                        OnUpdateState("2");
                         var snpOut = GenerateSnp(snppOut, message.DemandedCapacity);
                         var pairOut = new SubnetworkPointPortPair(snpOut, snppOut.Id);
                         SendMessage(new SignallingMessage {
                             DestinationAddress = LocalAddress,
                             DestinationControlPlaneElement = ControlPlaneElementType.CC,
-                            Operation = OperationType.SNPLinkConnectionRequest,
+                            Operation = OperationType.SNPLinkConnectionAllocation,
                             Payload = new[] { pair, pairOut }
                         });
                     }
@@ -114,26 +116,28 @@ namespace NetworkUtilities.ControlPlane {
             modifiedLink.ReserveCapacity(message.DemandedCapacity);
             message.Payload = modifiedLink;
             OnUpdateState($"[MODIFIED_LINK] {modifiedLink}");
-            SendLocalTopology(message);
+            SendLocalTopology(modifiedLink);
             
 
             SubnetworkPointPortPair pair1 = null;
             if (_clientInSnpps.ContainsKey(message.SourceClientAddress)) {
                 if (_clientInSnpps[message.SourceClientAddress].NodeAddress.Equals(LocalAddress)) {
+                    OnUpdateState("[SOURCE_CLIENT_LOCATED]");
                     var routerSnpp = _clientInSnpps[message.SourceClientAddress];
+                    OnUpdateState("3");
                     var newSnp = GenerateSnp(routerSnpp, message.DemandedCapacity);
                     _usedSubnetworkPoints[routerSnpp].Add(newSnp);
                     pair1 = new SubnetworkPointPortPair(newSnp, routerSnpp.Id);
                 }
             }
             else {
+                OnUpdateState("4");
                 var newSnp = GenerateSnp(snpps[0], message.DemandedCapacity);
                 _usedSubnetworkPoints[snpps[0]].Add(newSnp);
                 pair1 = new SubnetworkPointPortPair(newSnp, snpps[0].Id);
             }
-            _recentSnps.Add(message.SessionId, pair1);
 
-            message.Payload = new SubnetworkPointPortPair[] {
+            message.Payload = new[] {
                 pair1,
                 pair2
             };
@@ -147,6 +151,7 @@ namespace NetworkUtilities.ControlPlane {
 
         private void HandleConfiguration(SignallingMessage message) {
             var link = (Link) message.Payload;
+            OnUpdateState($"[LINK] {link}");
 
             _nodeLinks.Add(link);
             _usedSubnetworkPoints.Add(link.BeginSubnetworkPointPool, new List<SubnetworkPoint>());
@@ -167,8 +172,10 @@ namespace NetworkUtilities.ControlPlane {
                 }
             }
             else {
-                SendLocalTopology(message);
+                SendLocalTopology(link);
             }
+
+            EndSession(message.SessionId);
         }
 
         private SubnetworkPoint GenerateSnp(SubnetworkPointPool snpp, int demandedCapacity) {
@@ -190,7 +197,7 @@ namespace NetworkUtilities.ControlPlane {
 
 
             if (success) {
-                SendLocalTopology(message);
+                
             }
             SendSnpLinkConnectionDeallocation(message);
         }
@@ -204,18 +211,22 @@ namespace NetworkUtilities.ControlPlane {
             SendMessage(message);
         }
 
-        private void SendLocalTopology(SignallingMessage message) {
-            message.Operation = OperationType.LocalTopology;
-            message.DestinationAddress = LocalAddress.GetParentsAddress();
-            message.DestinationControlPlaneElement = ControlPlaneElementType.RC;
+        private void SendLocalTopology(Link link) {
+            var message = new SignallingMessage {
+                Operation = OperationType.LocalTopology,
+                DestinationAddress = LocalAddress.GetParentsAddress(),
+                DestinationControlPlaneElement = ControlPlaneElementType.RC,
+                Payload = link
+            };
             
             SendMessage(message);
+
         }
 
         private void SendSnpLinkConnectionRequest(SignallingMessage message) {
             message.DestinationAddress = LocalAddress;
             message.DestinationControlPlaneElement= ControlPlaneElementType.CC;
-            message.Operation = OperationType.SNPLinkConnectionRequest;
+            message.Operation = OperationType.SNPLinkConnectionAllocation;
 
             SendMessage(message);
         }

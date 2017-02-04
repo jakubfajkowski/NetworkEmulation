@@ -161,7 +161,7 @@ namespace NetworkUtilitiesTests {
                 Operation = OperationType.RouteTableQuery,
                 Payload = new Queue<SubnetworkPointPool>(new[] {
                     node1Client1SnppIn,
-                    node1Node2SnppIn
+                    node1Node2SnppOut
                 }),
                 SourceAddress = new NetworkAddress("0"),
                 SourceClientAddress = client1Address,

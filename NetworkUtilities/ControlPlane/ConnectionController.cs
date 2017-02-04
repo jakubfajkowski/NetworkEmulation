@@ -34,7 +34,7 @@ namespace NetworkUtilities.ControlPlane {
                     HandleRouteTableQuery(message);
                     break;
 
-                case OperationType.SNPLinkConnectionRequest:
+                case OperationType.SNPLinkConnectionAllocation:
                     HandleSNPLinkConnectionRequest(message);
                     break;
             }
@@ -78,23 +78,32 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleRouteTableQuery(SignallingMessage message) {
-            var snppQueue = (Queue<SubnetworkPointPool>) message.Payload;
+            if (message.Payload is Queue<SubnetworkPointPool>) {
+                var snppQueue = (Queue<SubnetworkPointPool>) message.Payload;
 
-            if (_snppQueues.ContainsKey(message.SessionId)) {
-                while (snppQueue.Count > 0) {
-                    _snppQueues[message.SessionId].Enqueue(snppQueue.Dequeue()); //TODO?
+                if (_snppQueues.ContainsKey(message.SessionId)) {
+                    while (snppQueue.Count > 0) {
+                        _snppQueues[message.SessionId].Enqueue(snppQueue.Dequeue()); //TODO?
+                    }
                 }
+                else {
+                    _snppQueues.Add(message.SessionId, snppQueue);
+                }
+
+                ProcessNextSnppPair(message);
             }
             else {
-                _snppQueues.Add(message.SessionId, snppQueue);
+                SendConnectionRequestResponse(message, null);
             }
-
-            ProcessNextSnppPair(message);
+           
         }
 
         private void HandleSNPLinkConnectionRequest(SignallingMessage message) {
             var r = (SubnetworkPointPortPair[]) message.Payload;
-            OnUpdateState($"{r[0].SubnetworkPoint}:{r[0].Port}->{r[1].SubnetworkPoint}:{r[1].Port}");
+
+            OnUpdateState($"[COMMUTATION_TABLE_UPDATE] VPI: {r[0].SubnetworkPoint.Vpi}-> {r[1].SubnetworkPoint.Vpi}," +
+                                                    $" VCI: {r[0].SubnetworkPoint.Vci}-> {r[1].SubnetworkPoint.Vci}," +
+                                                    $" Port: {r[0].Port}-> {r[1].Port}");
 
             var rowToAdd = new CommutationTableRow(r[0].SubnetworkPoint.Vpi,
                                                    r[0].SubnetworkPoint.Vci,
@@ -131,7 +140,7 @@ namespace NetworkUtilities.ControlPlane {
 
         private void SendLinkConnectionRequest(SignallingMessage message) {
             var linkConnectionRequest = message;
-            linkConnectionRequest.Operation = OperationType.SNPLinkConnectionRequest;
+            linkConnectionRequest.Operation = OperationType.SNPLinkConnectionAllocation;
             linkConnectionRequest.DestinationAddress = LocalAddress;
             linkConnectionRequest.DestinationControlPlaneElement = ControlPlaneElementType.LRM;
 

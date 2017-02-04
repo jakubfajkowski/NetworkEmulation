@@ -90,10 +90,10 @@ namespace NetworkUtilities.ControlPlane {
         private void HandleDirectoryAddressRequest(SignallingMessage message) {
             var networkAddress = (NetworkAddress[])message.Payload;
 
-            message.SourceClientAddress = networkAddress[0];
-            message.DestinationClientAddress = networkAddress[1];
-
             try {
+                message.SourceClientAddress = networkAddress[0];
+                message.DestinationClientAddress = networkAddress[1];
+
                 _networkAddressDictionary.Add(message.SessionId, networkAddress);
 
                 if (networkAddress[0].DomainId == networkAddress[1].DomainId)
@@ -101,8 +101,8 @@ namespace NetworkUtilities.ControlPlane {
                 else
                     SendCallCoordination(message);
             }
-            catch (ArgumentOutOfRangeException) {
-                message.Payload = "NO_CLIENT_FOUND";
+            catch (Exception) {
+                message.Payload = "[NO_CLIENT_FOUND]";
                 SendCallRequestResponse(message);
             }
         }

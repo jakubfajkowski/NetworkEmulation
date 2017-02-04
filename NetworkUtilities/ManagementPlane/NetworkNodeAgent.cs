@@ -31,19 +31,7 @@ namespace NetworkUtilities.ManagementPlane {
 
         private void HandleConfiguration(ManagementMessage message) {
             var link = (Link)message.Payload;
-            OnUpdateState($"[CONFIGURATION] {link}");
             OnConfigurationReceived(link);
-        }
-
-        private void HandleConnectClient(ManagementMessage message) {
-            var payload = (object[]) message.Payload;
-            var linkIn = (Link) payload[0];
-            var linkOut = (Link) payload[1];
-            var clientAddress = (NetworkAddress) payload[2];
-
-            OnUpdateState($"[CONNECT_CLIENT] [IN]  {clientAddress} {linkIn}");
-            OnUpdateState($"[CONNECT_CLIENT] [OUT]{clientAddress} {linkOut}");
-            OnConnectClientReceived(linkIn, linkOut, clientAddress);
         }
 
         public event ConfigurationHandler ConfigurationReceived;

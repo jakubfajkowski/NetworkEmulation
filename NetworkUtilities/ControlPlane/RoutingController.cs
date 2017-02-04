@@ -36,7 +36,13 @@ namespace NetworkUtilities.ControlPlane {
             var endSnpp = snpps[1];
             var demandedCapacity = message.DemandedCapacity;
 
-            message.Payload = CalculateShortestPath(beginSnpp, endSnpp, demandedCapacity);
+            try {
+                message.Payload = CalculateShortestPath(beginSnpp, endSnpp, demandedCapacity);
+            }
+            catch (Exception) {
+                OnUpdateState("[NO_AVAILABLE_ROUTE]");
+                message.Payload = null;
+            }
 
             SendRouteTableQueryResponse(message);
         }
@@ -88,20 +94,14 @@ namespace NetworkUtilities.ControlPlane {
 
         private Queue<SubnetworkPointPool> CalculateShortestPath(SubnetworkPointPool beginSnpp,
             SubnetworkPointPool endSnpp, int demandedCapacity) {
-            try {
-                var beginNode = beginSnpp.NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
-                var endNode = endSnpp.NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
-                var availableLinks = _links.Where(link => link.CapacityLeft >= demandedCapacity).ToList();
-                var preparedPaths = Convert(availableLinks);
+            var beginNode = beginSnpp.NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
+            var endNode = endSnpp.NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
+            var availableLinks = _links.Where(link => link.CapacityLeft >= demandedCapacity).ToList();
+            var preparedPaths = Convert(availableLinks);
 
-                var shortestPath = Engine.CalculateShortestPathBetween(beginNode, endNode, preparedPaths);
+            var shortestPath = Engine.CalculateShortestPathBetween(beginNode, endNode, preparedPaths);
 
-                return Convert(beginSnpp, shortestPath, endSnpp);
-            }
-            catch (Exception) {
-                OnUpdateState("[NO_AVAILABLE_ROUTE]");
-                return new Queue<SubnetworkPointPool>();
-            }
+            return Convert(beginSnpp, shortestPath, endSnpp);
         }
 
         private List<Path<NetworkAddress>> Convert(List<Link> links) {
