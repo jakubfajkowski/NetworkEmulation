@@ -70,17 +70,16 @@ namespace NetworkUtilities.ControlPlane {
                 //message.DestinationAddress;
             }
             else {
-                OnUpdateState("1");
                 var snp = GenerateSnp(snpps[1], message.DemandedCapacity);
                 pair = new SubnetworkPointPortPair(snp, snpps[1].Id);
                 _recentSnps.Add(message.SessionId, pair);
+                //TODO CONFIGURATION BUGFIX
                 _usedSubnetworkPoints[snpps[1]].Add(snp);
 
                 if (_clientOutSnpps.ContainsKey(message.DestinationClientAddress)) {
                     if (_clientOutSnpps[message.SourceClientAddress].NodeAddress.Equals(LocalAddress)) {
                         OnUpdateState("[DESTINATION_CLIENT_LOCATED]");
                         var snppOut = _clientOutSnpps[message.DestinationClientAddress];
-                        OnUpdateState("2");
                         var snpOut = GenerateSnp(snppOut, message.DemandedCapacity);
                         var pairOut = new SubnetworkPointPortPair(snpOut, snppOut.Id);
                         SendMessage(new SignallingMessage {
@@ -124,14 +123,12 @@ namespace NetworkUtilities.ControlPlane {
                 if (_clientInSnpps[message.SourceClientAddress].NodeAddress.Equals(LocalAddress)) {
                     OnUpdateState("[SOURCE_CLIENT_LOCATED]");
                     var routerSnpp = _clientInSnpps[message.SourceClientAddress];
-                    OnUpdateState("3");
                     var newSnp = GenerateSnp(routerSnpp, message.DemandedCapacity);
                     _usedSubnetworkPoints[routerSnpp].Add(newSnp);
                     pair1 = new SubnetworkPointPortPair(newSnp, routerSnpp.Id);
                 }
             }
             else {
-                OnUpdateState("4");
                 var newSnp = GenerateSnp(snpps[0], message.DemandedCapacity);
                 _usedSubnetworkPoints[snpps[0]].Add(newSnp);
                 pair1 = new SubnetworkPointPortPair(newSnp, snpps[0].Id);
