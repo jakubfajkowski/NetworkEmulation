@@ -91,7 +91,8 @@ namespace NetworkUtilities.Network {
                     DeleteConnection(clientNetworkAddress);
                 }
                 catch (SerializationException) {
-                    OnUpdateState($"[READING_ERROR] {clientNetworkAddress}");
+                    OnUpdateState($"[CLOSED] {clientNetworkAddress}");
+                    DeleteConnection(clientNetworkAddress);
                 }
             });
         }

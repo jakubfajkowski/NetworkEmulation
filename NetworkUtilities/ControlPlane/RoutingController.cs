@@ -125,7 +125,7 @@ namespace NetworkUtilities.ControlPlane {
             if (beginSnpp.NetworkAddress.Levels != LocalAddress.Levels + 2) {
                 subnetworkPointPools.Enqueue(paths.Last.Value.Link.EndSubnetworkPointPool);
                 subnetworkPointPools.Enqueue(endSnpp);
-                OnUpdateState($"                   BEGIN: {paths.Last.Value.Link.EndSubnetworkPointPool}");
+                OnUpdateState($"                   END: {endSnpp}");
             }
 
 
@@ -139,7 +139,7 @@ namespace NetworkUtilities.ControlPlane {
             if (beginSnpp.NetworkAddress.Levels != LocalAddress.Levels + 2) {
                 subnetworkPointPools.Enqueue(beginSnpp);
                 subnetworkPointPools.Enqueue(paths.First.Value.Link.BeginSubnetworkPointPool);
-                OnUpdateState($"                   END: {beginSnpp}");
+                OnUpdateState($"                   BEGIN: {beginSnpp}");
             }
 
             return subnetworkPointPools;

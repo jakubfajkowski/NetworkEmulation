@@ -81,17 +81,18 @@ namespace NetworkUtilities.Network {
         private void ListenForMessages() {
             try {
                 while (Online) {
-                    try {
-                        var receivedObject = Receive();
-                        OnObjectReceived(receivedObject);
-                    }
-                    catch (SerializationException) {
-                        OnUpdateState($"[READING_ERROR] {_connectionManagerType}");
-                    }
+                    var receivedObject = Receive();
+                    OnObjectReceived(receivedObject);
                 }
             }
             catch (IOException) {
                 OnUpdateState($"[CONNECTION_CLOSED] {_connectionManagerType}");
+            }
+            catch (SerializationException) {
+                OnUpdateState($"[CONNECTION_CLOSED] {_connectionManagerType}");
+            }
+            catch (Exception exception) {
+                OnUpdateState($"[EXCEPTION] {_connectionManagerType}: {exception}");
             }
         }
 
