@@ -48,18 +48,23 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleLocalTopology(SignallingMessage message) {
-            UpdateLinkList(message);
             var link = (Link) message.Payload;
+            var updated = UpdateLinkList(link);
 
-            if (LocalAddress.Levels == 1) {
+            if (!updated) return;
+
+            OnUpdateState($"[TOPOLOGY_UPDATE] {link}");
+
+            if (LocalAddress.Levels == 1)
                 SendNetworkTopology(message);
-            }
             else if (IsBetweenSubnetworks(link))
                 SendLocalTopology(message);
         }
 
         private void HandleNetworkTopology(SignallingMessage message) {
-            UpdateLinkList(message);
+            var link = (Link) message.Payload;
+            if (UpdateLinkList(link))
+                OnUpdateState($"[TOPOLOGY_UPDATE] {link}");
         }
 
         private void SendLocalTopology(SignallingMessage message) {
@@ -92,7 +97,7 @@ namespace NetworkUtilities.ControlPlane {
             EndSession(message.SessionId);
         }
 
-        private Queue<SubnetworkPointPool> CalculateShortestPath(SubnetworkPointPool beginSnpp,
+        private Stack<SubnetworkPointPool> CalculateShortestPath(SubnetworkPointPool beginSnpp,
             SubnetworkPointPool endSnpp, int demandedCapacity) {
             var beginNode = beginSnpp.NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
             var endNode = endSnpp.NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1);
@@ -117,30 +122,25 @@ namespace NetworkUtilities.ControlPlane {
             return paths;
         }
 
-        private Queue<SubnetworkPointPool> Convert(SubnetworkPointPool beginSnpp, LinkedList<Path<NetworkAddress>> paths, SubnetworkPointPool endSnpp) {
-            var subnetworkPointPools = new Queue<SubnetworkPointPool>();
+        private Stack<SubnetworkPointPool> Convert(SubnetworkPointPool beginSnpp, LinkedList<Path<NetworkAddress>> paths,
+            SubnetworkPointPool endSnpp) {
+            var subnetworkPointPools = new Stack<SubnetworkPointPool>();
 
             OnUpdateState("[AVAILABLE_ROUTE]");
 
-            if (beginSnpp.NetworkAddress.Levels != LocalAddress.Levels + 2) {
-                subnetworkPointPools.Enqueue(paths.Last.Value.Link.EndSubnetworkPointPool);
-                subnetworkPointPools.Enqueue(endSnpp);
-                OnUpdateState($"                   END: {endSnpp}");
-            }
 
+            subnetworkPointPools.Push(beginSnpp);
+            OnUpdateState($"                   BEGIN: {beginSnpp}");
 
             foreach (var path in paths) {
-                subnetworkPointPools.Enqueue(path.Link.BeginSubnetworkPointPool);
-                subnetworkPointPools.Enqueue(path.Link.EndSubnetworkPointPool);
+                subnetworkPointPools.Push(path.Link.BeginSubnetworkPointPool);
+                subnetworkPointPools.Push(path.Link.EndSubnetworkPointPool);
 
                 OnUpdateState($"                   {path.Link}");
             }
 
-            if (beginSnpp.NetworkAddress.Levels != LocalAddress.Levels + 2) {
-                subnetworkPointPools.Enqueue(beginSnpp);
-                subnetworkPointPools.Enqueue(paths.First.Value.Link.BeginSubnetworkPointPool);
-                OnUpdateState($"                   BEGIN: {beginSnpp}");
-            }
+            subnetworkPointPools.Push(endSnpp);
+            OnUpdateState($"                   END: {endSnpp}");
 
             return subnetworkPointPools;
         }
@@ -153,21 +153,24 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private NetworkAddress GetOtherDomainAddress(NetworkAddress localAddress) {
-            if (localAddress.DomainId == 1) {
-                return new NetworkAddress(2);
-            }
-            if (localAddress.DomainId == 2) {
-                return new NetworkAddress(1);
-            }
+            if (localAddress.DomainId == 1) return new NetworkAddress(2);
+            if (localAddress.DomainId == 2) return new NetworkAddress(1);
             return null;
         }
 
-        private void UpdateLinkList(SignallingMessage message) {
-            var receivedLink = (Link)message.Payload;
-            OnUpdateState($"[TOPOLOGY_UPDATE] {receivedLink}");
+        private bool UpdateLinkList(Link receivedLink) {
+            var updatedLinkIndex = _links.FindIndex(link => link.Equals(receivedLink));
+            if (updatedLinkIndex >= 0) {
+                if (_links[updatedLinkIndex].CapacityLeft != receivedLink.CapacityLeft) {
+                    _links[updatedLinkIndex] = receivedLink;
+                    return true;
+                }
 
-            if (_links.Contains(receivedLink)) _links.Remove(receivedLink);
+                return false;
+            }
+
             _links.Add(receivedLink);
+            return true;
         }
     }
 }

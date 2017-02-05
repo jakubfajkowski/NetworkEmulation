@@ -77,6 +77,8 @@ namespace NetworkUtilitiesTests {
 
         [TestMethod]
         public void TestLRM() {
+            var subnetwork1Address = new NetworkAddress("1");
+
             var client1Address = new NetworkAddress("1.1.1");
             var client2Address = new NetworkAddress("1.2.1");
 
@@ -87,13 +89,28 @@ namespace NetworkUtilitiesTests {
             var node1Client1SnppIn = new SubnetworkPointPool(node1Address.Append(1));
             var node1Node2SnppOut = new SubnetworkPointPool(node2Address.Append(2));
             var node1Node2SnppIn = new SubnetworkPointPool(node1Address.Append(2));
+            var node2Client2SnppOut = new SubnetworkPointPool(client2Address.Append(1));
+            var node2Client2SnppIn = new SubnetworkPointPool(node2Address.Append(1));
 
             var client1Node1Link = new Link(node1Client1SnppIn, node1Client1SnppOut, 10, true);
             var node1Node2Link = new Link(node1Node2SnppIn, node1Node2SnppOut, 10, false);
+            var client2Node2Link = new Link(node2Client2SnppIn, node2Client2SnppOut, 10, true);
+
+            var rcAddress = subnetwork1Address;
+            var rc = new RoutingController(rcAddress);
+            _controlPlaneElements.Add(new Row(rcAddress, ControlPlaneElementType.RC), rc);
+
+            var ccAddress = subnetwork1Address;
+            var cc = new ConnectionController(ccAddress);
+            _controlPlaneElements.Add(new Row(ccAddress, ControlPlaneElementType.CC), cc);
 
             var cc1Address = node1Address;
             var cc1 = new ConnectionController(cc1Address);
             _controlPlaneElements.Add(new Row(cc1Address, ControlPlaneElementType.CC), cc1);
+
+            var cc2Address = node2Address;
+            var cc2 = new ConnectionController(cc2Address);
+            _controlPlaneElements.Add(new Row(cc2Address, ControlPlaneElementType.CC), cc2);
 
             var lrm1Address = node1Address;
             var lrm1 = new LinkResourceManager(lrm1Address);
@@ -103,11 +120,18 @@ namespace NetworkUtilitiesTests {
             var lrm2 = new LinkResourceManager(lrm2Address);
             _controlPlaneElements.Add(new Row(lrm2Address, ControlPlaneElementType.LRM), lrm2);
 
+
+            rc.MessageToSend += PassMessage;
+            cc.MessageToSend += PassMessage;
             cc1.MessageToSend += PassMessage;
+            cc2.MessageToSend += PassMessage;
             lrm1.MessageToSend += PassMessage;
             lrm2.MessageToSend += PassMessage;
 
+            rc.UpdateState += UpdateState;
+            cc.UpdateState += UpdateState;
             cc1.UpdateState += UpdateState;
+            cc2.UpdateState += UpdateState;
             lrm1.UpdateState += UpdateState;
             lrm2.UpdateState += UpdateState;
 
@@ -153,19 +177,33 @@ namespace NetworkUtilitiesTests {
                 DestinationControlPlaneElement = ControlPlaneElementType.LRM
             });
 
-            cc1.ReceiveMessage(new SignallingMessage {
+            lrm2.ReceiveMessage(new SignallingMessage {
+                Operation = OperationType.Configuration,
+                Payload = client2Node2Link,
+                DestinationAddress = node2Address,
+                DestinationControlPlaneElement = ControlPlaneElementType.LRM
+            });
+
+            lrm2.ReceiveMessage(new SignallingMessage {
+                Operation = OperationType.Configuration,
+                Payload = client2Node2Link.Reverse(),
+                DestinationAddress = node2Address,
+                DestinationControlPlaneElement = ControlPlaneElementType.LRM
+            });
+
+            cc.ReceiveMessage(new SignallingMessage {
                 DemandedCapacity = 5,
-                DestinationAddress = cc1Address,
+                DestinationAddress = ccAddress,
                 DestinationControlPlaneElement = ControlPlaneElementType.CC,
                 DestinationClientAddress = client2Address,
-                Operation = OperationType.RouteTableQuery,
-                Payload = new Queue<SubnetworkPointPool>(new[] {
+                Operation = OperationType.ConnectionRequest,
+                Payload = new[] {
                     node1Client1SnppIn,
                     node1Node2SnppOut
-                }),
-                SourceAddress = new NetworkAddress("0"),
+                },
+                SourceAddress = subnetwork1Address,
                 SourceClientAddress = client1Address,
-                SourceControlPlaneElement = ControlPlaneElementType.RC
+                SourceControlPlaneElement = ControlPlaneElementType.CC
             });
         }
 
@@ -177,7 +215,7 @@ namespace NetworkUtilitiesTests {
             try {
                 var destination =
                     _controlPlaneElements[new Row(message.DestinationAddress, message.DestinationControlPlaneElement)];
-                Thread.Sleep(10);
+                //Thread.Sleep(10);
                 destination.ReceiveMessage(message);
             }
             catch (KeyNotFoundException) {
@@ -196,20 +234,28 @@ namespace NetworkUtilitiesTests {
         public ControlPlaneElementType ControlPlaneElement { get; }
 
         protected bool Equals(Row other) {
-            return Equals(NetworkAddress, other.NetworkAddress) && ControlPlaneElement == other.ControlPlaneElement;
+            return NetworkAddress.Equals(other.NetworkAddress) && ControlPlaneElement == other.ControlPlaneElement;
         }
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(Row)) return false;
+            if (obj.GetType() != this.GetType()) return false;
             return Equals((Row) obj);
         }
 
         public override int GetHashCode() {
             unchecked {
-                return ((NetworkAddress != null ? NetworkAddress.GetHashCode() : 0) * 397) ^ (int) ControlPlaneElement;
+                return (NetworkAddress.GetHashCode() * 397) ^ (int) ControlPlaneElement;
             }
+        }
+
+        public static bool operator ==(Row left, Row right) {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Row left, Row right) {
+            return !Equals(left, right);
         }
     }
 }

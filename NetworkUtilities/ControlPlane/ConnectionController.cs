@@ -10,8 +10,8 @@ namespace NetworkUtilities.ControlPlane {
 
         private readonly Dictionary<UniqueId, NetworkAddress[]> _clientAddressDictionary =
             new Dictionary<UniqueId, NetworkAddress[]>();
-        private readonly Dictionary<UniqueId, Queue<SubnetworkPointPool>> _snppQueues =
-            new Dictionary<UniqueId, Queue<SubnetworkPointPool>>();
+        private readonly Dictionary<UniqueId, Stack<SubnetworkPointPool>> _snppStacks =
+            new Dictionary<UniqueId, Stack<SubnetworkPointPool>>();
 
         public ConnectionController(NetworkAddress localAddress) : base(localAddress, ControlPlaneElementType.CC) {}
 
@@ -78,17 +78,10 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void HandleRouteTableQuery(SignallingMessage message) {
-            if (message.Payload is Queue<SubnetworkPointPool>) {
-                var snppQueue = (Queue<SubnetworkPointPool>) message.Payload;
+            if (message.Payload is Stack<SubnetworkPointPool>) {
+                var snppStack = (Stack<SubnetworkPointPool>) message.Payload;
 
-                if (_snppQueues.ContainsKey(message.SessionId)) {
-                    while (snppQueue.Count > 0) {
-                        _snppQueues[message.SessionId].Enqueue(snppQueue.Dequeue()); //TODO?
-                    }
-                }
-                else {
-                    _snppQueues.Add(message.SessionId, snppQueue);
-                }
+                _snppStacks.Add(message.SessionId, snppStack);
 
                 ProcessNextSnppPair(message);
             }
@@ -101,9 +94,9 @@ namespace NetworkUtilities.ControlPlane {
         private void HandleSNPLinkConnectionRequest(SignallingMessage message) {
             var r = (SubnetworkPointPortPair[]) message.Payload;
 
-            OnUpdateState($"[COMMUTATION_TABLE_UPDATE] VPI: {r[0].SubnetworkPoint.Vpi}-> {r[1].SubnetworkPoint.Vpi}," +
-                                                    $" VCI: {r[0].SubnetworkPoint.Vci}-> {r[1].SubnetworkPoint.Vci}," +
-                                                    $" Port: {r[0].Port}-> {r[1].Port}");
+            OnUpdateState($"[COMMUTATION_TABLE_UPDATE] VPI: {r[0].SubnetworkPoint.Vpi}->{r[1].SubnetworkPoint.Vpi}," +
+                                                    $" VCI: {r[0].SubnetworkPoint.Vci}->{r[1].SubnetworkPoint.Vci}," +
+                                                    $" Port: {r[0].Port}->{r[1].Port}");
 
             var rowToAdd = new CommutationTableRow(r[0].SubnetworkPoint.Vpi,
                                                    r[0].SubnetworkPoint.Vci,
@@ -171,12 +164,14 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void ProcessNextSnppPair(SignallingMessage message) {
-            var snppQueue = _snppQueues[message.SessionId];
+            var snppStack = _snppStacks[message.SessionId];
+            if (snppStack.Count > 0) {
+                var snpp2 = snppStack.Pop();
+                var snpp1 = snppStack.Pop();
 
-            if (snppQueue.Count > 0) {
                 var snpps = new[] {
-                    snppQueue.Dequeue(),
-                    snppQueue.Dequeue()
+                    snpp1,
+                    snpp2
                 };
 
                 message.Payload = snpps;

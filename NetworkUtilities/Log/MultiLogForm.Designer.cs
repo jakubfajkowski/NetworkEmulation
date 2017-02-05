@@ -38,13 +38,14 @@
             this.comboBox.FormattingEnabled = true;
             this.comboBox.Location = new System.Drawing.Point(0, 0);
             this.comboBox.Name = "comboBox";
-            this.comboBox.Size = new System.Drawing.Size(684, 21);
+            this.comboBox.Size = new System.Drawing.Size(784, 21);
             this.comboBox.TabIndex = 1;
             this.comboBox.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -56,7 +57,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.logRichTextBox);
-            this.splitContainer1.Size = new System.Drawing.Size(684, 261);
+            this.splitContainer1.Size = new System.Drawing.Size(784, 261);
             this.splitContainer1.SplitterDistance = 25;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -67,7 +68,7 @@
             this.logRichTextBox.Location = new System.Drawing.Point(0, 0);
             this.logRichTextBox.Name = "logRichTextBox";
             this.logRichTextBox.ReadOnly = true;
-            this.logRichTextBox.Size = new System.Drawing.Size(684, 232);
+            this.logRichTextBox.Size = new System.Drawing.Size(784, 232);
             this.logRichTextBox.TabIndex = 1;
             this.logRichTextBox.Text = "";
             // 
@@ -75,7 +76,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(684, 261);
+            this.ClientSize = new System.Drawing.Size(784, 261);
             this.Controls.Add(this.splitContainer1);
             this.Name = "MultiLogForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LogForm_FormClosing);

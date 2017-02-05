@@ -194,11 +194,16 @@ namespace NetworkEmulation {
 
             foreach (var linkView in _links) {
                 Link linkConfiguration;
-                NetworkAddress destinationAddress;
 
                 if (!(linkView.BeginNodeView is ClientNodeView) && !(linkView.EndNodeView is ClientNodeView)) {
                     linkConfiguration = new Link(linkView.Parameters, false);
-                    destinationAddress = linkConfiguration.BeginSubnetworkPointPool.NodeAddress;
+                    var beginDestinationAddress = linkConfiguration.BeginSubnetworkPointPool.NodeAddress;
+                    var endDestinationAddress = linkConfiguration.EndSubnetworkPointPool.NodeAddress;
+                                        
+                    _networkManagmentSystem.SendConfigurationMessage(linkConfiguration, beginDestinationAddress);
+                    _networkManagmentSystem.SendConfigurationMessage(linkConfiguration.Reverse(), beginDestinationAddress);
+                    _networkManagmentSystem.SendConfigurationMessage(linkConfiguration, endDestinationAddress);
+                    _networkManagmentSystem.SendConfigurationMessage(linkConfiguration.Reverse(), endDestinationAddress);
                 }
                 else {
                     linkConfiguration = new Link(linkView.Parameters, true);
@@ -206,11 +211,10 @@ namespace NetworkEmulation {
                     var beginNodeAddress = linkConfiguration.BeginSubnetworkPointPool.NodeAddress;
                     var endNodeAddress = linkConfiguration.EndSubnetworkPointPool.NodeAddress;
 
-                    destinationAddress = beginNodeAddress.Levels < endNodeAddress.Levels ? beginNodeAddress : endNodeAddress;
+                    var destinationAddress = beginNodeAddress.Levels < endNodeAddress.Levels ? beginNodeAddress : endNodeAddress;
+                    _networkManagmentSystem.SendConfigurationMessage(linkConfiguration, destinationAddress);
+                    _networkManagmentSystem.SendConfigurationMessage(linkConfiguration.Reverse(), destinationAddress);
                 }
-
-                _networkManagmentSystem.SendConfigurationMessage(linkConfiguration, destinationAddress);
-                _networkManagmentSystem.SendConfigurationMessage(linkConfiguration.Reverse(), destinationAddress);
 
                 linkView.MarkAsOnline();
             }
