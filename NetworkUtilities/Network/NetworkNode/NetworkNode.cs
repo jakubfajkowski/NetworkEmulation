@@ -104,7 +104,7 @@ namespace NetworkUtilities.Network.NetworkNode {
                         //OnUpdateState(DateTime.Now.Millisecond + "  Wysyłanie CableCloudMessage na port " +
                         //                 message.PortNumber + " Liczba ATMCell: " + message.AtmCells.Count
                         //                + " Port: " + port.GetPortNumber());
-                        var message = new CableCloudMessage(port.GetPortNumber(), true, atmCells);
+                        var message = new CableCloudMessage(port.GetPortNumber(), atmCells);
                         SendCableCloudMessage(message);
                         sent = true;
                     }

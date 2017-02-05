@@ -82,7 +82,7 @@ namespace NetworkEmulationTest {
             var atmCells = new List<AtmCell>();
             for (var i = 0; i < atmCellsNumber; i++) atmCells.Add(new AtmCell(1, 1, new byte[48]));
 
-            return new CableCloudMessage(1, true, atmCells);
+            return new CableCloudMessage(1, atmCells);
         }
 
         private NetworkAddressNodePortPair RandomNetworkAddressNodePortPair() {

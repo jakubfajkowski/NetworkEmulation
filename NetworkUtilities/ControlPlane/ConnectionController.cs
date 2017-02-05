@@ -34,7 +34,7 @@ namespace NetworkUtilities.ControlPlane {
                     HandleRouteTableQuery(message);
                     break;
 
-                case OperationType.SNPLinkConnectionAllocation:
+                case OperationType.LinkConnectionAllocation:
                     HandleSNPLinkConnectionRequest(message);
                     break;
             }
@@ -133,7 +133,7 @@ namespace NetworkUtilities.ControlPlane {
 
         private void SendLinkConnectionRequest(SignallingMessage message) {
             var linkConnectionRequest = message;
-            linkConnectionRequest.Operation = OperationType.SNPLinkConnectionAllocation;
+            linkConnectionRequest.Operation = OperationType.LinkConnectionAllocation;
             linkConnectionRequest.DestinationAddress = LocalAddress;
             linkConnectionRequest.DestinationControlPlaneElement = ControlPlaneElementType.LRM;
 

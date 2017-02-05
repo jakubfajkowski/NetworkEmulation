@@ -27,7 +27,7 @@ namespace NetworkUtilities.ControlPlane {
             base.ReceiveMessage(message);
 
             switch (message.Operation) {
-                case OperationType.SNPLinkConnectionAllocation:
+                case OperationType.LinkConnectionAllocation:
                     HandleSnpLinkConnectionAllocation(message);
                     break;
 
@@ -38,7 +38,7 @@ namespace NetworkUtilities.ControlPlane {
                         HandleSnpNegotiationResponse(message);
                     break;
 
-                case OperationType.SNPLinkConnectionDeallocation:
+                case OperationType.LinkConnectionDeallocation:
                     HandleSnpLinkConnectionDeallocation(message);
                     break;
 
@@ -74,12 +74,10 @@ namespace NetworkUtilities.ControlPlane {
                 var pairIn = new SubnetworkPointPortPair(snpIn, snppIn.Id);
                 var pairOut = new SubnetworkPointPortPair(snpOut, snppOut.Id);
 
-                SendMessage(new SignallingMessage {
-                    DestinationAddress = LocalAddress,
-                    DestinationControlPlaneElement = ControlPlaneElementType.CC,
-                    Operation = OperationType.SNPLinkConnectionAllocation,
-                    Payload = new[] {pairIn, pairOut}
-                });
+                _recentSnpPairs.Add(message.SessionId, pairIn);
+
+                message.Payload = new[] {pairIn, pairOut};
+                SendSnpLinkConnectionAllocation(message);
             }
             else {
                 SendSnpNegotiation(message);
@@ -133,12 +131,14 @@ namespace NetworkUtilities.ControlPlane {
                 pairIn = new SubnetworkPointPortPair(snpIn, snpps[0].Id);
             }
 
+            _recentSnpPairs.Add(message.SessionId, pairIn);
+
             message.Payload = new[] {
                 pairIn,
                 pairOut
             };
             
-            SendSnpLinkConnectionRequest(message);
+            SendSnpLinkConnectionAllocation(message);
         }
 
         private void HandleSnpLinkConnectionDeallocation(SignallingMessage message) {
@@ -183,7 +183,7 @@ namespace NetworkUtilities.ControlPlane {
             while (true) {
                 SubnetworkPoint snp = SubnetworkPoint.GenerateRandom(demandedCapacity);
                 OnUpdateState($"[GENERATED_SNP] {link}\n" +
-                              $"                {snp}");
+                              $"                                                {snp}");
                 if (!_usedSubnetworkPoints[link].Contains(snp))
                     return snp;
             }
@@ -225,10 +225,10 @@ namespace NetworkUtilities.ControlPlane {
 
         }
 
-        private void SendSnpLinkConnectionRequest(SignallingMessage message) {
+        private void SendSnpLinkConnectionAllocation(SignallingMessage message) {
             message.DestinationAddress = LocalAddress;
             message.DestinationControlPlaneElement= ControlPlaneElementType.CC;
-            message.Operation = OperationType.SNPLinkConnectionAllocation;
+            message.Operation = OperationType.LinkConnectionAllocation;
 
             SendMessage(message);
         }
@@ -241,7 +241,7 @@ namespace NetworkUtilities.ControlPlane {
             return _nodeLinks.Find(l => l.BeginSubnetworkPointPool.Equals(snpp));
         }
         public Link FindLinkByEnd(SubnetworkPointPool snpp) {
-            return _nodeLinks.Find(l => l.BeginSubnetworkPointPool.Equals(snpp));
+            return _nodeLinks.Find(l => l.EndSubnetworkPointPool.Equals(snpp));
         }
     }
 }

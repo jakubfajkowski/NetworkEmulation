@@ -9,6 +9,7 @@ namespace NetworkUtilities.ControlPlane {
         protected override void HandleReceivedObject(object receivedObject, NetworkAddress inputNetworkAddress) {
             var signallingMessage = (SignallingMessage) receivedObject;
             OnUpdateState(signallingMessage.ToString());
+            OnUpdateState("SESSION: " + signallingMessage.SessionId);
             Send(signallingMessage, signallingMessage.DestinationAddress);
         }
     }

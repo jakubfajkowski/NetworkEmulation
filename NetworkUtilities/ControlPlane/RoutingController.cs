@@ -128,18 +128,35 @@ namespace NetworkUtilities.ControlPlane {
 
             OnUpdateState("[AVAILABLE_ROUTE]");
 
-
-            subnetworkPointPools.Push(beginSnpp);
             OnUpdateState($"                   BEGIN: {beginSnpp}");
+            if (paths.Count > 0) {
+                //var firstPathSnpp = paths.First.Value.Link.BeginSubnetworkPointPool;
 
-            foreach (var path in paths) {
-                subnetworkPointPools.Push(path.Link.BeginSubnetworkPointPool);
-                subnetworkPointPools.Push(path.Link.EndSubnetworkPointPool);
+                //if (!firstPathSnpp.Equals(beginSnpp)) {
+                //    subnetworkPointPools.Push(beginSnpp);
+                //    subnetworkPointPools.Push(firstPathSnpp);
+                //    OnUpdateState($"                   {beginSnpp}->{firstPathSnpp}");
+                //}
 
-                OnUpdateState($"                   {path.Link}");
+                foreach (var path in paths) {
+                    subnetworkPointPools.Push(path.Link.BeginSubnetworkPointPool);
+                    subnetworkPointPools.Push(path.Link.EndSubnetworkPointPool);
+
+                    OnUpdateState($"                   {path.Link}");
+                }
+
+                var lastPathSnpp = paths.Last.Value.Link.EndSubnetworkPointPool;
+
+                if (!lastPathSnpp.Equals(endSnpp)) {
+                    subnetworkPointPools.Push(lastPathSnpp);
+                    subnetworkPointPools.Push(endSnpp);
+                    OnUpdateState($"                   {lastPathSnpp}->{endSnpp}");
+                }
             }
-
-            subnetworkPointPools.Push(endSnpp);
+            else if (beginSnpp.NodeAddress.Equals(endSnpp.NodeAddress)) {
+                subnetworkPointPools.Push(beginSnpp);
+                subnetworkPointPools.Push(endSnpp);
+            }
             OnUpdateState($"                   END: {endSnpp}");
 
             return subnetworkPointPools;
