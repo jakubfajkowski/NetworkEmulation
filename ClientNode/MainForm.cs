@@ -56,7 +56,7 @@ namespace ClientNode {
             if (clientName != null) {
                 comboBoxConnections.Items.Add(clientName);
                 buttonConnection.BackColor = Color.Red;
-                buttonConnection.Text = "Disonnect";
+                buttonConnection.Text = "Disconnect";
             }
             else {
                 buttonConnection.BackColor = Color.Lime;
