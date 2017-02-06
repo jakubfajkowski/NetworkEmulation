@@ -130,19 +130,32 @@ namespace NetworkUtilities.ControlPlane {
 
             OnUpdateState($"                   BEGIN: {beginSnpp}");
             if (paths.Count > 0) {
-                //var firstPathSnpp = paths.First.Value.Link.BeginSubnetworkPointPool;
+                if (LocalAddress.IsDomain) {
+                    var firstPathSnpp = paths.First.Value.Link.BeginSubnetworkPointPool;
+                    if (!firstPathSnpp.Equals(beginSnpp)) {
+                        subnetworkPointPools.Push(beginSnpp);
+                        //subnetworkPointPools.Push(firstPathSnpp);
+                        OnUpdateState($"                   {beginSnpp}->{firstPathSnpp}");
+                    }
+                    foreach (var path in paths) {
+                        if (
+                            !beginSnpp.NodeAddress.GetRootFromBeginning(LocalAddress.Levels + 1)
+                                .Equals(
+                                    path.Link.BeginSubnetworkPointPool.NodeAddress.GetRootFromBeginning(
+                                        LocalAddress.Levels + 1)))
+                            subnetworkPointPools.Push(path.Link.BeginSubnetworkPointPool);
+                        subnetworkPointPools.Push(path.Link.EndSubnetworkPointPool);
 
-                //if (!firstPathSnpp.Equals(beginSnpp)) {
-                //    subnetworkPointPools.Push(beginSnpp);
-                //    subnetworkPointPools.Push(firstPathSnpp);
-                //    OnUpdateState($"                   {beginSnpp}->{firstPathSnpp}");
-                //}
+                        OnUpdateState($"                   {path.Link}");
+                    }
+                }
+                else {
+                    foreach (var path in paths) {
+                        subnetworkPointPools.Push(path.Link.BeginSubnetworkPointPool);
+                        subnetworkPointPools.Push(path.Link.EndSubnetworkPointPool);
 
-                foreach (var path in paths) {
-                    subnetworkPointPools.Push(path.Link.BeginSubnetworkPointPool);
-                    subnetworkPointPools.Push(path.Link.EndSubnetworkPointPool);
-
-                    OnUpdateState($"                   {path.Link}");
+                        OnUpdateState($"                   {path.Link}");
+                    }
                 }
 
                 var lastPathSnpp = paths.Last.Value.Link.EndSubnetworkPointPool;
