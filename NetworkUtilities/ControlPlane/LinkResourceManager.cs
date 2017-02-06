@@ -7,11 +7,13 @@ using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     public class LinkResourceManager : ControlPlaneElement {
+        public delegate void CommutationHandler(object sender, CommutationHandlerArgs args);
+
         private readonly List<Link> _nodeLinks;
         private readonly Dictionary<NetworkAddress, SubnetworkPointPool> _clientInSnpps;
         private readonly Dictionary<NetworkAddress, SubnetworkPointPool> _clientOutSnpps;
         private readonly Dictionary<Link, List<SubnetworkPoint>> _usedSubnetworkPoints;
-        private readonly Dictionary<UniqueId, SubnetworkPointPortPair> _recentSnpPairs;
+        private readonly Dictionary<UniqueId, SubnetworkPointPortPair> _recentSnpPortPairs;
 
         public LinkResourceManager(NetworkAddress networkAddress) : 
             base(networkAddress, ControlPlaneElementType.LRM) {
@@ -20,7 +22,7 @@ namespace NetworkUtilities.ControlPlane {
             _usedSubnetworkPoints = new Dictionary<Link, List<SubnetworkPoint>>();
             _clientInSnpps = new Dictionary<NetworkAddress, SubnetworkPointPool>();
             _clientOutSnpps = new Dictionary<NetworkAddress, SubnetworkPointPool>();
-            _recentSnpPairs = new Dictionary<UniqueId, SubnetworkPointPortPair>();
+            _recentSnpPortPairs = new Dictionary<UniqueId, SubnetworkPointPortPair>();
         }
 
         public override void ReceiveMessage(SignallingMessage message) {
@@ -62,21 +64,14 @@ namespace NetworkUtilities.ControlPlane {
             if (_clientOutSnpps.ContainsKey(message.DestinationClientAddress)) {
                 OnUpdateState("[DESTINATION_CLIENT_LOCATED]");
 
-                var snppIn = snpps[0];
                 var snppOut = snpps[1];
-
-                var linkIn = FindLinkByEnd(snppIn);
                 var linkOut = FindLinkByBegin(snppOut);
-
-                var snpIn = GenerateSnp(linkIn, message.DemandedCapacity);
                 var snpOut = GenerateSnp(linkOut, message.DemandedCapacity);
-
-                var pairIn = new SubnetworkPointPortPair(snpIn, snppIn.Id);
                 var pairOut = new SubnetworkPointPortPair(snpOut, snppOut.Id);
 
-                _recentSnpPairs.Add(message.SessionId, pairIn);
+                _recentSnpPortPairs.Add(message.SessionId, pairOut);
 
-                message.Payload = new[] {pairIn, pairOut};
+                message.Payload = pairOut;
                 SendSnpLinkConnectionAllocation(message);
             }
             else {
@@ -89,10 +84,16 @@ namespace NetworkUtilities.ControlPlane {
 
             OnUpdateState($"[RECEIVED_SNPP] {snpps[0]}---{snpps[1]}");
 
-            var pairIn = _recentSnpPairs[message.SessionId];
+            var pairOut = _recentSnpPortPairs[message.SessionId];
+
+            var linkIn = FindLinkByEnd(snpps[1]);
+            var snpIn = GenerateSnp(linkIn, message.DemandedCapacity);
+            var portIn = snpps[1].Id;
+            var pairIn = new SubnetworkPointPortPair(snpIn, portIn);
+
+            InsertRow(new []{pairIn, pairOut});
 
             SendSnpNegotiationResponse(message, pairIn);
-
         }
 
         private void SendSnpNegotiationResponse(SignallingMessage message, SubnetworkPointPortPair subnetworkPointPortPair) {
@@ -108,35 +109,25 @@ namespace NetworkUtilities.ControlPlane {
             var payload = (object[])message.Payload;
 
             var snpps = (SubnetworkPointPool[])payload[0];
-            var linkOut = FindLinkByBegin(snpps[0]);
-            var pairOut = (SubnetworkPointPortPair)payload[1];
-            SubnetworkPointPortPair pairIn;
-            
-            linkOut.ReserveCapacity(message.DemandedCapacity);
-            OnUpdateState($"[MODIFIED_LINK] {linkOut}");
-            SendLocalTopology(linkOut);
-            
+            var nextPairOut = (SubnetworkPointPortPair)payload[1];
+            var pairOut = new SubnetworkPointPortPair(nextPairOut.SubnetworkPoint, snpps[0].Id);
+
             if (_clientInSnpps.ContainsKey(message.SourceClientAddress)) {
                 OnUpdateState("[SOURCE_CLIENT_LOCATED]");
                 var snppIn = _clientInSnpps[message.SourceClientAddress];
                 var linkIn = FindLinkByEnd(snppIn);
                 var snpIn = GenerateSnp(linkIn, message.DemandedCapacity);
-                _usedSubnetworkPoints[linkOut].Add(snpIn);
-                pairIn = new SubnetworkPointPortPair(snpIn, snppIn.Id);
+                var pairIn = new SubnetworkPointPortPair(snpIn, snppIn.Id);
+                InsertRow(new []{pairIn, pairOut});
+
+                message.Payload = pairIn;
             }
-            
             else {
-                var snpIn = GenerateSnp(linkOut, message.DemandedCapacity);
-                _usedSubnetworkPoints[linkOut].Add(snpIn);
-                pairIn = new SubnetworkPointPortPair(snpIn, snpps[0].Id);
+                _recentSnpPortPairs.Add(message.SessionId, pairOut);
+
+                message.Payload = pairOut;
             }
 
-            _recentSnpPairs.Add(message.SessionId, pairIn);
-
-            message.Payload = new[] {
-                pairIn,
-                pairOut
-            };
             
             SendSnpLinkConnectionAllocation(message);
         }
@@ -184,8 +175,15 @@ namespace NetworkUtilities.ControlPlane {
                 SubnetworkPoint snp = SubnetworkPoint.GenerateRandom(demandedCapacity);
                 OnUpdateState($"[GENERATED_SNP] {link}\n" +
                               $"                                                {snp}");
-                if (!_usedSubnetworkPoints[link].Contains(snp))
+                if (!_usedSubnetworkPoints[link].Contains(snp)) {
+                    _usedSubnetworkPoints[link].Add(snp);
+                    link.ReserveCapacity(demandedCapacity);
+                    OnUpdateState($"[MODIFIED_LINK] {link}");
+                    if (!link.IsClientLink) {
+                        SendLocalTopology(link);
+                    }
                     return snp;
+                }
             }
         }
 
@@ -237,11 +235,41 @@ namespace NetworkUtilities.ControlPlane {
             
         }
 
-        public Link FindLinkByBegin(SubnetworkPointPool snpp) {
+        private Link FindLinkByBegin(SubnetworkPointPool snpp) {
             return _nodeLinks.Find(l => l.BeginSubnetworkPointPool.Equals(snpp));
         }
-        public Link FindLinkByEnd(SubnetworkPointPool snpp) {
+        private Link FindLinkByEnd(SubnetworkPointPool snpp) {
             return _nodeLinks.Find(l => l.EndSubnetworkPointPool.Equals(snpp));
         }
+
+        private void InsertRow(SubnetworkPointPortPair[] r) {
+
+
+            OnUpdateState($"[COMMUTATION_TABLE_UPDATE] VPI: {r[0].SubnetworkPoint.Vpi}->{r[1].SubnetworkPoint.Vpi}," +
+                                                    $" VCI: {r[0].SubnetworkPoint.Vci}->{r[1].SubnetworkPoint.Vci}," +
+                                                    $" Port: {r[0].Port}->{r[1].Port}");
+
+            var rowToAdd = new CommutationTableRow(r[0].SubnetworkPoint.Vpi,
+                                                   r[0].SubnetworkPoint.Vci,
+                                                   r[0].Port,
+                                                   r[1].SubnetworkPoint.Vpi,
+                                                   r[1].SubnetworkPoint.Vci,
+                                                   r[1].Port);
+
+            OnCommutationCommand(new CommutationHandlerArgs(rowToAdd));
+        }
+
+        public event CommutationHandler CommutationCommand;
+        protected virtual void OnCommutationCommand(CommutationHandlerArgs args) {
+            CommutationCommand?.Invoke(this, args);
+        }
+    }
+
+    public class CommutationHandlerArgs {
+        public CommutationHandlerArgs(CommutationTableRow commutationTableRow) {
+            CommutationTableRow = commutationTableRow;
+        }
+
+        public CommutationTableRow CommutationTableRow { get; private set; }
     }
 }

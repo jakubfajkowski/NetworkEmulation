@@ -6,8 +6,6 @@ using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
     public class ConnectionController : ControlPlaneElement {
-        public delegate void CommutationHandler(object sender, CommutationHandlerArgs args);
-
         private readonly Dictionary<UniqueId, NetworkAddress[]> _clientAddressDictionary =
             new Dictionary<UniqueId, NetworkAddress[]>();
         private readonly Dictionary<UniqueId, Stack<SubnetworkPointPool>> _snppStacks =
@@ -35,7 +33,7 @@ namespace NetworkUtilities.ControlPlane {
                     break;
 
                 case OperationType.LinkConnectionAllocation:
-                    HandleSNPLinkConnectionRequest(message);
+                    HandleLinkConnectionAllocation(message);
                     break;
             }
         }
@@ -91,23 +89,15 @@ namespace NetworkUtilities.ControlPlane {
            
         }
 
-        private void HandleSNPLinkConnectionRequest(SignallingMessage message) {
-            var r = (SubnetworkPointPortPair[]) message.Payload;
-
-            OnUpdateState($"[COMMUTATION_TABLE_UPDATE] VPI: {r[0].SubnetworkPoint.Vpi}->{r[1].SubnetworkPoint.Vpi}," +
-                                                    $" VCI: {r[0].SubnetworkPoint.Vci}->{r[1].SubnetworkPoint.Vci}," +
-                                                    $" Port: {r[0].Port}->{r[1].Port}");
-
-            var rowToAdd = new CommutationTableRow(r[0].SubnetworkPoint.Vpi,
-                                                   r[0].SubnetworkPoint.Vci,
-                                                   r[0].Port,
-                                                   r[1].SubnetworkPoint.Vpi,
-                                                   r[1].SubnetworkPoint.Vci,
-                                                   r[1].Port);
-
-            OnCommutationCommand(new CommutationHandlerArgs(rowToAdd));
-
-            SendConnectionRequestResponse(message, r[0].SubnetworkPoint);
+        private void HandleLinkConnectionAllocation(SignallingMessage message) {
+            if (message.Payload is SubnetworkPointPortPair[]) {
+                var r = (SubnetworkPointPortPair[])message.Payload;
+                SendConnectionRequestResponse(message, r[0].SubnetworkPoint);
+            }
+            else if (message.Payload is SubnetworkPointPortPair) {
+                var r = (SubnetworkPointPortPair) message.Payload;
+                SendConnectionRequestResponse(message, r.SubnetworkPoint);
+            }
         }
 
         private void SendRouteTableQuery(SignallingMessage message) {
@@ -183,18 +173,5 @@ namespace NetworkUtilities.ControlPlane {
                 SendConnectionRequestResponse(message, (SubnetworkPoint) message.Payload);
             }
         }
-
-        public event CommutationHandler CommutationCommand;
-        protected virtual void OnCommutationCommand(CommutationHandlerArgs args) {
-            CommutationCommand?.Invoke(this, args);
-        }
-    }
-
-    public class CommutationHandlerArgs {
-        public CommutationHandlerArgs(CommutationTableRow commutationTableRow) {
-            CommutationTableRow = commutationTableRow;
-        }
-
-        public CommutationTableRow CommutationTableRow { get; private set; }
     }
 }

@@ -29,12 +29,12 @@ namespace NetworkUtilities.Network.NetworkNode {
             _connectionController = new ConnectionController(parameters.NetworkAddress);
             _connectionController.UpdateState += (sender, state) => OnUpdateState(state);
             _connectionController.MessageToSend += (sender, message) => Send(message);
-            _connectionController.CommutationCommand += ConnectionControllerOnCommutationCommand;
 
 
             _linkResourceManager = new LinkResourceManager(parameters.NetworkAddress);
             _linkResourceManager.UpdateState += (sender, state) => OnUpdateState(state);
             _linkResourceManager.MessageToSend += (sender, message) => Send(message);
+            _linkResourceManager.CommutationCommand += ConnectionControllerOnCommutationCommand;
 
             NetworkNodeAgent = new NetworkNodeAgent(parameters.NetworkAddress, parameters.IpAddress,
                 parameters.NetworkManagmentSystemListeningPort);
@@ -118,16 +118,21 @@ namespace NetworkUtilities.Network.NetworkNode {
         }
 
         public void ReceiveCableCloudMessage(CableCloudMessage cableCloudMessage) {
-            OnUpdateState("[" + DateTime.Now + "] Message received on port: " + cableCloudMessage.PortNumber);
-            OnUpdateState("[" + DateTime.Now + "] Received " + cableCloudMessage.ExtractAtmCells().Count +
-                          " atmcells");
+            OnUpdateState("[RECEIVED] Port: " + cableCloudMessage.PortNumber + ", " + cableCloudMessage.ExtractAtmCells().Count +
+                          " cells");
 
             /* foreach (var cell in ExtractAtmCells(cableCloudMessage))
                  CommutationMatrix.AddAtmCellToInputPort(cell, cableCloudMessage.PortNumber);
                  */
+            var message = CommutationMatrix.CommuteAllCells(cableCloudMessage.ExtractAtmCells(),
+                cableCloudMessage.PortNumber);
 
-            SendCableCloudMessage(CommutationMatrix.CommuteAllCells(cableCloudMessage.ExtractAtmCells(),
-                cableCloudMessage.PortNumber));
+            if (message != null) {
+                SendCableCloudMessage(message);
+            }
+            else {
+                OnUpdateState("[UNKNOWN_DESTINATION]");
+            }
         }
 
         private void SendCableCloudMessage(CableCloudMessage cableCloudMessage) {
