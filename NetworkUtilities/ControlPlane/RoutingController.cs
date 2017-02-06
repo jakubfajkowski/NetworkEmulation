@@ -130,7 +130,7 @@ namespace NetworkUtilities.ControlPlane {
 
             OnUpdateState($"                   BEGIN: {beginSnpp}");
             if (paths.Count > 0) {
-                if (LocalAddress.IsDomain) {
+                if (LocalAddress.IsDomain||beginSnpp.NodeAddress.Levels-LocalAddress.Levels>1) {
                     var firstPathSnpp = paths.First.Value.Link.BeginSubnetworkPointPool;
                     if (!firstPathSnpp.Equals(beginSnpp)) {
                         subnetworkPointPools.Push(beginSnpp);
