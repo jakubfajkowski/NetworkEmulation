@@ -59,6 +59,10 @@ namespace NetworkUtilities.ControlPlane {
         }
 
         private void SendCallTeardownResponse(SignallingMessage message) {
+            message.Operation = OperationType.CallTeardownResponse;
+            message.DestinationAddress = message.SourceAddress;
+            message.DestinationControlPlaneElement = ControlPlaneElementType.NCC;
+            SendMessage(message);
         }
     }
 }

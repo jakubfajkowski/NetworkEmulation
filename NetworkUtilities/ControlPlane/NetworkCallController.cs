@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NetworkUtilities.Utilities;
 
 namespace NetworkUtilities.ControlPlane {
@@ -57,10 +58,14 @@ namespace NetworkUtilities.ControlPlane {
                     HandleConnectionRequest(message);
                     break;
 
-                case OperationType.CallTeardown:
-                    //SendCallTeardown(message);
-                    break;
                 case OperationType.ConnectionConfirmationToNCC:
+                    break;
+                case OperationType.CallTeardown:
+                    HandleCallTeardown(message);
+                    break;
+
+                case OperationType.CallTeardownResponse:
+                    HandleCallTeardownResponse(message);
                     break;
             }
         }
@@ -132,6 +137,47 @@ namespace NetworkUtilities.ControlPlane {
             }
             else {
                 SendCallRequestResponse(message);
+            }
+        }
+
+        private void HandleCallTeardown(SignallingMessage message) {
+
+            if (message.Payload is string[]) {
+                var clientNames = (string[])message.Payload;
+                var sessionIdToTeardown = _nameDictionary.FirstOrDefault(x => x.Value == clientNames).Key;
+                var clientAddress = _networkAddressDictionary[sessionIdToTeardown];
+
+                message.Payload = clientAddress;
+                message.DestinationAddress = clientAddress[1].GetRootFromBeginning(1);
+                message.DestinationControlPlaneElement = ControlPlaneElementType.NCC;
+                SendMessage(message);
+            }
+            else if (message.Payload is NetworkAddress[]) {
+                var clientAddress = (NetworkAddress[]) message.Payload;
+                message.DestinationAddress = clientAddress[1];
+                message.DestinationControlPlaneElement = ControlPlaneElementType.CPCC;
+                SendMessage(message);
+            }
+        }
+
+        private void HandleCallTeardownResponse(SignallingMessage message) {
+
+            var clientAddress = (NetworkAddress[]) message.Payload;
+
+            if (clientAddress[0].GetRootFromBeginning(1) == clientAddress[1].GetRootFromBeginning(1) || 
+                    message.SourceAddress == clientAddress[1].GetRootFromBeginning(1)) {
+
+                var sessionIdToDisconnect = _networkAddressDictionary.FirstOrDefault(x => x.Value == clientAddress).Key;
+
+                message.Payload = sessionIdToDisconnect;
+                message.Operation = OperationType.ConnectionRequest;
+                //message.DestinationAddress
+                message.DestinationControlPlaneElement = ControlPlaneElementType.CC;
+                SendMessage(message);
+            }
+            else {
+                message.DestinationAddress = clientAddress[0].GetRootFromBeginning(1);
+                SendMessage(message);
             }
         }
 
